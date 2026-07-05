@@ -93,7 +93,7 @@
     grid-template-columns:1fr 1fr;
     gap:16px;
   }
-  @media (max-width:480px){
+  @media (max-width:420px){
     .photo-grid{grid-template-columns:1fr;}
   }
   .photo-box{
@@ -139,6 +139,14 @@
     opacity:0.6;
   }
 
+  .hashtags{
+    font-family:'JetBrains Mono',monospace;
+    font-weight:700;
+    font-size:0.85rem;
+    color:var(--pink);
+    margin-top:16px;
+  }
+
   footer{
     padding:18px 24px;
     font-family:'JetBrains Mono',monospace;
@@ -167,27 +175,17 @@
       mohon berhati-hati terhadap akun tiruan yang mengatasnamakan orbitxy.
     </p>
 
-    <!-- KOTAK FOTO PLACEHOLDER (4 FOTO) -->
-    <!-- Ganti value src di setiap <img> di bawah ini dengan URL foto kamu -->
+    <!-- KOTAK FOTO (2 FOTO) -->
     <div class="photo-grid">
       <div class="photo-box">
-        <img src="" alt="Pratinjau orbitxy.com 1">
-        <div class="ph-text">FOTO 1</div>
+        <img src="https://i.ibb.co/dsX8ty2g/Screenshot-20260705-185131.jpg" alt="Pratinjau orbitxy.com 1">
       </div>
       <div class="photo-box">
-        <img src="" alt="Pratinjau orbitxy.com 2">
-        <div class="ph-text">FOTO 2</div>
-      </div>
-      <div class="photo-box">
-        <img src="" alt="Pratinjau orbitxy.com 3">
-        <div class="ph-text">FOTO 3</div>
-      </div>
-      <div class="photo-box">
-        <img src="" alt="Pratinjau orbitxy.com 4">
-        <div class="ph-text">FOTO 4</div>
+        <img src="https://i.ibb.co/B515HCds/Screenshot-20260705-185329.jpg" alt="Pratinjau orbitxy.com 2">
       </div>
     </div>
-    <p class="caption">// letakkan URL gambar di atribut src pada setiap tag &lt;img&gt; di dalam .photo-box</p>
+
+    <p class="hashtags">#sausage man #free fire</p>
 
   </div>
 </main>
