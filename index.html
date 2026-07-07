@@ -1,190 +1,163 @@
-<!DOCTYPE html> 
+<!DOCTYPE html>
 <html lang="id">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>orbitxy.com</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Explore the app</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
-  :root{
-    --ink:#0D0D0D;
-    --paper:#FFFFFF;
-    --yellow:#FFD400;
-    --pink:#FF3D68;
-    --border:3px solid var(--ink);
-  }
-  *{margin:0;padding:0;box-sizing:border-box;}
-  body{
-    background:var(--paper);
-    color:var(--ink);
-    font-family:'Space Grotesk',sans-serif;
-    min-height:100vh;
-    display:flex;flex-direction:column;
-  }
-  a:focus-visible, button:focus-visible{outline:3px solid var(--pink);outline-offset:3px;}
-
-  /* judul kecil kiri atas */
-  header{
-    padding:28px 24px 0;
-  }
-  .title{
-    font-family:'JetBrains Mono',monospace;
-    font-weight:700;
-    font-size:0.9rem;
-    text-transform:lowercase;
-    letter-spacing:0.5px;
-    display:inline-flex;
-    align-items:center;
-    gap:8px;
-  }
-  .title-dot{
-    width:8px;height:8px;border-radius:50%;
-    background:var(--pink);
-    border:2px solid var(--ink);
+  :root {
+    --bg: #FAF8F4;
+    --ink: #1E2A32;
+    --muted: #6B6F76;
+    --rose: #F6DCE2;
+    --rose-line: #1E2A32;
+    --border: #E7E3DA;
+    --primary: #1E2A32;
+    --primary-text: #FAF8F4;
   }
 
-  main{
-    flex:1;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    padding:40px 24px 60px;
-  }
-  .content{
-    max-width:640px;
-    width:100%;
+  * { box-sizing: border-box; }
+
+  html, body {
+    margin: 0;
+    padding: 0;
+    background: var(--bg);
+    font-family: 'Inter', sans-serif;
+    -webkit-font-smoothing: antialiased;
   }
 
-  .desc{
-    font-size:1.05rem;
-    line-height:1.75;
-    margin-bottom:36px;
-  }
-  .desc b{
-    background:var(--yellow);
-    padding:0 4px;
-    border:2px solid var(--ink);
+  body {
+    min-height: 100dvh;
   }
 
-  .section-title{
-    font-family:'JetBrains Mono',monospace;
-    font-weight:700;
-    font-size:0.95rem;
-    text-transform:uppercase;
-    letter-spacing:0.5px;
-    margin:36px 0 8px;
-  }
-  .section-warn{
-    font-size:0.92rem;
-    line-height:1.6;
-    margin-bottom:20px;
-    opacity:0.8;
-  }
-  .section-warn b{
-    background:var(--yellow);
-    padding:0 4px;
-    border:2px solid var(--ink);
+  .screen {
+    position: relative;
+    width: 100%;
+    max-width: 430px;
+    min-height: 100dvh;
+    margin: 0 auto;
+    background: var(--bg);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    padding: 0 28px;
   }
 
-  /* kotak foto placeholder */
-  .photo-grid{
-    display:grid;
-    grid-template-columns:1fr 1fr;
-    gap:16px;
-  }
-  @media (max-width:420px){
-    .photo-grid{grid-template-columns:1fr;}
-  }
-  .photo-box{
-    border:var(--border);
-    box-shadow:6px 6px 0 var(--ink);
-    background:#f0f0f0;
-    aspect-ratio:4/3;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    flex-direction:column;
-    gap:12px;
-    text-align:center;
-    padding:16px;
-    overflow:hidden;
-    position:relative;
-  }
-  .photo-box img{
-    position:absolute;inset:0;
-    width:100%;height:100%;object-fit:cover;
-    display:none;
-  }
-  .photo-box img[src]:not([src=""]){display:block;}
-  .ph-text{
-    font-family:'JetBrains Mono',monospace;
-    font-weight:700;
-    font-size:0.78rem;
-    background:var(--paper);
-    border:2px solid var(--ink);
-    padding:5px 12px;
+  .rays {
+    position: absolute;
+    top: -10%;
+    left: 50%;
+    width: 900px;
+    height: 900px;
+    transform: translateX(-50%);
+    background: repeating-conic-gradient(
+      from 0deg,
+      rgba(30,42,50,0.035) 0deg 1.2deg,
+      transparent 1.2deg 6deg
+    );
+    -webkit-mask-image: radial-gradient(circle at center, black 0%, black 40%, transparent 72%);
+    mask-image: radial-gradient(circle at center, black 0%, black 40%, transparent 72%);
+    pointer-events: none;
   }
 
-  .caption{
-    font-family:'JetBrains Mono',monospace;
-    font-size:0.72rem;
-    margin-top:12px;
-    opacity:0.6;
+  .sparkle-wrap {
+    position: relative;
+    margin: 15vh auto 0;
+    width: 170px;
+    height: 170px;
   }
 
-  .hashtags{
-    font-family:'JetBrains Mono',monospace;
-    font-weight:700;
-    font-size:0.85rem;
-    color:var(--pink);
-    margin-top:16px;
+  .sparkle-wrap svg { width: 100%; height: 100%; overflow: visible; }
+
+  .content {
+    position: relative;
+    text-align: center;
+    margin-top: 40px;
   }
 
-  footer{
-    padding:18px 24px;
-    font-family:'JetBrains Mono',monospace;
-    font-size:0.72rem;
-    opacity:0.6;
+  h1 {
+    font-family: 'Baloo 2', sans-serif;
+    font-weight: 700;
+    font-size: 28px;
+    color: var(--ink);
+    margin: 0 0 12px;
+  }
+
+  .subtitle {
+    font-size: 15px;
+    line-height: 1.5;
+    color: var(--muted);
+    max-width: 280px;
+    margin: 0 auto;
+  }
+
+  .actions {
+    position: relative;
+    margin-top: auto;
+    padding-bottom: calc(32px + env(safe-area-inset-bottom));
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  button {
+    width: 100%;
+    height: 54px;
+    border-radius: 16px;
+    font-family: 'Inter', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    transition: transform 0.15s ease, opacity 0.15s ease;
+  }
+
+  button:active { transform: scale(0.98); }
+
+  .btn-primary {
+    background: var(--primary);
+    color: var(--primary-text);
+  }
+
+  .btn-secondary {
+    background: transparent;
+    color: var(--ink);
+    border: 1.5px solid var(--border);
+  }
+
+  button:focus-visible {
+    outline: 2px solid var(--ink);
+    outline-offset: 2px;
   }
 </style>
 </head>
 <body>
+  <div class="screen">
+    <div class="rays"></div>
 
-<header>
-  <span class="title"><span class="title-dot"></span>orbitxy.com</span>
-</header>
-
-<main>
-  <div class="content">
-    <p class="desc">
-      Halo! Terima kasih sudah mampir. Situs ini sebenarnya sedang menyiapkan <b>sesuatu yang cukup menarik</b> di baliknya —
-      belum bisa kami tunjukkan sekarang, tapi percayalah, ini sepadan untuk ditunggu.
-      Kami ingin memastikan semuanya rapi dan siap sebelum diperlihatkan ke kamu, jadi mohon bersabar sebentar ya.
-    </p>
-
-    <div class="section-title">Akun Game Resmi orbitxy</div>
-    <p class="section-warn">
-      <b>Akun game orbitxy yang tertera di sini adalah akun resmi kami.</b> Selain itu, bukan akun orbitxy resmi —
-      mohon berhati-hati terhadap akun tiruan yang mengatasnamakan orbitxy.
-    </p>
-
-    <!-- KOTAK FOTO (2 FOTO) -->
-    <div class="photo-grid">
-      <div class="photo-box">
-        <img src="https://i.ibb.co.com/4ZxnKfGw/Screenshot-20260705-185131-2.jpg" alt="Pratinjau orbitxy.com 1">
-      </div>
-      <div class="photo-box">
-        <img src="https://i.ibb.co.com/B515HCds/Screenshot-20260705-185329.jpg" alt="Pratinjau orbitxy.com 2">
-      </div>
+    <div class="sparkle-wrap">
+      <svg viewBox="0 0 170 170" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Ilustrasi bintang berkilau">
+        <path d="M85 22 C90 66 92 72 134 78 C92 84 90 90 85 134 C80 90 78 84 36 78 C78 72 80 66 85 22 Z"
+              fill="var(--rose)" stroke="var(--rose-line)" stroke-width="1.6" stroke-linejoin="round"/>
+        <path d="M28 50 L31 58 L39 61 L31 64 L28 72 L25 64 L17 61 L25 58 Z"
+              fill="none" stroke="var(--muted)" stroke-width="1.3"/>
+        <path d="M132 30 L135.5 39 L145 42.5 L135.5 46 L132 55 L128.5 46 L119 42.5 L128.5 39 Z"
+              fill="none" stroke="var(--muted)" stroke-width="1.3"/>
+      </svg>
     </div>
 
-    <p class="hashtags">#sausage man #free fire</p>
+    <div class="content">
+      <h1>Explore the app</h1>
+      <p class="subtitle">Now your finances are in one place and always under control</p>
+    </div>
 
+    <div class="actions">
+      <button class="btn-primary" type="button">Sign in</button>
+      <button class="btn-secondary" type="button">Create account</button>
+    </div>
   </div>
-</main>
-
-<footer>© 2026 orbitxy.com</footer>
-
 </body>
 </html>
