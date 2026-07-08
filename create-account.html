@@ -250,18 +250,10 @@
       return value.toLowerCase().endsWith('@gmail.com');
     }
 
-    function updateEmailHint() {
-      if (!isGmail(emailInput.value)) {
-        emailHint.classList.add('show');
-      } else {
+    emailInput.addEventListener('input', function () {
+      if (isGmail(emailInput.value)) {
         emailHint.classList.remove('show');
       }
-    }
-
-    emailInput.addEventListener('focus', updateEmailHint);
-    emailInput.addEventListener('input', updateEmailHint);
-    emailInput.addEventListener('blur', function () {
-      emailHint.classList.remove('show');
     });
 
     function delay(ms) {
