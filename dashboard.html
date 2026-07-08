@@ -232,14 +232,14 @@
 
     <div class="stat-row">
       <div class="stat-card gems">
-        <div class="stat-icon"><i class="ti ti-diamond"></i></div>
-        <p class="stat-label">Gems</p>
-        <div class="stat-value">240</div>
+        <div class="stat-icon"><i class="ti ti-candy"></i></div>
+        <p class="stat-label">Candy</p>
+        <div class="stat-value" id="candy-value">0</div>
       </div>
       <div class="stat-card streak">
         <div class="stat-icon"><i class="ti ti-flame"></i></div>
         <p class="stat-label">Streak</p>
-        <div class="stat-value">5 hari</div>
+        <div class="stat-value" id="streak-value">0 hari</div>
       </div>
     </div>
 
@@ -248,15 +248,15 @@
       <div class="mission-list">
         <div class="mission">
           <span class="mission-name">Buka aplikasi hari ini</span>
-          <span class="mission-reward"><i class="ti ti-diamond"></i>+10</span>
+          <span class="mission-reward"><i class="ti ti-candy"></i>+10</span>
         </div>
         <div class="mission">
           <span class="mission-name">Selesaikan 1 tugas</span>
-          <span class="mission-reward"><i class="ti ti-diamond"></i>+20</span>
+          <span class="mission-reward"><i class="ti ti-candy"></i>+20</span>
         </div>
         <div class="mission">
           <span class="mission-name">Isi catatan keuangan</span>
-          <span class="mission-reward"><i class="ti ti-diamond"></i>+15</span>
+          <span class="mission-reward"><i class="ti ti-candy"></i>+15</span>
         </div>
       </div>
     </div>
@@ -281,5 +281,39 @@
       <span>Profil</span>
     </a>
   </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
+    const supabaseClient = supabase.createClient(
+      'https://ygjpwaftccewntwwoixs.supabase.co',
+      'sb_publishable_4IdyoPpEW-It9IWLZOrSAQ_WuumXkl9'
+    );
+
+    async function loadStats() {
+      try {
+        const { data: userData } = await supabaseClient.auth.getUser();
+        const user = userData ? userData.user : null;
+        if (!user) return;
+
+        const { data: stats, error } = await supabaseClient
+          .from('user_stats')
+          .select('candy, streak_count')
+          .eq('user_id', user.id)
+          .single();
+
+        if (error || !stats) {
+          console.error('Gagal ambil data stats:', error);
+          return;
+        }
+
+        document.getElementById('candy-value').textContent = stats.candy;
+        document.getElementById('streak-value').textContent = stats.streak_count + ' hari';
+      } catch (err) {
+        console.error('Gagal menghubungi Supabase:', err);
+      }
+    }
+
+    loadStats();
+  </script>
 </body>
 </html>
