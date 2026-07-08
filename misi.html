@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Misi</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/dist/tabler-icons.min.css">
+<style>
+  :root {
+    --bg: #FAF8F4;
+    --ink: #1E2A32;
+    --muted: #6B6F76;
+    --card-bg: #EFEBE2;
+    --gems-text: #2F6B45;
+    --correct-bg: #E4EFE6;
+    --correct-text: #2F6B45;
+    --wrong-bg: #FBE7E5;
+    --wrong-text: #A93A2E;
+    --primary: #1E2A32;
+    --primary-text: #FAF8F4;
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body {
+    margin: 0;
+    padding: 0;
+    background: var(--bg);
+    font-family: 'Inter', sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  body { min-height: 100dvh; }
+
+  .screen {
+    width: 100%;
+    max-width: 430px;
+    min-height: 100dvh;
+    margin: 0 auto;
+    padding: 28px 20px 48px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .top {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .back {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background: var(--card-bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--ink);
+    text-decoration: none;
+    font-size: 18px;
+    flex: none;
+  }
+
+  .top h1 {
+    font-family: 'Baloo 2', sans-serif;
+    font-weight: 700;
+    font-size: 20px;
+    color: var(--ink);
+    margin: 0;
+  }
+
+  .top p {
+    font-size: 12px;
+    color: var(--muted);
+    margin: 2px 0 0;
+  }
+
+  .progress-track {
+    height: 6px;
+    background: var(--card-bg);
+    border-radius: 999px;
+    overflow: hidden;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: var(--ink);
+    border-radius: 999px;
+    width: 0%;
+    transition: width 0.2s ease;
+  }
+
+  .question-panel {
+    background: var(--card-bg);
+    border-radius: 18px;
+    padding: 18px;
+  }
+
+  .question-label {
+    font-size: 12px;
+    color: var(--muted);
+    margin: 0 0 8px;
+  }
+
+  .question-text {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--ink);
+    margin: 0 0 16px;
+  }
+
+  .option {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--bg);
+    border-radius: 12px;
+    padding: 12px 14px;
+    margin-bottom: 8px;
+    cursor: pointer;
+    border: 1.5px solid transparent;
+  }
+
+  .option input { accent-color: var(--ink); }
+
+  .option span { font-size: 14px; color: var(--ink); }
+
+  .option.selected { border-color: var(--ink); }
+
+  textarea {
+    width: 100%;
+    min-height: 100px;
+    border-radius: 12px;
+    border: none;
+    background: var(--bg);
+    padding: 12px 14px;
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    color: var(--ink);
+    resize: vertical;
+  }
+
+  textarea:focus-visible {
+    outline: 2px solid var(--ink);
+    outline-offset: 2px;
+  }
+
+  .nav-buttons {
+    display: flex;
+    gap: 12px;
+  }
+
+  button.next, button.finish {
+    flex: 1;
+    height: 52px;
+    border-radius: 16px;
+    border: none;
+    background: var(--primary);
+    color: var(--primary-text);
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  button.next:active, button.finish:active { transform: scale(0.98); }
+
+  .result-card {
+    background: var(--card-bg);
+    border-radius: 18px;
+    padding: 22px;
+    text-align: center;
+  }
+
+  .result-card .gems-earned {
+    font-family: 'Baloo 2', sans-serif;
+    font-weight: 700;
+    font-size: 28px;
+    color: var(--gems-text);
+    margin: 6px 0 4px;
+  }
+
+  .result-card p.sub { font-size: 13px; color: var(--muted); margin: 0 0 16px; }
+
+  .review-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    text-align: left;
+    margin-bottom: 18px;
+  }
+
+  .review-item {
+    border-radius: 12px;
+    padding: 10px 12px;
+    font-size: 13px;
+  }
+
+  .review-item.correct { background: var(--correct-bg); color: var(--correct-text); }
+  .review-item.wrong { background: var(--wrong-bg); color: var(--wrong-text); }
+  .review-item.pending { background: var(--bg); color: var(--muted); }
+
+  a.back-dashboard {
+    display: block;
+    text-align: center;
+    height: 52px;
+    line-height: 52px;
+    border-radius: 16px;
+    background: var(--primary);
+    color: var(--primary-text);
+    text-decoration: none;
+    font-size: 15px;
+    font-weight: 600;
+  }
+</style>
+</head>
+<body>
+  <div class="screen">
+
+    <div class="top">
+      <a href="dashboard.html" class="back"><i class="ti ti-arrow-left"></i></a>
+      <div>
+        <h1>Matematika dasar</h1>
+        <p id="progress-label">Soal 1 dari 4</p>
+      </div>
+    </div>
+
+    <div class="progress-track"><div class="progress-fill" id="progress-fill"></div></div>
+
+    <div id="quiz-area"></div>
+
+  </div>
+
+  <script>
+    const questions = [
+      {
+        type: 'mc',
+        text: 'Hasil dari 12 x 8 adalah?',
+        options: ['86', '96', '106', '108'],
+        answer: 1
+      },
+      {
+        type: 'mc',
+        text: 'Pecahan 3/4 jika diubah ke desimal menjadi?',
+        options: ['0,34', '0,75', '0,43', '1,33'],
+        answer: 1
+      },
+      {
+        type: 'mc',
+        text: 'Keliling persegi dengan sisi 9 cm adalah?',
+        options: ['18 cm', '36 cm', '81 cm', '27 cm'],
+        answer: 1
+      },
+      {
+        type: 'essay',
+        text: 'Jelaskan dengan kata-katamu sendiri, apa yang dimaksud dengan pecahan senilai.',
+        keywords: ['pecahan', 'senilai', 'sama']
+      }
+    ];
+
+    const rewardPerQuestion = 5;
+    let current = 0;
+    const userAnswers = new Array(questions.length).fill(null);
+
+    const quizArea = document.getElementById('quiz-area');
+    const progressFill = document.getElementById('progress-fill');
+    const progressLabel = document.getElementById('progress-label');
+
+    function renderQuestion() {
+      const q = questions[current];
+      progressLabel.textContent = 'Soal ' + (current + 1) + ' dari ' + questions.length;
+      progressFill.style.width = Math.round((current / questions.length) * 100) + '%';
+
+      let html = '<div class="question-panel">';
+      html += '<p class="question-label">' + (q.type === 'essay' ? 'Esai' : 'Pilihan ganda') + '</p>';
+      html += '<p class="question-text">' + q.text + '</p>';
+
+      if (q.type === 'mc') {
+        q.options.forEach(function (opt, i) {
+          const selected = userAnswers[current] === i ? ' selected' : '';
+          html += '<label class="option' + selected + '" data-index="' + i + '">';
+          html += '<input type="radio" name="mc" ' + (userAnswers[current] === i ? 'checked' : '') + '>';
+          html += '<span>' + opt + '</span></label>';
+        });
+      } else {
+        html += '<textarea id="essay-input" placeholder="Tulis jawabanmu di sini">' + (userAnswers[current] || '') + '</textarea>';
+      }
+
+      html += '</div>';
+      html += '<div class="nav-buttons">';
+      html += current === questions.length - 1
+        ? '<button class="finish" id="next-btn">Selesai</button>'
+        : '<button class="next" id="next-btn">Lanjut</button>';
+      html += '</div>';
+
+      quizArea.innerHTML = html;
+
+      if (q.type === 'mc') {
+        quizArea.querySelectorAll('.option').forEach(function (el) {
+          el.addEventListener('click', function () {
+            userAnswers[current] = parseInt(el.dataset.index, 10);
+            renderQuestion();
+          });
+        });
+      }
+
+      document.getElementById('next-btn').addEventListener('click', function () {
+        if (q.type === 'essay') {
+          userAnswers[current] = document.getElementById('essay-input').value;
+        }
+        if (current < questions.length - 1) {
+          current += 1;
+          renderQuestion();
+        } else {
+          renderResult();
+        }
+      });
+    }
+
+    function gradeEssay(q, answerText) {
+      if (!answerText || answerText.trim().length === 0) return false;
+      const lower = answerText.toLowerCase();
+      const hits = q.keywords.filter(function (k) { return lower.includes(k); });
+      return hits.length >= Math.ceil(q.keywords.length / 2);
+    }
+
+    function renderResult() {
+      progressFill.style.width = '100%';
+      progressLabel.textContent = 'Selesai';
+
+      let correctCount = 0;
+      let reviewHtml = '<div class="review-list">';
+
+      questions.forEach(function (q, i) {
+        let status = 'wrong';
+        if (q.type === 'mc') {
+          if (userAnswers[i] === q.answer) { status = 'correct'; correctCount += 1; }
+        } else {
+          const ok = gradeEssay(q, userAnswers[i]);
+          status = ok ? 'correct' : 'pending';
+          if (ok) correctCount += 1;
+        }
+        const label = q.type === 'essay'
+          ? (status === 'correct' ? 'Esai: kata kunci ditemukan' : 'Esai: kata kunci belum lengkap')
+          : (status === 'correct' ? 'Jawaban benar' : 'Jawaban kurang tepat');
+        reviewHtml += '<div class="review-item ' + status + '">Soal ' + (i + 1) + ' — ' + label + '</div>';
+      });
+
+      reviewHtml += '</div>';
+
+      const gemsEarned = correctCount * rewardPerQuestion;
+
+      quizArea.innerHTML =
+        '<div class="result-card">' +
+          '<p class="sub">Gems yang kamu dapat</p>' +
+          '<p class="gems-earned">+' + gemsEarned + '</p>' +
+          '<p class="sub">' + correctCount + ' dari ' + questions.length + ' soal terjawab benar</p>' +
+          reviewHtml +
+          '<a href="dashboard.html" class="back-dashboard">Kembali ke dashboard</a>' +
+        '</div>';
+    }
+
+    renderQuestion();
+  </script>
+</body>
+</html>
