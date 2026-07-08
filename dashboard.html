@@ -54,18 +54,11 @@
 
   .header-left { display: flex; align-items: center; gap: 12px; }
 
-  .avatar {
-    width: 44px;
-    height: 44px;
-    border-radius: 50%;
-    background: var(--ink);
-    color: var(--primary-text);
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  .brand {
     font-family: 'Baloo 2', sans-serif;
     font-weight: 700;
-    font-size: 16px;
+    font-size: 20px;
+    color: var(--ink);
   }
 
   .header h1 {
@@ -233,33 +226,7 @@
 
     <div class="header">
       <div class="header-left">
-        <div class="avatar">K</div>
-        <div>
-          <p class="greeting">Selamat datang kembali</p>
-          <h1>Hai, Kamu</h1>
-        </div>
-      </div>
-      <div class="bell"><i class="ti ti-bell"></i></div>
-    </div>
-
-    <div class="panel">
-      <h2>Misi hari ini</h2>
-      <div class="mission-list">
-        <div class="mission">
-          <div class="mission-icon"><i class="ti ti-door-enter"></i></div>
-          <span class="mission-name">Buka aplikasi hari ini</span>
-          <span class="mission-reward"><i class="ti ti-diamond"></i>+10</span>
-        </div>
-        <div class="mission">
-          <div class="mission-icon"><i class="ti ti-checklist"></i></div>
-          <span class="mission-name">Selesaikan 1 tugas</span>
-          <span class="mission-reward"><i class="ti ti-diamond"></i>+20</span>
-        </div>
-        <div class="mission">
-          <div class="mission-icon"><i class="ti ti-notebook"></i></div>
-          <span class="mission-name">Isi catatan keuangan</span>
-          <span class="mission-reward"><i class="ti ti-diamond"></i>+15</span>
-        </div>
+        <div class="brand">orbitxy.com</div>
       </div>
     </div>
 
@@ -273,6 +240,24 @@
         <div class="stat-icon"><i class="ti ti-flame"></i></div>
         <p class="stat-label">Streak</p>
         <div class="stat-value">5 hari</div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h2>Misi hari ini</h2>
+      <div class="mission-list">
+        <div class="mission">
+          <span class="mission-name">Buka aplikasi hari ini</span>
+          <span class="mission-reward"><i class="ti ti-diamond"></i>+10</span>
+        </div>
+        <div class="mission">
+          <span class="mission-name">Selesaikan 1 tugas</span>
+          <span class="mission-reward"><i class="ti ti-diamond"></i>+20</span>
+        </div>
+        <div class="mission">
+          <span class="mission-name">Isi catatan keuangan</span>
+          <span class="mission-reward"><i class="ti ti-diamond"></i>+15</span>
+        </div>
       </div>
     </div>
 
