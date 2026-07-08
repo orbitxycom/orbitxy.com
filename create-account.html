@@ -167,7 +167,7 @@
 
     <form id="signup-form">
       <div class="field">
-        <input type="email" placeholder="Email address" required>
+        <input type="email" id="email" placeholder="Email address" required>
       </div>
 
       <div class="field">
@@ -188,7 +188,13 @@
     </form>
   </div>
 
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
+    const supabaseClient = supabase.createClient(
+      'https://ygjpwaftccewntwwoixs.supabase.co',
+      'sb_publishable_4IdyoPpEW-It9IWLZOrSAQ_WuumXkl9'
+    );
+
     document.querySelectorAll('.toggle').forEach(function (btn) {
       btn.addEventListener('click', function () {
         var input = document.getElementById(btn.dataset.target);
@@ -196,8 +202,34 @@
       });
     });
 
-    document.getElementById('signup-form').addEventListener('submit', function (e) {
+    document.getElementById('signup-form').addEventListener('submit', async function (e) {
       e.preventDefault();
+
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+      const confirmPassword = document.getElementById('confirm-password').value;
+
+      if (password !== confirmPassword) {
+        alert('Password dan confirm password tidak sama.');
+        return;
+      }
+
+      const submitBtn = e.target.querySelector('.submit');
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Memproses...';
+
+      const { data, error } = await supabaseClient.auth.signUp({ email, password });
+
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Create account';
+
+      if (error) {
+        alert(error.message);
+        return;
+      }
+
+      alert('Akun berhasil dibuat. Silakan cek email untuk verifikasi.');
+      window.location.href = 'login.html';
     });
   </script>
 </body>
