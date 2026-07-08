@@ -222,17 +222,23 @@
       submitBtn.disabled = true;
       submitBtn.textContent = 'Memproses...';
 
-      const { data, error } = await supabaseClient.auth.signUp({ email, password });
+      try {
+        const { data, error } = await supabaseClient.auth.signUp({ email, password });
 
-      if (error) {
-        console.error(error.message);
+        if (error) {
+          console.error('Supabase signUp error:', error.message);
+          submitBtn.disabled = false;
+          submitBtn.textContent = 'Create account';
+          return;
+        }
+
+        await delay(3000);
+        window.location.href = 'index.html';
+      } catch (err) {
+        console.error('Gagal menghubungi Supabase:', err);
         submitBtn.disabled = false;
         submitBtn.textContent = 'Create account';
-        return;
       }
-
-      await delay(3000);
-      window.location.href = 'explore-the-app.html';
     });
   </script>
 </body>
