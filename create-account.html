@@ -291,6 +291,15 @@
           return;
         }
 
+        if (data && data.user) {
+          const { error: statsError } = await supabaseClient
+            .from('user_stats')
+            .insert({ user_id: data.user.id, candy: 0, streak_count: 0, last_login_date: null });
+          if (statsError) {
+            console.error('Gagal membuat data awal user:', statsError.message);
+          }
+        }
+
         await delay(3000);
         window.location.href = 'index.html';
       } catch (err) {
