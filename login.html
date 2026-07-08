@@ -236,11 +236,10 @@
 
       const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
 
-      submitBtn.disabled = false;
-      submitBtn.textContent = 'Log in';
-
       if (error) {
-        alert(error.message);
+        console.error(error.message);
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Log in';
         return;
       }
 
