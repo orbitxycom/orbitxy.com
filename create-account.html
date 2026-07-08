@@ -110,7 +110,7 @@
     outline-offset: 2px;
   }
 
-  .password-group { display: flex; flex-direction: column; }
+  .password-group, .email-group { display: flex; flex-direction: column; }
 
   .hint {
     margin-top: 0;
@@ -184,8 +184,11 @@
     <h1>Create account</h1>
 
     <form id="signup-form">
-      <div class="field">
-        <input type="email" id="email" placeholder="Email address" required>
+      <div class="email-group">
+        <div class="field">
+          <input type="email" id="email" placeholder="Email address" required>
+        </div>
+        <p class="hint" id="email-hint">Gunakan email @gmail.com</p>
       </div>
 
       <div class="password-group">
@@ -240,6 +243,27 @@
       passwordHint.classList.remove('show');
     });
 
+    const emailInput = document.getElementById('email');
+    const emailHint = document.getElementById('email-hint');
+
+    function isGmail(value) {
+      return value.toLowerCase().endsWith('@gmail.com');
+    }
+
+    function updateEmailHint() {
+      if (!isGmail(emailInput.value)) {
+        emailHint.classList.add('show');
+      } else {
+        emailHint.classList.remove('show');
+      }
+    }
+
+    emailInput.addEventListener('focus', updateEmailHint);
+    emailInput.addEventListener('input', updateEmailHint);
+    emailInput.addEventListener('blur', function () {
+      emailHint.classList.remove('show');
+    });
+
     function delay(ms) {
       return new Promise(function (resolve) { setTimeout(resolve, ms); });
     }
@@ -250,6 +274,11 @@
       const email = document.getElementById('email').value;
       const password = document.getElementById('password').value;
       const confirmPassword = document.getElementById('confirm-password').value;
+
+      if (!isGmail(email)) {
+        emailHint.classList.add('show');
+        return;
+      }
 
       if (password !== confirmPassword) {
         console.error('Password dan confirm password tidak sama.');
