@@ -236,6 +236,9 @@
 
     passwordInput.addEventListener('focus', updatePasswordHint);
     passwordInput.addEventListener('input', updatePasswordHint);
+    passwordInput.addEventListener('blur', function () {
+      passwordHint.classList.remove('show');
+    });
 
     function delay(ms) {
       return new Promise(function (resolve) { setTimeout(resolve, ms); });
