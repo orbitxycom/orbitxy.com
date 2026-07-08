@@ -202,6 +202,10 @@
       });
     });
 
+    function delay(ms) {
+      return new Promise(function (resolve) { setTimeout(resolve, ms); });
+    }
+
     document.getElementById('signup-form').addEventListener('submit', async function (e) {
       e.preventDefault();
 
@@ -227,6 +231,7 @@
         return;
       }
 
+      await delay(3000);
       window.location.href = 'explore-the-app.html';
     });
   </script>
