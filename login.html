@@ -114,11 +114,17 @@
   }
 
   #password {
-    border: 1.75px solid var(--ink);
+    border: 1.75px solid transparent;
     transition: border-color 0.15s ease;
   }
 
-  #password.error {
+  #password:focus-visible {
+    border-color: var(--ink);
+    outline: none;
+  }
+
+  #password.error,
+  #password.error:focus-visible {
     border-color: #C0392B;
   }
 
