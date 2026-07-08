@@ -498,12 +498,14 @@
 
       quizArea.innerHTML =
         '<div class="result-card">' +
-          '<p class="sub">Gems yang kamu dapat</p>' +
+          '<p class="sub">Candy yang kamu dapat</p>' +
           '<p class="gems-earned">+' + gemsEarned + '</p>' +
           '<p class="sub">' + correctCount + ' dari ' + questions.length + ' soal terjawab benar</p>' +
           reviewHtml +
           '<a href="dashboard.html" class="back-dashboard">Kembali ke dashboard</a>' +
         '</div>';
+
+      saveCandyEarned(gemsEarned);
     }
 
     backBtn.addEventListener('click', function () {
@@ -515,6 +517,41 @@
     });
 
     renderSubjectList();
+  </script>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
+    const supabaseClient = supabase.createClient(
+      'https://ygjpwaftccewntwwoixs.supabase.co',
+      'sb_publishable_4IdyoPpEW-It9IWLZOrSAQ_WuumXkl9'
+    );
+
+    async function saveCandyEarned(amount) {
+      if (amount <= 0) return;
+      try {
+        const { data: userData } = await supabaseClient.auth.getUser();
+        const user = userData ? userData.user : null;
+        if (!user) return;
+
+        const { data: stats, error } = await supabaseClient
+          .from('user_stats')
+          .select('candy')
+          .eq('user_id', user.id)
+          .single();
+
+        if (error || !stats) {
+          console.error('Gagal ambil candy saat ini:', error);
+          return;
+        }
+
+        await supabaseClient
+          .from('user_stats')
+          .update({ candy: stats.candy + amount })
+          .eq('user_id', user.id);
+      } catch (err) {
+        console.error('Gagal menyimpan candy:', err);
+      }
+    }
   </script>
 </body>
 </html>
