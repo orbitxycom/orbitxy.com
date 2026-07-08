@@ -251,6 +251,49 @@
       return new Promise(function (resolve) { setTimeout(resolve, ms); });
     }
 
+    function todayString() {
+      return new Date().toISOString().slice(0, 10);
+    }
+
+    async function updateStreak(userId) {
+      try {
+        const { data: stats, error } = await supabaseClient
+          .from('user_stats')
+          .select('streak_count, last_login_date')
+          .eq('user_id', userId)
+          .single();
+
+        const today = todayString();
+
+        if (error || !stats) {
+          await supabaseClient
+            .from('user_stats')
+            .upsert({ user_id: userId, candy: 0, streak_count: 1, last_login_date: today });
+          return;
+        }
+
+        if (stats.last_login_date === today) {
+          return;
+        }
+
+        let newStreak = 1;
+        if (stats.last_login_date) {
+          const last = new Date(stats.last_login_date);
+          const diffDays = Math.round((new Date(today) - last) / 86400000);
+          if (diffDays === 1) {
+            newStreak = stats.streak_count + 1;
+          }
+        }
+
+        await supabaseClient
+          .from('user_stats')
+          .update({ streak_count: newStreak, last_login_date: today })
+          .eq('user_id', userId);
+      } catch (err) {
+        console.error('Gagal update streak:', err);
+      }
+    }
+
     document.getElementById('login-form').addEventListener('submit', async function (e) {
       e.preventDefault();
 
@@ -273,6 +316,11 @@
         }
 
         passwordInput.classList.remove('error');
+
+        if (data && data.user) {
+          await updateStreak(data.user.id);
+        }
+
         await delay(3000);
         window.location.href = 'dashboard.html';
       } catch (err) {
