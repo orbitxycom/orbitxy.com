@@ -40,7 +40,7 @@
     max-width: 430px;
     min-height: 100dvh;
     margin: 0 auto;
-    padding: 28px 20px 48px;
+    padding: 28px 20px calc(110px + env(safe-area-inset-bottom));
     display: flex;
     flex-direction: column;
     gap: 16px;
@@ -64,6 +64,8 @@
     text-decoration: none;
     font-size: 18px;
     flex: none;
+    cursor: pointer;
+    border: none;
   }
 
   .top h1 {
@@ -78,6 +80,50 @@
     font-size: 12px;
     color: var(--muted);
     margin: 2px 0 0;
+  }
+
+  .subject-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+  }
+
+  .subject-card {
+    background: var(--card-bg);
+    border-radius: 18px;
+    padding: 20px 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+    cursor: pointer;
+    border: none;
+    text-align: left;
+    font-family: 'Inter', sans-serif;
+  }
+
+  .subject-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
+    background: var(--bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    color: var(--ink);
+  }
+
+  .subject-name {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--ink);
+  }
+
+  .subject-sub {
+    font-size: 12px;
+    color: var(--muted);
+    margin-top: -6px;
   }
 
   .progress-track {
@@ -127,9 +173,7 @@
   }
 
   .option input { accent-color: var(--ink); }
-
   .option span { font-size: 14px; color: var(--ink); }
-
   .option.selected { border-color: var(--ink); }
 
   textarea {
@@ -150,10 +194,7 @@
     outline-offset: 2px;
   }
 
-  .nav-buttons {
-    display: flex;
-    gap: 12px;
-  }
+  .nav-buttons { display: flex; gap: 12px; }
 
   button.next, button.finish {
     flex: 1;
@@ -194,12 +235,7 @@
     margin-bottom: 18px;
   }
 
-  .review-item {
-    border-radius: 12px;
-    padding: 10px 12px;
-    font-size: 13px;
-  }
-
+  .review-item { border-radius: 12px; padding: 10px 12px; font-size: 13px; }
   .review-item.correct { background: var(--correct-bg); color: var(--correct-text); }
   .review-item.wrong { background: var(--wrong-bg); color: var(--wrong-text); }
   .review-item.pending { background: var(--bg); color: var(--muted); }
@@ -216,61 +252,168 @@
     font-size: 15px;
     font-weight: 600;
   }
+
+  .navbar {
+    position: fixed;
+    bottom: 18px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: calc(100% - 40px);
+    max-width: 390px;
+    background: var(--ink);
+    border-radius: 999px;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    padding: 10px 8px;
+    box-shadow: 0 10px 30px rgba(30,42,50,0.25);
+  }
+
+  .nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+    color: rgba(250,248,244,0.55);
+    text-decoration: none;
+    padding: 6px 10px;
+    border-radius: 999px;
+  }
+
+  .nav-item i { font-size: 20px; }
+  .nav-item span { font-size: 10px; font-weight: 600; }
+
+  .nav-item.active {
+    color: var(--primary-text);
+    background: rgba(250,248,244,0.12);
+  }
 </style>
 </head>
 <body>
   <div class="screen">
 
     <div class="top">
-      <a href="dashboard.html" class="back"><i class="ti ti-arrow-left"></i></a>
+      <button class="back" id="back-btn"><i class="ti ti-arrow-left"></i></button>
       <div>
-        <h1>Matematika dasar</h1>
-        <p id="progress-label">Soal 1 dari 4</p>
+        <h1 id="page-title">Pilih misi</h1>
+        <p id="progress-label">Pilih mata pelajaran</p>
       </div>
     </div>
 
-    <div class="progress-track"><div class="progress-fill" id="progress-fill"></div></div>
+    <div class="progress-track" id="progress-track" style="display:none;"><div class="progress-fill" id="progress-fill"></div></div>
 
     <div id="quiz-area"></div>
 
   </div>
 
+  <div class="navbar">
+    <a href="dashboard.html" class="nav-item">
+      <i class="ti ti-home"></i>
+      <span>Beranda</span>
+    </a>
+    <a href="misi.html" class="nav-item active">
+      <i class="ti ti-target-arrow"></i>
+      <span>Misi</span>
+    </a>
+    <a href="toko.html" class="nav-item">
+      <i class="ti ti-shopping-bag"></i>
+      <span>Toko</span>
+    </a>
+    <a href="profil.html" class="nav-item">
+      <i class="ti ti-user"></i>
+      <span>Profil</span>
+    </a>
+  </div>
+
   <script>
-    const questions = [
-      {
-        type: 'mc',
-        text: 'Hasil dari 12 x 8 adalah?',
-        options: ['86', '96', '106', '108'],
-        answer: 1
+    const subjects = {
+      mtk: {
+        name: 'Matematika',
+        icon: 'ti-math-symbols',
+        questions: [
+          { type: 'mc', text: 'Hasil dari 12 x 8 adalah?', options: ['86', '96', '106', '108'], answer: 1 },
+          { type: 'mc', text: 'Pecahan 3/4 jika diubah ke desimal menjadi?', options: ['0,34', '0,75', '0,43', '1,33'], answer: 1 },
+          { type: 'mc', text: 'Keliling persegi dengan sisi 9 cm adalah?', options: ['18 cm', '36 cm', '81 cm', '27 cm'], answer: 1 },
+          { type: 'essay', text: 'Jelaskan dengan kata-katamu sendiri, apa yang dimaksud dengan pecahan senilai.', keywords: ['pecahan', 'senilai', 'sama'] }
+        ]
       },
-      {
-        type: 'mc',
-        text: 'Pecahan 3/4 jika diubah ke desimal menjadi?',
-        options: ['0,34', '0,75', '0,43', '1,33'],
-        answer: 1
+      ips: {
+        name: 'IPS',
+        icon: 'ti-world',
+        questions: [
+          { type: 'mc', text: 'Ibu kota Indonesia saat ini adalah?', options: ['Jakarta', 'Bandung', 'Surabaya', 'Nusantara'], answer: 0 },
+          { type: 'mc', text: 'Kegiatan menjual hasil produksi ke luar negeri disebut?', options: ['Impor', 'Ekspor', 'Distribusi', 'Konsumsi'], answer: 1 },
+          { type: 'essay', text: 'Jelaskan secara singkat apa itu kegiatan ekonomi.', keywords: ['produksi', 'distribusi', 'konsumsi'] }
+        ]
       },
-      {
-        type: 'mc',
-        text: 'Keliling persegi dengan sisi 9 cm adalah?',
-        options: ['18 cm', '36 cm', '81 cm', '27 cm'],
-        answer: 1
+      ipa: {
+        name: 'IPA',
+        icon: 'ti-flask',
+        questions: [
+          { type: 'mc', text: 'Proses tumbuhan membuat makanan sendiri disebut?', options: ['Respirasi', 'Fotosintesis', 'Transpirasi', 'Fermentasi'], answer: 1 },
+          { type: 'mc', text: 'Wujud air yang membeku disebut?', options: ['Menguap', 'Mengembun', 'Membeku', 'Menyublim'], answer: 2 },
+          { type: 'essay', text: 'Jelaskan secara singkat siklus air (hujan).', keywords: ['menguap', 'awan', 'hujan'] }
+        ]
       },
-      {
-        type: 'essay',
-        text: 'Jelaskan dengan kata-katamu sendiri, apa yang dimaksud dengan pecahan senilai.',
-        keywords: ['pecahan', 'senilai', 'sama']
+      eng: {
+        name: 'Bahasa Inggris',
+        icon: 'ti-abc',
+        questions: [
+          { type: 'mc', text: '"Book" dalam Bahasa Indonesia artinya?', options: ['Meja', 'Buku', 'Pensil', 'Tas'], answer: 1 },
+          { type: 'mc', text: 'Bentuk lampau dari "go" adalah?', options: ['Goed', 'Went', 'Gone', 'Going'], answer: 1 },
+          { type: 'essay', text: 'Buat 1 kalimat sederhana menggunakan kata "school".', keywords: ['school'] }
+        ]
       }
-    ];
+    };
 
     const rewardPerQuestion = 5;
+    let currentSubject = null;
     let current = 0;
-    const userAnswers = new Array(questions.length).fill(null);
+    let userAnswers = [];
 
     const quizArea = document.getElementById('quiz-area');
     const progressFill = document.getElementById('progress-fill');
     const progressLabel = document.getElementById('progress-label');
+    const progressTrack = document.getElementById('progress-track');
+    const pageTitle = document.getElementById('page-title');
+    const backBtn = document.getElementById('back-btn');
+
+    function renderSubjectList() {
+      currentSubject = null;
+      pageTitle.textContent = 'Pilih misi';
+      progressLabel.textContent = 'Pilih mata pelajaran';
+      progressTrack.style.display = 'none';
+
+      let html = '<div class="subject-grid">';
+      Object.keys(subjects).forEach(function (key) {
+        const s = subjects[key];
+        html += '<button class="subject-card" data-subject="' + key + '">';
+        html += '<div class="subject-icon"><i class="ti ' + s.icon + '"></i></div>';
+        html += '<span class="subject-name">' + s.name + '</span>';
+        html += '<span class="subject-sub">' + s.questions.length + ' soal</span>';
+        html += '</button>';
+      });
+      html += '</div>';
+
+      quizArea.innerHTML = html;
+      quizArea.querySelectorAll('.subject-card').forEach(function (el) {
+        el.addEventListener('click', function () {
+          startQuiz(el.dataset.subject);
+        });
+      });
+    }
+
+    function startQuiz(key) {
+      currentSubject = key;
+      current = 0;
+      userAnswers = new Array(subjects[key].questions.length).fill(null);
+      progressTrack.style.display = 'block';
+      pageTitle.textContent = subjects[key].name;
+      renderQuestion();
+    }
 
     function renderQuestion() {
+      const questions = subjects[currentSubject].questions;
       const q = questions[current];
       progressLabel.textContent = 'Soal ' + (current + 1) + ' dari ' + questions.length;
       progressFill.style.width = Math.round((current / questions.length) * 100) + '%';
@@ -290,8 +433,7 @@
         html += '<textarea id="essay-input" placeholder="Tulis jawabanmu di sini">' + (userAnswers[current] || '') + '</textarea>';
       }
 
-      html += '</div>';
-      html += '<div class="nav-buttons">';
+      html += '</div><div class="nav-buttons">';
       html += current === questions.length - 1
         ? '<button class="finish" id="next-btn">Selesai</button>'
         : '<button class="next" id="next-btn">Lanjut</button>';
@@ -329,6 +471,7 @@
     }
 
     function renderResult() {
+      const questions = subjects[currentSubject].questions;
       progressFill.style.width = '100%';
       progressLabel.textContent = 'Selesai';
 
@@ -351,7 +494,6 @@
       });
 
       reviewHtml += '</div>';
-
       const gemsEarned = correctCount * rewardPerQuestion;
 
       quizArea.innerHTML =
@@ -364,7 +506,15 @@
         '</div>';
     }
 
-    renderQuestion();
+    backBtn.addEventListener('click', function () {
+      if (currentSubject === null) {
+        window.location.href = 'dashboard.html';
+      } else {
+        renderSubjectList();
+      }
+    });
+
+    renderSubjectList();
   </script>
 </body>
 </html>
