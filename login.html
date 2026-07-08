@@ -113,6 +113,15 @@
     outline-offset: 2px;
   }
 
+  #password {
+    border: 1.75px solid var(--ink);
+    transition: border-color 0.15s ease;
+  }
+
+  #password.error {
+    border-color: #C0392B;
+  }
+
   .icon-slot {
     position: absolute;
     right: 14px;
@@ -224,6 +233,14 @@
       input.type = input.type === 'password' ? 'text' : 'password';
     });
 
+    const passwordInput = document.getElementById('password');
+
+    passwordInput.addEventListener('input', function () {
+      if (passwordInput.value.length === 0) {
+        passwordInput.classList.remove('error');
+      }
+    });
+
     function delay(ms) {
       return new Promise(function (resolve) { setTimeout(resolve, ms); });
     }
@@ -243,11 +260,13 @@
 
         if (error) {
           console.error('Supabase login error:', error.message);
+          passwordInput.classList.add('error');
           submitBtn.disabled = false;
           submitBtn.textContent = 'Log in';
           return;
         }
 
+        passwordInput.classList.remove('error');
         await delay(3000);
         window.location.href = 'index.html';
       } catch (err) {
