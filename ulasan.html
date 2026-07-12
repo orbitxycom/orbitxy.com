@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5, viewport-fit=cover">
 <meta name="theme-color" content="#181818">
 <meta name="description" content="Ulasan & Rating Pelanggan — Dongtube">
-<title>Ulasan Pelanggan — orbitxy.com</title>
+<title>Ulasan Pelanggan — Dongtube</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Ubuntu+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -696,38 +696,24 @@ function renderStars(n,size='.8rem'){
   return h;
 }
 
-async function handlePhotoSelect(inp){
+let _selectedFile = null;
+
+function handlePhotoSelect(inp){
   const file=inp.files[0];
   if(!file) return;
-  if(file.size>8*1024*1024){toast('Foto max 8MB','err');return}
+  if(file.size>10*1024*1024){toast('Foto max 10MB','err');return}
   const pre=document.getElementById('photoPre');
   const hint=document.getElementById('photoHint');
   const drop=document.getElementById('photoDrop');
   const st=document.getElementById('photoStatus');
 
+  _selectedFile = file;
+
   const reader=new FileReader();
   reader.onload=e=>{pre.src=e.target.result;pre.classList.add('show');hint.classList.add('hide');drop.classList.add('has');}
   reader.readAsDataURL(file);
 
-  st.style.display='';st.textContent='⏳ Mengupload foto...';st.style.color='var(--t3)';
-  _uploading=true;
-  try{
-    const fd=new FormData();fd.append('file',file);
-    bar(true);
-    const r=await fetch('/api/upload',{method:'POST',body:fd});
-    const j=await r.json();
-    bar(false);
-    if(!j.ok) throw new Error(j.message||'Upload gagal');
-    window._uploadedPhotoUrl=j.url;
-    st.textContent='✓ Foto berhasil diupload';st.style.color='var(--em)';
-  }catch(e){
-    bar(false);
-    st.textContent='✕ Upload gagal: '+e.message;st.style.color='var(--red)';
-    window._uploadedPhotoUrl='';
-    pre.classList.remove('show');hint.classList.remove('hide');drop.classList.remove('has');
-    pre.src='';
-  }
-  _uploading=false;
+  st.style.display='';st.textContent='Foto siap diupload saat ulasan dikirim';st.style.color='var(--t3)';
 }
 
 async function openWriteModal(){
@@ -738,6 +724,7 @@ async function openWriteModal(){
     return;
   }
   _username = user.email || _username;
+  _selectedFile = null;
   document.getElementById('writeBg').classList.remove('hide');
   _selectedStar=0;window._uploadedPhotoUrl='';
   document.getElementById('revName').value=_username||'';
@@ -756,31 +743,49 @@ async function openWriteModal(){
 function closeWriteModal(){document.getElementById('writeBg').classList.add('hide')}
 
 function _handleAuthFail(){
-  _token='';_username='';
-  localStorage.removeItem('userApiKey');localStorage.removeItem('userToken');localStorage.removeItem('username');
-  initAuth();
   closeWriteModal();
   toast('Sesi habis, silakan login ulang.','err',4000);
-  setTimeout(function(){ location.href='/login?returnUrl=/ulasan'; }, 1500);
+  setTimeout(function(){ location.href='login.html?returnUrl=' + encodeURIComponent('ulasan.html?write=1'); }, 1500);
 }
 
 async function submitReview(){
-  if(_uploading){toast('Tunggu foto selesai diupload','warn');return}
   const err=document.getElementById('revErr');
   const name=document.getElementById('revName').value.trim();
   const text=document.getElementById('revText').value.trim();
-  const photo=window._uploadedPhotoUrl||'';
   err.classList.remove('show');
   if(!_selectedStar){err.textContent='Pilih rating bintang dulu.';err.classList.add('show');return}
   if(!name||name.length<2){err.textContent='Nama minimal 2 karakter.';err.classList.add('show');return}
   if(!text||text.length<5){err.textContent='Ulasan minimal 5 karakter.';err.classList.add('show');return}
+
   const btn=document.getElementById('revSubmitBtn');
   btn.disabled=true;btn.innerHTML='<span class="spin">⏳</span> Mengirim...';
+
   try{
-    const r=await fetch('/api/reviews',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':_token},body:JSON.stringify({star:_selectedStar,displayName:name,text,photoUrl:photo})});
-    if(r.status===401){_handleAuthFail();return}
-    const j=await r.json();
-    if(!j.ok){err.textContent=j.message||'Gagal';err.classList.add('show');return}
+    const { data: userData } = await supabaseClient.auth.getUser();
+    const user = userData ? userData.user : null;
+    if(!user){ _handleAuthFail(); return; }
+
+    let photoUrl = '';
+    if(_selectedFile){
+      const ext = _selectedFile.name.split('.').pop();
+      const path = user.id + '/' + Date.now() + '.' + ext;
+      const { error: upErr } = await supabaseClient.storage
+        .from('orbitxy.com_ulasan')
+        .upload(path, _selectedFile);
+      if(upErr){ err.textContent='Upload foto gagal: '+upErr.message; err.classList.add('show'); return; }
+      const { data: pub } = supabaseClient.storage.from('orbitxy.com_ulasan').getPublicUrl(path);
+      photoUrl = pub.publicUrl;
+    }
+
+    const { error: insErr } = await supabaseClient.from('reviews').insert({
+      user_id: user.id,
+      display_name: name,
+      star: _selectedStar,
+      text: text,
+      photo_url: photoUrl || null
+    });
+    if(insErr){ err.textContent=insErr.message; err.classList.add('show'); return; }
+
     toast('Ulasan berhasil dikirim! Terima kasih','ok',4000);
     closeWriteModal();
     loadReviews();
@@ -817,21 +822,21 @@ async function markHelpful(id,btn){
   _helpedIds.add(id);localStorage.setItem('helpedRevIds',JSON.stringify([..._helpedIds]));
   btn.classList.add('voted');
   try{
-    const r=await fetch('/api/reviews/'+id+'/helpful',{method:'POST'});
-    const j=await r.json();
-    if(j.ok) btn.querySelector('.hcount').textContent=j.helpful;
+    const { data, error } = await supabaseClient.rpc('increment_helpful', { review_id: id });
+    if(!error && typeof data === 'number') btn.querySelector('.hcount').textContent=data;
   }catch(e){}
 }
 
 async function deleteReview(id){
   if(!confirm('Hapus ulasan ini?')) return;
   try{
-    const r=await fetch('/api/reviews/'+id,{method:'DELETE',headers:{'x-admin-token':_adminToken}});
-    const j=await r.json();
-    if(j.ok){toast('Ulasan dihapus','ok');loadReviews();}
-    else toast(j.message||'Gagal','err');
+    const { error } = await supabaseClient.from('reviews').delete().eq('id', id);
+    if(!error){toast('Ulasan dihapus','ok');loadReviews();}
+    else toast(error.message||'Gagal','err');
   }catch(e){toast('Error: '+e.message,'err');}
 }
+
+let _currentUserId = null;
 
 async function loadReviews(){
   const wrap=document.getElementById('reviewsWrap');
@@ -839,45 +844,66 @@ async function loadReviews(){
   document.getElementById('pager').style.display='none';
   bar(true);
   try{
-    let url=`/api/reviews?page=${_curPage}&sort=${_curSort}&star=${_curStar}`;
-    if(_photoOnly) url+='&photo=1';
-    const r=await fetch(url);
-    const j=await r.json();
+    const { data: userData } = await supabaseClient.auth.getUser();
+    _currentUserId = userData && userData.user ? userData.user.id : null;
+
+    // Stats dihitung dari semua ulasan (tanpa filter)
+    const { data: allRows, error: statsErr } = await supabaseClient
+      .from('reviews').select('star,photo_url');
+    if(statsErr) throw statsErr;
+    updateStats(allRows || []);
+
+    // Daftar ulasan sesuai filter/sort/halaman
+    const pageSize = 10;
+    const from = (_curPage-1)*pageSize;
+    const to = from+pageSize-1;
+
+    let query = supabaseClient.from('reviews').select('*', { count: 'exact' });
+    if(_curStar) query = query.eq('star', _curStar);
+    if(_photoOnly) query = query.not('photo_url','is',null);
+
+    if(_curSort==='oldest') query = query.order('created_at',{ascending:true});
+    else if(_curSort==='highest') query = query.order('star',{ascending:false}).order('created_at',{ascending:false});
+    else if(_curSort==='lowest') query = query.order('star',{ascending:true}).order('created_at',{ascending:false});
+    else query = query.order('created_at',{ascending:false});
+
+    query = query.range(from, to);
+
+    const { data: reviews, count, error } = await query;
     bar(false);
-    if(!j.ok){wrap.innerHTML='<div class="empty-state"><div class="empty-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="28" height="28" style="color:var(--red)"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div><div class="empty-title">Gagal memuat</div><div class="empty-sub">'+esc(j.message)+'</div></div>';return}
+    if(error){wrap.innerHTML='<div class="empty-state"><div class="empty-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="28" height="28" style="color:var(--red)"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div><div class="empty-title">Gagal memuat</div><div class="empty-sub">'+esc(error.message)+'</div></div>';return}
 
-    updateStats(j);
-
-    if(!j.reviews||j.reviews.length===0){
+    if(!reviews||reviews.length===0){
       wrap.innerHTML=`<div class="empty-state"><div class="empty-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="28" height="28" style="color:var(--t3)"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></div><div class="empty-title">Belum ada ulasan</div><div class="empty-sub">Jadilah yang pertama memberikan ulasan!<br>Klik "Tulis Ulasan" di atas.</div></div>`;
       return;
     }
 
-    const isAdmin=!!(_adminToken&&true);
-    wrap.innerHTML=j.reviews.map((rv,idx)=>renderCard(rv,idx,isAdmin)).join('');
+    wrap.innerHTML=reviews.map((rv,idx)=>renderCard(rv,idx)).join('');
 
-    renderPager(j.page,j.pages,j.total);
+    renderPager(_curPage, Math.max(1, Math.ceil((count||0)/pageSize)), count||0);
   }catch(e){
     bar(false);
     wrap.innerHTML='<div class="empty-state"><div class="empty-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="28" height="28" style="color:var(--red)"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div><div class="empty-title">Gagal memuat</div><div class="empty-sub">'+esc(e.message)+'</div></div>';
   }
 }
 
-function renderCard(rv,idx,isAdmin){
-  const initials=(rv.displayName||'?').charAt(0).toUpperCase();
+function renderCard(rv,idx){
+  const initials=(rv.display_name||'?').charAt(0).toUpperCase();
   const colors=['--em-rgb','--sky-rgb','--pur-rgb','--yel-rgb'];
-  const col='rgba('+getComputedStyle(document.documentElement).getPropertyValue(colors[rv.username.charCodeAt(0)%colors.length])+', .15)';
-  const colB='rgba('+getComputedStyle(document.documentElement).getPropertyValue(colors[rv.username.charCodeAt(0)%colors.length])+', .3)';
-  const timeAgo=fmtTime(rv.createdAt);
+  const seed = (rv.user_id||rv.id||'x').charCodeAt(0);
+  const col='rgba('+getComputedStyle(document.documentElement).getPropertyValue(colors[seed%colors.length])+', .15)';
+  const colB='rgba('+getComputedStyle(document.documentElement).getPropertyValue(colors[seed%colors.length])+', .3)';
+  const timeAgo=fmtTime(rv.created_at);
   const helped=_helpedIds.has(rv.id);
   const stars=renderStars(rv.star);
-  const photo=rv.photoUrl?`<img class="rv-photo" src="${esc(rv.photoUrl)}" alt="Foto ulasan" onclick="openLightbox('${esc(rv.photoUrl)}')" loading="lazy">`:'';
-  const adminDel=isAdmin?`<button class="rv-del-btn" onclick="deleteReview('${esc(rv.id)}')">Hapus</button>`:'';
+  const photo=rv.photo_url?`<img class="rv-photo" src="${esc(rv.photo_url)}" alt="Foto ulasan" onclick="openLightbox('${esc(rv.photo_url)}')" loading="lazy">`:'';
+  const isOwner = _currentUserId && rv.user_id === _currentUserId;
+  const delBtn=isOwner?`<button class="rv-del-btn" onclick="deleteReview('${esc(rv.id)}')">Hapus</button>`:'';
   return `<div class="rv-card" style="animation-delay:${idx*0.04}s">
     <div class="rv-head">
       <div class="rv-avatar" style="background:${col};border-color:${colB}">${initials}</div>
       <div class="rv-meta">
-        <div class="rv-name">${esc(rv.displayName)}<span class="rv-badge verified">✓ Verified</span></div>
+        <div class="rv-name">${esc(rv.display_name)}<span class="rv-badge verified">✓ Verified</span></div>
         <div class="rv-stars">${stars}</div>
         <div class="rv-date">${timeAgo}</div>
       </div>
@@ -889,24 +915,29 @@ function renderCard(rv,idx,isAdmin){
         <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3H14z"/><path d="M7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"/></svg>
         Membantu <span class="hcount">${rv.helpful||0}</span>
       </button>
-      ${adminDel}
+      ${delBtn}
     </div>
   </div>`;
 }
 
-function updateStats(j){
-  document.getElementById('avgNum').textContent=j.avgRating||'0.0';
-  document.getElementById('avgStars').innerHTML=renderStars(parseFloat(j.avgRating||0),'1rem');
-  document.getElementById('totalTxt').textContent=(j.totalAll||0)+' ulasan';
-  document.getElementById('tagAll').textContent=j.totalAll||0;
-  const sc=j.starCounts||{};
+function updateStats(rows){
+  const totalAll = rows.length;
+  const sc = {1:0,2:0,3:0,4:0,5:0};
+  let sum = 0, withPhoto = 0;
+  rows.forEach(r=>{ sc[r.star] = (sc[r.star]||0)+1; sum += r.star; if(r.photo_url) withPhoto++; });
+  const avg = totalAll>0 ? (sum/totalAll) : 0;
+
+  document.getElementById('avgNum').textContent=avg.toFixed(1);
+  document.getElementById('avgStars').innerHTML=renderStars(avg,'1rem');
+  document.getElementById('totalTxt').textContent=totalAll+' ulasan';
+  document.getElementById('tagAll').textContent=totalAll;
   [1,2,3,4,5].forEach(s=>{
     document.getElementById('c'+s).textContent=sc[s]||0;
     document.getElementById('tag'+s).textContent=sc[s]||0;
-    const pct=(j.totalAll>0?((sc[s]||0)/j.totalAll*100):0).toFixed(0)+'%';
+    const pct=(totalAll>0?((sc[s]||0)/totalAll*100):0).toFixed(0)+'%';
     document.getElementById('b'+s).style.width=pct;
   });
-  document.getElementById('tagPhoto').textContent=j.withPhoto||0;
+  document.getElementById('tagPhoto').textContent=withPhoto;
 }
 
 function renderPager(cur,total,count){
@@ -934,12 +965,13 @@ function closeLightbox(){document.getElementById('lightbox').classList.remove('o
 
 function fmtTime(ts){
   if(!ts) return '';
-  const diff=Date.now()-ts;
+  const t = typeof ts === 'string' ? new Date(ts).getTime() : ts;
+  const diff=Date.now()-t;
   if(diff<60000) return 'Baru saja';
   if(diff<3600000) return Math.floor(diff/60000)+' menit lalu';
   if(diff<86400000) return Math.floor(diff/3600000)+' jam lalu';
   if(diff<2592000000) return Math.floor(diff/86400000)+' hari lalu';
-  return new Date(ts).toLocaleDateString('id-ID',{day:'numeric',month:'short',year:'numeric'});
+  return new Date(t).toLocaleDateString('id-ID',{day:'numeric',month:'short',year:'numeric'});
 }
 function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#x27;'); }
 
