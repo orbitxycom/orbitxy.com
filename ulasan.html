@@ -744,15 +744,6 @@ async function openWriteModal(){
     return;
   }
 
-  const lastTime = await getLastReviewTime(user.id);
-  if(lastTime){
-    const remain = REVIEW_COOLDOWN_MS - (Date.now() - lastTime);
-    if(remain > 0){
-      toast('Kamu sudah menulis ulasan. Coba lagi dalam '+fmtCooldown(remain)+'.', 'warn', 4500);
-      return;
-    }
-  }
-
   _username = user.email || _username;
   _selectedFile = null;
   document.getElementById('writeBg').classList.remove('hide');
@@ -799,7 +790,7 @@ async function submitReview(){
     if(lastTime){
       const remain = REVIEW_COOLDOWN_MS - (Date.now() - lastTime);
       if(remain > 0){
-        err.textContent = 'Kamu sudah menulis ulasan. Coba lagi dalam '+fmtCooldown(remain)+'.';
+        err.textContent = 'Kamu sudah memberikan ulasan dalam 24 jam terakhir.';
         err.classList.add('show');
         return;
       }
