@@ -624,6 +624,7 @@ function applyGlobalBg(s) {
   <div class="pager" id="pager" style="display:none"></div>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 
 let _token = localStorage.getItem('userApiKey') || '';
@@ -632,6 +633,11 @@ let _curStar = 0, _curSort = 'newest', _curPage = 1, _photoOnly = false;
 let _uploading = false, _selectedStar = 0;
 let _helpedIds = new Set(JSON.parse(localStorage.getItem('helpedRevIds')||'[]'));
 let _adminToken = localStorage.getItem('adminToken') || '';
+
+const supabaseClient = supabase.createClient(
+  'https://ygjpwaftccewntwwoixs.supabase.co',
+  'sb_publishable_4IdyoPpEW-It9IWLZOrSAQ_WuumXkl9'
+);
 
 let _tTimer;
 function toast(msg,type='ok',dur=3000){
@@ -724,8 +730,14 @@ async function handlePhotoSelect(inp){
   _uploading=false;
 }
 
-function openWriteModal(){
-  if(!_token){location.href='/login?returnUrl='+encodeURIComponent('/ulasan?write=1');return}
+async function openWriteModal(){
+  const { data } = await supabaseClient.auth.getUser();
+  const user = data ? data.user : null;
+  if(!user){
+    location.href = 'login.html?returnUrl=' + encodeURIComponent('ulasan.html?write=1');
+    return;
+  }
+  _username = user.email || _username;
   document.getElementById('writeBg').classList.remove('hide');
   _selectedStar=0;window._uploadedPhotoUrl='';
   document.getElementById('revName').value=_username||'';
@@ -972,11 +984,14 @@ document.addEventListener('keydown',e=>{
 initAuth();
 loadReviews();
 
-(function(){
+(async function(){
   var p = new URLSearchParams(location.search);
-  if(p.get('write')==='1' && _token){
-    history.replaceState(null,'',location.pathname);
-    setTimeout(function(){ openWriteModal(); }, 600);
+  if(p.get('write')==='1'){
+    const { data } = await supabaseClient.auth.getUser();
+    if(data && data.user){
+      history.replaceState(null,'',location.pathname);
+      setTimeout(function(){ openWriteModal(); }, 600);
+    }
   }
 })();
 </script>
