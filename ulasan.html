@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5, viewport-fit=cover">
 <meta name="theme-color" content="#181818">
 <meta name="description" content="Ulasan & Rating Pelanggan — Dongtube">
-<title>Ulasan Pelanggan — Dongtube</title>
+<title>Ulasan Pelanggan — orbitxy.com</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Ubuntu+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -716,6 +716,26 @@ function handlePhotoSelect(inp){
   st.style.display='';st.textContent='Foto siap diupload saat ulasan dikirim';st.style.color='var(--t3)';
 }
 
+const REVIEW_COOLDOWN_MS = 24 * 60 * 60 * 1000;
+
+async function getLastReviewTime(userId){
+  const { data, error } = await supabaseClient
+    .from('reviews')
+    .select('created_at')
+    .eq('user_id', userId)
+    .order('created_at', { ascending: false })
+    .limit(1);
+  if(error || !data || data.length===0) return null;
+  return new Date(data[0].created_at).getTime();
+}
+
+function fmtCooldown(ms){
+  const h = Math.floor(ms/3600000);
+  const m = Math.floor((ms%3600000)/60000);
+  if(h>0) return h+' jam '+m+' menit';
+  return m+' menit';
+}
+
 async function openWriteModal(){
   const { data } = await supabaseClient.auth.getUser();
   const user = data ? data.user : null;
@@ -723,6 +743,16 @@ async function openWriteModal(){
     location.href = 'login.html?returnUrl=' + encodeURIComponent('ulasan.html?write=1');
     return;
   }
+
+  const lastTime = await getLastReviewTime(user.id);
+  if(lastTime){
+    const remain = REVIEW_COOLDOWN_MS - (Date.now() - lastTime);
+    if(remain > 0){
+      toast('Kamu sudah menulis ulasan. Coba lagi dalam '+fmtCooldown(remain)+'.', 'warn', 4500);
+      return;
+    }
+  }
+
   _username = user.email || _username;
   _selectedFile = null;
   document.getElementById('writeBg').classList.remove('hide');
@@ -764,6 +794,16 @@ async function submitReview(){
     const { data: userData } = await supabaseClient.auth.getUser();
     const user = userData ? userData.user : null;
     if(!user){ _handleAuthFail(); return; }
+
+    const lastTime = await getLastReviewTime(user.id);
+    if(lastTime){
+      const remain = REVIEW_COOLDOWN_MS - (Date.now() - lastTime);
+      if(remain > 0){
+        err.textContent = 'Kamu sudah menulis ulasan. Coba lagi dalam '+fmtCooldown(remain)+'.';
+        err.classList.add('show');
+        return;
+      }
+    }
 
     let photoUrl = '';
     if(_selectedFile){
