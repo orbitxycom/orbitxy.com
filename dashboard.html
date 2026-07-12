@@ -1548,12 +1548,12 @@ html, body {
       <span id="storeName">orbitxy.com</span>
     </a>
     <div class="nav-r">
-      <a href="/otp" class="n-btn hide-m">Beli OTP</a>
-      <a href="/renew" class="n-btn hide-m">Perpanjang Panel</a>
+      <a href="#" class="n-btn hide-m" onclick="return notReady(event)">Beli OTP</a>
+      <a href="#" class="n-btn hide-m" onclick="return notReady(event)">Perpanjang Panel</a>
 
-      <a href="/track" class="n-btn hide-m">Track Order</a>
-      <a href="/cpanel" class="n-btn hide-m">cPanel</a>
-      <a href="#" id="waBtn" data-wa-link target="_blank" rel="noopener noreferrer" class="n-btn em">Hubungi CS</a>
+      <a href="#" class="n-btn hide-m" onclick="return notReady(event)">Track Order</a>
+      <a href="#" class="n-btn hide-m" onclick="return notReady(event)">cPanel</a>
+      <a href="#" id="waBtn" class="n-btn em" onclick="return notReady(event)">Hubungi CS</a>
       <button class="hbg" id="hbgBtn" onclick="toggleDrawer()">
         <span class="bar bar1"></span>
         <span class="bar bar2"></span>
@@ -1577,50 +1577,50 @@ html, body {
     Home
   </a>
   
-  <a href="/otp" class="dr-link" onclick="toggleDrawer()">
+  <a href="#" class="dr-link" onclick="toggleDrawer();return notReady(event)">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
     Beli OTP
   </a>
-  <a href="/renew" class="dr-link" onclick="toggleDrawer()">
+  <a href="#" class="dr-link" onclick="toggleDrawer();return notReady(event)">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
     Perpanjang Panel
   </a>
-  <a href="/track" class="dr-link" onclick="toggleDrawer()">
+  <a href="#" class="dr-link" onclick="toggleDrawer();return notReady(event)">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
     Track Order
   </a>
-  <a href="/cpanel" class="dr-link" onclick="toggleDrawer()">
+  <a href="#" class="dr-link" onclick="toggleDrawer();return notReady(event)">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
     cPanel
   </a>
-  <a href="/reseller" class="dr-link" onclick="toggleDrawer()" style="color:var(--em);border-color:rgba(52,211,153,.2);background:rgba(52,211,153,.06)">
+  <a href="#" class="dr-link" onclick="toggleDrawer();return notReady(event)" style="color:var(--em);border-color:rgba(52,211,153,.2);background:rgba(52,211,153,.06)">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 2 3 6l9 16 9-16-3-4z"/><path d="M3 6h18"/><path d="m12 2-3 4 3 16 3-16z"/></svg>
     Buka Toko Reseller
   </a>
-  <a href="/tiktok" class="dr-link" onclick="toggleDrawer()">
+  <a href="#" class="dr-link" onclick="toggleDrawer();return notReady(event)">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 12a4 4 0 1 0 4 4V4a5 5 0 0 0 5 5"/></svg>
     TikTok Downloader
   </a>
-  <a href="/upload" class="dr-link" onclick="toggleDrawer()">
+  <a href="#" class="dr-link" onclick="toggleDrawer();return notReady(event)">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="16 16 12 12 8 16"/><line x1="12" y1="12" x2="12" y2="21"/><path d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3"/></svg>
     Upload CDN
   </a>
-  <a href="/ulasan" class="dr-link" onclick="toggleDrawer()">
+  <a href="ulasan.html" class="dr-link" onclick="toggleDrawer()">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/><path d="M8 10h8M8 14h5"/></svg>
     Ulasan
-  </a>  <a href="/chat" class="dr-link" onclick="toggleDrawer()">
+  </a>  <a href="#" class="dr-link" onclick="toggleDrawer();return notReady(event)">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/><circle cx="9" cy="10" r=".5" fill="currentColor"/><circle cx="12" cy="10" r=".5" fill="currentColor"/><circle cx="15" cy="10" r=".5" fill="currentColor"/></svg>
     Live Chat
   </a>
-  <a href="/playlist" class="dr-link" onclick="toggleDrawer()">
+  <a href="#" class="dr-link" onclick="toggleDrawer();return notReady(event)">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
     Playlist Musik
   </a>
-  <a href="#" id="drawerWa" data-wa-link target="_blank" rel="noopener noreferrer" class="dr-link em" onclick="toggleDrawer()">
+  <a href="#" id="drawerWa" class="dr-link em" onclick="toggleDrawer();return notReady(event)">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
     Hubungi CS
   </a>
-  <a href="#" data-channel-link target="_blank" rel="noopener" class="dr-link" onclick="toggleDrawer()" style="display:none;color:#25d366;border-color:rgba(37,211,102,.2);background:rgba(37,211,102,.06)">
+  <a href="#" class="dr-link" onclick="toggleDrawer();return notReady(event)" style="color:#25d366;border-color:rgba(37,211,102,.2);background:rgba(37,211,102,.06)">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M22 2L11 13"/><path d="M22 2L15 22 11 13 2 9l20-7z"/></svg>
     Channel WhatsApp
   </a>
@@ -1671,8 +1671,8 @@ html, body {
 <footer>
   <p>&copy; <span id="ftYear"></span> <span id="ftName">Dongtube</span>
   &mdash; <a href="#" id="ftWa" data-wa-link>Hubungi Admin</a>
-  &mdash; <a href="/track" style="color:var(--t3);text-decoration:none;transition:color .15s" onmouseover="this.style.color='var(--t1)'" onmouseout="this.style.color='var(--t3)'">Cek Order</a>
-  &mdash; <a href="#" data-channel-link target="_blank" rel="noopener" style="display:none;color:var(--t3);text-decoration:none;transition:color .15s" onmouseover="this.style.color='#25d366'" onmouseout="this.style.color='var(--t3)'">Channel WA</a>
+  &mdash; <a href="#" onclick="return notReady(event)" style="color:var(--t3);text-decoration:none;transition:color .15s" onmouseover="this.style.color='var(--t1)'" onmouseout="this.style.color='var(--t3)'">Cek Order</a>
+  &mdash; <a href="#" onclick="return notReady(event)" style="color:var(--t3);text-decoration:none;transition:color .15s" onmouseover="this.style.color='#25d366'" onmouseout="this.style.color='var(--t3)'">Channel WA</a>
   </p>
 </footer>
 
@@ -1859,6 +1859,13 @@ function toggleDrawer() {
 // Ensure hamburger functions are globally accessible
 window.toggleDrawer = toggleDrawer;
 window.closeDrawer = closeDrawer;
+
+function notReady(e) {
+  if (e && e.preventDefault) e.preventDefault();
+  notify('Sedang diperbaiki', 'info');
+  return false;
+}
+window.notReady = notReady;
 // Close drawer on Escape key
 document.addEventListener('keydown', function(e) {
   if (e.key === 'Escape') closeDrawer();
