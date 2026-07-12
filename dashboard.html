@@ -1676,6 +1676,7 @@ html, body {
   </p>
 </footer>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 
 function _hexToRgb(hex) {
@@ -2636,7 +2637,18 @@ function showMaintenancePage(msg) {
   document.body.appendChild(overlay);
 }
 
-document.addEventListener('DOMContentLoaded', function() {
+const supabaseClient = supabase.createClient(
+  'https://ygjpwaftccewntwwoixs.supabase.co',
+  'sb_publishable_4IdyoPpEW-It9IWLZOrSAQ_WuumXkl9'
+);
+
+document.addEventListener('DOMContentLoaded', async function() {
+  const { data } = await supabaseClient.auth.getUser();
+  const user = data ? data.user : null;
+  if (!user) {
+    window.location.href = 'login.html?returnUrl=' + encodeURIComponent('dashboard.html');
+    return;
+  }
   initMusic();
   load();
   loadSlides();
