@@ -1954,49 +1954,17 @@ async function load(silent) {
   }
 
   try {
-    var ctrl = new AbortController();
-    var tid = setTimeout(function(){ ctrl.abort(); }, 5000);
-    var r = await fetch('/api/products', { signal: ctrl.signal });
-    clearTimeout(tid);
-    var j = await r.json();
-    if (!j.ok) throw new Error(j.message);
+    const { data: products, error } = await supabaseClient
+      .from('products')
+      .select('*')
+      .order('created_at', { ascending: false });
+    if (error) throw error;
+
     _lastLoadOk = Date.now();
-    allProds = j.data;
-    if (j.store) { document.getElementById('storeName').textContent = j.store; document.getElementById('ftName').textContent = j.store; document.title = j.store; }
-    if (j.wa) { document.getElementById('waBtn').href = j.wa; document.getElementById('drawerWa').href = j.wa; document.getElementById('ftWa').href = j.wa; }
-    if (j.settings && j.settings.channelWa) { document.querySelectorAll('[data-channel-link]').forEach(function(el){ el.href = j.settings.channelWa; el.style.display = ''; }); }
-    if (j.settings) {
-      if (j.settings.maintenanceMode) {
-        showMaintenancePage(j.settings.maintenanceMsg || 'Sedang dalam perbaikan.');
-        _loadInProgress = false; return;
-      }
-      applyMusicSettings(j.settings);
-      applyGlobalSettings(j.settings);
-      window._storeSettings = j.settings;
-      applyOrderFormSettings(j.settings);
-      if (j.settings.faq && Array.isArray(j.settings.faq) && j.settings.faq.length) {
-        renderFaq(j.settings.faq);
-      }
-    }
+    allProds = products || [];
 
     var catsEl = document.getElementById('catsEl');
-
     Array.from(catsEl.querySelectorAll('.cat[data-c]:not([data-c="all"])')).forEach(function(b){ b.remove(); });
-    try {
-      var cjRes = await fetch('/api/categories');
-      var cj = await cjRes.json();
-      var apiCats = (cj.ok && Array.isArray(cj.data)) ? cj.data : [];
-
-      apiCats.forEach(function(cat) {
-        var name = cat.name || cat;
-        if (!name) return;
-        var b = document.createElement('button');
-        b.className = 'cat'; b.dataset.c = name;
-        b.textContent = name;
-        b.onclick = function() { setCat(name, b); };
-        catsEl.appendChild(b);
-      });
-    } catch(e) {  }
 
     var seen = new Set();
     document.querySelectorAll('#catsEl .cat[data-c]').forEach(function(b){ seen.add((b.dataset.c||'').toLowerCase()); });
@@ -2013,26 +1981,22 @@ async function load(silent) {
     });
 
     var tickText = allProds.map(function(p) {
-    var _tpri = (p.variants||[]).map(function(v){return typeof v.price==='number'?v.price:Infinity;});
-    var _tmin = _tpri.length ? Math.min.apply(null,_tpri) : 0;
-    return _escHtml(p.name) + ' — ' + idr(isFinite(_tmin)?_tmin:0);
-  }).join('   ·   ');
-    ['ticker1','ticker2'].forEach(function(id) { document.getElementById(id).innerHTML = tickText.split('   ·   ').map(function(t) { return '<span class="tick-item"><span class="tick-dot"></span>' + t + '</span>'; }).join(''); });
-    renderGrid(allProds);
-    // ── Dongtube Prem: muat produk ke kategori PREMIUM ────────────────────────
-    _loadDtPremProducts(catsEl).catch(function(){});
+      return _escHtml(p.name) + ' — ' + idr(p.price || 0);
+    }).join('   ·   ');
+    ['ticker1','ticker2'].forEach(function(id) {
+      document.getElementById(id).innerHTML = tickText
+        ? tickText.split('   ·   ').map(function(t) { return '<span class="tick-item"><span class="tick-dot"></span>' + t + '</span>'; }).join('')
+        : '';
+    });
 
-    if (!silent) loadCardRatings();
+    renderGrid(allProds);
   } catch(e) {
 
     if (silent && allProds && allProds.length > 0) { _loadInProgress = false; return; }
-    var msg = e.name === 'AbortError'
-      ? 'Koneksi timeout. Periksa jaringan atau coba lagi.'
-      : 'Gagal memuat produk. Coba lagi.';
     document.getElementById('gridEl').innerHTML =
       '<div class="empty" style="display:flex;flex-direction:column;align-items:center;gap:.85rem">'
       + '<svg viewBox="0 0 24 24" fill="none" stroke="rgba(245,245,245,.25)" stroke-width="1.5" width="36" height="36"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>'
-      + '<span style="color:rgba(245,245,245,.4);font-size:.72rem">' + msg + '</span>'
+      + '<span style="color:rgba(245,245,245,.4);font-size:.72rem">Gagal memuat produk. Coba lagi.</span>'
       + '<button onclick="load()" style="font-family:var(--font);font-size:.7rem;font-weight:700;padding:.45rem 1.1rem;border-radius:4px;background:var(--bg2);border:1px solid var(--line2);color:var(--t1);cursor:pointer;transition:all .18s" onmouseover="this.style.borderColor=\'rgba(52,211,153,.4)\'" onmouseout="this.style.borderColor=\'var(--line2)\'">Muat Ulang</button>'
       + '</div>';
   }
@@ -2044,175 +2008,56 @@ function renderGrid(list) {
   document.getElementById('gridLabel').textContent = activeCat === 'all' ? 'Semua Produk (' + list.length + ')' : list.length + ' Produk';
   if (!list.length) { g.innerHTML = '<div class="empty">Tidak ada produk.</div>'; return; }
   g.innerHTML = list.map(function(p) {
-    var prices = (p.variants||[]).map(function(v) { return typeof v.price==='number' ? v.price : Infinity; });
-    var min = prices.length ? Math.min.apply(null, prices) : 0;
-    if (!isFinite(min)) min = 0;
-    var type = p.type || 'digital';
-    var tag = type === 'panel' ? 'Panel' : type === 'download' ? 'Download' : type === 'sewabot' ? 'Sewa Bot' : type === 'premku' ? 'Premium' : 'Digital';
+    var price = typeof p.price === 'number' ? p.price : 0;
 
-    var imgSrc = _escHtml(p.thumbnail || p.icon || '');
+    var imgSrc = _escHtml(p.thumbnail || '');
     var imgHtml = imgSrc
       ? '<img class="cover" src="' + imgSrc + '" alt="' + _escHtml(p.name) + '" loading="lazy" onerror="this.style.display=\'none\'">'
       : '';
 
     var isInactive = p.active === false;
-    var isNew = p.isNew === true;
+    var isNew = p.is_new === true;
     var cardClass = 'card' + (isInactive ? ' card-inactive' : '');
     var pidAttr = isInactive ? '' : 'data-pid="' + p.id + '"';
     var cursorStyle = isInactive ? '' : 'style="cursor:pointer"';
     var cardBadgeHtml = isNew ? '<div class="card-new-badge">Baru</div>' : '';
-    var priceHtml = min === 0 ? '<b style="color:var(--em)">Gratis</b>' : '<b>' + idr(min) + '</b>';
+    var priceHtml = price === 0 ? '<b style="color:var(--em)">Gratis</b>' : '<b>' + idr(price) + '</b>';
 
-    var stockHtml = '';
-    var hasAnyStock = p.variants.some(function(v){ return typeof v.stock === 'number'; });
-    if (!hasAnyStock) {
-
+    var stockHtml;
+    if (p.stock === null || p.stock === undefined || p.stock < 0) {
       stockHtml = '<div style="font-size:.58rem;color:var(--t4);margin-top:.15rem;font-weight:600">∞ Stok Unlimited</div>';
     } else {
-      var allUnlimited = p.variants.every(function(v){ return v.stock === undefined || v.stock === null || v.stock < 0; });
-      if (allUnlimited) {
-        stockHtml = '<div style="font-size:.58rem;color:var(--t4);margin-top:.15rem;font-weight:600">∞ Stok Unlimited</div>';
-      } else {
-        var finiteV = p.variants.filter(function(v){ return typeof v.stock === 'number' && v.stock >= 0; });
-        var totalStock = finiteV.reduce(function(sum, v){ return sum + v.stock; }, 0);
-        var stockColor = totalStock === 0 ? 'var(--red)' : totalStock <= 3 ? 'var(--yel)' : 'var(--t3)';
-        var stockLabel = totalStock === 0 ? 'Stok habis' : 'Stok ' + totalStock;
-        stockHtml = '<div style="font-size:.58rem;color:' + stockColor + ';margin-top:.15rem;font-weight:600">' + stockLabel + '</div>';
-      }
+      var stockColor = p.stock === 0 ? 'var(--red)' : p.stock <= 3 ? 'var(--yel)' : 'var(--t3)';
+      var stockLabel = p.stock === 0 ? 'Stok habis' : 'Stok ' + p.stock;
+      stockHtml = '<div style="font-size:.58rem;color:' + stockColor + ';margin-top:.15rem;font-weight:600">' + stockLabel + '</div>';
     }
 
-    var ratingHtml = '';
-    var cachedRating = _cardRatings[p.id];
-    if (cachedRating && cachedRating.total > 0) {
-      var rStars = '';
-      for (var _rs = 1; _rs <= 5; _rs++) rStars += (_rs <= Math.round(cachedRating.avg) ? '★' : '☆');
-      ratingHtml = '<div class="card-rating"><span class="cr-stars">' + rStars + '</span><span class="cr-num">' + cachedRating.avg.toFixed(1) + '</span><span>(' + cachedRating.total + ')</span></div>';
-    }
-    var detailBtn = '';
     return '<div class="' + cardClass + '" ' + pidAttr + ' ' + cursorStyle + '>'
       + '<div class="card-thumb"><div class="card-thumb-inner">' + imgHtml + '</div>'
-      + '<div class="card-badge">' + tag + '</div>' + cardBadgeHtml
-      + detailBtn + '</div>'
+      + '<div class="card-badge">' + _escHtml(p.category || 'Produk') + '</div>' + cardBadgeHtml
+      + '</div>'
       + '<div class="card-body">'
       + '<div class="card-name">' + _escHtml(p.name) + '</div>'
       + '<div class="card-cat">' + _escHtml(p.category || '') + '</div>'
-      + ratingHtml
       + '<div class="card-price">' + priceHtml + stockHtml + '</div>'
       + '</div></div>';
   }).join('');
 }
 
-var _ratingsLoaded = false;
-async function loadCardRatings() {
-  if (_ratingsLoaded) return;
-  _ratingsLoaded = true;
-  try {
-    var r = await fetch('/api/reviews?page=1&sort=newest');
-    var j = await r.json();
-    if (!j.ok) return;
-    var avg = parseFloat(j.avgRating || 0);
-    var total = j.totalAll || 0;
-    if (total === 0 || avg === 0) return;
-    allProds.forEach(function(p) {
-      _cardRatings[p.id] = { avg: avg, total: total };
-    });
-
-    var activeCatList = activeCat === 'all' ? allProds : allProds.filter(function(p) {
-      return p.type === activeCat || (p.category || '').toLowerCase() === activeCat.toLowerCase();
-    });
-    renderGrid(activeCatList);
-  } catch(e) { _ratingsLoaded = false; }
-}
-
 document.addEventListener('click', function(e) {
   var card = e.target.closest('#gridEl .card[data-pid]');
   if (!card) return;
-
-  var pid = card.dataset.pid;
-
-  if (e.ctrlKey || e.metaKey || e.button === 1) {
-    window.open('/produk?id=' + pid, '_blank');
-    return;
-  }
-
-  window.location.href = '/produk?id=' + pid;
+  notify('Halaman detail & pembayaran produk sedang dikembangkan', 'info');
 });
-
-// ── Dongtube Prem: muat produk otomatis ke kategori PREMIUM ──────────────────
-var _dtPremProds = [];
-async function _loadDtPremProducts(catsEl) {
-  try {
-    var r = await fetch('/api/premku/products');
-    var j = await r.json();
-    if (!j.ok || !Array.isArray(j.data) || !j.data.length) return;
-
-    // Konversi format Dongtube Prem ke format produk toko
-    _dtPremProds = j.data.map(function(p) {
-      return {
-        id       : 'prem-' + p.id,
-        _premId  : p.id,
-        name     : p.name,
-        category : 'PREMIUM',
-        type     : 'premku',
-        thumbnail: p.thumbnail || p.image || '',
-        active   : p.status === 'available',
-        stock    : p.stock != null ? p.stock : -1,
-        variants : [{ id: 'prem-v-' + p.id, name: p.name, price: p.price, price_format: p.price_format, stock: p.stock != null ? p.stock : -1 }],
-      };
-    });
-
-    // Tambahkan tab PREMIUM kalau belum ada
-    if (catsEl && !catsEl.querySelector('.cat[data-c="PREMIUM"]')) {
-      var b = document.createElement('button');
-      b.className = 'cat'; b.dataset.c = 'PREMIUM';
-      b.textContent = 'PREMIUM';
-      b.onclick = function() { setCat('PREMIUM', b); };
-      catsEl.appendChild(b);
-    }
-
-    // Kalau sedang aktif di PREMIUM atau all, refresh grid
-    if (activeCat === 'all') {
-      allProds = allProds.filter(function(p){ return p.type !== 'premku'; }).concat(_dtPremProds);
-      renderGrid(allProds);
-    } else if (activeCat.toLowerCase() === 'premium') {
-      allProds = allProds.filter(function(p){ return p.type !== 'premku'; }).concat(_dtPremProds);
-      setCat('PREMIUM', document.querySelector('.cat[data-c="PREMIUM"]'));
-    } else {
-      allProds = allProds.filter(function(p){ return p.type !== 'premku'; }).concat(_dtPremProds);
-    }
-  } catch(e) { /* gagal load Dongtube Prem — abaikan */ }
-}
 
 function setCat(c, btn) {
   activeCat = c;
   document.querySelectorAll('.cat').forEach(function(b) { b.classList.toggle('on', b.dataset.c === c); });
   var list = c === 'all' ? allProds : allProds.filter(function(p) {
-    // Produk Dongtube Prem (type='premku') masuk ke kategori PREMIUM
-    if (c.toLowerCase() === 'premium') return p.type === 'premku' || (p.category || '').toLowerCase() === 'premium';
-    return p.type === c || (p.category || '').toLowerCase() === c.toLowerCase();
+    return (p.category || '').toLowerCase() === c.toLowerCase();
   });
   renderGrid(list);
 }
-
-var SPEC_MAP = { '1gb': ['1.5GB','3GB','100%'], '2gb': ['3.5GB','6GB','190%'], '3gb': ['4GB','7GB','250%'], '4gb': ['5GB','9GB','290%'], '5gb': ['6GB','13GB','330%'], '6gb': ['7GB','15GB','450%'], '7gb': ['8GB','17GB','500%'], '8gb': ['9GB','18GB','550%'], '9gb': ['9.5GB','19GB','575%'], '10gb': ['10GB','20GB','600%'], 'unlimited': ['Unlimited','25GB','Unlimited'] };
-
-function _fmtMb(mb) {
-  if (mb === 0) return 'Unlimited';
-  return mb >= 1024 ? (mb/1024).toFixed(1).replace('.0','') + 'GB' : mb + 'MB';
-}
-function _fmtCpu(cpu) { return cpu === 0 ? 'Unlimited' : cpu + '%'; }
-
-(async function loadPanelPlans() {
-  try {
-    var r = await fetch('/api/panel-plans');
-    var j = await r.json();
-    if (j.ok && j.data) {
-      j.data.forEach(function(t) {
-        SPEC_MAP[t.id] = [_fmtMb(t.ram), _fmtMb(t.disk), _fmtCpu(t.cpu)];
-      });
-    }
-  } catch(e) {}
-})();
 
 document.addEventListener('visibilitychange', function() {
   if (document.visibilityState === 'visible') {
@@ -2220,35 +2065,6 @@ document.addEventListener('visibilitychange', function() {
     loadSlides();
   }
 });
-
-(function connectStoreSSE() {
-  try {
-    var src = new EventSource('/api/store/stream');
-    src.onmessage = function(e) {
-      try {
-        var d = JSON.parse(e.data);
-        if (d.type === 'reconnect') {
-          src.close();
-          setTimeout(connectStoreSSE, 1500);
-          return;
-        }
-        if (d.type === 'settings_update' && d.settings) {
-          applyGlobalSettings(d.settings);
-          applyMusicSettings(d.settings);
-        }
-        if (d.type === 'reload') { load(true); loadSlides(); }
-        if (d.type === 'maintenance' && d.on) {
-          showMaintenancePage(d.msg || 'Sedang dalam perbaikan.');
-        }
-      } catch(ex){}
-    };
-    src.onerror = function() {
-      src.close();
-
-      setTimeout(connectStoreSSE, 5000);
-    };
-  } catch(ex) {}
-})();
 
 var _pwaPrompt = null;
 window.addEventListener('beforeinstallprompt', function(e) {
