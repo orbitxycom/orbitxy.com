@@ -113,15 +113,6 @@ body{background-image:linear-gradient(rgba(255,255,255,.028) 1px,transparent 1px
   <img id="lbImg" src="" alt="Foto">
 </div>
 
-<div class="drawer-backdrop" id="drawerBackdrop" onclick="toggleDrawer()"></div>
-<div class="drawer" id="drawer">
-  <a href="dashboard.html" class="dr-link active" onclick="toggleDrawer()">Home</a>
-  <a href="#" class="dr-link" onclick="toggleDrawer();notify('Sedang diperbaiki','info');return false">Beli OTP</a>
-  <a href="#" class="dr-link" onclick="toggleDrawer();notify('Sedang diperbaiki','info');return false">Perpanjang Panel</a>
-  <a href="#" class="dr-link" onclick="toggleDrawer();notify('Sedang diperbaiki','info');return false">Track Order</a>
-  <a href="ulasan.html" class="dr-link" onclick="toggleDrawer()">Ulasan</a>
-</div>
-
 <nav class="nav">
   <a href="dashboard.html" class="nav-logo">
     <span aria-hidden="true" oncontextmenu="return false" draggable="false" style="display:inline-block;width:26px;height:26px;border-radius:6px;flex-shrink:0;background-image:url('https://i.ibb.co.com/xSPNH4Tk/robot-hitam-pekat.png');background-size:cover;background-position:center;-webkit-touch-callout:none;-webkit-user-select:none;user-select:none;pointer-events:none"></span>
@@ -129,11 +120,6 @@ body{background-image:linear-gradient(rgba(255,255,255,.028) 1px,transparent 1px
   </a>
   <div class="nav-r">
     <a href="dashboard.html" class="nav-btn">Kembali</a>
-    <button class="hbg" id="hbgBtn" onclick="toggleDrawer()">
-      <span class="bar bar1"></span>
-      <span class="bar bar2"></span>
-      <span class="bar bar3"></span>
-    </button>
   </div>
 </nav>
 <div class="nav-breadcrumb">
@@ -233,14 +219,6 @@ function notify(msg,type){
 }
 
 function getParam(k){return new URLSearchParams(window.location.search).get(k);}
-
-function toggleDrawer(){
-  var d=document.getElementById('drawer'),b=document.getElementById('drawerBackdrop'),h=document.getElementById('hbgBtn');
-  var isOpen=d.classList.contains('open');
-  if(isOpen){d.classList.remove('open');b.classList.remove('open');h.classList.remove('open');document.body.style.overflow='';}
-  else{d.classList.add('open');b.classList.add('open');h.classList.add('open');document.body.style.overflow='hidden';}
-}
-document.addEventListener('keydown',function(e){if(e.key==='Escape'){var d=document.getElementById('drawer');if(d.classList.contains('open'))toggleDrawer();}});
 
 function renderError(msg){
   document.getElementById('infoSkeleton').style.display='none';
