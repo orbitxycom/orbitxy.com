@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5, viewport-fit=cover">
 <meta name="theme-color" content="#181818">
-<title>orbitxy.com</title>
+<title>Dongtube</title>
 <meta name="description" content="Panel pterodactyl, akun premium, dan script digital — proses otomatis via QRIS.">
 <link rel="manifest" href="/manifest.json">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -2047,7 +2047,7 @@ function renderGrid(list) {
 document.addEventListener('click', function(e) {
   var card = e.target.closest('#gridEl .card[data-pid]');
   if (!card) return;
-  notify('Halaman detail & pembayaran produk sedang dikembangkan', 'info');
+  window.location.href = 'produk.html?id=' + encodeURIComponent(card.dataset.pid);
 });
 
 function setCat(c, btn) {
