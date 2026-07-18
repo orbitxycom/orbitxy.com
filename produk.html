@@ -196,10 +196,15 @@ body{background-image:linear-gradient(rgba(255,255,255,.028) 1px,transparent 1px
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 'use strict';
-var supabaseClient = supabase.createClient(
-  'https://ygjpwaftccewntwwoixs.supabase.co',
-  'sb_publishable_4IdyoPpEW-It9IWLZOrSAQ_WuumXkl9'
-);
+var supabaseClient;
+try{
+  supabaseClient = supabase.createClient(
+    'https://ygjpwaftccewntwwoixs.supabase.co',
+    'sb_publishable_4IdyoPpEW-It9IWLZOrSAQ_WuumXkl9'
+  );
+}catch(e){
+  console.error('Gagal memuat Supabase:', e);
+}
 
 document.getElementById('ftYear').textContent = new Date().getFullYear();
 
@@ -231,21 +236,29 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape')closeLightbo
 function copyLink(){try{navigator.clipboard.writeText(window.location.href);notify('Link berhasil disalin!','ok');}catch(e){notify('Salin: '+window.location.href,'info');}}
 
 async function init(){
+  if(!supabaseClient){ renderError('Gagal memuat sistem (Supabase tidak termuat).<br>Coba refresh halaman.'); return; }
+
   var pid = getParam('id');
   if(!pid){ renderError('Produk tidak ditemukan.<br><a href="dashboard.html" style="color:var(--em)">Kembali ke dashboard</a>'); return; }
 
-  var { data: p, error } = await supabaseClient
-    .from('products')
-    .select('*')
-    .eq('id', pid)
-    .single();
+  try{
+    var { data: p, error } = await supabaseClient
+      .from('products')
+      .select('*')
+      .eq('id', pid)
+      .single();
 
-  if(error || !p){
-    renderError('Produk tidak ditemukan.<br><a href="dashboard.html" style="color:var(--em)">Kembali ke dashboard</a>');
-    return;
+    if(error || !p){
+      console.error('Supabase error:', error);
+      renderError('Produk tidak ditemukan.<br><span style="font-size:.7rem;color:var(--t3)">'+(error?esc(error.message):'')+'</span><br><a href="dashboard.html" style="color:var(--em)">Kembali ke dashboard</a>');
+      return;
+    }
+
+    renderProduct(p);
+  }catch(err){
+    console.error('Gagal memuat produk:', err);
+    renderError('Gagal memuat produk.<br><span style="font-size:.7rem;color:var(--t3)">'+esc(err.message)+'</span><br><a href="dashboard.html" style="color:var(--em)">Kembali ke dashboard</a>');
   }
-
-  renderProduct(p);
 }
 
 function renderProduct(p){
