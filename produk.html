@@ -263,8 +263,6 @@ async function init(){
 
 function renderProduct(p){
   document.title = esc(p.name) + ' — orbitxy.com';
-  document.getElementById('breadcrumbCat').textContent = p.category || 'Produk';
-  document.getElementById('breadcrumbName').textContent = p.name;
 
   if(p.thumbnail){
     var gi=document.getElementById('galleryImg');
