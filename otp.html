@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>jadibot.bekki — Jadikan Nomor WhatsApp Kamu Sub-Bot</title>
+<title>Jadibotbekki — Jadikan Nomor WhatsApp Kamu Sub-Bot</title>
 <style>
   :root{
     --bg:#0b0c0e;
@@ -124,6 +124,53 @@
   @media(min-width:640px){ .footer-inner{flex-direction:row;} }
   .footer-brand{font-weight:600; font-size:0.9rem; margin:0;}
   .footer-copy{font-size:0.72rem; color:var(--muted); text-align:center; margin:0;}
+
+  /* ── Mobile tightening ─────────────────────────────────── */
+  @media(max-width:640px){
+    .wrap{padding:0 16px;}
+    nav.top{padding:16px 0;}
+    .hero-grid{gap:28px; padding:28px 0 48px;}
+    .status-pill{font-size:0.65rem; padding:4px 10px; margin-bottom:16px;}
+    h1.hero-title{font-size:1.85rem; margin:0 0 12px;}
+    .hero-desc{font-size:0.85rem; max-width:100%; margin:0 0 20px;}
+    .cta{padding:10px 20px; font-size:0.85rem;}
+    .terminal{max-width:100%; margin-left:0; border-radius:14px;}
+    .terminal-body{height:150px; font-size:0.62rem;}
+    .terminal-head{padding:10px 12px;}
+    .terminal-foot{padding:10px 12px; font-size:0.65rem;}
+
+    .section-inner{padding:36px 0;}
+    .section-head{margin-bottom:24px;}
+    h2.section-title{font-size:1.2rem;}
+    .section-sub{font-size:0.82rem;}
+
+    .features{gap:12px;}
+    .card{padding:16px; border-radius:12px;}
+    .card svg{width:19px;height:19px;margin-bottom:10px;}
+    .card h3{font-size:0.9rem;}
+    .card p{font-size:0.8rem;}
+
+    .plans-row{gap:12px;}
+    .plan-card{width:170px; padding:16px; border-radius:12px;}
+    .plan-img{height:88px; margin-bottom:10px; border-radius:8px;}
+    .plan-name{font-size:0.85rem;}
+    .plan-price{font-size:1.05rem;}
+
+    .steps{gap:20px;}
+    .step-num{font-size:1.5rem; margin-bottom:6px;}
+    .step h3{font-size:0.9rem;}
+    .step p{font-size:0.8rem;}
+
+    .stats-grid{gap:12px;}
+    .stats-card{padding:18px; border-radius:12px;}
+    .stat-value{font-size:1.6rem;}
+    .stat-label{font-size:0.65rem;}
+    .testimonial{padding:14px; border-radius:12px;}
+    .testimonial p.body{font-size:0.82rem;}
+
+    footer{margin-top:24px;}
+    .footer-inner{padding:24px 0; gap:8px;}
+  }
 </style>
 </head>
 <body>
