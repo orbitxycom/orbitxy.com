@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>jadibot.bekki — Jadikan Nomor WhatsApp Kamu Sub-Bot</title>
+<style>
+  :root{
+    --bg:#0b0c0e;
+    --panel:#151619;
+    --input:#1c1d21;
+    --border:#26272c;
+    --foreground:#f2f3f2;
+    --muted:#8b8d93;
+    --accent:#34d399;
+    --accent-dim: rgba(52,211,153,0.12);
+    --primary:#f2f3f2;
+    --primary-foreground:#0b0c0e;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--bg);
+    color:var(--foreground);
+    font-family: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  .mono{font-family: ui-monospace, "SF Mono", "Cascadia Code", Menlo, Consolas, monospace;}
+  .display{font-family: "Georgia", "Iowan Old Style", serif; letter-spacing:-0.02em;}
+  .wrap{max-width:1152px; margin:0 auto; padding:0 24px;}
+  .muted{color:var(--muted);}
+  .accent{color:var(--accent);}
+
+  nav.top{display:flex; align-items:center; justify-content:space-between; padding:24px 0;}
+  .logo{font-weight:700; font-size:1.05rem; letter-spacing:-0.01em; color:var(--foreground); text-decoration:none;}
+  .nav-right{display:flex; align-items:center; gap:12px;}
+  .avatar{width:36px;height:36px;border-radius:10px;border:1px solid var(--border); background:var(--panel);}
+  .user-name{font-size:0.85rem; color:var(--muted);}
+  .btn-logout{font-size:0.85rem; font-weight:600; border-radius:10px; background:var(--primary); color:var(--primary-foreground); padding:8px 16px; border:none; cursor:pointer; transition:opacity .15s ease;}
+  .btn-logout:hover{opacity:.85;}
+
+  section{border-top:1px solid var(--border);}
+  section.hero{border-top:none; overflow:hidden;}
+  .hero-grid{display:grid; grid-template-columns:1fr; gap:56px; align-items:center; padding:56px 0 96px;}
+  @media(min-width:1024px){ .hero-grid{grid-template-columns:1fr 1fr;} }
+
+  .status-pill{display:inline-flex; align-items:center; gap:8px; font-size:0.72rem; font-family:ui-monospace,monospace; color:var(--muted); border:1px solid var(--border); border-radius:999px; padding:5px 12px; margin-bottom:24px;}
+  .dot{width:6px;height:6px;border-radius:50%; background:var(--accent); animation: pulse 1.6s ease-in-out infinite;}
+  @keyframes pulse{0%,100%{opacity:1;} 50%{opacity:.35;}}
+
+  h1.hero-title{font-size:2.6rem; font-weight:700; letter-spacing:-0.02em; line-height:1.08; margin:0 0 20px;}
+  @media(min-width:640px){ h1.hero-title{font-size:3.2rem;} }
+  .hero-desc{color:var(--muted); max-width:420px; line-height:1.6; margin:0 0 32px;}
+  .cta{display:inline-flex; align-items:center; gap:8px; border:1px solid var(--border); border-radius:14px; font-weight:600; padding:13px 26px; color:var(--foreground); text-decoration:none; transition: border-color .15s ease, transform .15s ease;}
+  .cta:hover{border-color:var(--accent); transform:translateY(-1px);}
+
+  .terminal{background:var(--panel); border:1px solid var(--border); border-radius:20px; overflow:hidden; max-width:380px; margin-left:auto; box-shadow:0 30px 60px -20px rgba(0,0,0,.5);}
+  .terminal-head{display:flex; align-items:center; justify-content:space-between; padding:12px 16px; background:var(--input); border-bottom:1px solid var(--border);}
+  .terminal-dots{display:flex; align-items:center; gap:8px;}
+  .terminal-dots span{width:10px;height:10px;border-radius:50%;}
+  .td-red{background:rgba(239,68,68,.7);}
+  .td-green{background:rgba(34,197,94,.7);}
+  .terminal-file{margin-left:8px; font-size:0.7rem; color:var(--muted); font-family:ui-monospace,monospace;}
+  .live-badge{display:flex; align-items:center; gap:6px; font-size:0.62rem; font-weight:700; font-family:ui-monospace,monospace; border:1px solid rgba(74,222,128,.3); background:rgba(74,222,128,.1); color:#4ade80; border-radius:999px; padding:3px 9px;}
+  .live-dot{width:6px;height:6px;border-radius:50%; background:#4ade80; animation: pulse 1.6s ease-in-out infinite;}
+  .terminal-body{height:224px; overflow:hidden; padding:12px 16px; font-family:ui-monospace,monospace; font-size:0.7rem; line-height:1.7; background:rgba(0,0,0,.35);}
+  .terminal-body .muted{color:var(--muted);}
+  .terminal-body .ts{color:rgba(139,141,147,.7);}
+  .terminal-foot{font-size:0.72rem; color:var(--muted); padding:12px 16px; border-top:1px solid var(--border); text-align:center;}
+
+  .section-inner{padding:64px 0;}
+  .section-head{max-width:480px; margin-bottom:48px;}
+  h2.section-title{font-size:1.5rem; font-weight:700; margin:0 0 8px; letter-spacing:-0.01em;}
+  .section-sub{color:var(--muted); font-size:0.9rem; margin:0;}
+
+  .features{display:grid; grid-template-columns:1fr; gap:20px;}
+  @media(min-width:640px){ .features{grid-template-columns:1fr 1fr;} }
+  @media(min-width:1024px){ .features{grid-template-columns:1fr 1fr 1fr;} }
+  .card{background:var(--panel); border:1px solid var(--border); border-radius:16px; padding:24px; transition:border-color .15s ease;}
+  .card:hover{border-color: rgba(52,211,153,.4);}
+  .card svg{color:var(--accent); margin-bottom:16px;}
+  .card h3{font-weight:600; margin:0 0 8px; font-size:1rem;}
+  .card p{font-size:0.88rem; color:var(--muted); line-height:1.6; margin:0;}
+
+  .plans-row{display:flex; gap:16px; overflow-x:auto; padding-bottom:8px;}
+  .plan-card{flex-shrink:0; width:256px; background:var(--panel); border:1px solid var(--border); border-radius:16px; padding:24px; text-align:left; cursor:pointer; display:flex; flex-direction:column; transition:border-color .15s ease, transform .15s ease;}
+  .plan-card:hover{border-color: rgba(52,211,153,.5); transform:translateY(-2px);}
+  .plan-img{width:100%; height:128px; border-radius:12px; object-fit:cover; border:1px solid var(--border); margin-bottom:16px; background:linear-gradient(135deg, var(--input), var(--panel));}
+  .plan-name{font-weight:600; margin:0 0 4px;}
+  .plan-days{font-size:0.75rem; color:var(--muted); margin:0 0 16px;}
+  .plan-price{font-size:1.25rem; font-weight:700; font-family:ui-monospace,monospace; margin-top:auto;}
+  .plan-stock{font-size:0.7rem; color:var(--accent); margin:6px 0 0;}
+
+  .steps{display:grid; grid-template-columns:1fr; gap:32px;}
+  @media(min-width:640px){ .steps{grid-template-columns:1fr 1fr 1fr;} }
+  .step-num{font-size:1.9rem; font-weight:700; color:rgba(52,211,153,.75); font-family:ui-monospace,monospace; margin-bottom:12px;}
+  .step h3{font-weight:600; margin:0 0 8px;}
+  .step p{font-size:0.88rem; color:var(--muted); line-height:1.6; margin:0;}
+
+  .stats-grid{display:grid; grid-template-columns:1fr; gap:20px;}
+  @media(min-width:1024px){ .stats-grid{grid-template-columns:2fr 3fr;} }
+  .stats-card{background:var(--panel); border:1px solid var(--border); border-radius:16px; padding:32px;}
+  .live-tag{display:flex; align-items:center; gap:8px; margin-bottom:24px;}
+  .live-tag span.dot2{width:6px;height:6px;border-radius:50%; background:var(--accent);}
+  .live-tag p{font-size:0.72rem; font-family:ui-monospace,monospace; color:var(--muted); margin:0;}
+  .stats-numbers{display:grid; grid-template-columns:1fr 1fr; gap:24px;}
+  .stat-value{font-size:2.1rem; font-weight:700; font-family:ui-monospace,monospace; letter-spacing:-0.01em; margin:0;}
+  .stat-label{font-size:0.72rem; color:var(--muted); margin:4px 0 0;}
+  .testimonials{display:grid; grid-template-columns:1fr; gap:20px;}
+  @media(min-width:640px){ .testimonials{grid-template-columns:1fr 1fr;} }
+  .testimonial{background:var(--panel); border:1px solid var(--border); border-radius:16px; padding:20px;}
+  .quote-mark{font-size:1.9rem; color:rgba(52,211,153,.5); line-height:1; margin:0 0 4px;}
+  .testimonial p.body{font-size:0.9rem; color:var(--muted); line-height:1.6; margin:-4px 0 12px;}
+  .testimonial-foot{display:flex; align-items:center; justify-content:space-between;}
+  .testimonial-name{font-size:0.78rem; font-weight:600;}
+  .stars{color:#facc15; font-size:0.78rem;}
+
+  .comments-box{max-width:380px;}
+  .comments-box h2{font-size:0.9rem; font-weight:600; margin:0 0 12px;}
+  .comments-box p{font-size:0.9rem; color:var(--muted);}
+
+  footer{border-top:1px solid var(--border); margin-top:48px;}
+  .footer-inner{display:flex; flex-direction:column; align-items:center; justify-content:space-between; gap:16px; padding:40px 0;}
+  @media(min-width:640px){ .footer-inner{flex-direction:row;} }
+  .footer-brand{font-weight:600; font-size:0.9rem; margin:0;}
+  .footer-copy{font-size:0.72rem; color:var(--muted); text-align:center; margin:0;}
+</style>
+</head>
+<body>
+<main>
+  <nav class="top wrap">
+    <a class="logo" href="dashboard.html">Jadibot</a>
+    <div class="nav-right">
+      <div class="avatar"></div>
+      <button class="btn-logout">Keluar</button>
+    </div>
+  </nav>
+
+  <section class="hero">
+    <div class="wrap hero-grid">
+      <div>
+        <span class="status-pill"><span class="dot"></span>status: menunggu koneksi</span>
+        <h1 class="hero-title">Halo 👋</h1>
+        <p class="hero-desc">Pilih paket di bawah buat mulai jadibot. Setelah bayar, kamu bisa langsung hubungkan nomor WhatsApp kamu.</p>
+        <a class="cta" href="#harga">Cek Paket &amp; Harga</a>
+      </div>
+      <div>
+        <div class="terminal">
+          <div class="terminal-head">
+            <div class="terminal-dots">
+              <span class="td-red"></span>
+              <span class="td-green"></span>
+              <span class="terminal-file">system_logs_whatsapp.sh</span>
+            </div>
+            <span class="live-badge"><span class="live-dot"></span>LIVE</span>
+          </div>
+          <div class="terminal-body" id="termBody">
+            <div class="muted"><span class="ts">[09.19.11]</span> Menunggu koneksi engine...</div>
+          </div>
+          <p class="terminal-foot">IM JEXK.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap section-inner">
+      <div class="section-head">
+        <h2 class="section-title">Kenapa Pakai Jadibot?</h2>
+        <p class="section-sub">Semua yang kamu butuh buat jalanin sub-bot WhatsApp, tanpa ribet.</p>
+      </div>
+      <div class="features">
+        <div class="card">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h7l-1 8 10-12h-7l1-8z"/></svg>
+          <h3>Setup Cepat</h3>
+          <p>Masukin nomor, scan kode, sub-bot kamu langsung jalan tanpa server sendiri.</p>
+        </div>
+        <div class="card">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5a11 11 0 0 1 14 0"/><path d="M8.5 16a6 6 0 0 1 7 0"/><circle cx="12" cy="19.5" r="1" fill="currentColor" stroke="none"/></svg>
+          <h3>Aktif 24/7</h3>
+          <p>Bot kamu tetap online dan otomatis reconnect kalau ada gangguan koneksi.</p>
+        </div>
+        <div class="card">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg>
+          <h3>Dashboard Simpel</h3>
+          <p>Pantau status koneksi, kelola langganan, dan kontrol bot dari satu halaman.</p>
+        </div>
+        <div class="card">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l8 3.5v5.5c0 5-3.4 8.9-8 11-4.6-2.1-8-6-8-11V5.5L12 2z"/></svg>
+          <h3>Aman &amp; Privat</h3>
+          <p>Sesi kamu tersimpan aman — cuma kamu yang bisa akses bot kamu sendiri.</p>
+        </div>
+        <div class="card">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg>
+          <h3>Login Fleksibel</h3>
+          <p>Masuk pakai akun Google atau email &amp; password, terserah yang nyaman.</p>
+        </div>
+        <div class="card">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12a8 8 0 0 1 16 0v5a2 2 0 0 1-2 2h-1v-6h3"/><path d="M4 17v-5h3v6H5a1 1 0 0 1-1-1z"/></svg>
+          <h3>Dukungan Responsif</h3>
+          <p>Ada kendala? Tim kami siap bantu supaya bot kamu tetap jalan lancar.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="harga">
+    <div class="wrap section-inner">
+      <div class="section-head" style="margin-bottom:32px;">
+        <h2 class="section-title">Paket &amp; Harga</h2>
+        <p class="section-sub">Ketuk buat pilih paket atau hubungkan nomor kamu.</p>
+      </div>
+      <div class="plans-row">
+        <button class="plan-card" onclick="alert('Ini cuma preview tampilan — belum terhubung ke sistem pembayaran.')">
+          <img class="plan-img" src="https://uploader.alice.biz.id/storage/image-4e64dc.jpg" alt="4 hari" onerror="this.style.display='none'"/>
+          <p class="plan-name">4 hari</p>
+          <p class="plan-days">4 hari</p>
+          <p class="plan-price">Gratis</p>
+          <p class="plan-stock">Stok: 10</p>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap section-inner">
+      <div class="section-head">
+        <h2 class="section-title">Cara Kerjanya</h2>
+        <p class="section-sub">Tiga langkah, urut dari daftar sampai bot kamu online.</p>
+      </div>
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">01</div>
+          <h3>Daftar / Masuk</h3>
+          <p>Buat akun pakai Google atau email — gratis, cuma butuh sebentar.</p>
+        </div>
+        <div class="step">
+          <div class="step-num">02</div>
+          <h3>Pilih Paket &amp; Bayar</h3>
+          <p>Ketuk kartu paket di bawah, pilih paket, langsung bayar di halaman ini.</p>
+        </div>
+        <div class="step">
+          <div class="step-num">03</div>
+          <h3>Hubungkan Nomor</h3>
+          <p>Masukin nomor WhatsApp, scan kode yang muncul, sub-bot kamu siap dipakai.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap section-inner">
+      <div class="section-head">
+        <h2 class="section-title">Dipercaya Banyak Pengguna</h2>
+        <p class="section-sub">Data Real-Time.</p>
+      </div>
+      <div class="stats-grid">
+        <div class="stats-card">
+          <div class="live-tag"><span class="dot2"></span><p>Live</p></div>
+          <div class="stats-numbers">
+            <div>
+              <p class="stat-value" id="userCount">10</p>
+              <p class="stat-label">Total Pengguna</p>
+            </div>
+            <div>
+              <p class="stat-value" id="connCount">2</p>
+              <p class="stat-label">Bot Terhubung Sekarang</p>
+            </div>
+          </div>
+        </div>
+        <div class="testimonials">
+          <div class="testimonial">
+            <p class="quote-mark">&ldquo;</p>
+            <p class="body">Gg jiirr maaksi bang</p>
+            <div class="testimonial-foot">
+              <p class="testimonial-name">apk prem</p>
+              <p class="stars">★★★★★</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap section-inner">
+      <div class="comments-box">
+        <h2>Komentar Pembeli</h2>
+        <p>Belum ada review.</p>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="wrap footer-inner">
+      <p class="footer-brand">Jadibot</p>
+      <p class="footer-copy">© 2026 Jadibot. Created By orbitxy.bekki </p>
+    </div>
+  </footer>
+</main>
+
+<script>
+  // Timestamp jam realtime buat kesan "LIVE" di terminal mock
+  function pad(n){return n.toString().padStart(2,'0');}
+  function updateClock(){
+    var now = new Date();
+    var ts = pad(now.getHours())+'.'+pad(now.getMinutes())+'.'+pad(now.getSeconds());
+    var body = document.getElementById('termBody');
+    if(body){
+      body.innerHTML = '<div class="muted"><span class="ts">['+ts+']</span> Menunggu koneksi engine...</div>';
+    }
+  }
+  setInterval(updateClock, 1000);
+  updateClock();
+</script>
+</body>
+</html>
