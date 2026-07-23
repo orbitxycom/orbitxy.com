@@ -12,7 +12,6 @@
     min-height: 100vh;
     color: #fff;
   }
-
   .topbar {
     display: flex;
     align-items: center;
@@ -20,14 +19,12 @@
     padding: 24px 20px;
     position: relative;
   }
-
   .brand {
     font-size: 22px;
     font-weight: 800;
     letter-spacing: -0.5px;
     color: #fff;
   }
-
   .menu-btn {
     width: 48px;
     height: 48px;
@@ -40,17 +37,14 @@
     cursor: pointer;
     transition: background 0.15s ease, border-color 0.15s ease;
   }
-
   .menu-btn:hover {
     background: #171717;
     border-color: #3a3a3a;
   }
-
   .menu-btn svg {
     width: 20px;
     height: 20px;
   }
-
   .dropdown {
     position: absolute;
     top: 80px;
@@ -65,14 +59,13 @@
     transform: translateY(-8px);
     pointer-events: none;
     transition: opacity 0.15s ease, transform 0.15s ease;
+    z-index: 50;
   }
-
   .dropdown.open {
     opacity: 1;
     transform: translateY(0);
     pointer-events: auto;
   }
-
   .dropdown-item {
     display: flex;
     align-items: center;
@@ -84,26 +77,21 @@
     border-bottom: 1px solid #222;
     transition: background 0.15s ease;
   }
-
   .dropdown-item:last-child {
     border-bottom: none;
   }
-
   .dropdown-item:hover {
     background: #1a1a1a;
   }
-
   .dropdown-item svg {
     width: 20px;
     height: 20px;
     flex-shrink: 0;
     color: #cfcfcf;
   }
-
   .content {
     padding: 40px 20px;
   }
-
   .status-pill {
     display: inline-flex;
     align-items: center;
@@ -116,26 +104,42 @@
     font-size: 15px;
     margin-bottom: 30px;
   }
-
   .dot {
     width: 8px;
     height: 8px;
     border-radius: 50%;
     background: #22c55e;
   }
-
   .greeting {
     font-size: 44px;
     font-weight: 900;
     letter-spacing: -1px;
   }
+  .notif {
+    position: fixed;
+    top: 16px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #111;
+    border: 1px solid #2a2a2a;
+    border-radius: 12px;
+    padding: 10px 18px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #fff;
+    z-index: 999;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease;
+  }
+  .notif.show { opacity: 1; }
 </style>
 </head>
 <body>
+  <div id="notif" class="notif"></div>
 
   <div class="topbar">
     <div class="brand">Bekki</div>
-
     <div class="menu-btn" id="menuBtn">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
         <line x1="4" y1="6" x2="20" y2="6"/>
@@ -143,16 +147,15 @@
         <line x1="4" y1="18" x2="20" y2="18"/>
       </svg>
     </div>
-
     <div class="dropdown" id="dropdown">
-      <div class="dropdown-item">
+      <div class="dropdown-item" id="riwayatBtn">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <path d="M3 3v18h18"/>
           <path d="M7 14l4-4 3 3 5-6"/>
         </svg>
         <span>Riwayat</span>
       </div>
-      <div class="dropdown-item">
+      <div class="dropdown-item" id="keluarBtn">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
           <polyline points="16 17 21 12 16 7"/>
@@ -163,21 +166,49 @@
     </div>
   </div>
 
+  <div class="content">
+    <div class="status-pill"><span class="dot"></span>Beli OTP</div>
+    <div class="greeting">Halaman ini sedang dikembangkan.</div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
+    var supabaseClient;
+    try {
+      supabaseClient = supabase.createClient(
+        'https://ygjpwaftccewntwwoixs.supabase.co',
+        'sb_publishable_4IdyoPpEW-It9IWLZOrSAQ_WuumXkl9'
+      );
+    } catch(e) { console.error('Gagal memuat Supabase:', e); }
+
+    function notify(msg){
+      var n = document.getElementById('notif');
+      n.textContent = msg;
+      n.classList.add('show');
+      setTimeout(function(){ n.classList.remove('show'); }, 2500);
+    }
+
     const menuBtn = document.getElementById('menuBtn');
     const dropdown = document.getElementById('dropdown');
-
     menuBtn.addEventListener('click', (e) => {
       e.stopPropagation();
       dropdown.classList.toggle('open');
     });
-
     document.addEventListener('click', (e) => {
       if (!dropdown.contains(e.target) && !menuBtn.contains(e.target)) {
         dropdown.classList.remove('open');
       }
     });
-  </script>
 
+    document.getElementById('riwayatBtn').addEventListener('click', function(){
+      notify('Sedang diperbaiki');
+      dropdown.classList.remove('open');
+    });
+
+    document.getElementById('keluarBtn').addEventListener('click', async function(){
+      try { if (supabaseClient) await supabaseClient.auth.signOut(); } catch(e){}
+      window.location.href = 'index.html';
+    });
+  </script>
 </body>
 </html>
