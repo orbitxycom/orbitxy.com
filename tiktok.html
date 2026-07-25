@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TikTok Downloader</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: #0a0a0a;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    min-height: 100vh;
+    color: #fff;
+  }
+  .topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 24px 20px;
+    position: relative;
+  }
+  .brand {
+    font-size: 22px;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    color: #fff;
+    text-decoration: none;
+  }
+  .menu-btn {
+    width: 48px;
+    height: 48px;
+    border-radius: 14px;
+    border: 1px solid #2a2a2a;
+    background: #111;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background 0.15s ease, border-color 0.15s ease;
+  }
+  .menu-btn:hover { background: #171717; border-color: #3a3a3a; }
+  .menu-btn svg { width: 20px; height: 20px; }
+  .dropdown {
+    position: absolute;
+    top: 80px;
+    right: 20px;
+    width: 260px;
+    background: #111;
+    border: 1px solid #2a2a2a;
+    border-radius: 18px;
+    overflow: hidden;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+    opacity: 0;
+    transform: translateY(-8px);
+    pointer-events: none;
+    transition: opacity 0.15s ease, transform 0.15s ease;
+    z-index: 50;
+  }
+  .dropdown.open { opacity: 1; transform: translateY(0); pointer-events: auto; }
+  .dropdown-item {
+    display: flex; align-items: center; gap: 14px;
+    padding: 18px 20px; cursor: pointer; color: #e5e5e5; font-size: 16px;
+    border-bottom: 1px solid #222; transition: background 0.15s ease;
+  }
+  .dropdown-item:last-child { border-bottom: none; }
+  .dropdown-item:hover { background: #1a1a1a; }
+  .dropdown-item svg { width: 20px; height: 20px; flex-shrink: 0; color: #cfcfcf; }
+
+  .content { padding: 10px 20px 60px; max-width: 480px; margin: 0 auto; }
+  .page-title { font-size: 26px; font-weight: 900; letter-spacing: -0.5px; margin-bottom: 6px; }
+  .page-sub { color: #8a8a8a; font-size: 14px; margin-bottom: 28px; }
+
+  .input-box {
+    display: flex; gap: 10px; background: #111; border: 1px solid #2a2a2a;
+    border-radius: 16px; padding: 6px 6px 6px 18px; align-items: center;
+  }
+  .input-box input {
+    flex: 1; background: none; border: none; outline: none; color: #fff;
+    font-size: 15px; padding: 12px 0;
+  }
+  .input-box input::placeholder { color: #6a6a6a; }
+  .btn-go {
+    background: #fff; color: #0a0a0a; border: none; border-radius: 12px;
+    padding: 12px 20px; font-size: 14px; font-weight: 800; cursor: pointer;
+    white-space: nowrap; transition: opacity .15s ease;
+  }
+  .btn-go:hover { opacity: .85; }
+  .btn-go:disabled { opacity: .4; cursor: not-allowed; }
+
+  .result { margin-top: 24px; }
+  .result-card {
+    background: #111; border: 1px solid #2a2a2a; border-radius: 20px;
+    padding: 18px; display: none;
+  }
+  .result-card.show { display: block; }
+  .result-title { font-size: 15px; font-weight: 700; margin-bottom: 4px; line-height: 1.4; }
+  .result-author { font-size: 13px; color: #8a8a8a; margin-bottom: 16px; }
+  .result-video {
+    width: 100%; border-radius: 14px; background: #000; display: block; max-height: 480px;
+  }
+  .result-images {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 8px;
+  }
+  .result-images img {
+    width: 100%; border-radius: 12px; display: block; object-fit: cover; aspect-ratio: 3/4;
+  }
+  .dl-row { display: flex; gap: 10px; margin-top: 16px; flex-wrap: wrap; }
+  .dl-btn {
+    flex: 1; text-align: center; text-decoration: none;
+    background: #22c55e; color: #05130a; font-weight: 800; font-size: 14px;
+    padding: 13px; border-radius: 12px; transition: opacity .15s ease;
+  }
+  .dl-btn.secondary { background: #1c1c1c; color: #fff; border: 1px solid #2a2a2a; }
+  .dl-btn:hover { opacity: .88; }
+
+  .state-msg {
+    text-align: center; padding: 28px 10px; color: #8a8a8a; font-size: 14px;
+    display: none;
+  }
+  .state-msg.show { display: block; }
+  .spin {
+    width: 26px; height: 26px; border: 3px solid #2a2a2a; border-top-color: #22c55e;
+    border-radius: 50%; margin: 0 auto 12px; animation: spin .8s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .notif {
+    position: fixed; top: 16px; left: 50%; transform: translateX(-50%);
+    background: #111; border: 1px solid #2a2a2a; border-radius: 12px;
+    padding: 10px 18px; font-size: 14px; font-weight: 600; color: #fff;
+    z-index: 999; opacity: 0; pointer-events: none; transition: opacity 0.2s ease;
+  }
+  .notif.show { opacity: 1; }
+</style>
+</head>
+<body>
+  <div id="notif" class="notif"></div>
+
+  <div class="topbar">
+    <a href="dashboard.html" class="brand">Bekki</a>
+    <div class="menu-btn" id="menuBtn">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+        <line x1="4" y1="6" x2="20" y2="6"/>
+        <line x1="4" y1="12" x2="20" y2="12"/>
+        <line x1="4" y1="18" x2="20" y2="18"/>
+      </svg>
+    </div>
+    <div class="dropdown" id="dropdown">
+      <div class="dropdown-item" id="riwayatBtn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M3 3v18h18"/>
+          <path d="M7 14l4-4 3 3 5-6"/>
+        </svg>
+        <span>Riwayat</span>
+      </div>
+      <div class="dropdown-item" id="keluarBtn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+          <polyline points="16 17 21 12 16 7"/>
+          <line x1="21" y1="12" x2="9" y2="12"/>
+        </svg>
+        <span>Keluar</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="content">
+    <div class="page-title">TikTok Downloader</div>
+    <div class="page-sub">Tempel link video atau foto TikTok di bawah, lalu unduh tanpa watermark.</div>
+
+    <div class="input-box">
+      <input type="text" id="linkInput" placeholder="https://www.tiktok.com/@user/video/..." autocomplete="off">
+      <button class="btn-go" id="goBtn">Ambil</button>
+    </div>
+
+    <div class="result">
+      <div class="state-msg" id="loadingMsg">
+        <div class="spin"></div>
+        Memproses link...
+      </div>
+      <div class="state-msg" id="errorMsg"></div>
+
+      <div class="result-card" id="resultCard">
+        <div class="result-title" id="resultTitle"></div>
+        <div class="result-author" id="resultAuthor"></div>
+        <video class="result-video" id="resultVideo" controls playsinline style="display:none"></video>
+        <div class="result-images" id="resultImages" style="display:none"></div>
+        <div class="dl-row" id="dlRow"></div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
+    var supabaseClient;
+    try {
+      supabaseClient = supabase.createClient(
+        'https://ygjpwaftccewntwwoixs.supabase.co',
+        'sb_publishable_4IdyoPpEW-It9IWLZOrSAQ_WuumXkl9'
+      );
+    } catch(e) { console.error('Gagal memuat Supabase:', e); }
+
+    function notify(msg){
+      var n = document.getElementById('notif');
+      n.textContent = msg;
+      n.classList.add('show');
+      setTimeout(function(){ n.classList.remove('show'); }, 2500);
+    }
+
+    const menuBtn = document.getElementById('menuBtn');
+    const dropdown = document.getElementById('dropdown');
+    menuBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      dropdown.classList.toggle('open');
+    });
+    document.addEventListener('click', (e) => {
+      if (!dropdown.contains(e.target) && !menuBtn.contains(e.target)) {
+        dropdown.classList.remove('open');
+      }
+    });
+    document.getElementById('riwayatBtn').addEventListener('click', function(){
+      notify('Sedang diperbaiki');
+      dropdown.classList.remove('open');
+    });
+    document.getElementById('keluarBtn').addEventListener('click', async function(){
+      try { if (supabaseClient) await supabaseClient.auth.signOut(); } catch(e){}
+      window.location.href = 'index.html';
+    });
+
+    // ── TikTok Downloader ──────────────────────────────────
+    const linkInput = document.getElementById('linkInput');
+    const goBtn = document.getElementById('goBtn');
+    const loadingMsg = document.getElementById('loadingMsg');
+    const errorMsg = document.getElementById('errorMsg');
+    const resultCard = document.getElementById('resultCard');
+    const resultTitle = document.getElementById('resultTitle');
+    const resultAuthor = document.getElementById('resultAuthor');
+    const resultVideo = document.getElementById('resultVideo');
+    const resultImages = document.getElementById('resultImages');
+    const dlRow = document.getElementById('dlRow');
+
+    function resetResult(){
+      loadingMsg.classList.remove('show');
+      errorMsg.classList.remove('show');
+      resultCard.classList.remove('show');
+      resultVideo.style.display = 'none';
+      resultVideo.pause();
+      resultVideo.removeAttribute('src');
+      resultImages.style.display = 'none';
+      resultImages.innerHTML = '';
+      dlRow.innerHTML = '';
+    }
+
+    async function fetchTikTok(){
+      const url = linkInput.value.trim();
+      if(!url){ notify('Tempel link TikTok dulu'); return; }
+      if(!url.includes('tiktok.com')){ notify('Link kelihatannya bukan link TikTok'); return; }
+
+      resetResult();
+      loadingMsg.classList.add('show');
+      goBtn.disabled = true;
+
+      try {
+        const api = 'https://www.tikwm.com/api/?url=' + encodeURIComponent(url) + '&hd=1';
+        const res = await fetch(api);
+        const json = await res.json();
+
+        loadingMsg.classList.remove('show');
+
+        if(json.code !== 0 || !json.data){
+          errorMsg.textContent = 'Gagal mengambil data. Pastikan link-nya benar dan videonya publik.';
+          errorMsg.classList.add('show');
+          return;
+        }
+
+        const d = json.data;
+        resultTitle.textContent = d.title || 'Tanpa judul';
+        resultAuthor.textContent = d.author ? ('@' + (d.author.unique_id || d.author.nickname || '')) : '';
+
+        if(Array.isArray(d.images) && d.images.length){
+          resultImages.style.display = 'grid';
+          resultImages.innerHTML = d.images.map(function(src){
+            return '<img src="' + src + '" alt="Foto TikTok" loading="lazy">';
+          }).join('');
+          d.images.forEach(function(src, i){
+            const a = document.createElement('a');
+            a.href = src; a.target = '_blank'; a.rel = 'noopener';
+            a.className = 'dl-btn' + (i === 0 ? '' : ' secondary');
+            a.download = 'tiktok-foto-' + (i + 1) + '.jpg';
+            a.textContent = 'Foto ' + (i + 1);
+            dlRow.appendChild(a);
+          });
+        } else if(d.play || d.hdplay){
+          const videoUrl = d.hdplay || d.play;
+          resultVideo.src = videoUrl;
+          resultVideo.style.display = 'block';
+
+          const a1 = document.createElement('a');
+          a1.href = videoUrl; a1.target = '_blank'; a1.rel = 'noopener';
+          a1.className = 'dl-btn'; a1.download = 'tiktok-video.mp4';
+          a1.textContent = 'Unduh Video (Tanpa Watermark)';
+          dlRow.appendChild(a1);
+
+          if(d.music){
+            const a2 = document.createElement('a');
+            a2.href = d.music; a2.target = '_blank'; a2.rel = 'noopener';
+            a2.className = 'dl-btn secondary'; a2.download = 'tiktok-audio.mp3';
+            a2.textContent = 'Unduh Audio';
+            dlRow.appendChild(a2);
+          }
+        } else {
+          errorMsg.textContent = 'Konten tidak ditemukan pada link ini.';
+          errorMsg.classList.add('show');
+          return;
+        }
+
+        resultCard.classList.add('show');
+      } catch(err){
+        loadingMsg.classList.remove('show');
+        errorMsg.textContent = 'Gagal terhubung ke layanan unduhan. Coba lagi.';
+        errorMsg.classList.add('show');
+        console.error(err);
+      } finally {
+        goBtn.disabled = false;
+      }
+    }
+
+    goBtn.addEventListener('click', fetchTikTok);
+    linkInput.addEventListener('keydown', function(e){
+      if(e.key === 'Enter') fetchTikTok();
+    });
+  </script>
+</body>
+</html>
