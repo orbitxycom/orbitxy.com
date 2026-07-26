@@ -547,7 +547,6 @@ nav,.nav,.topbar{backdrop-filter:blur(12px)!important;-webkit-backdrop-filter:bl
   width:11px;height:11px;border-radius:50%;border:none;
   background:var(--em);cursor:pointer;
 }
-/* Equalizer bars (animated when playing) */
 .mp-eq{display:none;align-items:flex-end;gap:2px;height:15px;width:15px;justify-content:center;}
 .mp-eq span{
   width:2px;background:var(--em);border-radius:1px;
@@ -558,7 +557,6 @@ nav,.nav,.topbar{backdrop-filter:blur(12px)!important;-webkit-backdrop-filter:bl
 .mp-eq span:nth-child(3){animation-duration:.6s;animation-delay:.27s;}
 .mp-eq span:nth-child(4){animation-duration:.8s;animation-delay:.06s;}
 @keyframes mpEq{0%,100%{height:2px}50%{height:14px}}
-/* Main toggle button */
 #musicBtn{
   width:38px;height:38px;min-height:unset!important;
   border-radius:4px;background:var(--bg2);border:1px solid var(--line2);
@@ -598,9 +596,6 @@ nav,.nav,.topbar{backdrop-filter:blur(12px)!important;-webkit-backdrop-filter:bl
 .pf-input:focus{border-color:rgba(var(--em-rgb),.4)}
 .pf-input::placeholder{color:var(--t4)}
 
-/* ── Global UI Refinement v7.2 ─────────────────────────────────── */
-
-/* --- Compact, refined buttons --- */
 button, .btn, .n-btn, .nav-btn, .snav-btn, .tb-btn, .tb-f,
 .act-btn, .pf-cat, .chip, .cat, .tag-btn, .filter-btn {
   font-size: .67rem !important;
@@ -608,7 +603,6 @@ button, .btn, .n-btn, .nav-btn, .snav-btn, .tb-btn, .tb-f,
   transition: all .15s ease !important;
 }
 
-/* Primary action buttons: smaller but still prominent */
 .btn-em, .l-btn, .submit-btn, .free-claim-btn, .buy-btn, .order-btn {
   font-size: .73rem !important;
   padding: .5rem .95rem !important;
@@ -616,10 +610,8 @@ button, .btn, .n-btn, .nav-btn, .snav-btn, .tb-btn, .tb-f,
   border-radius: 5px !important;
 }
 
-/* Nav bar tighter */
 .nav-inner, .nav-wrap { height: 46px !important; }
 
-/* Inputs slimmer */
 .l-inp, .f-inp, .finp, .ph-inp, .pf-input,
 .cnt-search, .srv-search, .tb-search, .prod-search,
 .dr-inp, .dp-inp, .chat-inp, .msg-inp {
@@ -627,7 +619,6 @@ button, .btn, .n-btn, .nav-btn, .snav-btn, .tb-btn, .tb-f,
   padding: .48rem .72rem !important;
 }
 
-/* Cards: lighter shadow, crisper */
 .sc, .card, .prod-card, .srv-card, .rv-card, .dl-card,
 .ord-card, .dep-card, .notif-item {
   box-shadow: 0 1px 5px rgba(0,0,0,.2) !important;
@@ -638,17 +629,14 @@ button, .btn, .n-btn, .nav-btn, .snav-btn, .tb-btn, .tb-f,
   transform: translateY(-1px) !important;
 }
 
-/* Toasts smaller */
 .toast { font-size: .7rem !important; padding: .55rem .85rem !important; }
 
 
-/* Scrollbars thin and subtle */
 ::-webkit-scrollbar { width: 3px; height: 3px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: rgba(255,255,255,.12); border-radius: 99px; }
 ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,.22); }
 
-/* Mobile overrides */
 @media (max-width: 680px) {
   .main, .page, .main-wrap {
     padding-left: .85rem !important;
@@ -663,26 +651,21 @@ button, .btn, .n-btn, .nav-btn, .snav-btn, .tb-btn, .tb-f,
     font-size: .64rem !important;
     padding: 0 .65rem !important;
   }
-  /* Drawer links more compact */
   .dr-link, .snav-dr-link {
     padding: .55rem .7rem !important;
     font-size: .72rem !important;
     min-height: 36px !important;
     border-radius: 5px !important;
   }
-  /* Section headers tighter */
   .sec-title, .section-title, .tab-title {
     font-size: .65rem !important;
     margin-bottom: .6rem !important;
   }
-  /* Reduce gap between grid items */
   .srv-grid, .prod-grid {
     gap: .6rem !important;
   }
 }
-/* ── End Global UI Refinement ───────────────────────────────────── */
 
-  /* ── Logo image fix: gem container auto-width & transparent ── */
   .logo-gem img[data-logo-img],
   .snav-gem img[data-logo-img],
   .nav-gem img[data-logo-img] {
@@ -833,695 +816,6 @@ body{
 }
 ::selection{background:rgba(74,222,128,.18);color:#e5e5e5}
 </style>
-
-<style id="mobile-patch">
-/* ============================================================
-   MOBILE FRIENDLY PATCH v2 — Dongtube V7
-   Targeted fixes: no overflow, proper sizing, no conflicts
-   ============================================================ */
-
-/* ── CSS variables ───────────────────────────────────────── */
-:root {
-  --btn-h: 48px;
-  --btn-h-sm: 40px;
-  --inp-h: 48px;
-  --rad-mob: 8px;
-}
-
-/* ── Prevent horizontal overflow globally ────────────────── */
-*, *::before, *::after { box-sizing: border-box; }
-
-html, body {
-  max-width: 100vw;
-}
-
-/* ── Prevent iOS font zoom on input focus ────────────────── */
-@media (max-width: 680px) {
-  /* Only apply to inputs, not to other elements */
-  input[type="text"],
-  input[type="email"],
-  input[type="tel"],
-  input[type="number"],
-  input[type="password"],
-  input[type="url"],
-  input[type="search"],
-  select,
-  textarea {
-    font-size: 16px !important;
-  }
-}
-
-/* ── Navbar height ───────────────────────────────────────── */
-@media (max-width: 680px) {
-  /* index.html navbar */
-  .nav-inner {
-    height: 54px !important;
-    padding: 0 1rem !important;
-  }
-  /* Shared navbar (pay, produk, etc) */
-  .snav {
-    height: 54px !important;
-    padding: 0 1rem !important;
-  }
-  /* otp/cpanel style nav */
-  .nav:not(.mob-bar):not(.chat-nav) {
-    height: 54px !important;
-    padding: 0 1rem !important;
-  }
-  /* Logo sizes */
-  .logo, .snav-logo, .nav-logo { font-size: .95rem !important; }
-  .logo-gem, .snav-gem, .nav-gem {
-    width: 28px !important;
-    height: 28px !important;
-  }
-  /* Hamburger */
-  .hbg {
-    width: 38px !important;
-    height: 38px !important;
-    min-height: unset !important;
-  }
-  /* Nav buttons — keep small, just ensure tap target */
-  .n-btn, .snav-btn, .nav-btn {
-    height: 34px !important;
-    min-height: unset !important;
-    padding: 0 .85rem !important;
-    font-size: .68rem !important;
-  }
-}
-
-/* ── Drawer ──────────────────────────────────────────────── */
-@media (max-width: 680px) {
-  .drawer {
-    width: min(290px, 86vw) !important;
-    top: 54px !important;
-    padding: .85rem .65rem 2rem !important;
-  }
-  .drawer-close {
-    width: 34px !important;
-    height: 34px !important;
-    min-height: unset !important;
-  }
-  /* Drawer links — bigger tap target */
-  .dr-link {
-    padding: .6rem .75rem !important;
-    font-size: .74rem !important;
-    border-radius: 5px !important;
-    margin-bottom: .2rem !important;
-    min-height: 38px !important;
-    display: flex !important;
-    align-items: center !important;
-  }
-  .dr-link svg {
-    width: 17px !important;
-    height: 17px !important;
-    flex-shrink: 0;
-  }
-}
-
-/* ── Primary action buttons (full-width) ─────────────────── */
-@media (max-width: 680px) {
-  /* .btn is used across all pages as the main CTA */
-  .btn {
-    min-height: var(--btn-h) !important;
-    padding: .6rem .9rem !important;
-    font-size: .88rem !important;
-    border-radius: var(--rad-mob) !important;
-    width: 100%;
-  }
-  /* Pay button in produk.html bottom sheet */
-  .btn-pay {
-    min-height: var(--btn-h) !important;
-    font-size: .88rem !important;
-    border-radius: var(--rad-mob) !important;
-  }
-  /* Pay button in sidebar */
-  .btn-pay-sidebar {
-    min-height: var(--btn-h) !important;
-    font-size: .88rem !important;
-    border-radius: var(--rad-mob) !important;
-  }
-  /* Free claim */
-  .free-claim-btn {
-    min-height: var(--btn-h) !important;
-    font-size: .88rem !important;
-    border-radius: var(--rad-mob) !important;
-  }
-  /* Mobile bottom bar buy button (produk.html) */
-  .mob-btn {
-    height: 44px !important;
-    min-height: unset !important;
-    padding: 0 1.25rem !important;
-    font-size: .82rem !important;
-    border-radius: 8px !important;
-    flex-shrink: 0 !important;
-  }
-}
-
-/* ── Small buttons — DON'T blow up in tables/rows ────────── */
-@media (max-width: 680px) {
-  /* Table action buttons — keep compact */
-  .actn-btn {
-    min-height: unset !important;
-    height: auto !important;
-    padding: .28rem .6rem !important;
-    font-size: .62rem !important;
-    white-space: nowrap;
-  }
-  /* Copy button */
-  .cp-btn {
-    width: 28px !important;
-    height: 28px !important;
-    min-height: unset !important;
-    flex-shrink: 0;
-  }
-  /* Receipt print button */
-  .receipt-btn {
-    min-height: unset !important;
-    padding: .3rem .65rem !important;
-    font-size: .65rem !important;
-  }
-  /* Download QR button */
-  .qr-dl-btn {
-    min-height: unset !important;
-  }
-  /* btn-sm stays small */
-  .btn-sm {
-    min-height: var(--btn-h-sm) !important;
-    padding: .48rem 1rem !important;
-    font-size: .76rem !important;
-    border-radius: 6px !important;
-  }
-  /* Voucher apply button */
-  .vc-apply, .vc-apply-btn {
-    min-height: 44px !important;
-    padding: 0 1rem !important;
-    font-size: .8rem !important;
-    border-radius: 6px !important;
-    flex-shrink: 0;
-    white-space: nowrap;
-  }
-}
-
-/* ── Table buy button — special case ────────────────────── */
-@media (max-width: 680px) {
-  /* cnt-buy-btn lives inside a table td — use comfortable but not huge size */
-  .cnt-buy-btn, .cnt-buy {
-    min-height: 36px !important;
-    height: 36px !important;
-    padding: 0 .85rem !important;
-    font-size: .7rem !important;
-    border-radius: 6px !important;
-    white-space: nowrap;
-    display: inline-flex !important;
-    align-items: center !important;
-  }
-}
-
-/* ── Input fields ────────────────────────────────────────── */
-@media (max-width: 680px) {
-  .f-inp, .finp, .l-inp, .ph-inp, .pf-input, .bw-input,
-  .cnt-search, .srv-search, .captcha-inp {
-    min-height: var(--inp-h) !important;
-    padding: .8rem 1rem !important;
-    border-radius: var(--rad-mob) !important;
-    font-size: 16px !important; /* prevents iOS zoom */
-    width: 100%;
-  }
-  /* Search with icon — preserve left padding for icon */
-  .cnt-search { padding-left: 2.5rem !important; }
-
-  /* Phone input inside a flex row */
-  .ph-inp, .ph-row input {
-    min-height: var(--inp-h) !important;
-    padding: .8rem .85rem !important;
-    font-size: 16px !important;
-  }
-  /* Textarea */
-  textarea.f-inp, textarea.pf-input, textarea.bw-input {
-    min-height: 80px !important;
-    padding: .75rem 1rem !important;
-  }
-  /* Select */
-  select.f-inp {
-    padding-right: 2.5rem !important;
-    background-position: right .75rem center !important;
-  }
-  /* Captcha number input — compact */
-  .captcha-inp {
-    min-height: 44px !important;
-    width: 90px !important;
-    text-align: center;
-  }
-  /* Voucher row */
-  .vc-row {
-    display: flex !important;
-    gap: .5rem !important;
-    align-items: stretch !important;
-  }
-  .vc-row input, .vc-row .bw-input {
-    flex: 1 !important;
-    min-width: 0 !important;
-  }
-}
-
-/* ── Voucher / action rows — prevent overflow ────────────── */
-@media (max-width: 680px) {
-  .ph-row {
-    display: flex !important;
-    align-items: stretch !important;
-    overflow: hidden;
-    border-radius: var(--rad-mob) !important;
-  }
-  .ph-pre {
-    display: flex !important;
-    align-items: center !important;
-    padding: 0 .75rem !important;
-    font-size: .88rem !important;
-    flex-shrink: 0;
-  }
-}
-
-/* ── Category / filter pills ─────────────────────────────── */
-@media (max-width: 680px) {
-  .cat {
-    min-height: 38px !important;
-    padding: .5rem 1rem !important;
-    font-size: .76rem !important;
-    border-radius: 20px !important;
-    flex-shrink: 0;
-    white-space: nowrap;
-  }
-  .cats {
-    padding-bottom: .5rem !important;
-    gap: .4rem !important;
-  }
-  /* Tab buttons */
-  .sec-tab, .tab {
-    min-height: 38px !important;
-    padding: .55rem .85rem !important;
-    font-size: .76rem !important;
-    border-radius: 6px !important;
-  }
-  /* Sort buttons */
-  .cnt-sort-btn {
-    min-height: 36px !important;
-    padding: 0 .85rem !important;
-    font-size: .72rem !important;
-    border-radius: 6px !important;
-    white-space: nowrap;
-  }
-  /* Duration labels */
-  .dur-lbl, .days-lbl {
-    min-height: 38px !important;
-    padding: .5rem .85rem !important;
-    font-size: .76rem !important;
-    border-radius: 6px !important;
-  }
-}
-
-/* ── Cards grid ──────────────────────────────────────────── */
-@media (max-width: 680px) {
-  .grid {
-    grid-template-columns: repeat(2, 1fr) !important;
-    gap: .6rem !important;
-  }
-  .card-body {
-    padding: .75rem .85rem .9rem !important;
-  }
-  .card-name { font-size: .82rem !important; }
-  .card-price b { font-size: .86rem !important; }
-}
-@media (max-width: 360px) {
-  .grid { gap: .45rem !important; }
-  .card-name { font-size: .75rem !important; }
-}
-
-/* ── Order / product cards ───────────────────────────────── */
-@media (max-width: 680px) {
-  .ord-card {
-    padding: .85rem 1rem !important;
-    border-radius: var(--rad-mob) !important;
-  }
-  .ord-head { padding: .75rem .9rem !important; }
-  .dep-card {
-    padding: .85rem 1rem !important;
-    border-radius: var(--rad-mob) !important;
-  }
-  .acc-card {
-    padding: .85rem 1rem !important;
-    border-radius: var(--rad-mob) !important;
-  }
-}
-
-/* ── Wrap / main content areas ───────────────────────────── */
-@media (max-width: 680px) {
-  .wrap { padding-left: .9rem !important; padding-right: .9rem !important; }
-  .main { padding-left: .9rem !important; padding-right: .9rem !important; }
-  .c-body { padding: 1rem !important; }
-  .m-body { padding: 1rem !important; border-radius: var(--rad-mob) !important; }
-  .card-body.main-card-body { padding: 1rem !important; }
-  /* Track / renew centered body */
-  body[style*="align-items:center"],
-  body[style*="align-items: center"] {
-    padding-left: .9rem !important;
-    padding-right: .9rem !important;
-  }
-}
-
-/* ── Plan/variant cards (renew, produk) ──────────────────── */
-@media (max-width: 680px) {
-  .plan-card {
-    padding: .85rem 1rem !important;
-    border-radius: var(--rad-mob) !important;
-  }
-  .plan-card:has(input[type="radio"]) {
-    cursor: pointer;
-  }
-  /* Variant radio pills */
-  .bw-vr {
-    padding: .7rem .85rem !important;
-    border-radius: 8px !important;
-  }
-  .bw-vr-name { font-size: .8rem !important; }
-  .bw-vr-price { font-size: .72rem !important; }
-  .bw-vr-radio {
-    width: 18px !important;
-    height: 18px !important;
-    flex-shrink: 0;
-  }
-}
-
-/* ── Hero slider ─────────────────────────────────────────── */
-@media (max-width: 680px) {
-  .hero-wrap { max-height: 260px !important; }
-  .slide h1 {
-    font-size: clamp(1.1rem, 5vw, 1.6rem) !important;
-    margin-bottom: .4rem !important;
-  }
-  .slide p {
-    font-size: .76rem !important;
-    margin-bottom: .85rem !important;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-  }
-  .slide-cta {
-    min-height: 40px !important;
-    padding: .55rem 1.1rem !important;
-    font-size: .78rem !important;
-    border-radius: 8px !important;
-    white-space: nowrap;
-  }
-}
-
-/* ── Tables — horizontal scroll, prevent overflow ────────── */
-@media (max-width: 680px) {
-  .tbl-wrap, .cnt-tbl-scroll {
-    overflow-x: auto !important;
-    -webkit-overflow-scrolling: touch !important;
-    max-width: 100% !important;
-  }
-  .cnt-tbl th, .cnt-tbl td {
-    padding: .6rem .75rem !important;
-    font-size: .76rem !important;
-  }
-  .cnt-tbl th { font-size: .6rem !important; }
-  .tbl th, .tbl td {
-    padding: .55rem .7rem !important;
-    font-size: .76rem !important;
-    white-space: nowrap;
-  }
-}
-
-/* ── Server picker cards (otp.html) ──────────────────────── */
-@media (max-width: 680px) {
-  .srv-card {
-    padding: .75rem .55rem !important;
-    border-radius: var(--rad-mob) !important;
-  }
-  .srv-img { width: 36px !important; height: 36px !important; }
-  .srv-jump {
-    max-width: 100% !important;
-    width: 100% !important;
-    margin-top: .5rem;
-  }
-}
-
-/* ── FAQ section ─────────────────────────────────────────── */
-@media (max-width: 680px) {
-  .faq-section { padding: 0 .9rem 2.5rem !important; }
-  .faq-list summary {
-    font-size: .86rem !important;
-    padding: .85rem 0 !important;
-  }
-  .faq-ans { font-size: .8rem !important; line-height: 1.7 !important; }
-}
-
-/* ── Chat page ───────────────────────────────────────────── */
-@media (max-width: 680px) {
-  .chat-inp {
-    min-height: 46px !important;
-    font-size: 16px !important;
-    border-radius: var(--rad-mob) !important;
-  }
-  .chat-send {
-    width: 46px !important;
-    height: 46px !important;
-    min-height: unset !important;
-    border-radius: var(--rad-mob) !important;
-    flex-shrink: 0;
-  }
-  .msg-bubble {
-    font-size: .82rem !important;
-    padding: .65rem .9rem !important;
-    border-radius: 14px !important;
-    max-width: 86% !important;
-  }
-}
-
-/* ── Upload / TikTok pages ───────────────────────────────── */
-@media (max-width: 680px) {
-  .drop-zone {
-    padding: 1.75rem 1rem !important;
-    border-radius: var(--rad-mob) !important;
-  }
-}
-
-/* ── Data rows (pay.html result) ─────────────────────────── */
-@media (max-width: 680px) {
-  .data-row {
-    font-size: .8rem !important;
-    padding: .5rem .6rem !important;
-    display: flex !important;
-    align-items: center !important;
-    gap: .5rem !important;
-    flex-wrap: nowrap;
-    overflow: hidden;
-  }
-  .d-k { flex-shrink: 0; }
-  .d-v-wrap {
-    flex: 1 !important;
-    min-width: 0 !important;
-    display: flex !important;
-    align-items: center !important;
-    gap: .4rem !important;
-    overflow: hidden;
-  }
-  .d-v {
-    flex: 1 !important;
-    min-width: 0 !important;
-    overflow: hidden !important;
-    text-overflow: ellipsis !important;
-    white-space: nowrap !important;
-    max-width: none !important; /* remove fixed 180px */
-  }
-}
-
-/* ── QR code section (pay.html) ─────────────────────────── */
-@media (max-width: 480px) {
-  .qr-canvas-bg {
-    max-width: 100% !important;
-    overflow: hidden;
-  }
-  .qr-canvas-bg img {
-    max-width: 100% !important;
-    height: auto !important;
-  }
-}
-
-/* ── Cancel / back buttons ───────────────────────────────── */
-@media (max-width: 680px) {
-  .cancel-btn {
-    min-height: 44px !important;
-    font-size: .82rem !important;
-    border-radius: var(--rad-mob) !important;
-    padding: .7rem !important;
-  }
-  .back-btn {
-    min-height: unset !important;
-    font-size: .76rem !important;
-    padding: .3rem 0 !important;
-  }
-}
-
-/* ── Music player ────────────────────────────────────────── */
-@media (max-width: 680px) {
-  #musicPlayer {
-    bottom: 1.15rem !important;
-    right: .85rem !important;
-  }
-  #musicBtn {
-    width: 42px !important;
-    height: 42px !important;
-    min-height: unset !important;
-    border-radius: 8px !important;
-  }
-  #musicPanel {
-    width: 200px !important;
-    border-radius: 8px !important;
-  }
-  .mp-nav {
-    width: 34px !important;
-    height: 34px !important;
-    min-height: unset !important;
-  }
-}
-
-/* ── PWA banner ──────────────────────────────────────────── */
-@media (max-width: 680px) {
-  #pwaInstall {
-    bottom: 1.15rem !important;
-    right: .85rem !important;
-    left: .85rem !important;
-    max-width: none !important;
-    border-radius: var(--rad-mob) !important;
-  }
-  .pi-btn {
-    min-height: 36px !important;
-    padding: .45rem 1rem !important;
-    font-size: .76rem !important;
-    border-radius: 6px !important;
-    white-space: nowrap;
-    flex-shrink: 0;
-  }
-  .pi-close { min-height: unset !important; }
-}
-
-/* ── Modals / confirm dialogs ────────────────────────────── */
-@media (max-width: 680px) {
-  .modal, .cfd {
-    border-radius: var(--rad-mob) !important;
-    padding: 1.4rem 1.2rem !important;
-    max-width: calc(100vw - 2rem) !important;
-    width: 100% !important;
-  }
-  .cfd-btn {
-    min-height: 44px !important;
-    font-size: .84rem !important;
-    border-radius: 8px !important;
-    padding: .75rem 1rem !important;
-    flex: 1;
-  }
-  .cfd-btns {
-    display: flex !important;
-    gap: .5rem !important;
-  }
-  .lb-close, .cfd-close {
-    width: 36px !important;
-    height: 36px !important;
-    min-height: unset !important;
-  }
-  .ad-close {
-    width: 32px !important;
-    height: 32px !important;
-    min-height: unset !important;
-  }
-}
-
-/* ── Section headings ────────────────────────────────────── */
-@media (max-width: 680px) {
-  .sec-label { font-size: .66rem !important; margin-bottom: .75rem !important; }
-  .card-head { padding: 1rem 1.15rem !important; }
-  .card-body:not(.card-thumb) { padding: 1rem 1.15rem !important; }
-}
-
-/* ── Footer ──────────────────────────────────────────────── */
-@media (max-width: 680px) {
-  footer, .page-footer {
-    padding: 1.2rem 1rem !important;
-    font-size: .7rem !important;
-    line-height: 1.9 !important;
-    text-align: center !important;
-  }
-}
-
-/* ── Touch feedback — only on touch devices ──────────────── */
-@media (hover: none) and (pointer: coarse) {
-  .btn:active:not(:disabled),
-  .dr-link:active,
-  .cat:active,
-  .card:active,
-  .ord-card:active,
-  .plan-card:active,
-  .bw-vr:active,
-  button:active:not(:disabled) {
-    transform: scale(.97) !important;
-    transition: transform .08s !important;
-  }
-}
-
-/* ── Safe area (notch / home bar) ────────────────────────── */
-@media (max-width: 680px) {
-  body {
-    padding-bottom: env(safe-area-inset-bottom);
-  }
-  .mob-bar {
-    padding-bottom: calc(.6rem + env(safe-area-inset-bottom)) !important;
-  }
-  #musicPlayer {
-    bottom: calc(1.15rem + env(safe-area-inset-bottom)) !important;
-  }
-  #pwaInstall {
-    bottom: calc(1.15rem + env(safe-area-inset-bottom)) !important;
-  }
-}
-
-/* ── Smooth scrolling ────────────────────────────────────── */
-@media (max-width: 680px) {
-  html { -webkit-overflow-scrolling: touch; }
-  .cats, .cnt-tbl-scroll, .tbl-wrap, .gallery-thumbs {
-    -webkit-overflow-scrolling: touch;
-    scroll-snap-type: none;
-  }
-}
-
-</style>
-
-<style id="mobile-fix-global">
-/* Fix over-aggressive global min-height on all <a> tags */
-/* Only apply min-height to actual interactive buttons, not all anchors */
-@media (max-width: 480px) {
-  /* Reset the blanket rule */
-  a { min-height: unset !important; }
-  /* Only apply to nav links and buttons that need it */
-  button:not(.actn-btn):not(.cp-btn):not(.qr-dl-btn):not(.mp-nav):not(.drawer-close):not(.hbg):not(.ad-close):not(.pi-close):not(.lb-close):not(.back-btn):not(.receipt-btn) {
-    min-height: 44px;
-  }
-  /* Specifically fix nav links in drawers */
-  .dr-link { min-height: 44px !important; }
-  /* Links that are styled as buttons */
-  .btn, .btn-em, .btn-ghost, .btn-pay, .n-btn, .snav-btn, .mob-btn { 
-    min-height: unset; /* let our patch control these */
-  }
-  /* Logo and breadcrumb links — no min-height */
-  .logo, .snav-logo, .nav-logo, .back-btn, .nav-breadcrumb a,
-  .page-footer a, footer a, .faq-ans a, .content-link,
-  .tick-item, .rc, .dr-link { 
-    min-height: unset !important; 
-  }
-}
-</style>
 </head>
 <body>
 
@@ -1609,10 +903,14 @@ html, body {
   <a href="ulasan.html" class="dr-link" onclick="toggleDrawer()">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/><path d="M8 10h8M8 14h5"/></svg>
     Ulasan
-  </a>  <a href="#" class="dr-link" onclick="toggleDrawer();return notReady(event)">
+  </a>
+
+  <!-- ✅ SUDAH DIPERBAIKI: sebelumnya href="#" + notReady(event), sekarang mengarah ke livechat.html -->
+  <a href="livechat.html" class="dr-link" onclick="toggleDrawer()">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/><circle cx="9" cy="10" r=".5" fill="currentColor"/><circle cx="12" cy="10" r=".5" fill="currentColor"/><circle cx="15" cy="10" r=".5" fill="currentColor"/></svg>
     Live Chat
   </a>
+
   <a href="#" class="dr-link" onclick="toggleDrawer();return notReady(event)">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
     Playlist Musik
@@ -1780,7 +1078,6 @@ function applyGlobalBg(s) {
     el.appendChild(img);
   }
   document.body.insertBefore(el, document.body.firstChild);
-  // Override body background agar tidak menutupi _gbg
   var st = document.createElement('style');
   st.id = '_gbg_style';
   st.textContent = 'html{background:var(--bg0,var(--bg,#0e0e0e))!important}body{background-color:transparent!important;background-image:none!important;}';
@@ -1789,10 +1086,9 @@ function applyGlobalBg(s) {
 
 var allProds = [], activeCat = 'all';
 var slI = 0, slTimer, NSLIDES = 1;
-var _cardRatings = {}; // Rating cache: { [productId]: { avg, total } }
+var _cardRatings = {};
 document.getElementById('ftYear').textContent = new Date().getFullYear();
 
-// ── FAQ
 var _defaultFaq = [
   { q: 'Bagaimana cara memesan produk?', a: 'Pilih produk yang kamu inginkan, klik "Beli", pilih varian, masukkan nomor WhatsApp (opsional), lalu klik "Bayar Sekarang". Ikuti instruksi pembayaran QRIS yang muncul. Pesanan diproses otomatis setelah pembayaran terverifikasi.' },
   { q: 'Berapa lama pesanan diproses?', a: 'Pesanan diproses otomatis dalam hitungan detik setelah pembayaran QRIS berhasil terverifikasi. Jika lebih dari 5 menit belum ada konfirmasi, cek status di halaman Track Order atau hubungi admin.' },
@@ -1813,7 +1109,6 @@ function renderFaq(items) {
 function _escHtml(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#x27;'); }
 renderFaq(_defaultFaq);
 
-// ── SLIDER
 function renderSlider() {
   document.getElementById('slidesEl').style.transform = 'translateX(-' + (slI * 100) + '%)';
   document.querySelectorAll('.sl-dot').forEach(function(d, i) { d.classList.toggle('on', i === slI); });
@@ -1821,7 +1116,6 @@ function renderSlider() {
 function moveSlide(d) { if (NSLIDES <= 1) return; goSlide((slI + d + NSLIDES) % NSLIDES); }
 function goSlide(i) { slI = i; renderSlider(); resetTimer(); }
 function resetTimer() { clearInterval(slTimer); if (NSLIDES > 1) slTimer = setInterval(function() { moveSlide(1); }, 5500); }
-// ← resetTimer() is NOT called here — called after loadSlides() sets NSLIDES
 var _tx = 0;
 document.getElementById('heroEl').addEventListener('touchstart', function(e) { _tx = e.touches[0].clientX; }, { passive: true });
 document.getElementById('heroEl').addEventListener('touchend', function(e) {
@@ -1835,12 +1129,11 @@ function goSection(c) {
   document.getElementById('gridEl').scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
-// ── DRAWER
 function closeDrawer() {
   var d = document.getElementById('drawer');
   var b = document.getElementById('drawerBackdrop');
   var btn = document.getElementById('hbgBtn');
-  if (!d.classList.contains('open')) return; // already closed
+  if (!d.classList.contains('open')) return;
   d.classList.remove('open');
   if (b) b.classList.remove('open');
   btn.classList.remove('open');
@@ -1859,7 +1152,6 @@ function toggleDrawer() {
     document.body.style.overflow = 'hidden';
   }
 }
-// Ensure hamburger functions are globally accessible
 window.toggleDrawer = toggleDrawer;
 window.closeDrawer = closeDrawer;
 
@@ -1869,13 +1161,10 @@ function notReady(e) {
   return false;
 }
 window.notReady = notReady;
-// Close drawer on Escape key
 document.addEventListener('keydown', function(e) {
   if (e.key === 'Escape') closeDrawer();
 });
 
-// ── LOAD
-// Slides background per index (cycles)
 var SLIDE_BGSMAP = [
   'linear-gradient(135deg,#0e1210,#202a22,#0c0c0e)',
   'linear-gradient(135deg,#100c14,#261e2c,#0c0c0e)',
@@ -1900,7 +1189,6 @@ async function loadSlides() {
     track.innerHTML = slides.map(function(s, i) {
       var bg = SLIDE_BGSMAP[i % SLIDE_BGSMAP.length];
       var glow = SLIDE_GLOWS[i % SLIDE_GLOWS.length];
-      // SECURITY: escape user-controlled slide fields before injecting into innerHTML
       var safeImage   = _escHtml(s.image   || '');
       var safeTag     = _escHtml(s.tag     || '');
       var safeTitle   = _escHtml(s.title   || '');
@@ -1950,7 +1238,7 @@ async function load(silent) {
   _loadInProgress = true;
 
   if (!silent && (!allProds || allProds.length === 0)) {
-    renderGrid([]); // tampilkan kosong dulu, tidak perlu skeleton
+    renderGrid([]);
   }
 
   try {
@@ -2097,7 +1385,6 @@ if ('serviceWorker' in navigator) {
   navigator.serviceWorker.register('/sw.js').catch(function(){});
 }
 
-// ── Music Player ─────────────────────────────
 var _music = {
   playlist: [],
   idx: 0,
@@ -2129,7 +1416,6 @@ function applyMusicSettings(settings) {
     if (player) player.style.display = 'none';
     return;
   }
-  // Set atribut mobile penting via JS (backup selain atribut HTML)
   audio.playsInline = true;
   audio.setAttribute('playsinline', '');
   audio.setAttribute('webkit-playsinline', '');
@@ -2144,7 +1430,6 @@ function applyMusicSettings(settings) {
   _music.playlist = urls;
   _music.idx = Math.min(_music.idx, urls.length - 1);
   _music.ready = true;
-  // Loop hanya aktif jika single track (multi-track dihandle via 'ended' event)
   audio.loop = (urls.length === 1);
 
   var prevBtn = document.getElementById('mpPrev');
@@ -2179,7 +1464,6 @@ function applyMusicSettings(settings) {
 function _musicLoad(idx, autoPlay) {
   var audio = document.getElementById('bgMusic');
   var url = _music.playlist[idx];
-  // Atribut penting untuk iOS agar audio bisa diputar inline
   audio.playsInline = true;
   if (audio.src !== url) { audio.src = url; audio.load(); }
   audio.volume = _music.muted ? 0 : _music.vol;
@@ -2192,8 +1476,6 @@ function _musicFadeIn() {
   clearInterval(_music.fadeTimer);
   audio.playsInline = true;
   audio.setAttribute('playsinline', '');
-  // Langsung set volume target — tidak fade via setInterval karena di mobile
-  // interval callback BUKAN bagian dari user gesture, sehingga play() di dalamnya diblokir
   audio.volume = _music.vol;
   var p = audio.play();
   if (p && p.catch) p.catch(function(e){
@@ -2202,7 +1484,6 @@ function _musicFadeIn() {
   });
 }
 
-// Daftarkan satu kali listener gesture (touchstart / click) untuk resume di HP
 function _musicWaitForGesture() {
   if (_music.gesturePending) return;
   _music.gesturePending = true;
@@ -2232,16 +1513,11 @@ function _musicFadeOut(cb) {
 function toggleMusicPanel() {
   if (!_music.ready) { toggleMusic(); return; }
   var audio = document.getElementById('bgMusic');
-  // KUNCI MOBILE: audio.play() harus dipanggil langsung dalam gesture handler (tap/click).
-  // Kalau dipanggil lewat setTimeout atau nested function, browser mobile BLOKIR.
-  // Jadi kita play() dulu synchronous di sini, baru urus panel setelahnya.
   if (audio && !_music.muted) {
-    // Set semua atribut mobile sebelum play
     audio.playsInline = true;
     audio.setAttribute('playsinline', '');
     audio.setAttribute('webkit-playsinline', '');
     if (audio.paused) {
-      // Pastikan src sudah ada
       if (!audio.src && _music.playlist && _music.playlist.length) {
         audio.src = _music.playlist[_music.idx] || _music.playlist[0];
         audio.load();
@@ -2265,7 +1541,6 @@ function toggleMusic() {
   if (_music.muted) {
     _musicFadeOut();
   } else {
-    // Play langsung synchronous dalam gesture untuk mobile
     var audio = document.getElementById('bgMusic');
     if (audio) {
       audio.playsInline = true;
@@ -2470,7 +1745,6 @@ document.addEventListener('DOMContentLoaded', async function() {
   initMusic();
   load();
   loadSlides();
-  // skeleton dihapus — tidak diperlukan timeout safety lagi
 });
 
 </script>
@@ -2502,13 +1776,6 @@ document.addEventListener('DOMContentLoaded', async function() {
   </button>
 </div>
 <audio id="bgMusic" loop preload="none" playsinline webkit-playsinline x-webkit-airplay="allow"></audio>
-
-<div id="pwaInstall">
-  <button class="pi-close" onclick="document.getElementById('pwaInstall').style.display='none';try{localStorage.setItem('pwaDeclined','1');}catch(e){}">×</button>
-  <div class="pi-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="22" height="22" stroke-linecap="round"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18" stroke-width="2.5"/></svg></div>
-  <div class="pi-text"><b>Install Dongtube</b>Tambahkan ke homescreen untuk akses lebih cepat</div>
-  <button class="pi-btn" id="pwaInstallBtn" onclick="pwaInstall()">Install</button>
-</div>
 
 <script>(function(){var v="?v="+Date.now();document.querySelectorAll("img[data-logo-img]").forEach(function(el){if(el.src&&el.src.indexOf("/media/logo")>-1)el.src=el.src.split("?")[0]+v;});var fav=document.querySelector("link[rel=icon]");if(fav&&fav.href&&fav.href.indexOf("/media/logo")>-1)fav.href=fav.href.split("?")[0]+v;})();</script>
 </body>
