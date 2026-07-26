@@ -108,29 +108,6 @@
     text-align: right;
   }
 
-  .sys-msg {
-    align-self: center;
-    text-align: center;
-    max-width: 90%;
-    margin: 6px 0;
-  }
-  .sys-sticker {
-    font-size: 2.4rem;
-    line-height: 1;
-    margin-bottom: 2px;
-  }
-  .sys-text {
-    font-size: .75rem;
-    font-weight: 700;
-    color: #cfcfcf;
-    background: #141414;
-    border: 1px solid #262626;
-    border-radius: 999px;
-    padding: 6px 16px;
-    display: inline-block;
-  }
-  .sys-text b { color: #22c55e; }
-
   .empty-chat {
     margin: auto;
     text-align: center;
@@ -442,22 +419,6 @@
     const emptyEl = document.getElementById('emptyChat');
     if (emptyEl) emptyEl.remove();
 
-    if (row.is_system) {
-      const sysDiv = document.createElement('div');
-      sysDiv.className = 'sys-msg';
-      const sticker = document.createElement('div');
-      sticker.className = 'sys-sticker';
-      sticker.textContent = '🎉👋';
-      const label = document.createElement('div');
-      label.className = 'sys-text';
-      label.innerHTML = '<b>' + esc(row.display_name || 'Pengguna') + '</b> bergabung! Selamat datang di grup';
-      sysDiv.appendChild(sticker);
-      sysDiv.appendChild(label);
-      messagesEl.appendChild(sysDiv);
-      messagesEl.scrollTop = messagesEl.scrollHeight;
-      return;
-    }
-
     const who = (_me && row.user_id === _me.id) ? 'me' : 'them';
 
     const div = document.createElement('div');
@@ -624,34 +585,7 @@
 
     await loadHistory();
     subscribeRealtime();
-    sendWelcomeStickerIfFirstJoin();
   })();
-
-  // Kirim sticker "selamat datang" HANYA jika ini pertama kalinya user
-  // ini pernah membuka Live Chat (dicek lewat tabel chat_joins).
-  async function sendWelcomeStickerIfFirstJoin() {
-    if (!_me) return;
-    try {
-      const { error: joinErr } = await supabaseClient
-        .from('chat_joins')
-        .insert({ user_id: _me.id });
-
-      if (joinErr) {
-        // Kode 23505 = sudah pernah ada (unique violation) -> user lama, skip.
-        // Error lain -> diam saja, jangan ganggu pengalaman chat.
-        return;
-      }
-
-      // Berhasil insert -> ini memang pertama kali -> kirim sticker.
-      await supabaseClient.from('chat_messages').insert({
-        user_id: _me.id,
-        display_name: _me.name,
-        is_system: true
-      });
-    } catch (e) {
-      console.warn('Gagal kirim sticker selamat datang:', e);
-    }
-  }
 </script>
 
 </body>
