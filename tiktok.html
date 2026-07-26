@@ -109,9 +109,18 @@
     flex: 1; text-align: center; text-decoration: none;
     background: #22c55e; color: #05130a; font-weight: 800; font-size: 14px;
     padding: 13px; border-radius: 12px; transition: opacity .15s ease;
+    border: none; cursor: pointer; font-family: inherit;
+    display: flex; align-items: center; justify-content: center; gap: 6px;
+    min-width: 140px;
   }
   .dl-btn.secondary { background: #1c1c1c; color: #fff; border: 1px solid #2a2a2a; }
   .dl-btn:hover { opacity: .88; }
+  .dl-btn:disabled { opacity: .5; cursor: not-allowed; }
+  .dl-btn .mini-spin {
+    width: 14px; height: 14px; border: 2px solid rgba(255,255,255,.3);
+    border-top-color: currentColor; border-radius: 50%;
+    animation: spin .7s linear infinite; display: inline-block;
+  }
 
   .state-msg {
     text-align: center; padding: 28px 10px; color: #8a8a8a; font-size: 14px;
@@ -129,6 +138,7 @@
     background: #111; border: 1px solid #2a2a2a; border-radius: 12px;
     padding: 10px 18px; font-size: 14px; font-weight: 600; color: #fff;
     z-index: 999; opacity: 0; pointer-events: none; transition: opacity 0.2s ease;
+    max-width: 90vw; text-align: center;
   }
   .notif.show { opacity: 1; }
 </style>
@@ -227,6 +237,44 @@
       window.location.href = 'index.html';
     });
 
+    // ── Force-download helper ──────────────────────────────
+    // Fetch file sebagai blob lalu trigger <a download> dengan blob URL
+    // (blob URL = same-origin, jadi atribut download pasti dihormati browser).
+    // Kalau fetch gagal (biasanya karena CORS diblokir server sumbernya),
+    // fallback ke cara lama: buka di tab baru.
+    async function forceDownload(url, filename, btnEl){
+      const originalHTML = btnEl ? btnEl.innerHTML : '';
+      if(btnEl){
+        btnEl.disabled = true;
+        btnEl.innerHTML = '<span class="mini-spin"></span> Mengunduh...';
+      }
+      try {
+        const res = await fetch(url, { mode: 'cors' });
+        if(!res.ok) throw new Error('HTTP ' + res.status);
+        const blob = await res.blob();
+        const blobUrl = URL.createObjectURL(blob);
+
+        const a = document.createElement('a');
+        a.href = blobUrl;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+
+        setTimeout(function(){ URL.revokeObjectURL(blobUrl); }, 8000);
+        notify('File sedang diunduh...');
+      } catch(err){
+        console.warn('Force-download gagal, fallback ke tab baru:', err);
+        notify('Tidak bisa unduh langsung, membuka file di tab baru');
+        window.open(url, '_blank', 'noopener');
+      } finally {
+        if(btnEl){
+          btnEl.disabled = false;
+          btnEl.innerHTML = originalHTML;
+        }
+      }
+    }
+
     // ── TikTok Downloader ──────────────────────────────────
     const linkInput = document.getElementById('linkInput');
     const goBtn = document.getElementById('goBtn');
@@ -283,30 +331,38 @@
             return '<img src="' + src + '" alt="Foto TikTok" loading="lazy">';
           }).join('');
           d.images.forEach(function(src, i){
-            const a = document.createElement('a');
-            a.href = src; a.target = '_blank'; a.rel = 'noopener';
-            a.className = 'dl-btn' + (i === 0 ? '' : ' secondary');
-            a.download = 'tiktok-foto-' + (i + 1) + '.jpg';
-            a.textContent = 'Foto ' + (i + 1);
-            dlRow.appendChild(a);
+            const btn = document.createElement('button');
+            btn.type = 'button';
+            btn.className = 'dl-btn' + (i === 0 ? '' : ' secondary');
+            btn.textContent = 'Foto ' + (i + 1);
+            btn.addEventListener('click', function(){
+              forceDownload(src, 'tiktok-foto-' + (i + 1) + '.jpg', btn);
+            });
+            dlRow.appendChild(btn);
           });
         } else if(d.play || d.hdplay){
           const videoUrl = d.hdplay || d.play;
           resultVideo.src = videoUrl;
           resultVideo.style.display = 'block';
 
-          const a1 = document.createElement('a');
-          a1.href = videoUrl; a1.target = '_blank'; a1.rel = 'noopener';
-          a1.className = 'dl-btn'; a1.download = 'tiktok-video.mp4';
-          a1.textContent = 'Unduh Video (Tanpa Watermark)';
-          dlRow.appendChild(a1);
+          const btn1 = document.createElement('button');
+          btn1.type = 'button';
+          btn1.className = 'dl-btn';
+          btn1.textContent = 'Unduh Video (Tanpa Watermark)';
+          btn1.addEventListener('click', function(){
+            forceDownload(videoUrl, 'tiktok-video.mp4', btn1);
+          });
+          dlRow.appendChild(btn1);
 
           if(d.music){
-            const a2 = document.createElement('a');
-            a2.href = d.music; a2.target = '_blank'; a2.rel = 'noopener';
-            a2.className = 'dl-btn secondary'; a2.download = 'tiktok-audio.mp3';
-            a2.textContent = 'Unduh Audio';
-            dlRow.appendChild(a2);
+            const btn2 = document.createElement('button');
+            btn2.type = 'button';
+            btn2.className = 'dl-btn secondary';
+            btn2.textContent = 'Unduh Audio';
+            btn2.addEventListener('click', function(){
+              forceDownload(d.music, 'tiktok-audio.mp3', btn2);
+            });
+            dlRow.appendChild(btn2);
           }
         } else {
           errorMsg.textContent = 'Konten tidak ditemukan pada link ini.';
