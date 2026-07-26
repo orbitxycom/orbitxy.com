@@ -397,10 +397,13 @@ button, .btn, .n-btn, .nav-btn, .snav-btn, .tb-btn, .tb-f,
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6l9 16 9-16-3-4z"/><path d="M3 6h18"/><path d="m12 2-3 4 3 16 3-16z"/></svg>
     Buka Toko Reseller
   </a>
-  <a href="#" class="snav-dlink" onclick="snavClose();return notReady(event)">
+
+  <!-- ✅ SUDAH DIPERBAIKI: sebelumnya href="#" + notReady(event), sekarang mengarah ke tiktok.html -->
+  <a href="tiktok.html" class="snav-dlink" onclick="snavClose()">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 12a4 4 0 1 0 4 4V4a5 5 0 0 0 5 5"/></svg>
     TikTok Downloader
   </a>
+
   <a href="#" class="snav-dlink" onclick="snavClose();return notReady(event)">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 16 12 12 8 16"/><line x1="12" y1="12" x2="12" y2="21"/><path d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3"/></svg>
     Upload CDN
@@ -879,13 +882,11 @@ async function loadReviews(){
     const { data: userData } = await supabaseClient.auth.getUser();
     _currentUserId = userData && userData.user ? userData.user.id : null;
 
-    // Stats dihitung dari semua ulasan (tanpa filter)
     const { data: allRows, error: statsErr } = await supabaseClient
       .from('reviews').select('star,photo_url');
     if(statsErr) throw statsErr;
     updateStats(allRows || []);
 
-    // Daftar ulasan sesuai filter/sort/halaman
     const pageSize = 10;
     const from = (_curPage-1)*pageSize;
     const to = from+pageSize-1;
