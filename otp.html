@@ -205,9 +205,9 @@
       dropdown.classList.remove('open');
     });
 
-    document.getElementById('keluarBtn').addEventListener('click', async function(){
-      try { if (supabaseClient) await supabaseClient.auth.signOut(); } catch(e){}
-      window.location.href = 'index.html';
+    document.getElementById('keluarBtn').addEventListener('click', function(){
+      dropdown.classList.remove('open');
+      window.location.href = 'dashboard.html';
     });
   </script>
 </body>
