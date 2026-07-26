@@ -15,16 +15,9 @@
   .topbar {
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: flex-end;
     padding: 24px 20px;
     position: relative;
-  }
-  .brand {
-    font-size: 22px;
-    font-weight: 800;
-    letter-spacing: -0.5px;
-    color: #fff;
-    text-decoration: none;
   }
   .menu-btn {
     width: 48px;
@@ -147,7 +140,6 @@
   <div id="notif" class="notif"></div>
 
   <div class="topbar">
-    <a href="dashboard.html" class="brand">Bekki</a>
     <div class="menu-btn" id="menuBtn">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
         <line x1="4" y1="6" x2="20" y2="6"/>
@@ -156,13 +148,6 @@
       </svg>
     </div>
     <div class="dropdown" id="dropdown">
-      <div class="dropdown-item" id="riwayatBtn">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M3 3v18h18"/>
-          <path d="M7 14l4-4 3 3 5-6"/>
-        </svg>
-        <span>Riwayat</span>
-      </div>
       <div class="dropdown-item" id="keluarBtn">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
@@ -228,13 +213,9 @@
         dropdown.classList.remove('open');
       }
     });
-    document.getElementById('riwayatBtn').addEventListener('click', function(){
-      notify('Sedang diperbaiki');
+    document.getElementById('keluarBtn').addEventListener('click', function(){
       dropdown.classList.remove('open');
-    });
-    document.getElementById('keluarBtn').addEventListener('click', async function(){
-      try { if (supabaseClient) await supabaseClient.auth.signOut(); } catch(e){}
-      window.location.href = 'index.html';
+      window.location.href = 'dashboard.html';
     });
 
     // ── Force-download helper ──────────────────────────────
