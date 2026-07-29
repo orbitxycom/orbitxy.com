@@ -126,12 +126,23 @@
   }
   .input-box input::placeholder { color: #6a6a6a; }
   .btn-go {
-    background: #fff; color: #0a0a0a; border: none; border-radius: 12px;
-    padding: 12px 20px; font-size: 14px; font-weight: 800; cursor: pointer;
-    white-space: nowrap; transition: opacity .15s ease;
+    display: flex; align-items: center; gap: 6px;
+    background: linear-gradient(135deg, var(--em), #22c55e);
+    color: #04140c; border: none; border-radius: 12px;
+    padding: 12px 18px; font-size: 14px; font-weight: 800; cursor: pointer;
+    white-space: nowrap; transition: transform .15s ease, box-shadow .15s ease, opacity .15s ease;
+    box-shadow: 0 4px 16px rgba(var(--em-rgb),.28);
   }
-  .btn-go:hover { opacity: .85; }
-  .btn-go:disabled { opacity: .4; cursor: not-allowed; }
+  .btn-go svg { width: 15px; height: 15px; flex-shrink: 0; transition: transform .18s ease; }
+  .btn-go:hover { box-shadow: 0 6px 22px rgba(var(--em-rgb),.4); transform: translateY(-1px); }
+  .btn-go:hover svg { transform: translateX(1px); }
+  .btn-go:active { transform: translateY(0) scale(.97); }
+  .btn-go:disabled { opacity: .5; cursor: not-allowed; box-shadow: none; transform: none; }
+  .btn-go .mini-spin {
+    width: 14px; height: 14px; border: 2px solid rgba(4,20,12,.35);
+    border-top-color: #04140c; border-radius: 50%;
+    animation: spin .7s linear infinite; display: inline-block; flex-shrink: 0;
+  }
 
   .result { margin-top: 24px; }
   .result-card {
@@ -320,7 +331,10 @@
 
   <div class="input-box">
     <input type="text" id="linkInput" placeholder="https://www.tiktok.com/@user/video/..." autocomplete="off">
-    <button class="btn-go" id="goBtn">Ambil</button>
+    <button class="btn-go" id="goBtn">
+      <span id="goBtnLabel">Ambil</span>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+    </button>
   </div>
 
   <div class="result">
@@ -434,6 +448,8 @@
     resetResult();
     loadingMsg.classList.add('show');
     goBtn.disabled = true;
+    const goBtnOriginal = goBtn.innerHTML;
+    goBtn.innerHTML = '<span class="mini-spin"></span><span>Memproses</span>';
 
     try {
       const api = 'https://www.tikwm.com/api/?url=' + encodeURIComponent(url) + '&hd=1';
@@ -505,6 +521,7 @@
       console.error(err);
     } finally {
       goBtn.disabled = false;
+      goBtn.innerHTML = goBtnOriginal;
     }
   }
 
