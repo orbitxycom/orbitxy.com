@@ -270,65 +270,9 @@ body{padding-top:46px}
 .snav-btn:hover{border-color:var(--line3);color:var(--t1)}
 .snav-btn.em{border-color:#047857;color:#fff;background:#047857}
 .snav-btn.em:hover{background:#059669;border-color:#059669}
-.snav-hbg{
-  display:none;width:34px;height:34px;border-radius:4px;
-  background:var(--bg2);border:1px solid var(--line2);
-  align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;min-height:unset;
-  position:relative;
-}
-.snav-hbg .bar{display:block;position:absolute;width:14px;height:1.5px;background:var(--t2);transition:all .22s;border-radius:2px;left:10px}
-.snav-hbg .bar1{top:12px}.snav-hbg .bar2{top:16.5px}.snav-hbg .bar3{top:21px}
-.snav-hbg.open .bar1{transform:rotate(45deg) translateY(4.5px)}
-.snav-hbg.open .bar2{opacity:0;transform:scaleX(0)}
-.snav-hbg.open .bar3{transform:rotate(-45deg) translateY(-4.5px)}
 @media(max-width:680px){
   .snav-btn.hide-m{display:none}
-  .snav-hbg{display:flex}
 }
-.snav-backdrop{
-  display:none;position:fixed;inset:0;top:0;z-index:198;
-  background:rgba(0,0,0,.6);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);
-  opacity:0;transition:opacity .25s;
-}
-.snav-backdrop.open{display:block;opacity:1}
-.snav-drawer{
-  position:fixed;top:52px;right:0;bottom:0;z-index:199;
-  width:min(280px,83vw);
-  background:rgba(20,20,20,.99);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);
-  border-left:1px solid var(--line);
-  flex-direction:column;padding:1rem .75rem 2rem;
-  transform:translateX(100%);transition:transform .28s cubic-bezier(.4,0,.2,1);
-  display:flex;
-}
-.snav-drawer.open{transform:translateX(0)}
-.snav-dhead{
-  display:flex;align-items:center;justify-content:space-between;
-  margin-bottom:.9rem;padding-bottom:.75rem;border-bottom:1px solid var(--line);
-}
-.snav-dtitle{font-size:.7rem;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:.1em}
-.snav-dclose{
-  width:28px;height:28px;border-radius:4px;background:var(--bg2);border:1px solid var(--line2);
-  display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--t2);
-  transition:all .15s;min-height:unset;
-}
-.snav-dclose:hover{border-color:var(--line3);color:var(--t1)}
-.snav-dclose svg{width:12px;height:12px}
-.snav-dlink{
-  padding:.65rem .85rem;border-radius:4px;background:transparent;border:1px solid transparent;
-  font-size:.78rem;font-weight:600;color:var(--t2);text-decoration:none;transition:all .15s;
-  display:flex;align-items:center;gap:.55rem;margin-bottom:.18rem;cursor:pointer;
-}
-.snav-dlink:hover{color:var(--t1);background:var(--bg2);border-color:var(--line)}
-.snav-dlink svg{width:15px;height:15px;opacity:.5;flex-shrink:0}
-.snav-dlink:hover svg{opacity:.9}
-.snav-dlink.active{color:var(--em);background:rgba(var(--em-rgb,52,211,153),.07);border-color:rgba(var(--em-rgb,52,211,153),.2)}
-.snav-dlink.active svg{opacity:1}
-.snav-dlink.wa-link{color:#25d366;background:rgba(37,211,102,.06);border-color:rgba(37,211,102,.18);margin-top:auto}
-.snav-dlink.wa-link:hover{background:rgba(37,211,102,.12)}
-.snav-dsep{height:1px;background:var(--line);margin:.4rem 0 .6rem}
-.snav-dlink.em-link{color:var(--em);background:rgba(var(--em-rgb,52,211,153),.07);border-color:rgba(var(--em-rgb,52,211,153),.2)}
-.snav-dlink.em-link:hover{background:rgba(var(--em-rgb,52,211,153),.12)}
-.snav-dlink.em-link svg{opacity:.8}
 
 /* ── Music Player ─────────────────────────────────── */
 #musicPlayer{
@@ -385,57 +329,6 @@ body{padding-top:46px}
 </nav>
 <script>
 (function(){
-  var _preLockY = null;
-  function _captureScrollY(){
-    _preLockY = window.scrollY || window.pageYOffset || 0;
-  }
-  document.addEventListener('DOMContentLoaded', function(){
-    var hbg = document.getElementById('snavHbg');
-    if(hbg){
-      hbg.addEventListener('pointerdown', _captureScrollY, { passive: true });
-      hbg.addEventListener('touchstart', _captureScrollY, { passive: true });
-    }
-  });
-  function _lockScroll(){
-    var y = _preLockY != null ? _preLockY : (window.scrollY || window.pageYOffset || 0);
-    _preLockY = null;
-    var prevBehavior = document.documentElement.style.scrollBehavior;
-    document.documentElement.style.scrollBehavior = 'auto';
-    document.body.dataset.scrollY = y;
-    document.body.style.position = 'fixed';
-    document.body.style.top = (-y) + 'px';
-    document.body.style.left = '0';
-    document.body.style.right = '0';
-    document.body.style.width = '100%';
-    if(document.activeElement && document.activeElement.blur) document.activeElement.blur();
-    requestAnimationFrame(function(){ document.documentElement.style.scrollBehavior = prevBehavior; });
-  }
-  function _unlockScroll(){
-    var y = parseInt(document.body.dataset.scrollY || '0', 10);
-    var prevBehavior = document.documentElement.style.scrollBehavior;
-    document.documentElement.style.scrollBehavior = 'auto';
-    document.body.style.position = '';
-    document.body.style.top = '';
-    document.body.style.left = '';
-    document.body.style.right = '';
-    document.body.style.width = '';
-    delete document.body.dataset.scrollY;
-    window.scrollTo(0, y);
-    requestAnimationFrame(function(){ document.documentElement.style.scrollBehavior = prevBehavior; });
-  }
-  function snavToggle(){
-    var d=document.getElementById('snavDrawer'),b=document.getElementById('snavBackdrop'),h=document.getElementById('snavHbg');
-    var isOpen=d.classList.contains('open');
-    if(isOpen){d.classList.remove('open');b.classList.remove('open');h.classList.remove('open');_unlockScroll();}
-    else{d.classList.add('open');b.classList.add('open');h.classList.add('open');_lockScroll();}
-  }
-  function snavClose(){
-    var d=document.getElementById('snavDrawer'),b=document.getElementById('snavBackdrop'),h=document.getElementById('snavHbg');
-    if(!d.classList.contains('open'))return;
-    d.classList.remove('open');b.classList.remove('open');h.classList.remove('open');_unlockScroll();
-  }
-  window.snavToggle=snavToggle;window.snavClose=snavClose;
-  document.addEventListener('keydown',function(e){if(e.key==='Escape')snavClose();});
   fetch('/api/products').then(function(r){return r.json();}).then(function(j){
     if(!j)return;
     var name=j.store||(j.settings&&j.settings.storeName)||'';
