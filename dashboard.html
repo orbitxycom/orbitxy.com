@@ -3,22 +3,22 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5, viewport-fit=cover">
-<meta name="theme-color" content="#181818">
-<title>Dongtube</title>
+<meta name="theme-color" content="#000000">
+<title>orbitxy.com</title>
 <meta name="description" content="Panel pterodactyl, akun premium, dan script digital — proses otomatis via QRIS.">
 <link rel="manifest" href="/manifest.json">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Ubuntu+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Ubuntu+Mono:ital,wght@0,700;1,400;1,700&display=swap" rel="stylesheet">
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0 }
 
 :root {
-  --bg:      #181818;
-  --bg1:     #1a1a1a;
-  --bg2:     #212121;
-  --bg3:     #2a2a2a;
+  --bg:      #000000;
+  --bg1:     #0a0a0a;
+  --bg2:     #121212;
+  --bg3:     #1a1a1a;
   --line:    #2E2E2E;
   --line2:   #3a3a3a;
   --line3:   #484848;
@@ -28,9 +28,9 @@
   --em-rgb:  52,211,153;
   --red:     #f87171;
   --em2:     #6ee7b7;
-  --t1:      #e5e5e5;
-  --t2:      #a0a0a0;
-  --t3:      #616161;
+  --t1:      #ffffff;
+  --t2:      #c4c4c4;
+  --t3:      #8a8a8a;
   --t4:      rgba(255,255,255,.07);
   --rad:     4px;
   --rad-s:   4px;
@@ -53,7 +53,7 @@ body {
 
 nav {
   position: sticky; top: 0; z-index: 100;
-  background: rgba(24,24,24,.95);
+  background: rgba(0,0,0,.95);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   border-bottom: 1px solid var(--line);
@@ -115,7 +115,7 @@ nav {
 .drawer {
   position: fixed; top: 52px; right: 0; bottom: 0; z-index: 99;
   width: min(280px, 82vw);
-  background: rgba(20,20,20,.98);
+  background: rgba(5,5,5,.98);
   backdrop-filter: blur(24px);
   -webkit-backdrop-filter: blur(24px);
   border-left: 1px solid var(--line);
@@ -178,9 +178,9 @@ nav {
   background:var(--bg);
 }
 
-.slide:nth-child(1) { background: linear-gradient(135deg, #1e2420 0%, #202a22 55%, #0c0c0e 100%) }
-.slide:nth-child(2) { background: linear-gradient(135deg, #221e26 0%, #261e2c 55%, #0c0c0e 100%) }
-.slide:nth-child(3) { background: linear-gradient(135deg, #221f16 0%, #252018 55%, #0c0c0e 100%) }
+.slide:nth-child(1) { background: linear-gradient(135deg, #0d0f0e 0%, #0f120f 55%, #000000 100%) }
+.slide:nth-child(2) { background: linear-gradient(135deg, #100e12 0%, #120e14 55%, #000000 100%) }
+.slide:nth-child(3) { background: linear-gradient(135deg, #100f0b 0%, #120f0c 55%, #000000 100%) }
 
 .slide:nth-child(1)::before { content:''; position:absolute; right:-60px; top:-80px; width:400px; height:400px; border-radius:50%; background:radial-gradient(ellipse, rgba(var(--em-rgb),.07), transparent 70%); pointer-events:none }
 .slide:nth-child(2)::before { content:''; position:absolute; right:-60px; top:-80px; width:400px; height:400px; border-radius:50%; background:radial-gradient(ellipse, rgba(167,139,250,.07), transparent 70%); pointer-events:none }
@@ -222,7 +222,7 @@ nav {
 .sl-arr {
   position: absolute; top: 50%; transform: translateY(-50%); z-index: 2;
   width: 32px; height: 32px; border-radius: 50%;
-  background: rgba(14,14,14,.7); border: 1px solid var(--line2);
+  background: rgba(0,0,0,.7); border: 1px solid var(--line2);
   color: var(--t2); display: flex; align-items: center; justify-content: center;
   cursor: pointer; transition: all .18s; backdrop-filter: blur(8px);
 }
@@ -306,14 +306,14 @@ nav {
 }
 .card-thumb::after {
   content: ''; position: absolute; inset: 0;
-  background: linear-gradient(180deg, transparent 40%, rgba(12,12,14,.65) 100%);
+  background: linear-gradient(180deg, transparent 40%, rgba(0,0,0,.65) 100%);
   pointer-events: none;
 }
 .card-badge {
   position: absolute; top: .45rem; right: .45rem; z-index: 1;
   font-size: .55rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase;
   padding: .15rem .45rem; border-radius: 4px;
-  background: rgba(12,12,14,.78); border: 1px solid var(--line2);
+  background: rgba(0,0,0,.78); border: 1px solid var(--line2);
   color: var(--t3); backdrop-filter: blur(8px);
 }
 .card-body { padding: .65rem .75rem .8rem }
@@ -358,11 +358,11 @@ nav {
 .notif.show { opacity: 1; transform: translateX(-50%) translateY(0) }
 .notif-icon { width: 18px; height: 18px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0 }
 .notif-icon svg { width: 10px; height: 10px }
-.notif.ok { background: rgba(14,14,14,.97); border: 1px solid rgba(var(--em-rgb),.3); color: var(--em) }
+.notif.ok { background: rgba(0,0,0,.97); border: 1px solid rgba(var(--em-rgb),.3); color: var(--em) }
 .notif.ok .notif-icon { background: rgba(var(--em-rgb),.15) }
-.notif.err { background: rgba(14,14,14,.97); border: 1px solid rgba(248,113,113,.3); color: #f87171 }
+.notif.err { background: rgba(0,0,0,.97); border: 1px solid rgba(248,113,113,.3); color: #f87171 }
 .notif.err .notif-icon { background: rgba(248,113,113,.12) }
-.notif.info { background: rgba(14,14,14,.97); border: 1px solid rgba(255,255,255,.1); color: var(--t1) }
+.notif.info { background: rgba(0,0,0,.97); border: 1px solid rgba(255,255,255,.1); color: var(--t1) }
 .notif.info .notif-icon { background: rgba(255,255,255,.07) }
 
 .toast { display: none }
@@ -415,7 +415,7 @@ footer a { color: var(--em); font-weight: 600; text-decoration: none }
 #pwaInstall .pi-close{position:absolute;top:.35rem;right:.45rem;font-size:.75rem;color:var(--t3);cursor:pointer;line-height:1;background:none;border:none;font-family:var(--font)}
 
 body{
-  background-color:#181818!important;
+  background-color:#000000!important;
   background-image:
     linear-gradient(rgba(255,255,255,.028) 1px,transparent 1px),
     linear-gradient(90deg,rgba(255,255,255,.028) 1px,transparent 1px)!important;
@@ -707,7 +707,7 @@ button, .btn, .n-btn, .nav-btn, .snav-btn, .tb-btn, .tb-f,
   to   { opacity:1; transform: rotate(-3deg) scale(1)   translateY(0); }
 }
 .ad-card {
-  background: #111;
+  background: #000;
   border: 2px solid rgba(255,255,255,.15);
   border-radius:4px;
   overflow: hidden;
@@ -726,7 +726,7 @@ button, .btn, .n-btn, .nav-btn, .snav-btn, .tb-btn, .tb-f,
 .ad-text-box {
   padding: .75rem 1rem;
   font-size: .8rem; line-height: 1.55;
-  color: rgba(240,240,240,.88);
+  color: rgba(255,255,255,.92);
   font-family: 'DM Sans', system-ui, sans-serif;
   border-top: 1px solid rgba(255,255,255,.07);
 }
@@ -734,26 +734,26 @@ button, .btn, .n-btn, .nav-btn, .snav-btn, .tb-btn, .tb-f,
   position: absolute;
   top: -12px; right: -12px;
   width: 30px; height: 30px;
-  background: #1a1a1a;
+  background: #0a0a0a;
   border: 2px solid rgba(255,255,255,.2);
   border-radius: 50%;
   display: flex; align-items: center; justify-content: center;
   cursor: pointer;
-  color: rgba(240,240,240,.8);
+  color: rgba(255,255,255,.85);
   font-size: .8rem; font-weight: 700;
   transition: background .15s, transform .15s;
   z-index: 1;
   line-height: 1;
   box-shadow: 0 4px 16px rgba(0,0,0,.7);
 }
-.ad-close:hover { background: #2a2a2a; transform: scale(1.12); color: #fff; }
+.ad-close:hover { background: #1a1a1a; transform: scale(1.12); color: #fff; }
 .ad-badge {
   position: absolute;
   bottom: -10px; left: 12px;
   font-size: .52rem; font-weight: 700;
   text-transform: uppercase; letter-spacing: .08em;
-  color: rgba(240,240,240,.35);
-  background: #111;
+  color: rgba(255,255,255,.4);
+  background: #000;
   border: 1px solid rgba(255,255,255,.08);
   border-radius:4px;
   padding: .18rem .55rem;
@@ -789,7 +789,7 @@ button, .btn, .n-btn, .nav-btn, .snav-btn, .tb-btn, .tb-f,
 .cats{padding-bottom:.35rem;scrollbar-width:none}
 
 @media(max-width:480px){
-  .slide-overlay{background:linear-gradient(90deg,rgba(8,8,8,.88) 0%,rgba(8,8,8,.55) 60%,transparent 100%)!important}
+  .slide-overlay{background:linear-gradient(90deg,rgba(0,0,0,.9) 0%,rgba(0,0,0,.6) 60%,transparent 100%)!important}
 
   .card:active{transform:scale(.97)!important;transition:transform .08s!important}
 
@@ -814,7 +814,7 @@ body{
   background-image:linear-gradient(rgba(255,255,255,.022) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.022) 1px,transparent 1px) !important;
   background-size:40px 40px !important;
 }
-::selection{background:rgba(74,222,128,.18);color:#e5e5e5}
+::selection{background:rgba(74,222,128,.18);color:#000}
 </style>
 </head>
 <body>
@@ -905,7 +905,6 @@ body{
     Ulasan
   </a>
 
-  <!-- ✅ SUDAH DIPERBAIKI: sebelumnya href="#" + notReady(event), sekarang mengarah ke livechat.html -->
   <a href="livechat.html" class="dr-link" onclick="toggleDrawer()">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/><circle cx="9" cy="10" r=".5" fill="currentColor"/><circle cx="12" cy="10" r=".5" fill="currentColor"/><circle cx="15" cy="10" r=".5" fill="currentColor"/></svg>
     Live Chat
@@ -969,7 +968,7 @@ body{
 </section>
 
 <footer>
-  <p>&copy; <span id="ftYear"></span> <span id="ftName">Dongtube</span>
+  <p>&copy; <span id="ftYear"></span> <span id="ftName">orbitxy</span>
   &mdash; <a href="#" id="ftWa" data-wa-link>Hubungi Admin</a>
   &mdash; <a href="#" onclick="return notReady(event)" style="color:var(--t3);text-decoration:none;transition:color .15s" onmouseover="this.style.color='var(--t1)'" onmouseout="this.style.color='var(--t3)'">Cek Order</a>
   &mdash; <a href="#" onclick="return notReady(event)" style="color:var(--t3);text-decoration:none;transition:color .15s" onmouseover="this.style.color='#25d366'" onmouseout="this.style.color='var(--t3)'">Channel WA</a>
@@ -1080,7 +1079,7 @@ function applyGlobalBg(s) {
   document.body.insertBefore(el, document.body.firstChild);
   var st = document.createElement('style');
   st.id = '_gbg_style';
-  st.textContent = 'html{background:var(--bg0,var(--bg,#0e0e0e))!important}body{background-color:transparent!important;background-image:none!important;}';
+  st.textContent = 'html{background:var(--bg0,var(--bg,#000000))!important}body{background-color:transparent!important;background-image:none!important;}';
   document.head.appendChild(st);
 }
 
@@ -1166,10 +1165,10 @@ document.addEventListener('keydown', function(e) {
 });
 
 var SLIDE_BGSMAP = [
-  'linear-gradient(135deg,#0e1210,#202a22,#0c0c0e)',
-  'linear-gradient(135deg,#100c14,#261e2c,#0c0c0e)',
-  'linear-gradient(135deg,#121008,#252018,#0c0c0e)',
-  'linear-gradient(135deg,#0c0c0e,#121218,#0c0c0e)',
+  'linear-gradient(135deg,#0d0f0e,#0f120f,#000000)',
+  'linear-gradient(135deg,#100e12,#120e14,#000000)',
+  'linear-gradient(135deg,#100f0b,#120f0c,#000000)',
+  'linear-gradient(135deg,#000000,#0a0a0a,#000000)',
 ];
 var SLIDE_GLOWS = [
   'rgba(52,211,153,.07)', 'rgba(167,139,250,.07)',
@@ -1209,7 +1208,7 @@ async function loadSlides() {
       var videoHtml = isVideo ? '<video src="' + safeImage + '" autoplay loop muted playsinline style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0"></video>' : '';
       return '<div class="slide" style="position:relative;overflow:hidden;' + imgStyle + '">'
         + videoHtml
-        + '<div class="slide-overlay" style="position:relative;z-index:1;background:linear-gradient(90deg,rgba(8,8,8,.78) 0%,rgba(8,8,8,.3) 70%,transparent 100%)"></div>'
+        + '<div class="slide-overlay" style="position:relative;z-index:1;background:linear-gradient(90deg,rgba(0,0,0,.78) 0%,rgba(0,0,0,.3) 70%,transparent 100%)"></div>'
         + '<div class="slide-body" style="position:relative;z-index:2">'
         + (safeTag ? '<div class="slide-tag">' + safeTag + '</div>' : '')
         + '<h1>' + safeTitle + '</h1>'
@@ -1283,8 +1282,8 @@ async function load(silent) {
     if (silent && allProds && allProds.length > 0) { _loadInProgress = false; return; }
     document.getElementById('gridEl').innerHTML =
       '<div class="empty" style="display:flex;flex-direction:column;align-items:center;gap:.85rem">'
-      + '<svg viewBox="0 0 24 24" fill="none" stroke="rgba(245,245,245,.25)" stroke-width="1.5" width="36" height="36"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>'
-      + '<span style="color:rgba(245,245,245,.4);font-size:.72rem">Gagal memuat produk. Coba lagi.</span>'
+      + '<svg viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.25)" stroke-width="1.5" width="36" height="36"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>'
+      + '<span style="color:rgba(255,255,255,.4);font-size:.72rem">Gagal memuat produk. Coba lagi.</span>'
       + '<button onclick="load()" style="font-family:var(--font);font-size:.7rem;font-weight:700;padding:.45rem 1.1rem;border-radius:4px;background:var(--bg2);border:1px solid var(--line2);color:var(--t1);cursor:pointer;transition:all .18s" onmouseover="this.style.borderColor=\'rgba(52,211,153,.4)\'" onmouseout="this.style.borderColor=\'var(--line2)\'">Muat Ulang</button>'
       + '</div>';
   }
@@ -1623,130 +1622,6 @@ document.addEventListener('click', function(e) {
     if (panel) panel.classList.remove('open');
   }
 });
-
-(function initAd() {
-
-  var _adShown = sessionStorage.getItem('_adShown');
-  if (_adShown) return;
-
-  function showAd(cfg) {
-    if (!cfg || !cfg.enabled) return;
-
-    if (!cfg.imageUrl && !cfg.text) return;
-
-    var overlay = document.getElementById('adOverlay');
-    var card    = document.getElementById('adCard');
-    var closeBtn= document.getElementById('adClose');
-    if (!overlay || !card) return;
-
-    var html = '';
-    if (cfg.imageUrl) {
-      html += '<img class="ad-img" src="' + cfg.imageUrl + '" alt="Iklan" loading="lazy" onerror="this.style.display=\'none\'">';
-    }
-    if (cfg.text) {
-      var _adTxt = String(cfg.text||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>'); html += '<div class="ad-text-box">' + _adTxt + '</div>';
-    }
-    card.innerHTML = html;
-
-    if (cfg.linkUrl) {
-      card.style.cursor = 'pointer';
-      card.onclick = function(e) {
-
-        window.open(cfg.linkUrl, '_blank', 'noopener,noreferrer');
-      };
-    } else {
-      card.style.cursor = 'default';
-      card.onclick = null;
-    }
-
-    setTimeout(function() {
-      overlay.classList.remove('hidden');
-      sessionStorage.setItem('_adShown', '1');
-    }, 1200);
-
-    closeBtn.onclick = function(e) {
-      e.stopPropagation();
-      overlay.classList.add('hidden');
-    };
-
-    overlay.onclick = function(e) {
-      if (e.target === overlay) overlay.classList.add('hidden');
-    };
-
-    document.addEventListener('keydown', function(e) {
-      if (e.key === 'Escape') overlay.classList.add('hidden');
-    }, { once: true });
-  }
-
-  fetch('/api/ad')
-    .then(function(r) { return r.json(); })
-    .then(function(j) { if (j.ok && j.enabled) showAd(j); })
-    .catch(function() {});
-})();
-
-function idr(n) {
-  var v = Number(n);
-  if (!isFinite(v) || isNaN(v)) v = 0;
-  return 'Rp' + v.toLocaleString('id-ID');
-}
-
-var _notifT = null;
-function notify(msg, type) {
-  var n    = document.getElementById('notif');
-  var icon = document.getElementById('notifIcon');
-  var msgEl= document.getElementById('notifMsg');
-  if (!n) return;
-  n.className = 'notif ' + (type || 'info');
-  msgEl.textContent = msg;
-  var svgs = {
-    ok:   '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" width="10" height="10"><polyline points="20 6 9 17 4 12"/></svg>',
-    err:  '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" width="10" height="10"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>',
-    info: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" width="10" height="10"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>'
-  };
-  icon.innerHTML = svgs[type] || svgs.info;
-  n.classList.add('show');
-  if (_notifT) clearTimeout(_notifT);
-  _notifT = setTimeout(function() { n.classList.remove('show'); }, 3200);
-}
-
-function _isSafeMsgText(msg) {
-  if (!msg || typeof msg !== 'string') return false;
-  var _m = msg.trim();
-  return _m.length > 0 && _m.length < 300
-    && _m.indexOf('<') === -1 && _m.indexOf('>') === -1
-    && _m.indexOf('{') === -1 && _m.indexOf('}') === -1
-    && _m.indexOf('function') === -1 && _m.indexOf('esc(') === -1
-    && _m.indexOf('innerHTML') === -1 && _m.indexOf('document.') === -1
-    && _m.indexOf("'") === -1;
-}
-function showMaintenancePage(msg) {
-  var safeMsg = (msg || 'Sedang dalam perbaikan.').replace(/[<>&"']/g, function(c) {
-    return {'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;',"'":'&#x27;'}[c];
-  });
-  var overlay = document.createElement('div');
-  overlay.id = 'maintenanceOverlay';
-  overlay.style.cssText = 'position:fixed;inset:0;z-index:999999;background:#07050f;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:1rem';
-  overlay.innerHTML = '<div style="font-size:2rem">🔧</div><div style="font-size:1rem;color:#eee;text-align:center;padding:0 2rem;max-width:400px;line-height:1.5">' + safeMsg + '</div>';
-  document.body.appendChild(overlay);
-}
-
-const supabaseClient = supabase.createClient(
-  'https://ygjpwaftccewntwwoixs.supabase.co',
-  'sb_publishable_4IdyoPpEW-It9IWLZOrSAQ_WuumXkl9'
-);
-
-document.addEventListener('DOMContentLoaded', async function() {
-  const { data } = await supabaseClient.auth.getUser();
-  const user = data ? data.user : null;
-  if (!user) {
-    window.location.href = 'login.html?returnUrl=' + encodeURIComponent('dashboard.html');
-    return;
-  }
-  initMusic();
-  load();
-  loadSlides();
-});
-
 </script>
 
 <div id="musicPlayer">
