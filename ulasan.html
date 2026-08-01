@@ -237,13 +237,14 @@ button, .btn, .n-btn, .nav-btn, .snav-btn, .tb-btn, .tb-f,
 
 /* ── Shared Navbar ─────────────────────────────────────────── */
 .snav{
-  position:sticky;top:0;z-index:200;
+  position:fixed;top:0;left:0;right:0;z-index:200;
   background:rgba(24,24,24,.96);
   backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
   border-bottom:1px solid var(--line);
   height:46px;display:flex;align-items:center;
   padding:0 1.2rem;gap:.6rem;
 }
+body{padding-top:46px}
 .snav-logo{
   display:flex;align-items:center;gap:9px;
   font-size:.9rem;font-weight:700;letter-spacing:-.02em;color:var(--t1);
@@ -452,15 +453,35 @@ button, .btn, .n-btn, .nav-btn, .snav-btn, .tb-btn, .tb-f,
 </nav>
 <script>
 (function(){
+  function _lockScroll(){
+    var y = window.scrollY || window.pageYOffset || 0;
+    document.body.dataset.scrollY = y;
+    document.body.style.position = 'fixed';
+    document.body.style.top = (-y) + 'px';
+    document.body.style.left = '0';
+    document.body.style.right = '0';
+    document.body.style.width = '100%';
+  }
+  function _unlockScroll(){
+    var y = parseInt(document.body.dataset.scrollY || '0', 10);
+    document.body.style.position = '';
+    document.body.style.top = '';
+    document.body.style.left = '';
+    document.body.style.right = '';
+    document.body.style.width = '';
+    delete document.body.dataset.scrollY;
+    window.scrollTo(0, y);
+  }
   function snavToggle(){
     var d=document.getElementById('snavDrawer'),b=document.getElementById('snavBackdrop'),h=document.getElementById('snavHbg');
     var isOpen=d.classList.contains('open');
-    if(isOpen){d.classList.remove('open');b.classList.remove('open');h.classList.remove('open');document.body.style.overflow='';document.documentElement.style.overflow='';}
-    else{d.classList.add('open');b.classList.add('open');h.classList.add('open');document.body.style.overflow='hidden';document.documentElement.style.overflow='hidden';}
+    if(isOpen){d.classList.remove('open');b.classList.remove('open');h.classList.remove('open');_unlockScroll();}
+    else{d.classList.add('open');b.classList.add('open');h.classList.add('open');_lockScroll();}
   }
   function snavClose(){
     var d=document.getElementById('snavDrawer'),b=document.getElementById('snavBackdrop'),h=document.getElementById('snavHbg');
-    d.classList.remove('open');b.classList.remove('open');h.classList.remove('open');document.body.style.overflow='';document.documentElement.style.overflow='';
+    if(!d.classList.contains('open'))return;
+    d.classList.remove('open');b.classList.remove('open');h.classList.remove('open');_unlockScroll();
   }
   window.snavToggle=snavToggle;window.snavClose=snavClose;
   document.addEventListener('keydown',function(e){if(e.key==='Escape')snavClose();});
