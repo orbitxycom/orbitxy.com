@@ -453,17 +453,35 @@ body{padding-top:46px}
 </nav>
 <script>
 (function(){
+  var _preLockY = null;
+  function _captureScrollY(){
+    _preLockY = window.scrollY || window.pageYOffset || 0;
+  }
+  document.addEventListener('DOMContentLoaded', function(){
+    var hbg = document.getElementById('snavHbg');
+    if(hbg){
+      hbg.addEventListener('pointerdown', _captureScrollY, { passive: true });
+      hbg.addEventListener('touchstart', _captureScrollY, { passive: true });
+    }
+  });
   function _lockScroll(){
-    var y = window.scrollY || window.pageYOffset || 0;
+    var y = _preLockY != null ? _preLockY : (window.scrollY || window.pageYOffset || 0);
+    _preLockY = null;
+    var prevBehavior = document.documentElement.style.scrollBehavior;
+    document.documentElement.style.scrollBehavior = 'auto';
     document.body.dataset.scrollY = y;
     document.body.style.position = 'fixed';
     document.body.style.top = (-y) + 'px';
     document.body.style.left = '0';
     document.body.style.right = '0';
     document.body.style.width = '100%';
+    if(document.activeElement && document.activeElement.blur) document.activeElement.blur();
+    requestAnimationFrame(function(){ document.documentElement.style.scrollBehavior = prevBehavior; });
   }
   function _unlockScroll(){
     var y = parseInt(document.body.dataset.scrollY || '0', 10);
+    var prevBehavior = document.documentElement.style.scrollBehavior;
+    document.documentElement.style.scrollBehavior = 'auto';
     document.body.style.position = '';
     document.body.style.top = '';
     document.body.style.left = '';
@@ -471,6 +489,7 @@ body{padding-top:46px}
     document.body.style.width = '';
     delete document.body.dataset.scrollY;
     window.scrollTo(0, y);
+    requestAnimationFrame(function(){ document.documentElement.style.scrollBehavior = prevBehavior; });
   }
   function snavToggle(){
     var d=document.getElementById('snavDrawer'),b=document.getElementById('snavBackdrop'),h=document.getElementById('snavHbg');
