@@ -117,15 +117,15 @@ body{
 .star-sel span{font-size:1.8rem;cursor:pointer;line-height:1;transition:transform .15s;user-select:none}
 .star-sel span:hover{transform:scale(1.25)}
 
-.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:200;display:flex;align-items:flex-end;justify-content:center;padding:0;backdrop-filter:blur(8px);animation:bgIn .2s ease}
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.96);z-index:200;display:flex;align-items:flex-end;justify-content:center;padding:0;backdrop-filter:blur(14px);animation:bgIn .2s ease}
 .modal-bg.hide{display:none}
 @keyframes bgIn{from{opacity:0}to{opacity:1}}
-.modal{width:100%;max-width:480px;max-height:90vh;background:var(--bg1);border:1px solid var(--line2);border-radius:4px 22px 0 0;box-shadow:0 -20px 80px rgba(0,0,0,.9);animation:modalUp .3s cubic-bezier(.34,1.2,.64,1);overflow:hidden;display:flex;flex-direction:column}
+.modal{width:100%;max-width:480px;max-height:90vh;background:var(--bg1);border:1px solid var(--line2);border-radius:4px 22px 0 0;box-shadow:0 -4px 24px rgba(0,0,0,.5);animation:modalUp .3s cubic-bezier(.34,1.2,.64,1);overflow:hidden;display:flex;flex-direction:column}
 .modal-scroll{overflow-y:auto;padding:0 1.4rem 2.5rem;flex:1;min-height:0}
 @keyframes modalUp{from{transform:translateY(100%)}to{transform:none}}
-.modal-head-sticky{flex-shrink:0;background:var(--bg1);padding:1.5rem 1.4rem 0;cursor:grab;touch-action:none}
+.modal-head-sticky{flex-shrink:0;background:var(--bg1);padding:.7rem 1.4rem 0;cursor:grab;touch-action:none}
 .modal-head-sticky:active{cursor:grabbing}
-.modal-handle{width:36px;height:4px;border-radius:2px;background:rgba(255,255,255,.12);margin:0 auto .9rem}
+.modal-handle{width:36px;height:4px;border-radius:2px;background:rgba(255,255,255,.12);margin:0 auto .6rem}
 .modal-title{font-size:.95rem;font-weight:700;text-align:center;margin-bottom:.3rem}
 .modal-sub{font-size:.7rem;color:var(--t3);text-align:center;margin-bottom:1.1rem}
 .f-label{font-size:.57rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--t3);display:block;margin-bottom:.3rem}
