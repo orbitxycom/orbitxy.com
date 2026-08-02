@@ -120,8 +120,9 @@ body{
 .modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:200;display:flex;align-items:flex-end;justify-content:center;padding:0;backdrop-filter:blur(8px);animation:bgIn .2s ease}
 .modal-bg.hide{display:none}
 @keyframes bgIn{from{opacity:0}to{opacity:1}}
-.modal{width:100%;max-width:480px;background:var(--bg1);border:1px solid var(--line2);border-radius:4px 22px 0 0;padding:1.5rem 1.4rem 2.5rem;box-shadow:0 -20px 80px rgba(0,0,0,.9);animation:modalUp .3s cubic-bezier(.34,1.2,.64,1)}
+.modal{width:100%;max-width:480px;max-height:90vh;background:var(--bg1);border:1px solid var(--line2);border-radius:4px 22px 0 0;padding:0 1.4rem 2.5rem;box-shadow:0 -20px 80px rgba(0,0,0,.9);animation:modalUp .3s cubic-bezier(.34,1.2,.64,1);overflow-y:auto;display:flex;flex-direction:column}
 @keyframes modalUp{from{transform:translateY(100%)}to{transform:none}}
+.modal-head-sticky{position:sticky;top:0;background:var(--bg1);padding:1.5rem 0 0;z-index:2}
 .modal-handle{width:36px;height:4px;border-radius:2px;background:rgba(255,255,255,.12);margin:0 auto .9rem}
 .modal-title{font-size:.95rem;font-weight:700;text-align:center;margin-bottom:.3rem}
 .modal-sub{font-size:.7rem;color:var(--t3);text-align:center;margin-bottom:1.1rem}
@@ -394,9 +395,11 @@ function applyGlobalBg(s) {
 
 <div class="modal-bg hide" id="writeBg">
   <div class="modal">
-    <div class="modal-handle"></div>
-    <div class="modal-title">Tulis Ulasan</div>
-    <div class="modal-sub">Bagikan pengalamanmu kepada pembeli lainnya</div>
+    <div class="modal-head-sticky">
+      <div class="modal-handle"></div>
+      <div class="modal-title">Tulis Ulasan</div>
+      <div class="modal-sub">Bagikan pengalamanmu kepada pembeli lainnya</div>
+    </div>
 
     <div class="mb" style="text-align:center">
       <label class="f-label" style="text-align:center;display:block;margin-bottom:.5rem">Bintang Rating</label>
