@@ -24,10 +24,10 @@
   --line3:   #484848;
   --glow:    rgba(var(--em-rgb),.18);
   --glow2:   rgba(var(--em-rgb),.08);
-  --em:      #34d399;
-  --em-rgb:  52,211,153;
+  --em:      #d4d0c4;
+  --em-rgb:  212,208,196;
   --red:     #f87171;
-  --em2:     #6ee7b7;
+  --em2:     #e8e5db;
   --t1:      #ffffff;
   --t2:      #c4c4c4;
   --t3:      #8a8a8a;
@@ -462,7 +462,7 @@ button:active:not(:disabled){transform:scale(.97)!important;transition:transform
 
 .f-inp,.pf-input,.finp,.l-inp,.f-inp{transition:border-color .15s ease,box-shadow .15s ease!important}
 
-@keyframes _pulse{0%{box-shadow:0 0 0 0 rgba(52,211,153,.35)}70%{box-shadow:0 0 0 8px rgba(52,211,153,0)}100%{box-shadow:0 0 0 0 rgba(52,211,153,0)}}
+@keyframes _pulse{0%{box-shadow:0 0 0 0 rgba(212,208,196,.35)}70%{box-shadow:0 0 0 8px rgba(212,208,196,0)}100%{box-shadow:0 0 0 0 rgba(212,208,196,0)}}
 .ab-pulse{animation:_pulse 2s ease infinite!important}
 
 @keyframes _shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
@@ -574,8 +574,8 @@ nav,.nav,.topbar{backdrop-filter:blur(12px)!important;-webkit-backdrop-filter:bl
   position:absolute;top:.45rem;left:.45rem;z-index:2;
   font-size:.52rem;font-weight:800;text-transform:uppercase;letter-spacing:.06em;
   padding:.15rem .45rem;border-radius:4px;
-  background:rgba(52,211,153,.15);color:var(--em);
-  border:1px solid rgba(52,211,153,.28);
+  background:rgba(212,208,196,.15);color:var(--em);
+  border:1px solid rgba(212,208,196,.28);
   backdrop-filter:blur(8px);
 }
 
@@ -888,7 +888,7 @@ body{
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
     cPanel
   </a>
-  <a href="#" class="dr-link" onclick="toggleDrawer();return notReady(event)" style="color:var(--em);border-color:rgba(52,211,153,.2);background:rgba(52,211,153,.06)">
+  <a href="#" class="dr-link" onclick="toggleDrawer();return notReady(event)" style="color:var(--em);border-color:rgba(212,208,196,.2);background:rgba(212,208,196,.06)">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 2 3 6l9 16 9-16-3-4z"/><path d="M3 6h18"/><path d="m12 2-3 4 3 16 3-16z"/></svg>
     Buka Toko Reseller
   </a>
@@ -1172,7 +1172,7 @@ var SLIDE_BGSMAP = [
   'linear-gradient(135deg,#0c0c0e,#121218,#0c0c0e)',
 ];
 var SLIDE_GLOWS = [
-  'rgba(52,211,153,.07)', 'rgba(167,139,250,.07)',
+  'rgba(212,208,196,.07)', 'rgba(167,139,250,.07)',
   'rgba(251,191,36,.06)', 'rgba(125,211,252,.06)',
 ];
 
@@ -1285,7 +1285,7 @@ async function load(silent) {
       '<div class="empty" style="display:flex;flex-direction:column;align-items:center;gap:.85rem">'
       + '<svg viewBox="0 0 24 24" fill="none" stroke="rgba(245,245,245,.25)" stroke-width="1.5" width="36" height="36"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>'
       + '<span style="color:rgba(245,245,245,.4);font-size:.72rem">Gagal memuat produk. Coba lagi.</span>'
-      + '<button onclick="load()" style="font-family:var(--font);font-size:.7rem;font-weight:700;padding:.45rem 1.1rem;border-radius:4px;background:var(--bg2);border:1px solid var(--line2);color:var(--t1);cursor:pointer;transition:all .18s" onmouseover="this.style.borderColor=\'rgba(52,211,153,.4)\'" onmouseout="this.style.borderColor=\'var(--line2)\'">Muat Ulang</button>'
+      + '<button onclick="load()" style="font-family:var(--font);font-size:.7rem;font-weight:700;padding:.45rem 1.1rem;border-radius:4px;background:var(--bg2);border:1px solid var(--line2);color:var(--t1);cursor:pointer;transition:all .18s" onmouseover="this.style.borderColor=\'rgba(212,208,196,.4)\'" onmouseout="this.style.borderColor=\'var(--line2)\'">Muat Ulang</button>'
       + '</div>';
   }
   _loadInProgress = false;
