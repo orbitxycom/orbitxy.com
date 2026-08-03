@@ -1,0 +1,16 @@
+{
+  "name": "wa-bot",
+  "version": "1.0.0",
+  "description": "Backend WhatsApp bot pakai Baileys, terhubung ke website via Socket.io",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "@hapi/boom": "^10.0.1",
+    "@whiskeysockets/baileys": "^6.7.9",
+    "express": "^4.19.2",
+    "socket.io": "^4.7.5"
+  }
+}
+
