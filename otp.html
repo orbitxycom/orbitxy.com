@@ -3,245 +3,212 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Connect WhatsApp</title>
+<title>Bekki</title>
 <style>
-  :root{
-    --bg:#0b0e0c;
-    --panel:#11150f;
-    --line:#1f2a20;
-    --green:#3ddc84;
-    --green-dim:#1f7a4d;
-    --text:#c8f0d4;
-    --muted:#5f7a68;
-    --amber:#e2b93b;
-    --red:#e2543b;
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: #0a0a0a;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    min-height: 100vh;
+    color: #fff;
   }
-  *{box-sizing:border-box;}
-  body{
-    margin:0;
-    min-height:100vh;
-    background:var(--bg);
-    background-image:
-      radial-gradient(circle at 1px 1px, rgba(61,220,132,0.05) 1px, transparent 0);
-    background-size:24px 24px;
-    font-family:"JetBrains Mono","Fira Code",ui-monospace,monospace;
-    color:var(--text);
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    padding:24px;
+  .topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 24px 20px;
+    position: relative;
   }
-  .term{
-    width:100%;
-    max-width:560px;
-    background:var(--panel);
-    border:1px solid var(--line);
-    border-radius:10px;
-    box-shadow:0 0 0 1px rgba(61,220,132,0.05), 0 20px 60px rgba(0,0,0,0.5);
-    overflow:hidden;
+  .brand {
+    font-size: 22px;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    color: #fff;
   }
-  .titlebar{
-    display:flex;
-    align-items:center;
-    gap:8px;
-    padding:10px 14px;
-    background:#0e1210;
-    border-bottom:1px solid var(--line);
+  .menu-btn {
+    width: 48px;
+    height: 48px;
+    border-radius: 14px;
+    border: 1px solid #2a2a2a;
+    background: #111;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background 0.15s ease, border-color 0.15s ease;
   }
-  .dot{width:11px;height:11px;border-radius:50%;}
-  .dot.r{background:#e2543b44;border:1px solid var(--red);}
-  .dot.y{background:#e2b93b44;border:1px solid var(--amber);}
-  .dot.g{background:#3ddc8444;border:1px solid var(--green);}
-  .titletext{
-    margin-left:8px;
-    font-size:12px;
-    color:var(--muted);
-    letter-spacing:0.05em;
+  .menu-btn:hover {
+    background: #171717;
+    border-color: #3a3a3a;
   }
-  .screen{
-    padding:22px 20px 24px;
+  .menu-btn svg {
+    width: 20px;
+    height: 20px;
   }
-  .prompt-line{
-    display:flex;
-    gap:8px;
-    font-size:13px;
-    color:var(--muted);
-    margin-bottom:4px;
+  .dropdown {
+    position: absolute;
+    top: 80px;
+    right: 20px;
+    width: 260px;
+    background: #111;
+    border: 1px solid #2a2a2a;
+    border-radius: 18px;
+    overflow: hidden;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+    opacity: 0;
+    transform: translateY(-8px);
+    pointer-events: none;
+    transition: opacity 0.15s ease, transform 0.15s ease;
+    z-index: 50;
   }
-  .log{
-    font-size:13px;
-    line-height:1.7;
-    min-height:20px;
-    margin-bottom:18px;
-    white-space:pre-wrap;
-    word-break:break-word;
+  .dropdown.open {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
   }
-  .log .ok{color:var(--green);}
-  .log .warn{color:var(--amber);}
-  .log .err{color:var(--red);}
-  .log .dim{color:var(--muted);}
-  form{display:flex;gap:0;border:1px solid var(--line);border-radius:6px;overflow:hidden;}
-  .prefix{
-    display:flex;align-items:center;
-    padding:0 10px;
-    background:#0e1210;
-    color:var(--green);
-    font-size:14px;
-    border-right:1px solid var(--line);
+  .dropdown-item {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 18px 20px;
+    cursor: pointer;
+    color: #e5e5e5;
+    font-size: 16px;
+    border-bottom: 1px solid #222;
+    transition: background 0.15s ease;
   }
-  input[type=text]{
-    flex:1;
-    background:transparent;
-    border:none;
-    outline:none;
-    color:var(--text);
-    font-family:inherit;
-    font-size:14px;
-    padding:12px 10px;
+  .dropdown-item:last-child {
+    border-bottom: none;
   }
-  input[type=text]::placeholder{color:var(--muted);}
-  button{
-    border:none;
-    background:var(--green-dim);
-    color:#0b0e0c;
-    font-family:inherit;
-    font-weight:600;
-    font-size:13px;
-    padding:0 18px;
-    cursor:pointer;
-    letter-spacing:0.03em;
-    transition:background .15s ease;
+  .dropdown-item:hover {
+    background: #1a1a1a;
   }
-  button:hover{background:var(--green);}
-  button:disabled{background:#2a352d;color:var(--muted);cursor:not-allowed;}
-  .pairing{
-    margin-top:18px;
-    text-align:center;
-    display:none;
+  .dropdown-item svg {
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+    color: #cfcfcf;
   }
-  .pairing.show{display:block;}
-  .pairing-label{font-size:12px;color:var(--muted);margin-bottom:8px;letter-spacing:0.08em;}
-  .pairing-code{
-    font-size:28px;
-    letter-spacing:0.15em;
-    color:var(--green);
-    font-weight:700;
-    padding:14px;
-    border:1px dashed var(--green-dim);
-    border-radius:6px;
+  .content {
+    padding: 40px 20px;
   }
-  .cursor{
-    display:inline-block;
-    width:8px;height:15px;
-    background:var(--green);
-    margin-left:2px;
-    animation:blink 1s step-end infinite;
-    vertical-align:middle;
+  .status-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: #111;
+    border: 1px solid #2a2a2a;
+    border-radius: 999px;
+    padding: 10px 20px;
+    color: #9a9a9a;
+    font-size: 15px;
+    margin-bottom: 30px;
   }
-  @keyframes blink{50%{opacity:0;}}
-  .footnote{
-    margin-top:16px;
-    font-size:11px;
-    color:var(--muted);
-    text-align:center;
+  .dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #22c55e;
   }
+  .greeting {
+    font-size: 44px;
+    font-weight: 900;
+    letter-spacing: -1px;
+  }
+  .notif {
+    position: fixed;
+    top: 16px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #111;
+    border: 1px solid #2a2a2a;
+    border-radius: 12px;
+    padding: 10px 18px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #fff;
+    z-index: 999;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease;
+  }
+  .notif.show { opacity: 1; }
 </style>
 </head>
 <body>
+  <div id="notif" class="notif"></div>
 
-  <div class="term">
-    <div class="titlebar">
-      <div class="dot r"></div>
-      <div class="dot y"></div>
-      <div class="dot g"></div>
-      <div class="titletext">wa-connect — bash</div>
+  <div class="topbar">
+    <div class="brand">Bekki</div>
+    <div class="menu-btn" id="menuBtn">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+        <line x1="4" y1="6" x2="20" y2="6"/>
+        <line x1="4" y1="12" x2="20" y2="12"/>
+        <line x1="4" y1="18" x2="20" y2="18"/>
+      </svg>
     </div>
-
-    <div class="screen">
-      <div class="prompt-line">$ ./connect-whatsapp.sh</div>
-      <div class="log" id="log"><span class="dim">Masukkan nomor WhatsApp (contoh: 6281234567890) lalu tekan Hubungkan.</span><span class="cursor"></span></div>
-
-      <form id="connectForm">
-        <span class="prefix">+</span>
-        <input type="text" id="phoneInput" placeholder="6281234567890" inputmode="numeric" autocomplete="off">
-        <button type="submit" id="connectBtn">Hubungkan</button>
-      </form>
-
-      <div class="pairing" id="pairingBox">
-        <div class="pairing-label">MASUKKAN KODE INI DI WHATSAPP → PERANGKAT TERTAUT</div>
-        <div class="pairing-code" id="pairingCode">- - - - - - - -</div>
+    <div class="dropdown" id="dropdown">
+      <div class="dropdown-item" id="riwayatBtn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M3 3v18h18"/>
+          <path d="M7 14l4-4 3 3 5-6"/>
+        </svg>
+        <span>Riwayat</span>
       </div>
-
-      <div class="footnote">Backend belum terhubung. Ganti SOCKET_URL di kode untuk mengaktifkan.</div>
+      <div class="dropdown-item" id="keluarBtn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+          <polyline points="16 17 21 12 16 7"/>
+          <line x1="21" y1="12" x2="9" y2="12"/>
+        </svg>
+        <span>Keluar</span>
+      </div>
     </div>
   </div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.5/socket.io.min.js"></script>
-<script>
-  // GANTI dengan URL backend kamu (misal dari Railway/Render), contoh:
-  // const SOCKET_URL = "https://wa-bot-kamu.up.railway.app";
-  const SOCKET_URL = null; // <- isi ini dulu supaya form berfungsi
+  <div class="content">
+    <div class="status-pill"><span class="dot"></span>Beli OTP</div>
+    <div class="greeting">Halaman ini sedang dikembangkan.</div>
+  </div>
 
-  const log = document.getElementById('log');
-  const form = document.getElementById('connectForm');
-  const phoneInput = document.getElementById('phoneInput');
-  const connectBtn = document.getElementById('connectBtn');
-  const pairingBox = document.getElementById('pairingBox');
-  const pairingCode = document.getElementById('pairingCode');
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
+    var supabaseClient;
+    try {
+      supabaseClient = supabase.createClient(
+        'https://ygjpwaftccewntwwoixs.supabase.co',
+        'sb_publishable_4IdyoPpEW-It9IWLZOrSAQ_WuumXkl9'
+      );
+    } catch(e) { console.error('Gagal memuat Supabase:', e); }
 
-  function print(text, type){
-    log.innerHTML = '<span class="' + (type||'') + '">' + text + '</span><span class="cursor"></span>';
-  }
+    function notify(msg){
+      var n = document.getElementById('notif');
+      n.textContent = msg;
+      n.classList.add('show');
+      setTimeout(function(){ n.classList.remove('show'); }, 2500);
+    }
 
-  let socket = null;
-  if (SOCKET_URL) {
-    socket = io(SOCKET_URL);
-
-    socket.on('connect', () => print('Terhubung ke server. Siap menerima nomor.', 'ok'));
-    socket.on('disconnect', () => print('Koneksi ke server terputus.', 'err'));
-
-    socket.on('pairing-code', (code) => {
-      pairingCode.textContent = code;
-      pairingBox.classList.add('show');
-      print('Kode pairing diterima. Masukkan di WhatsApp kamu.', 'ok');
-      connectBtn.disabled = false;
-      connectBtn.textContent = 'Hubungkan';
+    const menuBtn = document.getElementById('menuBtn');
+    const dropdown = document.getElementById('dropdown');
+    menuBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      dropdown.classList.toggle('open');
     });
-
-    socket.on('wa-status', (status) => {
-      if (status === 'connected') {
-        print('WhatsApp berhasil terhubung!', 'ok');
-        pairingBox.classList.remove('show');
-      } else if (status === 'connecting') {
-        print('Menghubungkan ke WhatsApp...', 'warn');
-      } else if (status === 'failed') {
-        print('Gagal terhubung. Coba lagi.', 'err');
-        connectBtn.disabled = false;
-        connectBtn.textContent = 'Hubungkan';
+    document.addEventListener('click', (e) => {
+      if (!dropdown.contains(e.target) && !menuBtn.contains(e.target)) {
+        dropdown.classList.remove('open');
       }
     });
-  }
 
-  form.addEventListener('submit', function(e){
-    e.preventDefault();
-    const phone = phoneInput.value.trim().replace(/\D/g,'');
+    document.getElementById('riwayatBtn').addEventListener('click', function(){
+      notify('Sedang diperbaiki');
+      dropdown.classList.remove('open');
+    });
 
-    if (!phone || phone.length < 8) {
-      print('Nomor tidak valid. Gunakan format 62xxxxxxxxxx.', 'err');
-      return;
-    }
-
-    if (!socket) {
-      print('Backend belum diatur. Isi SOCKET_URL di dalam kode terlebih dahulu.', 'err');
-      return;
-    }
-
-    connectBtn.disabled = true;
-    connectBtn.textContent = 'Menghubungkan...';
-    print('Mengirim permintaan pairing untuk +' + phone + ' ...', 'warn');
-    socket.emit('request-pairing', { phone: phone });
-  });
-</script>
-
+    document.getElementById('keluarBtn').addEventListener('click', function(){
+      dropdown.classList.remove('open');
+      window.location.href = 'dashboard.html';
+    });
+  </script>
 </body>
 </html>
