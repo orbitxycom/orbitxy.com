@@ -96,6 +96,36 @@ body{padding-top:46px}
 }
 .search-box input::placeholder{color:var(--t3)}
 
+.song-list{display:flex;flex-direction:column;gap:.6rem}
+.song-card{
+  display:flex;align-items:center;gap:.75rem;
+  background:var(--bg1);border:1px solid var(--line2);border-radius:4px;
+  padding:.65rem .75rem;transition:border-color .18s,background .18s;
+}
+.song-card:hover{border-color:var(--line3)}
+.song-cover{
+  width:46px;height:46px;border-radius:4px;flex-shrink:0;
+  background:var(--bg3);display:flex;align-items:center;justify-content:center;
+  overflow:hidden;color:var(--t3);
+}
+.song-cover img{width:100%;height:100%;object-fit:cover;display:block}
+.song-cover svg{width:20px;height:20px}
+.song-info{flex:1;min-width:0}
+.song-title{font-size:.8rem;font-weight:700;color:var(--t1);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-bottom:.15rem}
+.song-dur{font-size:.63rem;color:var(--t3)}
+.song-play-btn{
+  flex-shrink:0;width:38px;height:38px;border-radius:50%;
+  background:rgba(var(--em-rgb),.1);border:1px solid rgba(var(--em-rgb),.4);
+  color:var(--em);display:flex;align-items:center;justify-content:center;
+  cursor:pointer;transition:all .18s;
+}
+.song-play-btn:hover{background:rgba(var(--em-rgb),.18)}
+.song-play-btn.playing{background:var(--em);color:#0a0518;border-color:var(--em)}
+.song-play-btn svg{width:16px;height:16px}
+.song-empty{text-align:center;padding:3rem 1rem;color:var(--t3);font-size:.75rem}
+.song-skel{height:70px;border-radius:4px;background:linear-gradient(90deg,var(--bg1) 25%,var(--bg2) 50%,var(--bg1) 75%);background-size:400% 100%;animation:songShimmer 1.5s ease infinite}
+@keyframes songShimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+
 /* ── Music Player ─────────────────────────────────── */
 #musicPlayer{
   position:fixed;bottom:1.15rem;right:1.15rem;z-index:300;
@@ -211,7 +241,11 @@ function applyGlobalBg(s) {
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
     <input type="text" id="searchInput" placeholder="Cari lagu atau playlist..." autocomplete="off">
   </div>
-  <!-- Konten Playlist Musik masih kosong, akan diisi menyusul -->
+  <div class="song-list" id="songList">
+    <div class="song-skel"></div>
+    <div class="song-skel"></div>
+    <div class="song-skel"></div>
+  </div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -240,6 +274,114 @@ function notReady(e){
   return false;
 }
 window.notReady = notReady;
+
+// ── Playlist Lagu (Supabase) ────────────────────────────
+// Tabel yang dipakai: playlist_songs
+// Kolom: id, title (text), duration (text, contoh "3:24" atau angka detik),
+//        cover_url (text, boleh kosong), audio_url (text, wajib), created_at
+var _allSongs = [];
+var _playingId = null;
+var _songAudio = new Audio();
+_songAudio.preload = 'none';
+
+function escSong(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#x27;'); }
+
+function fmtDuration(d){
+  if(d === null || d === undefined || d === '') return '';
+  if(typeof d === 'string' && d.indexOf(':') > -1) return d;
+  var n = Number(d);
+  if(!isFinite(n) || isNaN(n)) return String(d);
+  var m = Math.floor(n/60), s = Math.floor(n%60);
+  return m + ':' + (s<10?'0':'') + s;
+}
+
+async function loadSongs(){
+  var list = document.getElementById('songList');
+  if(!supabaseClient){
+    list.innerHTML = '<div class="song-empty">Gagal memuat sistem (Supabase tidak termuat).</div>';
+    return;
+  }
+  try{
+    var { data, error } = await supabaseClient
+      .from('playlist_songs')
+      .select('*')
+      .order('created_at', { ascending: false });
+    if(error) throw error;
+    _allSongs = data || [];
+    renderSongs(_allSongs);
+  }catch(e){
+    console.error('Gagal memuat playlist:', e);
+    list.innerHTML = '<div class="song-empty">Belum ada lagu, atau tabel <b>playlist_songs</b> belum dibuat di Supabase.</div>';
+  }
+}
+
+function renderSongs(list){
+  var el = document.getElementById('songList');
+  if(!list.length){
+    el.innerHTML = '<div class="song-empty">Belum ada lagu di playlist.</div>';
+    return;
+  }
+  el.innerHTML = list.map(function(s){
+    var cover = s.cover_url
+      ? '<img src="'+escSong(s.cover_url)+'" alt="" loading="lazy" onerror="this.parentElement.innerHTML=defaultCoverSvg()">'
+      : defaultCoverSvg();
+    var isPlaying = _playingId === s.id;
+    return '<div class="song-card" data-id="'+escSong(s.id)+'">'
+      + '<div class="song-cover">'+cover+'</div>'
+      + '<div class="song-info">'
+        + '<div class="song-title">'+escSong(s.title||'Tanpa judul')+'</div>'
+        + '<div class="song-dur">'+escSong(fmtDuration(s.duration))+'</div>'
+      + '</div>'
+      + '<button class="song-play-btn'+(isPlaying?' playing':'')+'" onclick="toggleSongPlay(\''+escSong(s.id)+'\', this)">'
+        + (isPlaying ? svgStopIcon() : svgPlayIcon())
+      + '</button>'
+    + '</div>';
+  }).join('');
+}
+
+function defaultCoverSvg(){
+  return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>';
+}
+function svgPlayIcon(){
+  return '<svg viewBox="0 0 24 24" fill="currentColor"><polygon points="6 3 20 12 6 21 6 3"/></svg>';
+}
+function svgStopIcon(){
+  return '<svg viewBox="0 0 24 24" fill="currentColor"><rect x="5" y="5" width="14" height="14" rx="1"/></svg>';
+}
+
+function toggleSongPlay(id, btn){
+  var song = _allSongs.find(function(s){ return String(s.id) === String(id); });
+  if(!song || !song.audio_url){ toast('URL audio lagu ini kosong','err'); return; }
+
+  if(_playingId === id){
+    _songAudio.pause();
+    _songAudio.currentTime = 0;
+    _playingId = null;
+    renderSongs(_allSongs);
+    return;
+  }
+
+  _songAudio.pause();
+  _songAudio.src = song.audio_url;
+  _songAudio.play().catch(function(e){ toast('Gagal memutar lagu','err'); console.error(e); });
+  _playingId = id;
+  renderSongs(_allSongs);
+}
+
+_songAudio.addEventListener('ended', function(){
+  _playingId = null;
+  renderSongs(_allSongs);
+});
+
+document.getElementById('searchInput').addEventListener('input', function(e){
+  var q = e.target.value.trim().toLowerCase();
+  var filtered = !q ? _allSongs : _allSongs.filter(function(s){
+    return (s.title||'').toLowerCase().indexOf(q) > -1;
+  });
+  renderSongs(filtered);
+});
+
+loadSongs();
 </script>
 
 <div id="musicPlayer">
