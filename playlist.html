@@ -447,10 +447,7 @@ function toggleSongPlay(id, btn){
   if(!song || !song.audio_url){ toast('URL audio lagu ini kosong','err'); return; }
 
   if(_playingId === id){
-    _songAudio.pause();
-    _songAudio.currentTime = 0;
-    _playingId = null;
-    renderSongs(_allSongs);
+    stopSong();
     return;
   }
 
@@ -459,12 +456,101 @@ function toggleSongPlay(id, btn){
   _songAudio.play().catch(function(e){ toast('Gagal memutar lagu','err'); console.error(e); });
   _playingId = id;
   renderSongs(_allSongs);
+  openNowPlaying(song);
+}
+
+function stopSong(){
+  _songAudio.pause();
+  _songAudio.currentTime = 0;
+  _playingId = null;
+  renderSongs(_allSongs);
+  closeNowPlaying();
 }
 
 _songAudio.addEventListener('ended', function(){
   _playingId = null;
   renderSongs(_allSongs);
+  closeNowPlaying();
 });
+
+// ── Now Playing Panel ────────────────────────────────
+function fmtTime(sec){
+  if(!isFinite(sec) || isNaN(sec)) return '0:00';
+  var m = Math.floor(sec/60), s = Math.floor(sec%60);
+  return m + ':' + (s<10?'0':'') + s;
+}
+
+function openNowPlaying(song){
+  var overlay = document.getElementById('npOverlay');
+  var cover = document.getElementById('npCover');
+  cover.innerHTML = song.cover_url
+    ? '<img src="'+escSong(song.cover_url)+'" alt="" onerror="this.parentElement.innerHTML=defaultCoverSvg()">'
+    : defaultCoverSvg();
+  document.getElementById('npTitle').textContent = song.title || 'Tanpa judul';
+  document.getElementById('npCurTime').textContent = '0:00';
+  document.getElementById('npDurTime').textContent = '0:00';
+  document.getElementById('npSeek').value = 0;
+  setNpPlayIcon(true);
+  overlay.classList.add('on');
+}
+function closeNowPlaying(){
+  document.getElementById('npOverlay').classList.remove('on');
+}
+
+function setNpPlayIcon(playing){
+  var btn = document.getElementById('npPlayPauseBtn');
+  btn.title = playing ? 'Pause' : 'Play';
+  btn.innerHTML = playing
+    ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="7" y1="4" x2="7" y2="20"/><line x1="17" y1="4" x2="17" y2="20"/></svg>'
+    : '<svg viewBox="0 0 24 24" fill="currentColor"><polygon points="6 3 20 12 6 21 6 3"/></svg>';
+}
+
+document.getElementById('npCloseBtn').addEventListener('click', function(){
+  stopSong();
+});
+
+document.getElementById('npPlayPauseBtn').addEventListener('click', function(){
+  if(_songAudio.paused){
+    _songAudio.play().catch(function(){});
+    setNpPlayIcon(true);
+  } else {
+    _songAudio.pause();
+    setNpPlayIcon(false);
+  }
+});
+
+document.getElementById('npBackBtn').addEventListener('click', function(){
+  _songAudio.currentTime = Math.max(0, _songAudio.currentTime - 10);
+});
+document.getElementById('npFwdBtn').addEventListener('click', function(){
+  _songAudio.currentTime = Math.min(_songAudio.duration || 0, _songAudio.currentTime + 10);
+});
+
+var _npSeeking = false;
+var npSeekEl = document.getElementById('npSeek');
+npSeekEl.addEventListener('input', function(){
+  _npSeeking = true;
+  var pct = npSeekEl.value / 100;
+  document.getElementById('npCurTime').textContent = fmtTime((_songAudio.duration || 0) * pct);
+});
+npSeekEl.addEventListener('change', function(){
+  var pct = npSeekEl.value / 100;
+  if(_songAudio.duration) _songAudio.currentTime = _songAudio.duration * pct;
+  _npSeeking = false;
+});
+
+_songAudio.addEventListener('loadedmetadata', function(){
+  document.getElementById('npDurTime').textContent = fmtTime(_songAudio.duration);
+});
+_songAudio.addEventListener('timeupdate', function(){
+  if(_npSeeking) return;
+  document.getElementById('npCurTime').textContent = fmtTime(_songAudio.currentTime);
+  if(_songAudio.duration){
+    npSeekEl.value = (_songAudio.currentTime / _songAudio.duration) * 100;
+  }
+});
+_songAudio.addEventListener('play', function(){ setNpPlayIcon(true); });
+_songAudio.addEventListener('pause', function(){ if(_playingId) setNpPlayIcon(false); });
 
 document.getElementById('searchInput').addEventListener('input', function(e){
   var q = e.target.value.trim().toLowerCase();
