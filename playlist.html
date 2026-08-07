@@ -135,6 +135,61 @@ body{padding-top:46px}
 .song-eq span:nth-child(3){animation-duration:.55s;animation-delay:.24s}
 @keyframes songEq{0%,100%{height:2px}50%{height:11px}}
 
+/* ── Now Playing Panel ─────────────────────────────── */
+.np-overlay{
+  position:fixed;inset:0;z-index:400;
+  background:rgba(0,0,0,.85);backdrop-filter:blur(10px);
+  display:none;align-items:center;justify-content:center;padding:1.5rem;
+  animation:npFade .2s ease;
+}
+.np-overlay.on{display:flex}
+@keyframes npFade{from{opacity:0}to{opacity:1}}
+.np-panel{
+  position:relative;width:100%;max-width:340px;
+  background:var(--bg1);border:1px solid var(--line2);border-radius:4px;
+  padding:2.2rem 1.4rem 1.5rem;text-align:center;
+  animation:npUp .25s cubic-bezier(.34,1.2,.64,1);
+}
+@keyframes npUp{from{opacity:0;transform:scale(.94) translateY(10px)}to{opacity:1;transform:none}}
+.np-close{
+  position:absolute;top:.75rem;right:.75rem;
+  width:30px;height:30px;border-radius:50%;
+  background:var(--bg2);border:1px solid var(--line2);color:var(--t2);
+  display:flex;align-items:center;justify-content:center;cursor:pointer;
+  transition:all .15s;
+}
+.np-close:hover{border-color:var(--line3);color:var(--t1);background:var(--bg3)}
+.np-close svg{width:14px;height:14px}
+.np-cover{
+  width:180px;height:180px;border-radius:4px;margin:0 auto 1.2rem;
+  background:var(--bg3);display:flex;align-items:center;justify-content:center;
+  overflow:hidden;color:var(--t3);box-shadow:0 12px 40px rgba(0,0,0,.5);
+}
+.np-cover img{width:100%;height:100%;object-fit:cover;display:block}
+.np-cover svg{width:56px;height:56px}
+.np-title{font-size:1rem;font-weight:700;color:var(--t1);margin-bottom:.3rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.np-time-row{display:flex;justify-content:space-between;font-size:.6rem;color:var(--t3);margin-bottom:.35rem}
+.np-seek{
+  width:100%;-webkit-appearance:none;appearance:none;height:4px;border-radius:2px;
+  background:var(--line2);cursor:pointer;outline:none;margin-bottom:1.3rem;
+}
+.np-seek::-webkit-slider-thumb{-webkit-appearance:none;width:13px;height:13px;border-radius:50%;background:var(--em);cursor:pointer;box-shadow:0 0 6px rgba(0,0,0,.5)}
+.np-seek::-moz-range-thumb{width:13px;height:13px;border-radius:50%;border:none;background:var(--em);cursor:pointer}
+.np-controls{display:flex;align-items:center;justify-content:center;gap:1.1rem}
+.np-btn{
+  background:none;border:none;color:var(--t2);cursor:pointer;
+  display:flex;align-items:center;justify-content:center;transition:color .15s;
+  padding:.4rem;
+}
+.np-btn:hover{color:var(--t1)}
+.np-btn svg{width:22px;height:22px}
+.np-btn.np-main{
+  width:54px;height:54px;border-radius:50%;
+  background:var(--em);color:#0a0518;
+}
+.np-btn.np-main:hover{background:var(--em2);color:#0a0518}
+.np-btn.np-main svg{width:24px;height:24px}
+
 /* ── Music Player ─────────────────────────────────── */
 #musicPlayer{
   position:fixed;bottom:1.15rem;right:1.15rem;z-index:300;
@@ -254,6 +309,32 @@ function applyGlobalBg(s) {
     <div class="song-skel"></div>
     <div class="song-skel"></div>
     <div class="song-skel"></div>
+  </div>
+</div>
+
+<div class="np-overlay" id="npOverlay">
+  <div class="np-panel">
+    <button class="np-close" id="npCloseBtn" title="Stop">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+    <div class="np-cover" id="npCover"></div>
+    <div class="np-title" id="npTitle">—</div>
+    <div class="np-time-row">
+      <span id="npCurTime">0:00</span>
+      <span id="npDurTime">0:00</span>
+    </div>
+    <input type="range" class="np-seek" id="npSeek" min="0" max="100" value="0">
+    <div class="np-controls">
+      <button class="np-btn" id="npBackBtn" title="Mundur 10 detik">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 19 2 12 11 5 11 19"/><polygon points="22 19 13 12 22 5 22 19"/></svg>
+      </button>
+      <button class="np-btn np-main" id="npPlayPauseBtn" title="Pause">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="7" y1="4" x2="7" y2="20"/><line x1="17" y1="4" x2="17" y2="20"/></svg>
+      </button>
+      <button class="np-btn" id="npFwdBtn" title="Maju 10 detik">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 19 22 12 13 5 13 19"/><polygon points="2 19 11 12 2 5 2 19"/></svg>
+      </button>
+    </div>
   </div>
 </div>
 
