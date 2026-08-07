@@ -111,7 +111,7 @@ body{padding-top:46px}
 .song-cover img{width:100%;height:100%;object-fit:cover;display:block}
 .song-cover svg{width:20px;height:20px}
 .song-info{flex:1;min-width:0}
-.song-title{font-size:.8rem;font-weight:700;color:var(--t1);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-bottom:.15rem}
+.song-title{font-size:.8rem;font-weight:700;color:var(--t1);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-bottom:.15rem;min-width:0}
 .song-dur{font-size:.63rem;color:var(--t3)}
 .song-play-btn{
   flex-shrink:0;width:38px;height:38px;border-radius:50%;
@@ -125,6 +125,15 @@ body{padding-top:46px}
 .song-empty{text-align:center;padding:3rem 1rem;color:var(--t3);font-size:.75rem}
 .song-skel{height:70px;border-radius:4px;background:linear-gradient(90deg,var(--bg1) 25%,var(--bg2) 50%,var(--bg1) 75%);background-size:400% 100%;animation:songShimmer 1.5s ease infinite}
 @keyframes songShimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+
+.song-title-row{display:flex;align-items:center;gap:.4rem}
+.song-eq{display:none;align-items:flex-end;gap:2px;height:11px}
+.song-eq.on{display:flex}
+.song-eq span{width:2px;background:var(--em);border-radius:1px;animation:songEq .75s ease-in-out infinite}
+.song-eq span:nth-child(1){animation-duration:.6s}
+.song-eq span:nth-child(2){animation-duration:.85s;animation-delay:.12s}
+.song-eq span:nth-child(3){animation-duration:.55s;animation-delay:.24s}
+@keyframes songEq{0%,100%{height:2px}50%{height:11px}}
 
 /* ── Music Player ─────────────────────────────────── */
 #musicPlayer{
@@ -329,7 +338,10 @@ function renderSongs(list){
     return '<div class="song-card" data-id="'+escSong(s.id)+'">'
       + '<div class="song-cover">'+cover+'</div>'
       + '<div class="song-info">'
-        + '<div class="song-title">'+escSong(s.title||'Tanpa judul')+'</div>'
+        + '<div class="song-title-row">'
+          + '<div class="song-title">'+escSong(s.title||'Tanpa judul')+'</div>'
+          + '<div class="song-eq'+(isPlaying?' on':'')+'"><span></span><span></span><span></span></div>'
+        + '</div>'
         + '<div class="song-dur">'+escSong(fmtDuration(s.duration))+'</div>'
       + '</div>'
       + '<button class="song-play-btn'+(isPlaying?' playing':'')+'" onclick="toggleSongPlay(\''+escSong(s.id)+'\', this)">'
