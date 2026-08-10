@@ -1742,7 +1742,7 @@ document.addEventListener('DOMContentLoaded', async function() {
   const { data } = await supabaseClient.auth.getUser();
   const user = data ? data.user : null;
   if (!user) {
-    window.location.href = 'login.html?returnUrl='+encodeURIComponent('/dashboard/')');
+    window.location.href = '/login/?returnUrl='+encodeURIComponent('/dashboard/');
     return;
   }
   initMusic();
