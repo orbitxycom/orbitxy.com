@@ -1338,7 +1338,7 @@ function renderGrid(list) {
 document.addEventListener('click', function(e) {
   var card = e.target.closest('#gridEl .card[data-pid]');
   if (!card) return;
-  window.location.href = 'produk.html?id=' + encodeURIComponent(card.dataset.pid);
+  window.location.href = '/produk/?id=' + encodeURIComponent(card.dataset.pid);
 });
 
 function setCat(c, btn) {
