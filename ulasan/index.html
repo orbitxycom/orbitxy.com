@@ -622,7 +622,7 @@ async function openWriteModal(){
   const { data } = await supabaseClient.auth.getUser();
   const user = data ? data.user : null;
   if(!user){
-    location.href = '/login/?returnUrl=' + encodeURIComponent('ulasan.html?write=1');
+    location.href = '/login/?returnUrl=' + encodeURIComponent('/ulasan/?write=1');
     return;
   }
 
@@ -691,7 +691,7 @@ function closeWriteModal(){document.getElementById('writeBg').classList.add('hid
 function _handleAuthFail(){
   closeWriteModal();
   toast('Sesi habis, silakan login ulang.','err',4000);
-  setTimeout(function(){ location.href='/login/?returnUrl=' + encodeURIComponent('ulasan.html?write=1'); }, 1500);
+  setTimeout(function(){ location.href='/login/?returnUrl=' + encodeURIComponent('/ulasan/?write=1'); }, 1500);
 }
 
 async function submitReview(){
