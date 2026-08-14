@@ -4,6 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Live Chat</title>
+<link rel="icon" type="image/png" href="https://orbitxy.com/orbitxy.com.png">
+<link rel="apple-touch-icon" href="https://orbitxy.com/orbitxy.com.png">
 <style>
   * { box-sizing: border-box; }
   html, body {
@@ -306,7 +308,7 @@
   </div>
 
   <div class="topbar">
-    <a href="dashboard.html" class="back-btn" aria-label="Kembali">
+    <a href="/dashboard/" class="back-btn" aria-label="Kembali">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg>
     </a>
     <div>
@@ -576,7 +578,7 @@
     const { data } = await supabaseClient.auth.getUser();
     const user = data ? data.user : null;
     if (!user) {
-      window.location.href = 'login.html?returnUrl=' + encodeURIComponent('livechat.html');
+      window.location.href = '/login/?returnUrl=' + encodeURIComponent('/livechat/');
       return;
     }
     _me = { id: user.id, name: genericNameFor(user.id) };
