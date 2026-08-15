@@ -377,29 +377,16 @@ async function submitCheckout(){
   btn.disabled = true; btn.textContent = 'Memproses...';
 
   try{
-    var res = await fetch('/api/order', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        productId: currentProduct.id,
-        phone: phone,
-        paymentMethod: 'qris'
-      })
+    var { data: j, error: fnErr } = await supabaseClient.functions.invoke('pakasir', {
+      body: { action: 'create', productId: currentProduct.id, phone: phone }
     });
 
-    var j = null;
-    try{ j = await res.json(); }catch(parseErr){ j = null; }
-
-    if(!res.ok || !j || j.ok === false){
-      throw new Error((j && j.message) || 'Gagal membuat pesanan. Coba lagi.');
+    if(fnErr || !j || j.ok === false){
+      throw new Error((j && j.message) || (fnErr && fnErr.message) || 'Gagal membuat pesanan. Coba lagi.');
     }
 
-    if(j.orderId){
-      window.location.href = '/bayar/?id=' + encodeURIComponent(j.orderId);
-      return;
-    }
-    if(j.redirectUrl){
-      window.location.href = j.redirectUrl;
+    if(j.order && j.order.id){
+      window.location.href = '/bayar/?id=' + encodeURIComponent(j.order.id);
       return;
     }
 
