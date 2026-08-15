@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pembayaran QR - orbitxy.com</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --page-bg:#F3F4F6;
+    --card-bg:#FFFFFF;
+    --border:#E5E7EB;
+    --ink:#1F2937;
+    --ink-soft:#6B7280;
+    --blue:#3B82F6;
+    --blue-dark:#2563EB;
+    --amber:#D97706;
+    --amber-bg:#FEF3C7;
+    --red:#DC2626;
+    --red-bg:#FEE2E2;
+    --green:#16A34A;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--page-bg);
+    color:var(--ink);
+    font-family:'Inter',sans-serif;
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    padding:32px 16px 60px;
+  }
+  .page{width:100%;max-width:420px;}
+  .card{
+    background:var(--card-bg);
+    border:1px solid var(--border);
+    border-radius:0;
+    padding:28px 24px 24px;
+    text-align:center;
+  }
+
+  /* Merchant header — placeholder, edit merchantName in the script below */
+  .merchant{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:8px;
+    margin-bottom:18px;
+  }
+  .avatar{
+    width:52px;height:52px;
+    border-radius:0;
+    background:var(--page-bg);
+    border:1px solid var(--border);
+    display:flex;align-items:center;justify-content:center;
+    color:var(--ink-soft);
+  }
+  .merchant-name{
+    font-weight:600;
+    font-size:15px;
+    color:var(--ink-soft);
+  }
+
+  /* QR */
+  .qr-frame{
+    background:#fff;
+    border:1px solid var(--border);
+    border-radius:0;
+    padding:16px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    margin-bottom:18px;
+  }
+  #qrCanvas{line-height:0;}
+  #qrCanvas img, #qrCanvas canvas{display:block;}
+
+  .instruction{
+    font-size:14.5px;
+    color:var(--ink);
+    line-height:1.5;
+    margin:0 0 18px;
+  }
+
+  .timer-row{
+    font-size:14px;
+    color:var(--ink);
+    margin-bottom:20px;
+  }
+  .timer-value{
+    display:inline-block;
+    background:var(--red-bg);
+    color:var(--red);
+    font-family:'IBM Plex Mono',monospace;
+    font-weight:600;
+    font-size:14px;
+    padding:3px 10px;
+    border-radius:0;
+    margin-left:4px;
+  }
+
+  /* Invoice table — all values start empty/placeholder */
+  .invoice-table{
+    width:100%;
+    border-collapse:collapse;
+    margin-bottom:22px;
+    text-align:left;
+  }
+  .invoice-table td{
+    padding:12px 14px;
+    border:1px solid var(--border);
+    font-size:14.5px;
+    vertical-align:top;
+  }
+  .invoice-table td:first-child{
+    width:40%;
+    color:var(--ink);
+  }
+  .invoice-table td:last-child{
+    color:var(--ink);
+    font-family:'IBM Plex Mono',monospace;
+  }
+  .status-badge{
+    display:inline-block;
+    background:var(--amber-bg);
+    color:var(--amber);
+    font-family:'Inter',sans-serif;
+    font-weight:600;
+    font-size:13.5px;
+    padding:3px 10px;
+    border-radius:0;
+  }
+  .status-badge.paid{background:#DCFCE7;color:var(--green);}
+  .status-badge.expired,.status-badge.failed{background:var(--red-bg);color:var(--red);}
+
+  .paid-btn{
+    width:100%;
+    padding:14px 16px;
+    border:none;
+    border-radius:0;
+    background:var(--blue);
+    color:#fff;
+    font-family:'Inter',sans-serif;
+    font-weight:600;
+    font-size:15px;
+    cursor:pointer;
+    transition:background .15s ease;
+  }
+  .paid-btn:hover{background:var(--blue-dark);}
+  .paid-btn:disabled{opacity:0.7;cursor:not-allowed;}
+
+  .hourglass-icon{
+    display:inline-block;
+    animation:hourglass-wobble 1.6s ease-in-out infinite;
+    transform-origin:50% 85%;
+  }
+  @keyframes hourglass-wobble{
+    0%, 100%{transform:rotate(0deg);}
+    25%{transform:rotate(-12deg);}
+    75%{transform:rotate(12deg);}
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *{transition:none !important;}
+    .hourglass-icon{animation:none;}
+  }
+
+  /* States: error page & top notif (ditambahkan untuk integrasi API) */
+  .top-notif{
+    position:fixed;top:14px;left:50%;transform:translateX(-50%) translateY(-10px);
+    background:#111827;color:#fff;font-size:13px;font-weight:600;
+    padding:9px 16px;border-radius:0;z-index:9999;opacity:0;pointer-events:none;
+    transition:opacity .2s,transform .2s;max-width:90vw;text-align:center;
+  }
+  .top-notif.show{opacity:1;transform:translateX(-50%) translateY(0);}
+  .top-notif.err{background:var(--red);}
+  .top-notif.ok{background:var(--green);}
+
+  .error-card{display:none;}
+  .error-icon{width:52px;height:52px;margin:0 auto 14px;border-radius:0;background:var(--red-bg);color:var(--red);display:flex;align-items:center;justify-content:center;}
+  .error-icon svg{width:26px;height:26px;}
+  .error-title{font-size:16px;font-weight:700;margin-bottom:6px;}
+  .error-desc{font-size:13.5px;color:var(--ink-soft);margin-bottom:18px;line-height:1.6;}
+  .error-btn{display:inline-block;padding:11px 22px;background:var(--blue);color:#fff;text-decoration:none;font-weight:600;font-size:14px;border-radius:0;}
+</style>
+</head>
+<body>
+
+<div class="top-notif" id="topNotif"><span id="topNotifMsg"></span></div>
+
+<div class="page">
+  <div class="card" id="qrisCard">
+
+    <div class="qr-frame"><div id="qrCanvas"></div></div>
+
+    <p class="instruction">Scan QR code ini menggunakan e-wallet atau mobile banking Anda</p>
+
+    <div class="timer-row"><span class="hourglass-icon">⏳</span> Sisa waktu:<span class="timer-value" id="timerValue">--:--</span></div>
+
+    <table class="invoice-table">
+      <tr><td>Invoice ID</td><td id="invId">-</td></tr>
+      <tr><td>Status</td><td><span class="status-badge" id="invStatus">🕐 Menunggu Pembayaran</span></td></tr>
+      <tr><td>Nominal</td><td id="invNominal">-</td></tr>
+      <tr><td>Fee</td><td id="invFee">-</td></tr>
+      <tr><td>Total</td><td id="invTotal">-</td></tr>
+      <tr><td>Tanggal</td><td id="invDate">-</td></tr>
+    </table>
+
+    <button type="button" class="paid-btn" id="paidBtn">Saya Sudah Bayar</button>
+  </div>
+
+  <!-- Ditampilkan kalau order tidak ditemukan / gagal dimuat -->
+  <div class="card error-card" id="errorCard">
+    <div class="error-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+    </div>
+    <div class="error-title">Pesanan Tidak Ditemukan</div>
+    <div class="error-desc" id="errorDesc">Link pembayaran tidak valid atau sudah kedaluwarsa.</div>
+    <a href="/dashboard/" class="error-btn">Kembali ke Dashboard</a>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function(){
+
+  /* ==================================================================
+     KONEKSI KE PEMBAYARAN — via Supabase Edge Function "pakasir"
+     ------------------------------------------------------------------
+     Halaman ini baca ?id=ORDER_ID dari URL, lalu panggil Edge Function
+     dengan action:'status' untuk ambil data order + cek status terbaru
+     ke Pakasir. Semua kredensial (api_key Pakasir) aman di server,
+     tidak pernah dikirim ke browser.
+     ================================================================== */
+  var supabaseClient;
+  try{
+    supabaseClient = supabase.createClient(
+      'https://ygjpwaftccewntwwoixs.supabase.co',
+      'sb_publishable_4IdyoPpEW-It9IWLZOrSAQ_WuumXkl9'
+    );
+  }catch(e){ console.error('Gagal memuat Supabase:', e); }
+
+  function getParam(k){ return new URLSearchParams(window.location.search).get(k); }
+  var orderId = getParam('id');
+
+  var _notifT = null;
+  function notify(msg, type){
+    var n = document.getElementById('topNotif'), m = document.getElementById('topNotifMsg');
+    n.className = 'top-notif ' + (type||''); m.textContent = msg;
+    n.classList.add('show');
+    if(_notifT) clearTimeout(_notifT);
+    _notifT = setTimeout(function(){ n.classList.remove('show'); }, 3000);
+  }
+
+  function showError(msg){
+    document.getElementById('qrisCard').style.display = 'none';
+    document.getElementById('errorCard').style.display = 'block';
+    document.getElementById('errorDesc').textContent = msg || 'Link pembayaran tidak valid atau sudah kedaluwarsa.';
+  }
+
+  const fmtRp = v => (v === '' || v === null || v === undefined) ? '-' : 'Rp ' + Number(v).toLocaleString('id-ID');
+
+  var countdownInterval = null;
+  var pollInterval = null;
+  var currentInvoice = null;
+
+  function renderInvoice(invoice){
+    currentInvoice = invoice;
+
+    document.getElementById('invId').textContent = invoice.id || '-';
+    document.getElementById('invNominal').textContent = fmtRp(invoice.nominal);
+    document.getElementById('invFee').textContent = fmtRp(invoice.fee);
+    document.getElementById('invTotal').textContent = fmtRp(invoice.total);
+    document.getElementById('invDate').textContent = invoice.date || '-';
+
+    renderStatus(invoice.status);
+    renderQr(invoice.qrContent);
+
+    clearInterval(countdownInterval);
+    if(invoice.expiresAt){
+      var expiresAt = new Date(invoice.expiresAt).getTime();
+      countdownInterval = setInterval(function(){ tickCountdown(expiresAt); }, 1000);
+      tickCountdown(expiresAt);
+    } else if(invoice.expiresInSeconds){
+      var target = Date.now() + (invoice.expiresInSeconds * 1000);
+      countdownInterval = setInterval(function(){ tickCountdown(target); }, 1000);
+      tickCountdown(target);
+    }
+  }
+
+  function renderStatus(status){
+    var statusEl = document.getElementById('invStatus');
+    var btn = document.getElementById('paidBtn');
+    statusEl.className = 'status-badge';
+
+    if(status === 'paid'){
+      statusEl.textContent = '✓ Sudah Dibayar';
+      statusEl.classList.add('paid');
+      btn.textContent = 'Pembayaran Berhasil';
+      btn.disabled = true;
+      clearInterval(countdownInterval);
+      clearInterval(pollInterval);
+      document.getElementById('timerValue').textContent = 'Lunas';
+    } else if(status === 'expired'){
+      statusEl.textContent = '✕ Kedaluwarsa';
+      statusEl.classList.add('expired');
+      btn.textContent = 'QR Kedaluwarsa';
+      btn.disabled = true;
+      clearInterval(countdownInterval);
+      clearInterval(pollInterval);
+      document.getElementById('timerValue').textContent = 'Kadaluarsa';
+    } else if(status === 'failed'){
+      statusEl.textContent = '✕ Gagal';
+      statusEl.classList.add('failed');
+      btn.textContent = 'Pembayaran Gagal';
+      btn.disabled = true;
+      clearInterval(countdownInterval);
+      clearInterval(pollInterval);
+    } else {
+      statusEl.textContent = '🕐 Menunggu Pembayaran';
+      btn.textContent = 'Saya Sudah Bayar';
+      btn.disabled = false;
+    }
+  }
+
+  function renderQr(text){
+    var qrEl = document.getElementById('qrCanvas');
+    qrEl.innerHTML = '';
+    try{
+      if(typeof QRCode === 'function' && text){
+        new QRCode(qrEl, { text: text, width: 180, height: 180, colorDark:'#1F2937', colorLight:'#ffffff' });
+      } else {
+        qrEl.innerHTML = '<div style="width:180px;height:180px;border:1.5px dashed #D1D5DB;border-radius:0;display:flex;align-items:center;justify-content:center;text-align:center;font-family:IBM Plex Mono,monospace;font-size:11px;color:#9CA3AF;padding:10px;">Menunggu data QR</div>';
+      }
+    } catch(err){
+      qrEl.innerHTML = '<div style="width:180px;height:180px;display:flex;align-items:center;justify-content:center;text-align:center;font-family:IBM Plex Mono,monospace;font-size:11px;color:#9CA3AF;padding:10px;">QR tidak dapat dimuat</div>';
+    }
+  }
+
+  function tickCountdown(expiresAtMs){
+    var timerEl = document.getElementById('timerValue');
+    var diff = expiresAtMs - Date.now();
+    var seconds = Math.max(0, Math.floor(diff/1000));
+
+    var h = Math.floor(seconds/3600).toString().padStart(2,'0');
+    var m = Math.floor((seconds%3600)/60).toString().padStart(2,'0');
+    var s = Math.floor(seconds%60).toString().padStart(2,'0');
+    timerEl.textContent = (seconds >= 3600 ? h+':' : '') + m + ':' + s;
+
+    if(seconds <= 0){
+      clearInterval(countdownInterval);
+      timerEl.textContent = 'Kadaluarsa';
+      if(currentInvoice && currentInvoice.status === 'pending'){
+        currentInvoice.status = 'expired';
+        renderStatus('expired');
+      }
+    }
+  }
+
+  async function fetchOrder(){
+    if(!supabaseClient) throw new Error('Sistem pembayaran gagal dimuat');
+    var { data: j, error: fnErr } = await supabaseClient.functions.invoke('pakasir', {
+      body: { action: 'status', orderId: orderId }
+    });
+    if(fnErr || !j || j.ok === false || !j.order){
+      throw new Error((j && j.message) || (fnErr && fnErr.message) || 'Pesanan tidak ditemukan');
+    }
+    return j.order;
+  }
+
+  async function checkStatusManual(){
+    var btn = document.getElementById('paidBtn');
+    btn.disabled = true;
+    btn.textContent = 'Memeriksa…';
+    try{
+      var o = await fetchOrder();
+      renderInvoice(o);
+      if(o.status === 'paid'){
+        notify('Pembayaran ditemukan!', 'ok');
+      } else if(o.status === 'pending'){
+        notify('Belum ada pembayaran masuk', '');
+      } else {
+        notify('Status: ' + o.status, 'err');
+      }
+    }catch(err){
+      notify(err.message || 'Gagal mengecek status', 'err');
+      btn.disabled = false;
+      btn.textContent = 'Saya Sudah Bayar';
+    }
+  }
+
+  document.getElementById('paidBtn').addEventListener('click', checkStatusManual);
+
+  async function init(){
+    if(!orderId){
+      showError('ID pesanan tidak ditemukan pada link ini.');
+      return;
+    }
+    try{
+      var o = await fetchOrder();
+      renderInvoice(o);
+      if(o.status === 'pending'){
+        pollInterval = setInterval(async function(){
+          try{
+            var upd = await fetchOrder();
+            renderInvoice(upd);
+          }catch(e){ /* diamkan error polling background */ }
+        }, 5000);
+      }
+    }catch(err){
+      console.error('Gagal memuat pesanan:', err);
+      showError(err.message);
+    }
+  }
+
+  init();
+});
+</script>
+</body>
+</html>
