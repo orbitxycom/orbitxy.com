@@ -8,23 +8,26 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
   :root{
-    --page-bg:#F3F4F6;
-    --card-bg:#FFFFFF;
-    --border:#E5E7EB;
-    --ink:#1F2937;
-    --ink-soft:#6B7280;
-    --blue:#3B82F6;
-    --blue-dark:#2563EB;
-    --amber:#D97706;
-    --amber-bg:#FEF3C7;
-    --red:#DC2626;
-    --red-bg:#FEE2E2;
-    --green:#16A34A;
+    --page-bg:#000000;
+    --card-bg:#0a0a0a;
+    --border:#2E2E2E;
+    --ink:#ffffff;
+    --ink-soft:#8a8a8a;
+    --blue:#7c3aed;
+    --blue-dark:#6d28d9;
+    --amber:#fbbf24;
+    --amber-bg:rgba(251,191,36,.12);
+    --red:#f87171;
+    --red-bg:rgba(248,113,113,.12);
+    --green:#4ade80;
+    --green-bg:rgba(74,222,128,.12);
   }
   *{box-sizing:border-box;}
   body{
     margin:0;
     background:var(--page-bg);
+    background-image:linear-gradient(rgba(255,255,255,.028) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.028) 1px,transparent 1px);
+    background-size:50px 50px;
     color:var(--ink);
     font-family:'Inter',sans-serif;
     min-height:100vh;
@@ -132,7 +135,7 @@
     padding:3px 10px;
     border-radius:0;
   }
-  .status-badge.paid{background:#DCFCE7;color:var(--green);}
+  .status-badge.paid{background:var(--green-bg);color:var(--green);}
   .status-badge.expired,.status-badge.failed{background:var(--red-bg);color:var(--red);}
 
   .paid-btn{
