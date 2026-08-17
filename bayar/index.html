@@ -198,6 +198,17 @@
   .error-title{font-size:16px;font-weight:700;margin-bottom:6px;}
   .error-desc{font-size:13.5px;color:var(--ink-soft);margin-bottom:18px;line-height:1.6;}
   .error-btn{display:inline-block;padding:11px 22px;background:var(--blue);color:#fff;text-decoration:none;font-weight:600;font-size:14px;border-radius:0;}
+
+  /* Loading state */
+  .loading-card{display:flex;align-items:center;justify-content:center;min-height:320px;}
+  .loading-spinner{
+    width:32px;height:32px;
+    border:3px solid var(--border);
+    border-top-color:var(--blue);
+    border-radius:50%;
+    animation:spin .7s linear infinite;
+  }
+  @keyframes spin{to{transform:rotate(360deg)}}
 </style>
 </head>
 <body>
@@ -205,7 +216,12 @@
 <div class="top-notif" id="topNotif"><span id="topNotifMsg"></span></div>
 
 <div class="page">
-  <div class="card" id="qrisCard">
+  <!-- Loading state — tampil pertama kali sebelum data order kemuat -->
+  <div class="card loading-card" id="loadingCard">
+    <div class="loading-spinner"></div>
+  </div>
+
+  <div class="card" id="qrisCard" style="display:none">
 
     <div class="qr-frame" id="qrFrameBox"><div id="qrCanvas"></div></div>
 
@@ -290,6 +306,7 @@ document.addEventListener('DOMContentLoaded', function(){
   }
 
   function showError(msg){
+    document.getElementById('loadingCard').style.display = 'none';
     document.getElementById('qrisCard').style.display = 'none';
     document.getElementById('errorCard').style.display = 'block';
     document.getElementById('errorDesc').textContent = msg || 'Link pembayaran tidak valid atau sudah kedaluwarsa.';
@@ -452,6 +469,8 @@ document.addEventListener('DOMContentLoaded', function(){
     }
     try{
       var o = await fetchOrder();
+      document.getElementById('loadingCard').style.display = 'none';
+      document.getElementById('qrisCard').style.display = 'block';
       renderInvoice(o);
       if(o.status === 'pending'){
         pollInterval = setInterval(async function(){
