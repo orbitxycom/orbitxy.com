@@ -105,30 +105,6 @@
     margin-left:4px;
   }
 
-  /* Kotak Kedaluwarsa — muncul di tengah menggantikan QR + instruksi + timer */
-  .expired-box{
-    display:none;
-    flex-direction:column;
-    align-items:center;
-    justify-content:center;
-    text-align:center;
-    min-height:260px;
-    margin-bottom:22px;
-  }
-  .expired-box.show{display:flex;}
-  .expired-icon{
-    width:56px;height:56px;
-    border-radius:0;
-    background:var(--red-bg);
-    color:var(--red);
-    display:flex;align-items:center;justify-content:center;
-    margin-bottom:14px;
-  }
-  .expired-icon svg{width:28px;height:28px;}
-  .expired-icon.warn{background:var(--amber-bg);color:var(--amber);}
-  .expired-title{font-size:16px;font-weight:700;color:var(--ink);margin-bottom:6px;}
-  .expired-desc{font-size:13.5px;color:var(--ink-soft);max-width:280px;line-height:1.6;}
-
   /* Invoice grid — kotak-kotak seperti contoh */
   .invoice-grid{
     display:grid;
@@ -236,14 +212,7 @@
 
     <div class="timer-row" id="timerRow"><span class="hourglass-icon">⏳</span> Sisa waktu:<span class="timer-value" id="timerValue">--:--</span></div>
 
-    <!-- Muncul menggantikan QR + instruksi + timer kalau sudah kedaluwarsa/gagal -->
-    <div class="expired-box" id="expiredBox">
-      <div class="expired-icon" id="expiredIcon">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-      </div>
-      <div class="expired-title" id="expiredTitle">QR Kedaluwarsa</div>
-      <div class="expired-desc" id="expiredDesc">Pesanan ini sudah melewati batas waktu pembayaran.</div>
-    </div>
+    <!-- Kotak Kedaluwarsa dihapus — status cukup dilihat dari badge Status di bawah -->
 
     <div class="invoice-grid">
       <div class="inv-box full">
@@ -359,17 +328,14 @@ document.addEventListener('DOMContentLoaded', function(){
     var frame = document.getElementById('qrFrameBox');
     var instr = document.getElementById('instructionText');
     var timer = document.getElementById('timerRow');
-    var expiredBox = document.getElementById('expiredBox');
     if(show){
       frame.style.display = '';
       instr.style.display = '';
       timer.style.display = '';
-      expiredBox.classList.remove('show');
     } else {
       frame.style.display = 'none';
       instr.style.display = 'none';
       timer.style.display = 'none';
-      expiredBox.classList.add('show');
     }
   }
 
@@ -385,10 +351,6 @@ document.addEventListener('DOMContentLoaded', function(){
       btn.disabled = true;
       clearInterval(countdownInterval);
       clearInterval(pollInterval);
-      document.getElementById('expiredIcon').classList.remove('warn');
-      document.getElementById('expiredIcon').innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>';
-      document.getElementById('expiredTitle').textContent = 'Pembayaran Berhasil';
-      document.getElementById('expiredDesc').textContent = 'Pesanan kamu sedang diproses otomatis.';
       showQrArea(false);
     } else if(status === 'expired'){
       statusEl.textContent = '✕ Kedaluwarsa';
@@ -397,10 +359,6 @@ document.addEventListener('DOMContentLoaded', function(){
       btn.disabled = true;
       clearInterval(countdownInterval);
       clearInterval(pollInterval);
-      document.getElementById('expiredIcon').classList.remove('warn');
-      document.getElementById('expiredIcon').innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>';
-      document.getElementById('expiredTitle').textContent = 'QR Kedaluwarsa';
-      document.getElementById('expiredDesc').textContent = 'Pesanan ini sudah melewati batas waktu pembayaran.';
       showQrArea(false);
     } else if(status === 'failed'){
       statusEl.textContent = '✕ Gagal';
@@ -409,10 +367,6 @@ document.addEventListener('DOMContentLoaded', function(){
       btn.disabled = true;
       clearInterval(countdownInterval);
       clearInterval(pollInterval);
-      document.getElementById('expiredIcon').classList.remove('warn');
-      document.getElementById('expiredIcon').innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>';
-      document.getElementById('expiredTitle').textContent = 'Pembayaran Gagal';
-      document.getElementById('expiredDesc').textContent = 'Transaksi ini gagal diproses. Silakan buat pesanan baru.';
       showQrArea(false);
     } else {
       statusEl.textContent = '🕐 Menunggu Pembayaran';
