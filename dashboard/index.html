@@ -1111,6 +1111,18 @@ function renderFaq(items) {
     return '<li><details><summary>' + _escHtml(f.q) + '</summary>'
       + '<p class="faq-ans">' + _escHtml(f.a) + '</p></details></li>';
   }).join('');
+  bindFaqSingleOpen(list);
+}
+function bindFaqSingleOpen(list) {
+  // Single-open accordion: begitu satu <details> dibuka, yang lain otomatis ketutup
+  list.querySelectorAll('details').forEach(function(d) {
+    d.addEventListener('toggle', function() {
+      if (!d.open) return;
+      list.querySelectorAll('details').forEach(function(other) {
+        if (other !== d) other.open = false;
+      });
+    });
+  });
 }
 function _escHtml(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#x27;'); }
 renderFaq(_defaultFaq);
