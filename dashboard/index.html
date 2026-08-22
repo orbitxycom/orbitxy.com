@@ -821,6 +821,9 @@ body{
 </head>
 <body>
 
+<script src="/assets/splash.js"></script>
+
+
 <div id="adOverlay" class="hidden" role="dialog" aria-modal="true" aria-label="Iklan">
   <div class="ad-wrap">
     <button class="ad-close" id="adClose" title="Tutup iklan" aria-label="Tutup iklan">✕</button>
@@ -1746,8 +1749,8 @@ document.addEventListener('DOMContentLoaded', async function() {
     return;
   }
   initMusic();
-  load();
-  loadSlides();
+  await Promise.all([load(), loadSlides()]);
+  hidePageSplash();
 });
 
 </script>
