@@ -519,6 +519,88 @@
     color:#6f6c7d;
     padding:40px 20px;
   }
+
+  /* Kartu produk reseller */
+  .rp-card{
+    display:flex;
+    gap:12px;
+    align-items:center;
+    background:#151318;
+    border:1px solid #232028;
+    border-radius:16px;
+    padding:10px;
+    margin-bottom:10px;
+  }
+  .rp-thumb{
+    width:56px;height:56px;
+    border-radius:12px;
+    object-fit:cover;
+    background:#1e1b25;
+    flex-shrink:0;
+  }
+  .rp-thumb-placeholder{
+    width:56px;height:56px;
+    border-radius:12px;
+    background:#1e1b25;
+    flex-shrink:0;
+    display:flex;align-items:center;justify-content:center;
+    color:#4a4656;
+  }
+  .rp-info{flex:1;min-width:0;}
+  .rp-name{
+    font-size:14px;font-weight:700;color:#fff;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+    margin-bottom:2px;
+  }
+  .rp-price{font-size:13px;font-weight:800;color:#34d399;}
+  .rp-stock{font-size:11px;color:#6f6c7d;margin-top:2px;}
+  .rp-del{
+    flex-shrink:0;
+    width:32px;height:32px;
+    border-radius:10px;
+    background:rgba(248,113,113,.1);
+    border:1px solid rgba(248,113,113,.2);
+    color:#f87171;
+    display:flex;align-items:center;justify-content:center;
+    cursor:pointer;
+  }
+  .rp-del svg{width:15px;height:15px;}
+  .rp-del:active{transform:scale(.9);}
+
+  /* Bottom sheet: form tambah produk */
+  .pf-overlay{
+    position:fixed;inset:0;z-index:900;
+    background:rgba(0,0,0,.65);
+    opacity:0;pointer-events:none;
+    transition:opacity .22s;
+    display:flex;align-items:flex-end;justify-content:center;
+  }
+  .pf-overlay.on{opacity:1;pointer-events:auto;}
+  .pf-sheet{
+    width:100%;max-width:520px;max-height:88vh;overflow-y:auto;
+    background:#111015;
+    border:1px solid #232028;border-bottom:none;
+    border-radius:22px 22px 0 0;
+    padding:.6rem 20px calc(1.2rem + env(safe-area-inset-bottom));
+    transform:translateY(100%);
+    transition:transform .3s cubic-bezier(.32,.72,0,1);
+  }
+  .pf-overlay.on .pf-sheet{transform:translateY(0);}
+  .pf-handle{width:36px;height:4px;border-radius:2px;background:#2a2732;margin:.5rem auto 1rem;}
+  .pf-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;}
+  .pf-title{font-size:16px;font-weight:800;}
+  .pf-close{width:30px;height:30px;border-radius:50%;background:#1c1a22;border:1px solid #2a2732;color:#9c98a8;cursor:pointer;font-size:.8rem;display:flex;align-items:center;justify-content:center;}
+  .pf-field{margin-bottom:14px;}
+  .pf-row{display:flex;gap:10px;}
+  .pf-lbl{font-size:12px;font-weight:700;color:#9c98a8;margin-bottom:6px;display:block;}
+  .pf-opt{font-weight:500;color:#5f5c6c;text-transform:none;}
+  .pf-inp{
+    width:100%;background:#1a1820;border:1px solid #2a2732;border-radius:12px;
+    padding:11px 13px;color:#fff;font-family:inherit;font-size:14px;outline:none;
+    transition:border-color .15s;
+  }
+  .pf-inp:focus{border-color:#34d399;}
+  .pf-inp::placeholder{color:#4a4656;}
 </style>
 </head>
 <body>
@@ -613,7 +695,8 @@
     <!-- Tab: Produk -->
     <div class="ta-panel" id="taPanelProduk">
       <button class="ta-add-btn" id="taAddProdukBtn">+ Tambah Produk</button>
-      <div class="ta-empty" id="taProdukEmpty">Belum ada produk. Klik "Tambah Produk".</div>
+      <div id="taProdukList"></div>
+      <div class="ta-empty" id="taProdukEmpty" style="display:none">Belum ada produk. Klik "Tambah Produk".</div>
     </div>
 
     <!-- Tab: Pesanan -->
@@ -639,6 +722,42 @@
 
   </div>
   <!-- ============ /VIEW: TOKO ANDA ============ -->
+
+  <!-- ============ BOTTOM SHEET: Tambah Produk ============ -->
+  <div class="pf-overlay" id="pfOverlay" onclick="if(event.target===this)closeProdukForm()">
+    <div class="pf-sheet">
+      <div class="pf-handle"></div>
+      <div class="pf-head">
+        <div class="pf-title">Tambah Produk</div>
+        <button class="pf-close" onclick="closeProdukForm()">&#10005;</button>
+      </div>
+
+      <div class="pf-field">
+        <label class="pf-lbl">Nama Produk</label>
+        <input type="text" id="pfName" class="pf-inp" placeholder="Contoh: Akun Premium 1 Bulan" maxlength="120">
+      </div>
+      <div class="pf-row">
+        <div class="pf-field" style="flex:1">
+          <label class="pf-lbl">Harga (Rp)</label>
+          <input type="number" id="pfPrice" class="pf-inp" placeholder="15000" min="0" inputmode="numeric">
+        </div>
+        <div class="pf-field" style="flex:1">
+          <label class="pf-lbl">Stok <span class="pf-opt">(kosongkan = unlimited)</span></label>
+          <input type="number" id="pfStock" class="pf-inp" placeholder="Unlimited" min="0" inputmode="numeric">
+        </div>
+      </div>
+      <div class="pf-field">
+        <label class="pf-lbl">URL Gambar <span class="pf-opt">(opsional)</span></label>
+        <input type="text" id="pfThumb" class="pf-inp" placeholder="https://...">
+      </div>
+      <div class="pf-field">
+        <label class="pf-lbl">Deskripsi <span class="pf-opt">(opsional)</span></label>
+        <textarea id="pfDesc" class="pf-inp" style="min-height:70px;resize:vertical" placeholder="Deskripsi singkat produk"></textarea>
+      </div>
+
+      <button class="ta-add-btn" id="pfSubmitBtn" style="margin-bottom:0" onclick="submitProduk()">Simpan Produk</button>
+    </div>
+  </div>
 
   <div class="content-bottom-space"></div>
   </div>
@@ -727,6 +846,124 @@ async function initAuth(){
 }
 initAuth();
 
+/* ── Produk milik reseller: load, tambah, hapus ───────────── */
+function idr(n){var v=Number(n);if(!isFinite(v)||isNaN(v))v=0;return 'Rp'+v.toLocaleString('id-ID');}
+function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#x27;');}
+
+function openProdukForm(){
+  document.getElementById('pfName').value = '';
+  document.getElementById('pfPrice').value = '';
+  document.getElementById('pfStock').value = '';
+  document.getElementById('pfThumb').value = '';
+  document.getElementById('pfDesc').value = '';
+  document.getElementById('pfOverlay').classList.add('on');
+  document.body.style.overflow = 'hidden';
+  setTimeout(function(){ document.getElementById('pfName').focus({preventScroll:true}); }, 250);
+}
+function closeProdukForm(){
+  document.getElementById('pfOverlay').classList.remove('on');
+  document.body.style.overflow = '';
+}
+document.addEventListener('keydown', function(e){ if(e.key === 'Escape') closeProdukForm(); });
+
+async function submitProduk(){
+  if(!supabaseClient) return;
+  var name = document.getElementById('pfName').value.trim();
+  var priceRaw = document.getElementById('pfPrice').value;
+  var stockRaw = document.getElementById('pfStock').value;
+  var thumb = document.getElementById('pfThumb').value.trim();
+  var desc = document.getElementById('pfDesc').value.trim();
+
+  if(!name){ alert('Nama produk wajib diisi'); return; }
+  var price = parseInt(priceRaw, 10);
+  if(!priceRaw || isNaN(price) || price < 0){ alert('Harga produk gak valid'); return; }
+  var stock = stockRaw === '' ? null : parseInt(stockRaw, 10);
+
+  var btn = document.getElementById('pfSubmitBtn');
+  btn.disabled = true; btn.textContent = 'Menyimpan…';
+
+  try{
+    var { data: userData } = await supabaseClient.auth.getUser();
+    var user = userData ? userData.user : null;
+    if(!user) throw new Error('Sesi login habis, silakan login ulang.');
+
+    var { error } = await supabaseClient.from('reseller_products').insert({
+      owner_id: user.id,
+      name: name,
+      price: price,
+      stock: stock,
+      thumbnail: thumb || null,
+      description: desc || null
+    });
+    if(error) throw error;
+
+    closeProdukForm();
+    loadResellerProducts();
+  }catch(err){
+    console.error('Gagal simpan produk:', err);
+    alert(err.message || 'Gagal menyimpan produk');
+  }finally{
+    btn.disabled = false; btn.textContent = 'Simpan Produk';
+  }
+}
+
+async function deleteProduk(id){
+  if(!supabaseClient) return;
+  if(!confirm('Hapus produk ini?')) return;
+  try{
+    var { error } = await supabaseClient.from('reseller_products').delete().eq('id', id);
+    if(error) throw error;
+    loadResellerProducts();
+  }catch(err){
+    console.error('Gagal hapus produk:', err);
+    alert('Gagal menghapus produk');
+  }
+}
+
+function renderProdukList(items){
+  var list = document.getElementById('taProdukList');
+  var empty = document.getElementById('taProdukEmpty');
+  if(!items || !items.length){
+    list.innerHTML = '';
+    empty.style.display = 'block';
+    return;
+  }
+  empty.style.display = 'none';
+  list.innerHTML = items.map(function(p){
+    var thumbHtml = p.thumbnail
+      ? '<img class="rp-thumb" src="'+esc(p.thumbnail)+'" alt="'+esc(p.name)+'" onerror="this.outerHTML=\'<div class=&quot;rp-thumb-placeholder&quot;>?</div>\'">'
+      : '<div class="rp-thumb-placeholder">?</div>';
+    var stockText = (p.stock === null || p.stock === undefined) ? 'Stok unlimited' : ('Stok ' + p.stock);
+    return '<div class="rp-card">' +
+      thumbHtml +
+      '<div class="rp-info">' +
+        '<div class="rp-name">'+esc(p.name)+'</div>' +
+        '<div class="rp-price">'+idr(p.price)+'</div>' +
+        '<div class="rp-stock">'+stockText+'</div>' +
+      '</div>' +
+      '<div class="rp-del" onclick="deleteProduk(\''+p.id+'\')">' +
+        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>' +
+      '</div>' +
+    '</div>';
+  }).join('');
+}
+
+async function loadResellerProducts(){
+  if(!supabaseClient) return;
+  try{
+    var { data, error } = await supabaseClient
+      .from('reseller_products')
+      .select('*')
+      .order('created_at', { ascending: false });
+    if(error) throw error;
+    renderProdukList(data || []);
+  }catch(err){
+    console.error('Gagal memuat produk reseller:', err);
+  }
+}
+loadResellerProducts();
+
+
 /* ── Toggle antar view: Toko / Toko Anda ───────────────────── */
 var viewToko = document.getElementById('viewToko');
 var viewTokoAnda = document.getElementById('viewTokoAnda');
@@ -765,7 +1002,7 @@ if(taTabs){
 var taAddProdukBtn = document.getElementById('taAddProdukBtn');
 if(taAddProdukBtn){
   taAddProdukBtn.addEventListener('click', function(){
-    alert('Form tambah produk akan segera hadir.');
+    openProdukForm();
   });
 }
 var taAddBannerBtn = document.getElementById('taAddBannerBtn');
