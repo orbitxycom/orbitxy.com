@@ -610,7 +610,10 @@
     border:1px solid #232028;
     border-radius:16px;
     overflow:hidden;
+    cursor:pointer;
+    transition:border-color .15s,transform .15s;
   }
+  .tk-card:active{transform:scale(.97);}
   .tk-thumb{
     aspect-ratio:1/1;
     background:#1e1b25;
@@ -886,6 +889,7 @@ async function submitProduk(){
 
     var { error } = await supabaseClient.from('reseller_products').insert({
       owner_id: user.id,
+      owner_name: getFirstNameFromUser(user),
       name: name,
       price: price,
       stock: stock,
@@ -982,7 +986,7 @@ function renderTokoGrid(items){
       ? '<img src="'+esc(p.thumbnail)+'" alt="'+esc(p.name)+'" loading="lazy" onerror="this.style.display=\'none\'">'
       : '<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>';
     var stockText = (p.stock === null || p.stock === undefined) ? '∞ Unlimited' : ('Stok ' + p.stock);
-    return '<div class="tk-card">' +
+    return '<div class="tk-card" data-id="'+esc(p.id)+'">' +
       '<div class="tk-thumb">'+thumbHtml+'</div>' +
       '<div class="tk-body">' +
         '<div class="tk-name">'+esc(p.name)+'</div>' +
@@ -992,6 +996,11 @@ function renderTokoGrid(items){
     '</div>';
   }).join('');
 }
+document.getElementById('tokoGrid').addEventListener('click', function(e){
+  var card = e.target.closest('.tk-card');
+  if(!card) return;
+  window.location.href = '/toko-produk-tokoresller/?id=' + encodeURIComponent(card.dataset.id);
+});
 
 async function loadTokoProducts(){
   if(!supabaseClient) return;
