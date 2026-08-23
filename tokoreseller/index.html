@@ -400,11 +400,133 @@
     transition:left .25s ease, width .25s ease;
   }
   .bottom-nav{position:fixed;}
+
+  /* ---------- TOKO ANDA (panel admin) ---------- */
+  .ta-header{
+    display:flex;
+    align-items:flex-start;
+    justify-content:space-between;
+    gap:10px;
+    margin-bottom:16px;
+  }
+  .ta-store-name{
+    font-size:19px;
+    font-weight:800;
+    letter-spacing:.02em;
+    text-transform:uppercase;
+  }
+  .ta-store-url{
+    font-size:12px;
+    color:var(--muted);
+    margin-top:2px;
+    word-break:break-all;
+  }
+  .ta-logout-btn{
+    flex-shrink:0;
+    background:#1c1a22;
+    border:1px solid #2a2732;
+    color:#9c98a8;
+    font-size:12.5px;
+    font-weight:600;
+    padding:8px 16px;
+    border-radius:14px;
+    cursor:pointer;
+  }
+  .ta-logout-btn:active{transform:scale(.95);}
+
+  .ta-stats{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:8px;
+    margin-bottom:16px;
+  }
+  .ta-stat-card{
+    background:#151318;
+    border:1px solid #232028;
+    border-radius:16px;
+    padding:12px 12px 14px;
+    min-width:0;
+  }
+  .ta-stat-label{
+    font-size:10.5px;
+    font-weight:700;
+    letter-spacing:.04em;
+    text-transform:uppercase;
+    color:#77748a;
+    margin-bottom:6px;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+  .ta-stat-value{
+    font-size:17px;
+    font-weight:800;
+    color:#fff;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+  .ta-stat-card:first-child .ta-stat-value{color:#34d399;}
+
+  .ta-tabs{
+    display:flex;
+    gap:6px;
+    overflow-x:auto;
+    padding-bottom:4px;
+    margin-bottom:14px;
+    scrollbar-width:none;
+  }
+  .ta-tabs::-webkit-scrollbar{display:none}
+  .ta-tab{
+    flex-shrink:0;
+    font-family:inherit;
+    font-size:13px;
+    font-weight:700;
+    padding:9px 18px;
+    border-radius:18px;
+    border:1px solid #2a2732;
+    background:#17151c;
+    color:#8b889a;
+    cursor:pointer;
+    white-space:nowrap;
+    transition:all .15s ease;
+  }
+  .ta-tab.active{
+    background:linear-gradient(180deg,#34d399,#10b981);
+    border-color:#10b981;
+    color:#062e22;
+  }
+
+  .ta-add-btn{
+    width:100%;
+    background:linear-gradient(180deg,#34d399,#10b981);
+    border:none;
+    color:#062e22;
+    font-size:15px;
+    font-weight:800;
+    padding:15px;
+    border-radius:16px;
+    cursor:pointer;
+    margin-bottom:20px;
+    box-shadow:0 8px 20px rgba(16,185,129,0.22);
+    transition:transform .12s ease;
+  }
+  .ta-add-btn:active{transform:scale(.97);}
+
+  .ta-empty{
+    text-align:center;
+    font-size:13.5px;
+    color:#6f6c7d;
+    padding:40px 20px;
+  }
 </style>
 </head>
 <body>
 <div class="app">
 <div class="main-content">
+
+  <!-- ============ VIEW: TOKO (tampilan publik toko orang lain — nanti disambungkan) ============ -->
+  <div id="viewToko" class="view">
 
   <!-- HEADER -->
   <div class="header">
@@ -450,6 +572,73 @@
       </div>
     </div>
   </div>
+
+  </div>
+  <!-- ============ /VIEW: TOKO ============ -->
+
+  <!-- ============ VIEW: TOKO ANDA (panel admin toko reseller) ============ -->
+  <div id="viewTokoAnda" class="view" style="display:none">
+
+    <div class="ta-header">
+      <div>
+        <div class="ta-store-name" id="taStoreName">TOKO SAYA</div>
+        <div class="ta-store-url" id="taStoreUrl">https://orbitxy.com/toko/…</div>
+      </div>
+      <button class="ta-logout-btn" id="taLogoutBtn">Keluar</button>
+    </div>
+
+    <div class="ta-stats">
+      <div class="ta-stat-card">
+        <div class="ta-stat-label">Saldo</div>
+        <div class="ta-stat-value" id="taSaldo">Rp0</div>
+      </div>
+      <div class="ta-stat-card">
+        <div class="ta-stat-label">Total Cuan</div>
+        <div class="ta-stat-value" id="taCuan">Rp0</div>
+      </div>
+      <div class="ta-stat-card">
+        <div class="ta-stat-label">Order</div>
+        <div class="ta-stat-value" id="taOrder">0</div>
+      </div>
+    </div>
+
+    <div class="ta-tabs" id="taTabs">
+      <button class="ta-tab active" data-tab="produk">Produk</button>
+      <button class="ta-tab" data-tab="pesanan">Pesanan</button>
+      <button class="ta-tab" data-tab="chat">Chat</button>
+      <button class="ta-tab" data-tab="banner">Banner</button>
+      <button class="ta-tab" data-tab="pengaturan">Pengaturan</button>
+    </div>
+
+    <!-- Tab: Produk -->
+    <div class="ta-panel" id="taPanelProduk">
+      <button class="ta-add-btn" id="taAddProdukBtn">+ Tambah Produk</button>
+      <div class="ta-empty" id="taProdukEmpty">Belum ada produk. Klik "Tambah Produk".</div>
+    </div>
+
+    <!-- Tab: Pesanan -->
+    <div class="ta-panel" id="taPanelPesanan" style="display:none">
+      <div class="ta-empty">Belum ada pesanan masuk.</div>
+    </div>
+
+    <!-- Tab: Chat -->
+    <div class="ta-panel" id="taPanelChat" style="display:none">
+      <div class="ta-empty">Belum ada percakapan.</div>
+    </div>
+
+    <!-- Tab: Banner -->
+    <div class="ta-panel" id="taPanelBanner" style="display:none">
+      <button class="ta-add-btn" id="taAddBannerBtn">+ Tambah Banner</button>
+      <div class="ta-empty">Belum ada banner.</div>
+    </div>
+
+    <!-- Tab: Pengaturan -->
+    <div class="ta-panel" id="taPanelPengaturan" style="display:none">
+      <div class="ta-empty">Pengaturan toko akan segera hadir.</div>
+    </div>
+
+  </div>
+  <!-- ============ /VIEW: TOKO ANDA ============ -->
 
   <div class="content-bottom-space"></div>
   </div>
@@ -527,9 +716,76 @@ async function initAuth(){
     img.onerror = function(){ img.remove(); }; // fallback ke ikon default kalau gagal load
     box.appendChild(img);
   }
+
+  // Isi nama toko & URL di panel "Toko Anda" berdasarkan nama akun.
+  // (slug URL ini masih placeholder, nanti disambungkan ke sistem toko beneran)
+  var storeSlug = firstName.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '') || 'toko';
+  var taName = document.getElementById('taStoreName');
+  var taUrl = document.getElementById('taStoreUrl');
+  if(taName) taName.textContent = firstName.toUpperCase() + ' STORE';
+  if(taUrl) taUrl.textContent = 'https://orbitxy.com/toko/' + storeSlug;
 }
 initAuth();
 
+/* ── Toggle antar view: Toko / Toko Anda ───────────────────── */
+var viewToko = document.getElementById('viewToko');
+var viewTokoAnda = document.getElementById('viewTokoAnda');
+
+function switchView(navKey){
+  if(navKey === 'toko-anda'){
+    viewToko.style.display = 'none';
+    viewTokoAnda.style.display = 'block';
+  } else {
+    viewToko.style.display = 'block';
+    viewTokoAnda.style.display = 'none';
+  }
+}
+
+/* ── Tab switching di dalam panel Toko Anda ───────────────── */
+var taTabPanels = {
+  produk: document.getElementById('taPanelProduk'),
+  pesanan: document.getElementById('taPanelPesanan'),
+  chat: document.getElementById('taPanelChat'),
+  banner: document.getElementById('taPanelBanner'),
+  pengaturan: document.getElementById('taPanelPengaturan')
+};
+var taTabs = document.getElementById('taTabs');
+if(taTabs){
+  taTabs.addEventListener('click', function(e){
+    var btn = e.target.closest('.ta-tab');
+    if(!btn) return;
+    taTabs.querySelectorAll('.ta-tab').forEach(function(t){ t.classList.toggle('active', t === btn); });
+    Object.keys(taTabPanels).forEach(function(key){
+      if(taTabPanels[key]) taTabPanels[key].style.display = (key === btn.dataset.tab) ? 'block' : 'none';
+    });
+  });
+}
+
+/* ── Tombol Tambah Produk / Tambah Banner (placeholder dulu) ── */
+var taAddProdukBtn = document.getElementById('taAddProdukBtn');
+if(taAddProdukBtn){
+  taAddProdukBtn.addEventListener('click', function(){
+    alert('Form tambah produk akan segera hadir.');
+  });
+}
+var taAddBannerBtn = document.getElementById('taAddBannerBtn');
+if(taAddBannerBtn){
+  taAddBannerBtn.addEventListener('click', function(){
+    alert('Form tambah banner akan segera hadir.');
+  });
+}
+
+/* ── Tombol Keluar (logout beneran) ───────────────────────── */
+var taLogoutBtn = document.getElementById('taLogoutBtn');
+if(taLogoutBtn){
+  taLogoutBtn.addEventListener('click', async function(){
+    if(!supabaseClient) return;
+    taLogoutBtn.disabled = true;
+    taLogoutBtn.textContent = 'Keluar…';
+    await supabaseClient.auth.signOut();
+    window.location.href = '/login/';
+  });
+}
 // bottom nav active state + moving purple indicator
 var navIndicator = document.getElementById('navIndicator');
 var navItems = document.querySelectorAll('.nav-item');
@@ -548,6 +804,7 @@ navItems.forEach(function(item){
     navItems.forEach(function(i){ i.classList.remove('active'); });
     item.classList.add('active');
     moveIndicatorTo(item);
+    switchView(item.dataset.nav);
   });
 });
 
