@@ -601,6 +601,41 @@
   }
   .pf-inp:focus{border-color:#34d399;}
   .pf-inp::placeholder{color:#4a4656;}
+
+  /* Tab TOKO — grid produk dari semua reseller (gaya kartu seperti dashboard) */
+  .tk-title{font-size:20px;font-weight:800;margin:4px 0 14px;}
+  .tk-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;}
+  .tk-card{
+    background:#151318;
+    border:1px solid #232028;
+    border-radius:16px;
+    overflow:hidden;
+  }
+  .tk-thumb{
+    aspect-ratio:1/1;
+    background:#1e1b25;
+    display:flex;align-items:center;justify-content:center;
+    color:#4a4656;
+    overflow:hidden;
+  }
+  .tk-thumb img{width:100%;height:100%;object-fit:cover;display:block;}
+  .tk-body{padding:10px 11px 12px;}
+  .tk-name{
+    font-size:13px;font-weight:700;color:#fff;line-height:1.3;
+    margin-bottom:5px;
+    display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;
+    min-height:2.6em;
+  }
+  .tk-price{font-size:13.5px;font-weight:800;color:#a855f7;}
+  .tk-stock{font-size:10.5px;color:#6f6c7d;margin-top:3px;}
+  .tk-skel{
+    aspect-ratio:.78;
+    border-radius:16px;
+    background:linear-gradient(90deg,#151318 25%,#1c1a22 50%,#151318 75%);
+    background-size:400% 100%;
+    animation:_tkShimmer 1.5s ease infinite;
+  }
+  @keyframes _tkShimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
 </style>
 </head>
 <body>
@@ -861,6 +896,7 @@ async function submitProduk(){
 
     closeProdukForm();
     loadResellerProducts();
+    loadTokoProducts();
   }catch(err){
     console.error('Gagal simpan produk:', err);
     alert(err.message || 'Gagal menyimpan produk');
@@ -876,6 +912,7 @@ async function deleteProduk(id){
     var { error } = await supabaseClient.from('reseller_products').delete().eq('id', id);
     if(error) throw error;
     loadResellerProducts();
+    loadTokoProducts();
   }catch(err){
     console.error('Gagal hapus produk:', err);
     alert('Gagal menghapus produk');
@@ -913,9 +950,14 @@ function renderProdukList(items){
 async function loadResellerProducts(){
   if(!supabaseClient) return;
   try{
+    var { data: userData } = await supabaseClient.auth.getUser();
+    var user = userData ? userData.user : null;
+    if(!user){ renderProdukList([]); return; }
+
     var { data, error } = await supabaseClient
       .from('reseller_products')
       .select('*')
+      .eq('owner_id', user.id)
       .order('created_at', { ascending: false });
     if(error) throw error;
     renderProdukList(data || []);
@@ -924,6 +966,48 @@ async function loadResellerProducts(){
   }
 }
 loadResellerProducts();
+
+/* ── Tab TOKO: produk dari SEMUA reseller (RLS cuma izinin yang active=true) ── */
+function renderTokoGrid(items){
+  var grid = document.getElementById('tokoGrid');
+  var empty = document.getElementById('tokoEmpty');
+  if(!items || !items.length){
+    grid.innerHTML = '';
+    empty.style.display = 'block';
+    return;
+  }
+  empty.style.display = 'none';
+  grid.innerHTML = items.map(function(p){
+    var thumbHtml = p.thumbnail
+      ? '<img src="'+esc(p.thumbnail)+'" alt="'+esc(p.name)+'" loading="lazy" onerror="this.style.display=\'none\'">'
+      : '<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>';
+    var stockText = (p.stock === null || p.stock === undefined) ? '∞ Unlimited' : ('Stok ' + p.stock);
+    return '<div class="tk-card">' +
+      '<div class="tk-thumb">'+thumbHtml+'</div>' +
+      '<div class="tk-body">' +
+        '<div class="tk-name">'+esc(p.name)+'</div>' +
+        '<div class="tk-price">'+idr(p.price)+'</div>' +
+        '<div class="tk-stock">'+stockText+'</div>' +
+      '</div>' +
+    '</div>';
+  }).join('');
+}
+
+async function loadTokoProducts(){
+  if(!supabaseClient) return;
+  try{
+    var { data, error } = await supabaseClient
+      .from('reseller_products')
+      .select('*')
+      .eq('active', true)
+      .order('created_at', { ascending: false });
+    if(error) throw error;
+    renderTokoGrid(data || []);
+  }catch(err){
+    console.error('Gagal memuat produk toko:', err);
+  }
+}
+loadTokoProducts();
 
 
 /* ── Toggle antar view: Toko / Toko Anda ───────────────────── */
@@ -934,9 +1018,11 @@ function switchView(navKey){
   if(navKey === 'toko-anda'){
     viewToko.style.display = 'none';
     viewTokoAnda.style.display = 'block';
+    loadResellerProducts();
   } else {
     viewToko.style.display = 'block';
     viewTokoAnda.style.display = 'none';
+    loadTokoProducts();
   }
 }
 
