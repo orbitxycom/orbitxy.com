@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5, viewport-fit=cover">
+<meta name="theme-color" content="#0a0a0d">
+<title>Detail Produk — Toko Reseller</title>
+<link rel="icon" type="image/png" href="https://orbitxy.com/orbitxy.com.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0a0a0d;
+  --card:#151318;
+  --card2:#1c1a22;
+  --line:#232028;
+  --line2:#2e2a35;
+  --purple:#8b5cf6;
+  --purple2:#a855f7;
+  --t1:#ffffff;
+  --t2:#c9c6d3;
+  --t3:#77748a;
+  --red:#f87171;
+  --font:'DM Sans',system-ui,sans-serif;
+}
+html,body{min-height:100vh;background:var(--bg);color:var(--t1);font-family:var(--font);font-size:14px;line-height:1.5}
+body{
+  background-image:radial-gradient(ellipse 120% 50% at 50% 0%, rgba(139,92,246,0.14), transparent 65%);
+}
+::-webkit-scrollbar{width:3px;height:3px}
+::-webkit-scrollbar-thumb{background:rgba(255,255,255,.14);border-radius:2px}
+
+.nav{
+  height:52px;display:flex;align-items:center;gap:.7rem;padding:0 1rem;
+  position:sticky;top:0;z-index:50;
+  background:rgba(10,10,13,.9);backdrop-filter:blur(14px);
+  border-bottom:1px solid var(--line);
+}
+.nav-back{
+  width:36px;height:36px;border-radius:50%;
+  background:var(--card2);border:1px solid var(--line2);
+  display:flex;align-items:center;justify-content:center;
+  color:var(--t2);cursor:pointer;flex-shrink:0;text-decoration:none;
+}
+.nav-back svg{width:17px;height:17px}
+.nav-title{font-size:.85rem;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+.wrap{max-width:640px;margin:0 auto;padding:0 0 6rem}
+
+.hero-img{
+  width:100%;aspect-ratio:1/1;max-height:420px;
+  background:var(--card);
+  display:flex;align-items:center;justify-content:center;
+  color:var(--t3);
+  overflow:hidden;
+}
+.hero-img img{width:100%;height:100%;object-fit:cover;display:block}
+
+.info-block{padding:1.2rem 1.1rem 0}
+
+.seller-row{
+  display:flex;align-items:center;gap:.5rem;
+  font-size:.72rem;color:var(--t3);margin-bottom:.7rem;
+}
+.seller-avatar{
+  width:22px;height:22px;border-radius:50%;
+  background:linear-gradient(160deg,#8b5cf6,#6d28d9);
+  display:flex;align-items:center;justify-content:center;
+  font-size:.6rem;font-weight:800;color:#fff;flex-shrink:0;
+}
+.seller-row b{color:var(--t2);font-weight:700}
+
+.p-name{font-size:1.25rem;font-weight:800;line-height:1.3;margin-bottom:.6rem}
+.p-price{font-size:1.5rem;font-weight:800;color:var(--purple2);margin-bottom:.4rem}
+.p-stock{display:inline-flex;align-items:center;gap:.35rem;font-size:.68rem;font-weight:700;color:var(--t3);background:var(--card2);border:1px solid var(--line2);padding:.28rem .7rem;border-radius:20px;margin-bottom:1.3rem}
+.p-stock.out{color:var(--red)}
+
+.section-lbl{font-size:.62rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--t3);margin-bottom:.5rem}
+.p-desc{font-size:.8rem;color:var(--t2);line-height:1.8;white-space:pre-wrap;margin-bottom:1.6rem}
+
+.notice-box{
+  display:flex;gap:.6rem;align-items:flex-start;
+  background:rgba(139,92,246,.08);border:1px solid rgba(139,92,246,.22);
+  border-radius:14px;padding:.85rem .95rem;margin-bottom:1.6rem;
+}
+.notice-box svg{width:18px;height:18px;color:var(--purple2);flex-shrink:0;margin-top:1px}
+.notice-box p{font-size:.72rem;color:var(--t2);line-height:1.6}
+
+.skel{border-radius:10px;background:linear-gradient(90deg,var(--card) 25%,var(--card2) 50%,var(--card) 75%);background-size:400% 100%;animation:shimmer 1.5s ease infinite}
+@keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+
+.bottom-bar{
+  position:fixed;bottom:0;left:0;right:0;z-index:60;
+  background:rgba(10,10,13,.96);backdrop-filter:blur(14px);
+  border-top:1px solid var(--line);
+  padding:.75rem 1.1rem calc(.75rem + env(safe-area-inset-bottom));
+  display:flex;gap:.7rem;align-items:center;
+}
+.bb-price{flex-shrink:0}
+.bb-price-lbl{font-size:.58rem;color:var(--t3);text-transform:uppercase;font-weight:700}
+.bb-price-val{font-size:1rem;font-weight:800;color:var(--purple2)}
+.bb-btn{
+  flex:1;height:46px;border-radius:14px;border:none;
+  background:linear-gradient(180deg,#a855f7,#8b5cf6);
+  color:#fff;font-family:inherit;font-size:.85rem;font-weight:800;
+  cursor:pointer;
+}
+.bb-btn:disabled{opacity:.45;cursor:not-allowed}
+
+.error-wrap{padding:4rem 1.5rem;text-align:center}
+.error-wrap svg{width:40px;height:40px;color:var(--t3);margin-bottom:1rem}
+.error-wrap p{font-size:.8rem;color:var(--t3);margin-bottom:1.2rem}
+.error-wrap a{display:inline-block;font-size:.75rem;font-weight:700;color:var(--purple2);text-decoration:none;border:1px solid rgba(168,85,247,.35);background:rgba(168,85,247,.08);padding:.6rem 1.3rem;border-radius:12px}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <a href="/tokoresller/" class="nav-back" id="backBtn">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+  </a>
+  <div class="nav-title">Detail Produk</div>
+</nav>
+
+<div class="wrap">
+
+  <div id="loadingState">
+    <div class="skel" style="aspect-ratio:1/1"></div>
+    <div class="info-block">
+      <div class="skel" style="height:14px;width:40%;margin-bottom:1rem"></div>
+      <div class="skel" style="height:24px;width:80%;margin-bottom:.6rem"></div>
+      <div class="skel" style="height:28px;width:45%;margin-bottom:1.4rem"></div>
+      <div class="skel" style="height:80px;margin-bottom:1rem"></div>
+    </div>
+  </div>
+
+  <div id="errorState" class="error-wrap" style="display:none">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+    <p id="errorMsg">Produk tidak ditemukan.</p>
+    <a href="/tokoresller/">Kembali ke Toko</a>
+  </div>
+
+  <div id="contentState" style="display:none">
+    <div class="hero-img" id="heroImg">
+      <svg width="46" height="46" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+    </div>
+
+    <div class="info-block">
+      <div class="seller-row">
+        <div class="seller-avatar" id="sellerInitial">?</div>
+        Dijual oleh <b id="sellerName">Reseller</b>
+      </div>
+
+      <div class="p-name" id="pName">—</div>
+      <div class="p-price" id="pPrice">Rp0</div>
+      <div class="p-stock" id="pStock">Stok —</div>
+
+      <div class="section-lbl">Deskripsi</div>
+      <div class="p-desc" id="pDesc">Tidak ada deskripsi untuk produk ini.</div>
+
+      <div class="notice-box">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+        <p>Pembelian langsung dari toko reseller ini sedang dipersiapkan. Sementara ini produk hanya bisa dilihat detailnya.</p>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="bottom-bar" id="bottomBar" style="display:none">
+  <div class="bb-price">
+    <div class="bb-price-lbl">Harga</div>
+    <div class="bb-price-val" id="bbPrice">Rp0</div>
+  </div>
+  <button class="bb-btn" id="bbBtn" disabled>Segera Hadir</button>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+'use strict';
+
+var supabaseClient;
+try{
+  supabaseClient = supabase.createClient(
+    'https://ygjpwaftccewntwwoixs.supabase.co',
+    'sb_publishable_4IdyoPpEW-It9IWLZOrSAQ_WuumXkl9'
+  );
+}catch(e){ console.error('Gagal memuat Supabase:', e); }
+
+function idr(n){var v=Number(n);if(!isFinite(v)||isNaN(v))v=0;return 'Rp'+v.toLocaleString('id-ID');}
+function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#x27;');}
+function getParam(k){return new URLSearchParams(window.location.search).get(k);}
+
+function showError(msg){
+  document.getElementById('loadingState').style.display = 'none';
+  document.getElementById('contentState').style.display = 'none';
+  document.getElementById('bottomBar').style.display = 'none';
+  document.getElementById('errorState').style.display = 'block';
+  document.getElementById('errorMsg').textContent = msg || 'Produk tidak ditemukan.';
+}
+
+function renderProduct(p){
+  document.title = esc(p.name) + ' — Toko Reseller';
+
+  if(p.thumbnail){
+    document.getElementById('heroImg').innerHTML =
+      '<img src="'+esc(p.thumbnail)+'" alt="'+esc(p.name)+'" onerror="this.parentElement.innerHTML=\'<svg width=46 height=46 viewBox=&quot;0 0 24 24&quot; fill=none stroke=currentColor stroke-width=1.3><rect x=3 y=3 width=18 height=18 rx=2/><circle cx=8.5 cy=8.5 r=1.5/><polyline points=&quot;21 15 16 10 5 21&quot;/></svg>\'">';
+  }
+
+  var sellerName = p.owner_name || 'Reseller';
+  document.getElementById('sellerName').textContent = sellerName;
+  document.getElementById('sellerInitial').textContent = sellerName.charAt(0).toUpperCase();
+
+  document.getElementById('pName').textContent = p.name;
+  var priceText = (typeof p.price === 'number' && p.price === 0) ? 'Gratis' : idr(p.price);
+  document.getElementById('pPrice').textContent = priceText;
+  document.getElementById('bbPrice').textContent = priceText;
+
+  var stockEl = document.getElementById('pStock');
+  if(p.stock === null || p.stock === undefined){
+    stockEl.textContent = '∞ Stok Unlimited';
+  } else if(p.stock <= 0){
+    stockEl.textContent = 'Stok Habis';
+    stockEl.classList.add('out');
+    document.getElementById('bbBtn').textContent = 'Stok Habis';
+  } else {
+    stockEl.textContent = 'Stok ' + p.stock;
+  }
+
+  var descEl = document.getElementById('pDesc');
+  if(p.description){
+    descEl.textContent = p.description;
+  }
+
+  document.getElementById('loadingState').style.display = 'none';
+  document.getElementById('contentState').style.display = 'block';
+  document.getElementById('bottomBar').style.display = 'flex';
+}
+
+async function init(){
+  var id = getParam('id');
+  if(!id){ showError('Link produk tidak valid.'); return; }
+  if(!supabaseClient){ showError('Gagal memuat sistem, coba refresh halaman.'); return; }
+
+  try{
+    var { data, error } = await supabaseClient
+      .from('reseller_products')
+      .select('*')
+      .eq('id', id)
+      .eq('active', true)
+      .single();
+
+    if(error || !data){
+      showError('Produk tidak ditemukan atau sudah tidak aktif.');
+      return;
+    }
+
+    renderProduct(data);
+  }catch(err){
+    console.error('Gagal memuat produk:', err);
+    showError('Gagal memuat produk. Coba lagi.');
+  }
+}
+
+init();
+</script>
+</body>
+</html>
