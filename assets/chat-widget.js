@@ -52,7 +52,13 @@
       '.cw-inp:focus{border-color:rgba(168,85,247,.5)}' +
       '.cw-send{flex-shrink:0;width:38px;height:38px;border-radius:50%;border:none;background:linear-gradient(180deg,#a855f7,#8b5cf6);color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center}' +
       '.cw-send:disabled{opacity:.4;cursor:not-allowed}' +
-      '.cw-send svg{width:16px;height:16px}';
+      '.cw-send svg{width:16px;height:16px}' +
+      '.cw-order-bar{flex-shrink:0;display:flex;align-items:center;gap:.6rem;padding:.7rem 1rem;background:rgba(139,92,246,.08);border-bottom:1px solid #232028}' +
+      '.cw-order-info{flex:1;min-width:0}' +
+      '.cw-order-prod{font-size:.72rem;font-weight:700;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}' +
+      '.cw-order-price{font-size:.76rem;font-weight:800;color:#a855f7}' +
+      '.cw-order-btn{flex-shrink:0;font-family:inherit;font-size:.7rem;font-weight:800;padding:.5rem .9rem;border-radius:12px;border:none;background:linear-gradient(180deg,#a855f7,#8b5cf6);color:#fff;cursor:pointer;white-space:nowrap}' +
+      '.cw-order-btn:disabled{opacity:.5;cursor:not-allowed}';
     var style = document.createElement('style');
     style.id = '_chatWidgetStyle';
     style.textContent = css;
@@ -74,6 +80,13 @@
           '</div>' +
           '<button class="cw-close" id="cwCloseBtn">&#10005;</button>' +
         '</div>' +
+        '<div class="cw-order-bar" id="cwOrderBar" style="display:none">' +
+          '<div class="cw-order-info">' +
+            '<div class="cw-order-prod" id="cwOrderProd">—</div>' +
+            '<div class="cw-order-price" id="cwOrderPrice">Rp0</div>' +
+          '</div>' +
+          '<button class="cw-order-btn" id="cwOrderBtn">Pesan Produk Ini</button>' +
+        '</div>' +
         '<div class="cw-msgs" id="cwMsgs">' +
           '<div class="cw-empty" id="cwEmpty" style="display:none">Belum ada pesan. Mulai percakapan sekarang.</div>' +
           '<div id="cwMsgList"></div>' +
@@ -88,6 +101,7 @@
     el.addEventListener('click', function (e) { if (e.target === el) window.closeChatModal(); });
     document.getElementById('cwCloseBtn').addEventListener('click', window.closeChatModal);
     document.getElementById('cwSendBtn').addEventListener('click', sendChatMessage);
+    document.getElementById('cwOrderBtn').addEventListener('click', placeOrderFromChat);
     document.getElementById('cwInp').addEventListener('keydown', function (e) {
       if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendChatMessage(); }
     });
@@ -164,6 +178,7 @@
 
     state.chatId = chatId;
     state.currentUser = user;
+    state.chatRow = null;
 
     document.getElementById('cwName').textContent = counterpartName || 'Percakapan';
     document.getElementById('cwAvatar').textContent = (counterpartName || '?').charAt(0).toUpperCase();
@@ -172,11 +187,86 @@
     document.getElementById('cwOverlay').classList.add('on');
     document.body.style.overflow = 'hidden';
 
+    // Ambil data lengkap chat (produk terkait, harga, siapa pembeli/penjual)
+    // buat nentuin apakah banner "Pesan Produk Ini" perlu ditampilin.
+    var orderBar = document.getElementById('cwOrderBar');
+    orderBar.style.display = 'none';
+    try {
+      var { data: chatRow } = await supa.from('chats').select('*').eq('id', chatId).single();
+      state.chatRow = chatRow;
+      if (chatRow && chatRow.product_id && chatRow.buyer_id === user.id) {
+        document.getElementById('cwOrderProd').textContent = chatRow.product_name || 'Produk';
+        document.getElementById('cwOrderPrice').textContent = idrFmt(chatRow.product_price);
+        orderBar.style.display = 'flex';
+        await refreshOrderButtonState();
+      }
+    } catch (e) { console.error('chat-widget: gagal load info chat', e); }
+
     await loadMessages();
 
     clearInterval(state.pollTimer);
     state.pollTimer = setInterval(loadMessages, 4000);
   };
+
+  function idrFmt(n) { var v = Number(n); if (!isFinite(v) || isNaN(v)) v = 0; return 'Rp' + v.toLocaleString('id-ID'); }
+
+  // Kalau pesanan buat chat ini udah pernah dibuat, tombolnya dikunci
+  async function refreshOrderButtonState() {
+    var supa = getClient();
+    var btn = document.getElementById('cwOrderBtn');
+    try {
+      var { data: existingOrder } = await supa.from('reseller_orders').select('id,status').eq('chat_id', state.chatId).maybeSingle();
+      if (existingOrder) {
+        btn.disabled = true;
+        btn.textContent = existingOrder.status === 'menunggu' ? 'Menunggu Konfirmasi' :
+          existingOrder.status === 'diterima' ? 'Pesanan Diterima ✓' :
+          existingOrder.status === 'selesai' ? 'Pesanan Selesai ✓' : 'Pesanan Ditolak';
+      } else {
+        btn.disabled = false;
+        btn.textContent = 'Pesan Produk Ini';
+      }
+    } catch (e) {}
+  }
+
+  async function placeOrderFromChat() {
+    if (!state.chatRow) return;
+    var supa = getClient();
+    var btn = document.getElementById('cwOrderBtn');
+    btn.disabled = true;
+    btn.textContent = 'Memesan…';
+    try {
+      var { error } = await supa.from('reseller_orders').insert({
+        chat_id: state.chatId,
+        product_id: state.chatRow.product_id,
+        product_name: state.chatRow.product_name,
+        price: state.chatRow.product_price || 0,
+        buyer_id: state.chatRow.buyer_id,
+        buyer_name: state.chatRow.buyer_name,
+        seller_id: state.chatRow.seller_id,
+        seller_name: state.chatRow.seller_name
+      });
+      if (error) throw error;
+
+      // Kirim pesan sistem otomatis biar kelihatan juga di riwayat chat
+      await supa.from('chat_messages').insert({
+        chat_id: state.chatId,
+        sender_id: state.currentUser.id,
+        message: '📦 Saya ingin memesan: ' + (state.chatRow.product_name || 'produk ini')
+      });
+      await supa.from('chats').update({
+        last_message: '📦 Memesan: ' + (state.chatRow.product_name || 'produk ini'),
+        last_message_at: new Date().toISOString()
+      }).eq('id', state.chatId);
+
+      await loadMessages();
+      await refreshOrderButtonState();
+    } catch (err) {
+      console.error('placeOrderFromChat error', err);
+      alert('Gagal membuat pesanan');
+      btn.disabled = false;
+      btn.textContent = 'Pesan Produk Ini';
+    }
+  }
 
   // Tombol X manggil ini — nutup pop-up. Pesan udah otomatis tersimpan
   // ke database begitu dikirim, jadi nutup pop-up gak menghilangkan apa-apa.
@@ -190,7 +280,7 @@
   };
 
   // Cari chat yang udah ada antara pembeli & penjual, atau bikin baru kalau belum ada
-  window.findOrCreateChat = async function (sellerId, sellerName, productId, productName) {
+  window.findOrCreateChat = async function (sellerId, sellerName, productId, productName, productPrice) {
     var supa = getClient();
     var { data: userData } = await supa.auth.getUser();
     var user = userData ? userData.user : null;
@@ -216,7 +306,8 @@
       buyer_name: buyerName,
       seller_name: sellerName || null,
       product_id: productId || null,
-      product_name: productName || null
+      product_name: productName || null,
+      product_price: (typeof productPrice === 'number') ? productPrice : null
     }).select().single();
 
     if (error) { console.error('findOrCreateChat error', error); alert('Gagal membuka chat'); return null; }
