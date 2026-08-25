@@ -284,7 +284,8 @@ async function openChatWithSeller(){
       currentProduct.owner_id,
       currentProduct.owner_name || 'Penjual',
       currentProduct.id,
-      currentProduct.name
+      currentProduct.name,
+      currentProduct.price
     );
     if(chat){
       openChatModal(chat.id, currentProduct.owner_name || 'Penjual', 'Tentang: ' + currentProduct.name);
