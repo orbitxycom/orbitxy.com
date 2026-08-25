@@ -1088,7 +1088,7 @@ function timeAgoID(iso){
   return d + 'h';
 }
 
-function renderSellerChats(chats){
+function renderSellerChats(chats, myUserId){
   var list = document.getElementById('taChatList');
   var empty = document.getElementById('taChatEmpty');
   if(!chats || !chats.length){
@@ -1098,12 +1098,16 @@ function renderSellerChats(chats){
   }
   empty.style.display = 'none';
   list.innerHTML = chats.map(function(c){
-    var name = c.buyer_name || 'Pembeli';
+    // Kalau saya yang jadi pembeli di chat ini, tampilkan nama penjualnya.
+    // Kalau saya yang jadi penjual, tampilkan nama pembelinya.
+    var iAmBuyer = c.buyer_id === myUserId;
+    var name = iAmBuyer ? (c.seller_name || 'Penjual') : (c.buyer_name || 'Pembeli');
+    var roleTag = iAmBuyer ? 'Ke: ' : 'Dari: ';
     return '<div class="chat-item" data-id="'+c.id+'" data-name="'+esc(name)+'" data-sub="'+esc(c.product_name||'')+'">' +
       '<div class="chat-avatar">'+esc(name.charAt(0).toUpperCase())+'</div>' +
       '<div class="chat-info">' +
-        '<div class="chat-name">'+esc(name)+'</div>' +
-        '<div class="chat-last">'+esc(c.last_message || 'Belum ada pesan')+'</div>' +
+        '<div class="chat-name">'+esc(roleTag)+esc(name)+'</div>' +
+        '<div class="chat-last">'+(c.last_message ? esc(c.last_message) : 'Menunggu balasan…')+'</div>' +
       '</div>' +
       '<div class="chat-time">'+timeAgoID(c.last_message_at)+'</div>' +
     '</div>';
@@ -1120,10 +1124,10 @@ async function loadSellerChats(){
     var { data, error } = await supabaseClient
       .from('chats')
       .select('*')
-      .eq('seller_id', user.id)
+      .or('buyer_id.eq.' + user.id + ',seller_id.eq.' + user.id)
       .order('last_message_at', { ascending: false });
     if(error) throw error;
-    renderSellerChats(data || []);
+    renderSellerChats(data || [], user.id);
   }catch(err){
     console.error('Gagal memuat chat:', err);
   }
