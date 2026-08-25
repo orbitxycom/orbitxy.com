@@ -180,8 +180,8 @@ body{
       <div class="p-desc" id="pDesc">Tidak ada deskripsi untuk produk ini.</div>
 
       <div class="notice-box">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
-        <p>Pembelian langsung dari toko reseller ini sedang dipersiapkan. Sementara ini produk hanya bisa dilihat detailnya.</p>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        <p>Tertarik dengan produk ini? Chat langsung ke penjual buat nanya-nanya atau nego harga.</p>
       </div>
     </div>
   </div>
@@ -193,10 +193,11 @@ body{
     <div class="bb-price-lbl">Harga</div>
     <div class="bb-price-val" id="bbPrice">Rp0</div>
   </div>
-  <button class="bb-btn" id="bbBtn" disabled>Segera Hadir</button>
+  <button class="bb-btn" id="bbBtn" onclick="openChatWithSeller()">Chat Penjual</button>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="/assets/chat-widget.js"></script>
 <script>
 'use strict';
 
@@ -232,7 +233,10 @@ function showError(msg){
   document.getElementById('errorMsg').textContent = msg || 'Produk tidak ditemukan.';
 }
 
+var currentProduct = null;
+
 function renderProduct(p){
+  currentProduct = p;
   document.title = esc(p.name) + ' — Toko Reseller';
 
   if(p.thumbnail){
@@ -269,6 +273,25 @@ function renderProduct(p){
   document.getElementById('loadingState').style.display = 'none';
   document.getElementById('contentState').style.display = 'block';
   document.getElementById('bottomBar').style.display = 'flex';
+}
+
+async function openChatWithSeller(){
+  if(!currentProduct){ alert('Produk belum termuat'); return; }
+  var btn = document.getElementById('bbBtn');
+  btn.disabled = true; btn.textContent = 'Membuka chat…';
+  try{
+    var chat = await findOrCreateChat(
+      currentProduct.owner_id,
+      currentProduct.owner_name || 'Penjual',
+      currentProduct.id,
+      currentProduct.name
+    );
+    if(chat){
+      openChatModal(chat.id, currentProduct.owner_name || 'Penjual', 'Tentang: ' + currentProduct.name);
+    }
+  }finally{
+    btn.disabled = false; btn.textContent = 'Chat Penjual';
+  }
 }
 
 async function init(){
