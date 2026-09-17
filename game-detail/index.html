@@ -270,32 +270,46 @@
     <button class="btn-demo">Mode demo</button>
   </div>
 
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
     const toggle = document.getElementById('fullscreenToggle');
     toggle.addEventListener('click', function() {
       toggle.classList.toggle('on');
     });
 
-    // Daftar data game: tambahkan game baru di sini, cukup kasih id unik
-    const GAMES = {
-      1: { title: "Blackjack", img: "" },
-      2: { title: "Lucky Jet", img: "" },
-      3: { title: "Coinflip", img: "" }
-    };
+    // ---- Ambil data game dari Supabase (tabel "games") berdasarkan ?id= ----
+    const SUPABASE_URL = "https://xvvnnqpjiyervgnyffqs.supabase.co";
+    const SUPABASE_ANON_KEY = "sb_publishable_Qp9izsQ77Ym9vzSBxwd--A_AZxfy4vs";
+    const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-    const params = new URLSearchParams(window.location.search);
-    const id = params.get('id');
-    const game = GAMES[id];
+    async function loadGame() {
+      const params = new URLSearchParams(window.location.search);
+      const id = params.get('id');
+      if (!id) return;
 
-    if (game) {
+      const { data: game, error } = await sb
+        .from('games')
+        .select('title, image_url, provider')
+        .eq('id', id)
+        .single();
+
+      if (error || !game) {
+        document.getElementById('gameTitle').textContent = 'Game tidak ditemukan';
+        return;
+      }
+
       document.getElementById('gameTitle').textContent = game.title;
-      if (game.img) {
+      if (game.provider) {
+        document.querySelector('.game-provider .name').textContent = game.provider;
+      }
+      if (game.image_url) {
         const cover = document.getElementById('gameCover');
         const imgEl = document.createElement('img');
-        imgEl.src = game.img;
+        imgEl.src = game.image_url;
         cover.appendChild(imgEl);
       }
     }
+    loadGame();
   </script>
 </body>
 </html>
