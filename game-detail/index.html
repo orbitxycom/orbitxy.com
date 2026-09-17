@@ -219,14 +219,210 @@
     font-weight: 700;
     cursor: pointer;
   }
+
+  /* ---- Modal Notifikasi ---- */
+  .login-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.6);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s ease;
+    z-index: 70;
+  }
+  .login-overlay.show {
+    opacity: 1;
+    pointer-events: auto;
+  }
+  .login-sheet {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    max-width: 480px;
+    margin: 0 auto;
+    background: #161616;
+    border-radius: 20px 20px 0 0;
+    transform: translateY(100%);
+    transition: transform 0.3s ease;
+    z-index: 80;
+    padding: 24px 20px calc(28px + env(safe-area-inset-bottom));
+    max-height: 90vh;
+    overflow-y: auto;
+  }
+  .login-sheet.show {
+    transform: translateY(0);
+  }
+  .login-close {
+    background: none;
+    border: none;
+    color: #9a9a9a;
+    cursor: pointer;
+    display: flex;
+  }
+  .login-close svg { width: 24px; height: 24px; }
+  .notif-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+  }
+  .notif-header h2 {
+    color: #ffffff;
+    font-size: 26px;
+    font-weight: 800;
+    margin: 0;
+  }
+  .notif-tabs {
+    display: flex;
+    align-items: center;
+    background: #232325;
+    border-radius: 12px;
+    padding: 4px;
+    margin-bottom: 30px;
+  }
+  .notif-tab {
+    flex: 1;
+    text-align: center;
+    padding: 10px 8px;
+    color: #cfcfcf;
+    font-size: 14px;
+    font-weight: 700;
+    background: none;
+    border: none;
+    border-radius: 9px;
+    cursor: pointer;
+    position: relative;
+  }
+  .notif-tab.active {
+    background: #1a73e8;
+    color: #ffffff;
+  }
+  .notif-empty {
+    text-align: center;
+    padding: 60px 20px 20px;
+  }
+  .notif-empty svg {
+    width: 56px;
+    height: 56px;
+    color: #6a6a6e;
+    margin-bottom: 20px;
+  }
+  .notif-empty .n-title {
+    color: #ffffff;
+    font-size: 19px;
+    font-weight: 800;
+    margin-bottom: 10px;
+  }
+  .notif-empty .n-sub {
+    color: #9a9a9a;
+    font-size: 14px;
+    line-height: 1.5;
+  }
+  #notifSheet {
+    min-height: 88vh;
+  }
+  .notif-intro-card {
+    display: flex;
+    gap: 14px;
+    background: rgba(255, 255, 255, 0.06);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    border-radius: 16px;
+    padding: 16px;
+    margin-bottom: 14px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.08);
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+  }
+  .notif-intro-card::before {
+    content: "";
+    position: absolute;
+    inset: -40%;
+    background: radial-gradient(circle at 20% 20%, rgba(255,179,71,0.5), transparent 45%),
+                radial-gradient(circle at 80% 30%, rgba(139,47,214,0.5), transparent 45%),
+                radial-gradient(circle at 50% 90%, rgba(47,123,255,0.4), transparent 45%);
+    z-index: -1;
+    filter: blur(10px);
+  }
+  .notif-intro-card .ic-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #ffb347, #ff2d78, #8b2fd6, #2f7bff);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .notif-intro-card .ic-icon svg { width: 22px; height: 22px; color: #ffffff; }
+  .notif-intro-card .ic-title {
+    color: #ffffff;
+    font-size: 15px;
+    font-weight: 700;
+    margin-bottom: 4px;
+  }
+  .notif-intro-card .ic-desc {
+    color: #b0b0b0;
+    font-size: 13px;
+    line-height: 1.5;
+  }
+  .notif-intro-card .ic-time {
+    color: #6a6a6e;
+    font-size: 12px;
+    margin-top: 6px;
+  }
 </style>
 </head>
 <body>
   <div class="header">
     <div class="logo">orbitxy</div>
-    <button class="btn-bell">
+    <button class="btn-bell" id="bellBtn">
       <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a6 6 0 0 0-6 6v3.2c0 .6-.2 1.2-.6 1.7L4 15.5c-.6.8 0 2 1 2h14c1 0 1.6-1.2 1-2l-1.4-2.6c-.4-.5-.6-1.1-.6-1.7V8a6 6 0 0 0-6-6z"/><path d="M9.5 20a2.5 2.5 0 0 0 5 0" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>
     </button>
+  </div>
+
+  <div class="login-overlay" id="notifOverlay"></div>
+  <div class="login-sheet" id="notifSheet">
+    <div class="notif-header">
+      <h2>Notifikasi</h2>
+      <button class="login-close" id="notifClose">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="4" y1="4" x2="20" y2="20"/><line x1="20" y1="4" x2="4" y2="20"/></svg>
+      </button>
+    </div>
+
+    <div class="notif-tabs">
+      <button class="notif-tab" data-tab="semua">Semua</button>
+      <button class="notif-tab active" data-tab="pribadi">Pribadi</button>
+      <button class="notif-tab" data-tab="umum">Umum</button>
+    </div>
+
+    <div id="notifContentSemua" class="notif-empty" style="display:none;">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a6 6 0 0 0-6 6v3.2c0 .6-.2 1.2-.6 1.7L4 15.5c-.6.8 0 2 1 2h14c1 0 1.6-1.2 1-2l-1.4-2.6c-.4-.5-.6-1.1-.6-1.7V8a6 6 0 0 0-6-6z"/><path d="M9.5 20a2.5 2.5 0 0 0 5 0" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>
+      <div class="n-title">Tidak ada apa-apa</div>
+      <div class="n-sub">Saat notifikasi diterima, akan ditampilkan di bagian ini</div>
+    </div>
+
+    <div id="notifContentPribadi">
+      <div class="notif-intro-card">
+        <div class="ic-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+        </div>
+        <div>
+          <div class="ic-title">Selamat datang di orbitxy! 🎉</div>
+          <div class="ic-desc">Terima kasih sudah bergabung bersama kami. Selamat menikmati pengalaman terbaik di orbitxy!</div>
+          <div class="ic-time">Baru saja</div>
+        </div>
+      </div>
+    </div>
+
+    <div id="notifContentUmum" class="notif-empty" style="display:none;">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a6 6 0 0 0-6 6v3.2c0 .6-.2 1.2-.6 1.7L4 15.5c-.6.8 0 2 1 2h14c1 0 1.6-1.2 1-2l-1.4-2.6c-.4-.5-.6-1.1-.6-1.7V8a6 6 0 0 0-6-6z"/><path d="M9.5 20a2.5 2.5 0 0 0 5 0" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>
+      <div class="n-title">Tidak ada apa-apa</div>
+      <div class="n-sub">Saat notifikasi diterima, akan ditampilkan di bagian ini</div>
+    </div>
   </div>
 
   <div class="subheader">
@@ -310,6 +506,40 @@
       }
     }
     loadGame();
+
+    // ---- Modal Notifikasi ----
+    const bellBtn = document.getElementById('bellBtn');
+    const notifSheet = document.getElementById('notifSheet');
+    const notifOverlay = document.getElementById('notifOverlay');
+    const notifClose = document.getElementById('notifClose');
+
+    function openNotif() {
+      notifSheet.classList.add('show');
+      notifOverlay.classList.add('show');
+    }
+    function closeNotif() {
+      notifSheet.classList.remove('show');
+      notifOverlay.classList.remove('show');
+    }
+    bellBtn.addEventListener('click', openNotif);
+    notifClose.addEventListener('click', closeNotif);
+    notifOverlay.addEventListener('click', closeNotif);
+
+    const notifContentSemua = document.getElementById('notifContentSemua');
+    const notifContentPribadi = document.getElementById('notifContentPribadi');
+    const notifContentUmum = document.getElementById('notifContentUmum');
+    document.querySelectorAll('.notif-tab').forEach(function(tab) {
+      tab.addEventListener('click', function() {
+        document.querySelectorAll('.notif-tab').forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+        notifContentSemua.style.display = 'none';
+        notifContentPribadi.style.display = 'none';
+        notifContentUmum.style.display = 'none';
+        if (tab.dataset.tab === 'semua') notifContentSemua.style.display = 'block';
+        else if (tab.dataset.tab === 'pribadi') notifContentPribadi.style.display = 'block';
+        else notifContentUmum.style.display = 'block';
+      });
+    });
   </script>
 </body>
 </html>
