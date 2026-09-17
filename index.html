@@ -198,6 +198,19 @@
   .game-card {
     width: 120px;
   }
+  .games-row {
+    display: flex;
+    gap: 10px;
+    overflow-x: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  .games-row::-webkit-scrollbar {
+    display: none;
+  }
+  .games-row .game-card {
+    flex: 0 0 auto;
+  }
   .game-card-img {
     width: 120px;
     height: 165px;
@@ -1631,14 +1644,12 @@
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"/></svg>
       </div>
       <div class="games-nav">
-        <button><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 6 9 12 15 18"/></svg></button>
-        <button><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"/></svg></button>
+        <button id="gamesPrev"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 6 9 12 15 18"/></svg></button>
+        <button id="gamesNext"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"/></svg></button>
       </div>
     </div>
-    <div class="game-card">
-      <a href="game-detail/?id=2" style="text-decoration:none;">
-        <div class="game-card-img"></div>
-      </a>
+    <div class="games-row" id="gamesRow">
+      <!-- Kartu game diisi otomatis lewat JS dari Supabase -->
     </div>
   </div>
 
@@ -1855,6 +1866,39 @@
     const SUPABASE_URL = "https://xvvnnqpjiyervgnyffqs.supabase.co";
     const SUPABASE_ANON_KEY = "sb_publishable_Qp9izsQ77Ym9vzSBxwd--A_AZxfy4vs";
     const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    // ---- Muat daftar game dari Supabase (tabel "games") ----
+    async function loadGames() {
+      const gamesRow = document.getElementById('gamesRow');
+      const { data, error } = await sb
+        .from('games')
+        .select('id, title, image_url')
+        .order('sort_order', { ascending: true });
+
+      if (error || !data || data.length === 0) {
+        gamesRow.innerHTML = '<div style="color:#8a8a8e;font-size:13px;padding:8px 0;">Belum ada game.</div>';
+        return;
+      }
+
+      gamesRow.innerHTML = data.map(function(game) {
+        const imgHtml = game.image_url
+          ? '<img src="' + game.image_url + '" alt="' + game.title + '" style="width:100%;height:100%;object-fit:cover;border-radius:12px;display:block;">'
+          : '';
+        return '<div class="game-card">' +
+          '<a href="game-detail/?id=' + game.id + '" style="text-decoration:none;">' +
+          '<div class="game-card-img">' + imgHtml + '</div>' +
+          '</a></div>';
+      }).join('');
+    }
+    loadGames();
+
+    // Tombol panah kiri/kanan buat geser daftar game
+    document.getElementById('gamesPrev').addEventListener('click', function() {
+      document.getElementById('gamesRow').scrollBy({ left: -260, behavior: 'smooth' });
+    });
+    document.getElementById('gamesNext').addEventListener('click', function() {
+      document.getElementById('gamesRow').scrollBy({ left: 260, behavior: 'smooth' });
+    });
 
     function setMsg(el, text, isError) {
       el.textContent = text;
