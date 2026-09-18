@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Bow Game</title>
+<style>
+  :root{
+    --bg-0:#05070a;
+    --bg-1:#0b1016;
+    --lime:#a6e13d;
+    --lime-dim:#5c7a2a;
+    --ember:#ff6b35;
+    --ember-dim:#7a3419;
+    --paper:#eef2ec;
+    --paper-dim:#7d8a80;
+  }
+  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+  html,body{
+    margin:0; padding:0; height:100%; overflow:hidden;
+    background:var(--bg-0);
+    font-family:'Courier New', ui-monospace, SFMono-Regular, Menlo, monospace;
+    color:var(--paper);
+    touch-action:none;
+    user-select:none;
+  }
+  #app{
+    position:relative;
+    width:100%;
+    height:100%;
+    display:flex;
+    flex-direction:column;
+  }
+  #sky{
+    position:absolute;
+    inset:0;
+    background:
+      radial-gradient(ellipse 900px 500px at 20% -10%, rgba(166,225,61,0.06), transparent 60%),
+      radial-gradient(ellipse 700px 600px at 100% 110%, rgba(255,107,53,0.07), transparent 60%),
+      linear-gradient(180deg, var(--bg-1) 0%, var(--bg-0) 100%);
+    z-index:0;
+  }
+  #stars{
+    position:absolute; inset:0; z-index:0; opacity:0.5;
+  }
+
+  header{
+    position:relative; z-index:2;
+    display:flex; align-items:baseline; justify-content:space-between;
+    padding:16px 18px 8px;
+  }
+  header .title{
+    font-size:15px;
+    letter-spacing:0.5px;
+    color:var(--paper-dim);
+  }
+  header .title b{ color:var(--lime); font-weight:700; }
+  header .hint{
+    font-size:11px;
+    color:var(--paper-dim);
+    opacity:0.7;
+  }
+
+  #hud{
+    position:relative; z-index:2;
+    display:flex;
+    gap:10px;
+    padding:0 18px 10px;
+  }
+  .stat{
+    flex:1;
+    background:rgba(255,255,255,0.03);
+    border:1px solid rgba(255,255,255,0.08);
+    border-radius:3px;
+    padding:8px 10px;
+  }
+  .stat .num{
+    font-size:22px;
+    font-weight:700;
+    line-height:1;
+    color:var(--paper);
+  }
+  .stat.hit .num{ color:var(--lime); }
+  .stat .lbl{
+    font-size:10px;
+    color:var(--paper-dim);
+    margin-top:4px;
+  }
+
+  #stage{
+    position:relative;
+    flex:1;
+    z-index:1;
+    margin:0 10px 10px;
+    border-radius:4px;
+    overflow:hidden;
+    background:rgba(255,255,255,0.015);
+    border:1px solid rgba(255,255,255,0.06);
+  }
+  canvas{
+    display:block;
+    width:100%;
+    height:100%;
+    cursor:crosshair;
+  }
+
+  #banner{
+    position:absolute;
+    top:50%; left:50%;
+    transform:translate(-50%,-50%) scale(0.9);
+    background:rgba(5,7,10,0.85);
+    border:1px solid rgba(166,225,61,0.35);
+    padding:18px 26px;
+    border-radius:4px;
+    font-size:13px;
+    color:var(--paper-dim);
+    text-align:center;
+    letter-spacing:0.3px;
+    opacity:0;
+    pointer-events:none;
+    transition:opacity 0.25s ease, transform 0.25s ease;
+    z-index:5;
+  }
+  #banner.show{ opacity:1; transform:translate(-50%,-50%) scale(1); }
+  #banner .big{
+    display:block;
+    font-size:26px;
+    font-weight:700;
+    margin-bottom:4px;
+  }
+  #banner.gold .big{ color:var(--lime); }
+  #banner.miss .big{ color:var(--ember); }
+
+  footer{
+    position:relative; z-index:2;
+    display:flex;
+    justify-content:center;
+    padding:2px 18px 16px;
+  }
+  #resetBtn{
+    background:transparent;
+    border:1px solid rgba(255,255,255,0.15);
+    color:var(--paper-dim);
+    font-family:inherit;
+    font-size:11px;
+    letter-spacing:0.4px;
+    padding:8px 18px;
+    border-radius:3px;
+    cursor:pointer;
+  }
+  #resetBtn:active{ background:rgba(255,255,255,0.06); }
+</style>
+</head>
+<body>
+<div id="app">
+  <div id="sky"></div>
+  <canvas id="stars"></canvas>
+
+  <header>
+    <div class="title">🏹 <b>Bow Game</b></div>
+    <div class="hint">tahan &amp; tarik, lepas untuk memanah</div>
+  </header>
+
+  <div id="hud">
+    <div class="stat hit">
+      <div class="num" id="statScore">0</div>
+      <div class="lbl">SKOR</div>
+    </div>
+    <div class="stat">
+      <div class="num" id="statShots">0</div>
+      <div class="lbl">PANAH</div>
+    </div>
+    <div class="stat">
+      <div class="num" id="statAcc">0%</div>
+      <div class="lbl">AKURASI</div>
+    </div>
+    <div class="stat">
+      <div class="num" id="statStreak">0</div>
+      <div class="lbl">BERUNTUN</div>
+    </div>
+  </div>
+
+  <div id="stage">
+    <canvas id="game"></canvas>
+    <div id="banner"></div>
+  </div>
+
+  <footer>
+    <button id="resetBtn">ULANGI PERMAINAN</button>
+  </footer>
+</div>
+
+<script>
+(function(){
+  const gameCanvas = document.getElementById('game');
+  const gctx = gameCanvas.getContext('2d');
+  const starCanvas = document.getElementById('stars');
+  const sctx = starCanvas.getContext('2d');
+  const stage = document.getElementById('stage');
+  const banner = document.getElementById('banner');
+
+  const statScore = document.getElementById('statScore');
+  const statShots = document.getElementById('statShots');
+  const statAcc = document.getElementById('statAcc');
+  const statStreak = document.getElementById('statStreak');
+  const resetBtn = document.getElementById('resetBtn');
+
+  let W = 0, H = 0, DPR = Math.min(window.devicePixelRatio || 1, 2);
+
+  function resize(){
+    const r = stage.getBoundingClientRect();
+    W = r.width; H = r.height;
+    [gameCanvas, starCanvas].forEach(c=>{
+      c.width = W * DPR; c.height = H * DPR;
+      c.style.width = W+'px'; c.style.height = H+'px';
+    });
+    gctx.setTransform(DPR,0,0,DPR,0,0);
+    sctx.setTransform(DPR,0,0,DPR,0,0);
+    drawStars();
+    layout();
+  }
+
+  // ---------- Stars (static background) ----------
+  let starField = [];
+  function drawStars(){
+    starField = [];
+    const n = Math.floor((W*H)/9000);
+    for(let i=0;i<n;i++){
+      starField.push({
+        x: Math.random()*W,
+        y: Math.random()*H*0.6,
+        r: Math.random()*1.2+0.2,
+        a: Math.random()*0.5+0.15
+      });
+    }
+    sctx.clearRect(0,0,W,H);
+    starField.forEach(s=>{
+      sctx.fillStyle = 'rgba(255,255,255,'+s.a+')';
+      sctx.beginPath();
+      sctx.arc(s.x, s.y, s.r, 0, Math.PI*2);
+      sctx.fill();
+    });
+  }
+
+  // ---------- Game state ----------
+  let bow = { x:0, y:0 };
+  let ground = 0;
+  let target = { x:0, y:0, r:0 };
+  let targetVy = 1; // vertical drift direction
+  let aiming = false;
+  let pull = { x:0, y:0, dist:0, angle:0 };
+  const MAX_PULL = 95;
+
+  let arrow = null; // in-flight arrow
+  let arrows = []; // stuck arrows in target for visual
+  let popups = []; // floating score text
+  let flashes = []; // hit flash rings
+
+  let score = 0, shots = 0, hits = 0, streak = 0, bestStreak = 0;
+
+  function layout(){
+    bow.x = W * 0.14;
+    bow.y = H * 0.58;
+    ground = H * 0.92;
+    target.x = W * 0.82;
+    target.y = H * 0.42;
+    target.r = Math.max(34, Math.min(W,H) * 0.13);
+  }
+
+  function resetGame(){
+    score=0; shots=0; hits=0; streak=0; bestStreak=0;
+    arrow=null; arrows=[]; popups=[]; flashes=[];
+    updateHud();
+    hideBanner();
+  }
+
+  function updateHud(){
+    statScore.textContent = score;
+    statShots.textContent = shots;
+    statAcc.textContent = shots? Math.round((hits/shots)*100)+'%' : '0%';
+    statStreak.textContent = streak;
+  }
+
+  function showBanner(text, big, cls){
+    banner.innerHTML = '<span class="big">'+big+'</span>'+text;
+    banner.className = 'show '+(cls||'');
+    clearTimeout(showBanner._t);
+    showBanner._t = setTimeout(hideBanner, 850);
+  }
+  function hideBanner(){
+    banner.classList.remove('show');
+  }
+
+  // ---------- Input ----------
+  function getPos(e){
+    const r = gameCanvas.getBoundingClientRect();
+    const p = e.touches ? e.touches[0] : e;
+    return { x: p.clientX - r.left, y: p.clientY - r.top };
+  }
+
+  function onDown(e){
+    if(arrow) return; // wait for current arrow to resolve
+    e.preventDefault();
+    aiming = true;
+    const p = getPos(e);
+    updatePull(p);
+  }
+  function onMove(e){
+    if(!aiming) return;
+    e.preventDefault();
+    const p = getPos(e);
+    updatePull(p);
+  }
+  function onUp(e){
+    if(!aiming) return;
+    e.preventDefault();
+    aiming = false;
+    release();
+  }
+
+  function updatePull(p){
+    let dx = p.x - bow.x;
+    let dy = p.y - bow.y;
+    let d = Math.hypot(dx,dy);
+    if(d > MAX_PULL){
+      dx = dx/d*MAX_PULL;
+      dy = dy/d*MAX_PULL;
+      d = MAX_PULL;
+    }
+    pull.x = dx; pull.y = dy; pull.dist = d;
+    pull.angle = Math.atan2(dy,dx);
+  }
+
+  function release(){
+    if(pull.dist < 12){ pull = {x:0,y:0,dist:0,angle:0}; return; }
+    const power = pull.dist / MAX_PULL; // 0..1
+    const speed = 9 + power*15;
+    const shootAngle = pull.angle + Math.PI; // opposite of pull direction
+
+    // tiny natural wobble, more when pull is weak
+    const wobble = (Math.random()*2-1) * (0.02 + (1-power)*0.02);
+
+    arrow = {
+      x: bow.x, y: bow.y,
+      vx: Math.cos(shootAngle+wobble)*speed,
+      vy: Math.sin(shootAngle+wobble)*speed,
+      rot: shootAngle+wobble,
+      trail: []
+    };
+    pull = {x:0,y:0,dist:0,angle:0};
+  }
+
+  gameCanvas.addEventListener('mousedown', onDown);
+  gameCanvas.addEventListener('mousemove', onMove);
+  window.addEventListener('mouseup', onUp);
+  gameCanvas.addEventListener('touchstart', onDown, {passive:false});
+  gameCanvas.addEventListener('touchmove', onMove, {passive:false});
+  gameCanvas.addEventListener('touchend', onUp, {passive:false});
+
+  resetBtn.addEventListener('click', resetGame);
+
+  // ---------- Physics / scoring ----------
+  const GRAVITY = 0.42;
+
+  function resolveHit(){
+    const dx = arrow.x - target.x;
+    const dy = arrow.y - target.y;
+    const dist = Math.hypot(dx,dy);
+    shots++;
+    let pts = 0, label = 'MELESET', cls='miss';
+    if(dist < target.r*0.16){ pts=10; label='TEPAT SASARAN'; cls='gold'; }
+    else if(dist < target.r*0.36){ pts=8; label='KENA!'; cls='gold'; }
+    else if(dist < target.r*0.6){ pts=6; label='BAGUS'; cls='gold'; }
+    else if(dist < target.r*0.85){ pts=4; label='KENA PINGGIR'; cls='gold'; }
+    else if(dist < target.r*1.05){ pts=2; label='NYAWIS'; cls='gold'; }
+
+    if(pts>0){
+      hits++; streak++; bestStreak = Math.max(bestStreak, streak);
+      score += pts;
+      arrows.push({x:arrow.x, y:arrow.y, rot:arrow.rot});
+      flashes.push({x:arrow.x, y:arrow.y, r:4, a:1});
+      popups.push({x:arrow.x, y:arrow.y-10, text:'+'+pts, life:1});
+      showBanner('+'+pts+' poin', label, cls);
+    } else {
+      streak = 0;
+      popups.push({x:arrow.x, y:arrow.y-10, text:'meleset', life:1});
+      showBanner('coba lagi', label, cls);
+    }
+    updateHud();
+    arrow = null;
+
+    // drift target a little for next shot
+    target.y += targetVy * (18 + Math.random()*10);
+    if(target.y < H*0.22 || target.y > H*0.72) targetVy *= -1;
+  }
+
+  function step(){
+    // update arrow
+    if(arrow){
+      arrow.trail.push({x:arrow.x, y:arrow.y});
+      if(arrow.trail.length > 16) arrow.trail.shift();
+
+      arrow.x += arrow.vx;
+      arrow.y += arrow.vy;
+      arrow.vy += GRAVITY;
+      arrow.rot = Math.atan2(arrow.vy, arrow.vx);
+
+      const dxT = arrow.x - target.x;
+      const dyT = arrow.y - target.y;
+      const closing = Math.hypot(dxT,dyT) < target.r*1.15 && arrow.vx > 0 && arrow.x > target.x - target.r;
+
+      if(closing){
+        resolveHit();
+      } else if(arrow.x > W + 40 || arrow.y > ground + 20){
+        // missed entirely
+        shots++; streak=0;
+        popups.push({x: Math.min(arrow.x, W-20), y: Math.min(arrow.y, ground), text:'meleset', life:1});
+        showBanner('di luar target', 'MELESET', 'miss');
+        updateHud();
+        arrow = null;
+      }
+    }
+
+    flashes.forEach(f=>{ f.r += 3.2; f.a -= 0.045; });
+    flashes = flashes.filter(f=>f.a>0);
+    popups.forEach(p=>{ p.y -= 0.6; p.life -= 0.018; });
+    popups = popups.filter(p=>p.life>0);
+
+    draw();
+    requestAnimationFrame(step);
+  }
+
+  // ---------- Drawing ----------
+  function drawGround(){
+    gctx.fillStyle = 'rgba(255,255,255,0.03)';
+    gctx.fillRect(0, ground, W, H-ground);
+    gctx.strokeStyle = 'rgba(255,255,255,0.08)';
+    gctx.lineWidth = 1;
+    gctx.beginPath();
+    gctx.moveTo(0, ground);
+    gctx.lineTo(W, ground);
+    gctx.stroke();
+  }
+
+  function drawTargetPost(){
+    gctx.strokeStyle = 'rgba(255,255,255,0.15)';
+    gctx.lineWidth = 3;
+    gctx.beginPath();
+    gctx.moveTo(target.x, target.y + target.r*0.15);
+    gctx.lineTo(target.x, ground);
+    gctx.stroke();
+  }
+
+  function drawTarget(){
+    const rings = [
+      {f: 1.0, c:'#e0d9c8'},
+      {f: 0.8, c:'#ff6b35'},
+      {f: 0.6, c:'#e0d9c8'},
+      {f: 0.36, c:'#ff6b35'},
+      {f: 0.16, c:'#fff6e0'}
+    ];
+    rings.forEach(ring=>{
+      gctx.beginPath();
+      gctx.arc(target.x, target.y, target.r*ring.f, 0, Math.PI*2);
+      gctx.fillStyle = ring.c;
+      gctx.fill();
+    });
+    // center dot
+    gctx.beginPath();
+    gctx.arc(target.x, target.y, target.r*0.05, 0, Math.PI*2);
+    gctx.fillStyle = '#2a1f10';
+    gctx.fill();
+
+    // stuck arrows
+    arrows.forEach(a=>{
+      gctx.save();
+      gctx.translate(a.x, a.y);
+      gctx.rotate(a.rot);
+      drawArrowShape(0.55);
+      gctx.restore();
+    });
+  }
+
+  function drawArrowShape(scale){
+    scale = scale||1;
+    const len = 46*scale;
+    gctx.strokeStyle = '#eef2ec';
+    gctx.lineWidth = 2.4*scale;
+    gctx.beginPath();
+    gctx.moveTo(-len, 0);
+    gctx.lineTo(len*0.55, 0);
+    gctx.stroke();
+    // tip
+    gctx.fillStyle = '#ff6b35';
+    gctx.beginPath();
+    gctx.moveTo(len*0.55, 0);
+    gctx.lineTo(len*0.35, -6*scale);
+    gctx.lineTo(len*0.78, 0);
+    gctx.lineTo(len*0.35, 6*scale);
+    gctx.closePath();
+    gctx.fill();
+    // fletching
+    gctx.fillStyle = '#a6e13d';
+    gctx.beginPath();
+    gctx.moveTo(-len, 0);
+    gctx.lineTo(-len*0.78, -8*scale);
+    gctx.lineTo(-len*0.66, 0);
+    gctx.closePath();
+    gctx.fill();
+    gctx.beginPath();
+    gctx.moveTo(-len, 0);
+    gctx.lineTo(-len*0.78, 8*scale);
+    gctx.lineTo(-len*0.66, 0);
+    gctx.closePath();
+    gctx.fill();
+  }
+
+  function drawBow(){
+    const shootAngle = aiming ? pull.angle + Math.PI : 0;
+    gctx.save();
+    gctx.translate(bow.x, bow.y);
+    gctx.rotate(shootAngle);
+
+    const R = 62;
+    // limbs (arc)
+    gctx.strokeStyle = '#a6e13d';
+    gctx.lineWidth = 5;
+    gctx.lineCap = 'round';
+    gctx.beginPath();
+    gctx.arc(0, 0, R, -1.05, 1.05, false);
+    gctx.stroke();
+
+    const tipTopX = R*Math.cos(-1.05), tipTopY = R*Math.sin(-1.05);
+    const tipBotX = R*Math.cos(1.05), tipBotY = R*Math.sin(1.05);
+
+    // string: bends back to pull point when aiming
+    gctx.strokeStyle = 'rgba(238,242,236,0.8)';
+    gctx.lineWidth = 1.6;
+    gctx.beginPath();
+    gctx.moveTo(tipTopX, tipTopY);
+    if(aiming){
+      gctx.lineTo(-pull.dist, 0);
+      gctx.lineTo(tipBotX, tipBotY);
+    } else {
+      gctx.lineTo(tipBotX, tipBotY);
+    }
+    gctx.stroke();
+
+    // nocked arrow while aiming
+    if(aiming){
+      gctx.save();
+      gctx.translate(-pull.dist, 0);
+      drawArrowShape(0.85);
+      gctx.restore();
+    }
+
+    gctx.restore();
+  }
+
+  function drawFlyingArrow(){
+    if(!arrow) return;
+    // trail
+    gctx.strokeStyle = 'rgba(238,242,236,0.25)';
+    gctx.lineWidth = 1.4;
+    gctx.beginPath();
+    arrow.trail.forEach((t,i)=>{
+      if(i===0) gctx.moveTo(t.x,t.y); else gctx.lineTo(t.x,t.y);
+    });
+    gctx.stroke();
+
+    gctx.save();
+    gctx.translate(arrow.x, arrow.y);
+    gctx.rotate(arrow.rot);
+    drawArrowShape(0.85);
+    gctx.restore();
+  }
+
+  function drawFlashes(){
+    flashes.forEach(f=>{
+      gctx.strokeStyle = 'rgba(166,225,61,'+Math.max(f.a,0)+')';
+      gctx.lineWidth = 2;
+      gctx.beginPath();
+      gctx.arc(f.x, f.y, f.r, 0, Math.PI*2);
+      gctx.stroke();
+    });
+  }
+
+  function drawPopups(){
+    popups.forEach(p=>{
+      gctx.globalAlpha = Math.max(p.life,0);
+      gctx.fillStyle = p.text.startsWith('+') ? '#a6e13d' : '#ff6b35';
+      gctx.font = '700 15px monospace';
+      gctx.textAlign = 'center';
+      gctx.fillText(p.text, p.x, p.y);
+      gctx.globalAlpha = 1;
+    });
+  }
+
+  function drawAimGuide(){
+    if(!aiming) return;
+    gctx.strokeStyle = 'rgba(255,255,255,0.12)';
+    gctx.setLineDash([4,5]);
+    gctx.lineWidth = 1;
+    gctx.beginPath();
+    const dir = pull.angle + Math.PI;
+    gctx.moveTo(bow.x, bow.y);
+    gctx.lineTo(bow.x + Math.cos(dir)*400, bow.y + Math.sin(dir)*400);
+    gctx.stroke();
+    gctx.setLineDash([]);
+  }
+
+  function draw(){
+    gctx.clearRect(0,0,W,H);
+    drawGround();
+    drawTargetPost();
+    drawTarget();
+    drawAimGuide();
+    drawBow();
+    drawFlyingArrow();
+    drawFlashes();
+    drawPopups();
+  }
+
+  window.addEventListener('resize', resize);
+  resize();
+  updateHud();
+  requestAnimationFrame(step);
+})();
+</script>
+</body>
+</html>
