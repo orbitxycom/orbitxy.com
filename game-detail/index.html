@@ -584,21 +584,44 @@
 
       // Kalau toggle "Mode layar penuh" aktif: masuk fullscreen + putar ke landscape
       if (toggle.classList.contains('on')) {
-        const el = playOverlay;
-        const reqFs = el.requestFullscreen || el.webkitRequestFullscreen || el.mozRequestFullScreen;
-        if (reqFs) {
-          reqFs.call(el).then(function() {
-            if (screen.orientation && screen.orientation.lock) {
-              screen.orientation.lock('landscape').catch(function() {
-                // Sebagian browser/device tidak mendukung, abaikan saja
-              });
-            }
-          }).catch(function() {
-            // Fullscreen ditolak/tidak didukung, tetap lanjut tanpa fullscreen
-          });
-        }
+        requestFullscreenWithFallback(playOverlay);
       }
     }
+
+    function requestFullscreenWithFallback(el) {
+      const reqFs = el.requestFullscreen || el.webkitRequestFullscreen || el.mozRequestFullScreen || el.msRequestFullscreen;
+      const tryLockLandscape = function() {
+        if (screen.orientation && screen.orientation.lock) {
+          screen.orientation.lock('landscape').catch(function() {});
+        }
+      };
+
+      if (!reqFs) {
+        tryLockLandscape();
+        return;
+      }
+
+      const result = reqFs.call(el);
+      if (result && result.then) {
+        result.then(tryLockLandscape).catch(function() {
+          // Fallback: coba fullscreen di seluruh halaman (documentElement)
+          const docEl = document.documentElement;
+          const reqFsDoc = docEl.requestFullscreen || docEl.webkitRequestFullscreen || docEl.mozRequestFullScreen || docEl.msRequestFullscreen;
+          if (reqFsDoc) {
+            const result2 = reqFsDoc.call(docEl);
+            if (result2 && result2.then) {
+              result2.then(tryLockLandscape).catch(tryLockLandscape);
+            } else {
+              tryLockLandscape();
+            }
+          } else {
+            tryLockLandscape();
+          }
+        });
+      } else {
+        // Browser lama (tidak pakai Promise, misal Safari webkit)
+        tryLockLandscape();
+      }
     function closePlayOverlay() {
       playOverlay.classList.remove('show');
       playFrame.src = 'about:blank';
