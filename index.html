@@ -107,6 +107,7 @@
     font-size: clamp(10px, 2.6vw, 12px);
     cursor: pointer;
     flex: 1;
+    text-decoration: none;
   }
   .nav-item svg {
     width: clamp(20px, 5.5vw, 26px);
@@ -1627,29 +1628,81 @@
     </div>
   </div>
 
-  <div class="banner-wrap">
-    <div class="banner-box">
-      <img src="https://orbitxycom.github.io/orbitxy.png" alt="Banner promo" style="width:100%;height:100%;object-fit:cover;display:block;">
-      <div class="banner-dots">
-        <span class="active"></span><span></span><span></span><span></span>
+  <div id="viewHome">
+    <div class="banner-wrap">
+      <div class="banner-box">
+        <img src="https://orbitxycom.github.io/orbitxy.png" alt="Banner promo" style="width:100%;height:100%;object-fit:cover;display:block;">
+        <div class="banner-dots">
+          <span class="active"></span><span></span><span></span><span></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="games-section">
+      <div class="games-section-header">
+        <div class="games-section-title">
+          <span class="gs-badge">OBX</span>
+          <span class="gs-name">OBX games</span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"/></svg>
+        </div>
+        <div class="games-nav">
+          <button id="gamesPrev"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 6 9 12 15 18"/></svg></button>
+          <button id="gamesNext"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"/></svg></button>
+        </div>
+      </div>
+      <div class="games-row" id="gamesRow">
+        <!-- Kartu game diisi otomatis lewat JS dari Supabase -->
       </div>
     </div>
   </div>
 
-  <div class="games-section">
-    <div class="games-section-header">
-      <div class="games-section-title">
-        <span class="gs-badge">OBX</span>
-        <span class="gs-name">OBX games</span>
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"/></svg>
-      </div>
-      <div class="games-nav">
-        <button id="gamesPrev"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 6 9 12 15 18"/></svg></button>
-        <button id="gamesNext"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"/></svg></button>
+  <div id="viewFavorit" style="display:none;">
+    <div class="page-title" style="color:#ffffff;font-size:20px;font-weight:800;padding:18px 20px 4px;">Favorit</div>
+    <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:90px 30px 40px;">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#0f3d47" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:64px;height:64px;margin-bottom:24px;"><path d="M6 3h12v18l-6-4-6 4V3z"/></svg>
+      <div style="color:#ffffff;font-size:20px;font-weight:800;margin-bottom:10px;">Belum ada favorit</div>
+      <div style="color:#8a8a8e;font-size:14px;">Ketuk ikon favorit pada game manapun untuk menyimpannya di sini</div>
+    </div>
+  </div>
+
+  <div id="viewGameDetail" style="display:none;">
+    <div class="subheader-gd" style="display:flex;justify-content:space-between;align-items:center;padding:16px 20px;">
+      <button onclick="showView('home')" style="display:flex;align-items:center;gap:6px;background:none;border:none;color:#f0f0f0;font-size:16px;font-weight:700;cursor:pointer;">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="width:20px;height:20px;"><polyline points="15 6 9 12 15 18"/></svg>
+        Kembali
+      </button>
+      <div style="display:flex;gap:10px;">
+        <button class="icon-btn-gd" id="gdShareBtn" style="width:38px;height:38px;border-radius:8px;background:#232325;border:none;display:flex;align-items:center;justify-content:center;color:#cfcfcf;cursor:pointer;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:18px;height:18px;"><path d="M12 3v12"/><path d="M7 8l5-5 5 5"/><path d="M5 14v4a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-4"/></svg>
+        </button>
+        <button class="icon-btn-gd" style="width:38px;height:38px;border-radius:8px;background:#232325;border:none;display:flex;align-items:center;justify-content:center;color:#cfcfcf;cursor:pointer;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:18px;height:18px;"><path d="M6 3h12v18l-6-4-6 4V3z"/></svg>
+        </button>
       </div>
     </div>
-    <div class="games-row" id="gamesRow">
-      <!-- Kartu game diisi otomatis lewat JS dari Supabase -->
+
+    <div style="display:flex;justify-content:center;padding:10px 20px 10px;">
+      <div id="gdCover" style="width:130px;height:180px;border-radius:12px;background:#1a1a1a;border:1px solid #2a2a2c;overflow:hidden;position:relative;"></div>
+    </div>
+
+    <div id="gdTitle" style="text-align:center;color:#ffffff;font-size:26px;font-weight:800;margin:18px 0 10px;">Nama Game</div>
+    <div style="display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:24px;">
+      <div style="width:24px;height:24px;border-radius:6px;background:linear-gradient(135deg,#ffb347,#ff2d78,#8b2fd6,#2f7bff);display:flex;align-items:center;justify-content:center;color:#fff;font-size:10px;font-weight:800;">OB</div>
+      <span id="gdProvider" style="color:#cfcfcf;font-size:15px;">OBX Games</span>
+    </div>
+
+    <div style="background:#1c1c1e;border:1px solid #2a2a2c;border-radius:16px;margin:0 20px 20px;overflow:hidden;">
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:16px 18px;">
+        <span style="color:#f0f0f0;font-size:15px;font-weight:600;">Mode layar penuh</span>
+        <button id="gdFullscreenToggle" style="width:46px;height:26px;border-radius:20px;background:#3a3a3c;position:relative;cursor:pointer;border:none;padding:0;">
+          <span style="position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:#fff;transition:transform 0.2s ease;"></span>
+        </button>
+      </div>
+    </div>
+
+    <div style="display:flex;gap:12px;padding:0 20px 30px;">
+      <button id="gdPlayBtn" style="flex:1;background:#1a73e8;color:#fff;border:none;border-radius:12px;padding:15px;font-size:16px;font-weight:700;cursor:pointer;">Main</button>
+      <button id="gdDemoBtn" style="flex:1;background:#2c2c2e;color:#fff;border:none;border-radius:12px;padding:15px;font-size:16px;font-weight:700;cursor:pointer;">Mode demo</button>
     </div>
   </div>
 
@@ -1742,7 +1795,7 @@
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
       <span>Menu</span>
     </button>
-    <button class="nav-item active">
+    <button class="nav-item active" id="navHome" onclick="showView('home')">
       <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 3 2 12h3v8h6v-6h2v6h6v-8h3z"/></svg>
       <span>Beranda</span>
     </button>
@@ -1754,7 +1807,7 @@
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M9.5 15.2c.4.9 1.3 1.4 2.5 1.4 1.6 0 2.7-.8 2.7-2 0-1.3-1.1-1.8-2.7-2.2-1.6-.4-2.6-.9-2.6-2.1 0-1.1 1-1.9 2.5-1.9 1.1 0 2 .4 2.4 1.2" stroke-linecap="round"/><line x1="12" y1="6.5" x2="12" y2="17.8"/></svg>
       <span>Free money</span>
     </button>
-    <button class="nav-item">
+    <button class="nav-item" id="navFavorit" onclick="showView('favorit')">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12v18l-6-4-6 4V3z"/></svg>
       <span>Favorit</span>
     </button>
@@ -1885,7 +1938,7 @@
           ? '<img src="' + game.image_url + '" alt="' + game.title + '" style="width:100%;height:100%;object-fit:cover;border-radius:12px;display:block;">'
           : '';
         return '<div class="game-card">' +
-          '<a href="game-detail/?id=' + game.id + '" style="text-decoration:none;">' +
+          '<a href="#" onclick="openGameDetail(' + game.id + ');return false;" style="text-decoration:none;">' +
           '<div class="game-card-img">' + imgHtml + '</div>' +
           '</a></div>';
       }).join('');
@@ -2372,6 +2425,133 @@
     moreSocialBtn.addEventListener('click', openSocialList);
     socialListClose.addEventListener('click', closeSocialList);
     socialListOverlay.addEventListener('click', closeSocialList);
+
+    // ================= ROUTING (ganti tampilan tanpa pindah file) =================
+    function showView(name) {
+      document.getElementById('viewHome').style.display = (name === 'home') ? '' : 'none';
+      document.getElementById('viewFavorit').style.display = (name === 'favorit') ? '' : 'none';
+      document.getElementById('viewGameDetail').style.display = (name === 'gameDetail') ? '' : 'none';
+
+      document.getElementById('navHome').classList.toggle('active', name === 'home');
+      document.getElementById('navFavorit').classList.toggle('active', name === 'favorit');
+
+      window.scrollTo(0, 0);
+      history.replaceState(null, '', name === 'home' ? '#' : '#' + name);
+    }
+
+    // ---- Detail game (di dalam halaman yang sama) ----
+    let gdCurrentGame = null;
+
+    async function openGameDetail(id) {
+      showView('gameDetail');
+      document.getElementById('gdTitle').textContent = 'Memuat...';
+      document.getElementById('gdCover').innerHTML = '';
+
+      const { data: game, error } = await sb
+        .from('games')
+        .select('title, image_url, provider, game_url, demo_url')
+        .eq('id', id)
+        .single();
+
+      if (error || !game) {
+        document.getElementById('gdTitle').textContent = 'Game tidak ditemukan';
+        return;
+      }
+
+      gdCurrentGame = game;
+      document.getElementById('gdTitle').textContent = game.title;
+      document.getElementById('gdProvider').textContent = game.provider || 'OBX Games';
+      if (game.image_url) {
+        document.getElementById('gdCover').innerHTML =
+          '<img src="' + game.image_url + '" style="width:100%;height:100%;object-fit:cover;display:block;">';
+      }
+    }
+
+    // Toggle Mode layar penuh
+    const gdFullscreenToggle = document.getElementById('gdFullscreenToggle');
+    let gdFullscreenOn = false;
+    gdFullscreenToggle.addEventListener('click', function() {
+      gdFullscreenOn = !gdFullscreenOn;
+      gdFullscreenToggle.style.background = gdFullscreenOn ? '#1a73e8' : '#3a3a3c';
+      gdFullscreenToggle.querySelector('span').style.transform = gdFullscreenOn ? 'translateX(20px)' : 'translateX(0)';
+    });
+
+    // ---- Overlay pemutar game (iframe) ----
+    const playOverlayGd = document.createElement('div');
+    playOverlayGd.id = 'playOverlayGd';
+    playOverlayGd.style.cssText = 'position:fixed;inset:0;background:#000;z-index:100;display:none;flex-direction:column;';
+    playOverlayGd.innerHTML =
+      '<div style="display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:#161616;">' +
+        '<span id="gdPlayTitle" style="color:#fff;font-size:14px;font-weight:700;">Memuat game...</span>' +
+        '<button id="gdClosePlay" style="background:#2c2c2e;border:none;border-radius:8px;width:36px;height:36px;display:flex;align-items:center;justify-content:center;color:#fff;cursor:pointer;">' +
+          '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="width:18px;height:18px;"><line x1="4" y1="4" x2="20" y2="20"/><line x1="20" y1="4" x2="4" y2="20"/></svg>' +
+        '</button>' +
+      '</div>' +
+      '<iframe id="gdPlayFrame" allowfullscreen style="flex:1;border:none;width:100%;height:100%;background:#000;"></iframe>';
+    document.body.appendChild(playOverlayGd);
+
+    function gdOpenPlay(url, label) {
+      if (!url) { alert('Link game belum diisi untuk mode ini.'); return; }
+      document.getElementById('gdPlayTitle').textContent = label;
+      document.getElementById('gdPlayFrame').src = url;
+      playOverlayGd.style.display = 'flex';
+
+      if (gdFullscreenOn) {
+        const reqFs = playOverlayGd.requestFullscreen || playOverlayGd.webkitRequestFullscreen || playOverlayGd.mozRequestFullScreen;
+        if (reqFs) {
+          const r = reqFs.call(playOverlayGd);
+          if (r && r.then) {
+            r.then(function() {
+              if (screen.orientation && screen.orientation.lock) {
+                screen.orientation.lock('landscape').catch(function(){});
+              }
+            }).catch(function(){});
+          }
+        }
+      }
+    }
+    function gdClosePlayOverlay() {
+      playOverlayGd.style.display = 'none';
+      document.getElementById('gdPlayFrame').src = 'about:blank';
+      if (document.fullscreenElement) document.exitFullscreen().catch(function(){});
+      if (screen.orientation && screen.orientation.unlock) {
+        try { screen.orientation.unlock(); } catch(e) {}
+      }
+    }
+    document.getElementById('gdPlayBtn').addEventListener('click', function() {
+      if (!gdCurrentGame) return;
+      gdOpenPlay(gdCurrentGame.game_url, gdCurrentGame.title);
+    });
+    document.getElementById('gdDemoBtn').addEventListener('click', function() {
+      if (!gdCurrentGame) return;
+      gdOpenPlay(gdCurrentGame.demo_url || gdCurrentGame.game_url, gdCurrentGame.title + ' (Demo)');
+    });
+    document.body.addEventListener('click', function(e) {
+      if (e.target.closest('#gdClosePlay')) gdClosePlayOverlay();
+    });
+
+    // ---- Share (pakai modal share sederhana lewat Web Share API kalau ada) ----
+    document.getElementById('gdShareBtn').addEventListener('click', function() {
+      const title = gdCurrentGame ? gdCurrentGame.title : 'Game';
+      const shareUrl = window.location.href;
+      if (navigator.share) {
+        navigator.share({ title: 'Main ' + title + ' di orbitxy', url: shareUrl }).catch(function(){});
+      } else {
+        navigator.clipboard.writeText(shareUrl).then(function() {
+          alert('Tautan disalin!');
+        });
+      }
+    });
+
+    // ---- Baca hash URL saat halaman dibuka langsung ke #favorit / #gameDetail ----
+    (function initRoute() {
+      const hash = window.location.hash.replace('#', '');
+      if (hash === 'favorit') {
+        showView('favorit');
+      } else {
+        showView('home');
+      }
+    })();
   </script>
 </body>
 </html>
