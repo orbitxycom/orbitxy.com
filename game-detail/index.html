@@ -3,9 +3,18 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>orbitxy.com - Detail Game</title>
+<style>
+  html { touch-action: manipulation; }
+</style>
+<title>orbitxy.com</title>
 <style>
   * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  button, input, a {
+    outline: none;
+  }
+  button:focus, input:focus, a:focus {
+    outline: none;
+  }
   html, body {
     margin: 0;
     padding: 0;
@@ -13,23 +22,49 @@
     background: #121212;
     font-family: 'Segoe UI', Arial, sans-serif;
   }
-  button, input, a { outline: none; }
-
   .header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     background: #161616;
-    padding: 16px 20px;
+    padding: clamp(14px, 3.5vw, 20px) clamp(16px, 4vw, 28px);
   }
   .logo {
-    font-size: 22px;
+    font-size: clamp(20px, 5vw, 26px);
     font-weight: 800;
     letter-spacing: 0.5px;
     background: linear-gradient(90deg, #ffb347 0%, #ff2d78 20%, #8b2fd6 38%, #2f7bff 55%, #14c4b0 75%, #4ade80 100%);
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
+  }
+  .buttons {
+    display: flex;
+    align-items: center;
+    gap: clamp(8px, 2vw, 14px);
+  }
+  .btn {
+    border: none;
+    border-radius: 8px;
+    padding: clamp(9px, 2.2vw, 13px) clamp(18px, 4.5vw, 28px);
+    font-size: clamp(14px, 3.2vw, 16px);
+    font-weight: 700;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+  .btn-masuk {
+    background: #2c2c2e;
+    color: #ffffff;
+  }
+  .btn-masuk:hover {
+    background: #3a3a3c;
+  }
+  .btn-daftar {
+    background: #23c65b;
+    color: #ffffff;
+  }
+  .btn-daftar:hover {
+    background: #1fae4f;
   }
   .btn-bell {
     background: #2c2c2e;
@@ -42,33 +77,115 @@
     justify-content: center;
     cursor: pointer;
   }
-  .btn-bell svg { width: 20px; height: 20px; color: #ffffff; }
-
-  .subheader {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 16px 20px;
+  .btn-bell svg {
+    width: 20px;
+    height: 20px;
+    color: #ffffff;
   }
-  .back-btn {
+
+  .bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
     display: flex;
+    justify-content: space-around;
     align-items: center;
-    gap: 6px;
+    background: #161616;
+    border-top: 1px solid #2a2a2a;
+    padding: clamp(8px, 2vw, 12px) 4px calc(clamp(8px, 2vw, 12px) + env(safe-area-inset-bottom));
+  }
+  .nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
     background: none;
     border: none;
-    color: #f0f0f0;
-    font-size: 16px;
-    font-weight: 700;
+    color: #9a9a9a;
+    font-size: clamp(10px, 2.6vw, 12px);
     cursor: pointer;
+    flex: 1;
+    text-decoration: none;
   }
-  .back-btn svg { width: 20px; height: 20px; }
-  .sub-actions {
+  .nav-item svg {
+    width: clamp(20px, 5.5vw, 26px);
+    height: clamp(20px, 5.5vw, 26px);
+  }
+  .nav-item.active {
+    color: #2f7bff;
+  }
+
+  .banner-wrap {
+    padding: 14px 16px 4px;
+  }
+  .banner-box {
+    width: 100%;
+    aspect-ratio: 2.2 / 1;
+    max-height: 150px;
+    background: #1a1a1a;
+    border: 1px solid #2a2a2c;
+    border-radius: 14px;
+    position: relative;
+    overflow: hidden;
+  }
+  .banner-dots {
+    position: absolute;
+    left: 16px;
+    bottom: 12px;
     display: flex;
-    gap: 10px;
+    gap: 6px;
   }
-  .icon-btn {
-    width: 38px;
-    height: 38px;
+  .banner-dots span {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #4a4a4c;
+  }
+  .banner-dots span.active {
+    background: #ffffff;
+  }
+
+  .games-section {
+    padding: 20px 16px 8px;
+  }
+  .games-section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+  }
+  .games-section-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .games-section-title .gs-badge {
+    background: #232325;
+    color: #ffffff;
+    font-size: 11px;
+    font-weight: 800;
+    padding: 4px 6px;
+    border-radius: 6px;
+  }
+  .games-section-title span.gs-name {
+    color: #ffffff;
+    font-size: 15px;
+    font-weight: 700;
+  }
+  .games-section-title svg {
+    width: 16px;
+    height: 16px;
+    color: #8a8a8e;
+  }
+  .games-nav {
+    display: flex;
+    gap: 8px;
+  }
+  .games-nav button {
+    width: 32px;
+    height: 32px;
     border-radius: 8px;
     background: #232325;
     border: none;
@@ -78,329 +195,589 @@
     color: #cfcfcf;
     cursor: pointer;
   }
-  .icon-btn svg { width: 18px; height: 18px; }
-
-  /* ---- Modal Bagikan ---- */
-  .share-overlay {
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.6);
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.25s ease;
-    z-index: 90;
+  .games-nav button svg { width: 16px; height: 16px; }
+  .game-card {
+    width: 120px;
   }
-  .share-overlay.show {
-    opacity: 1;
-    pointer-events: auto;
-  }
-  .share-sheet {
-    position: fixed;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    max-width: 480px;
-    margin: 0 auto;
-    background: #1c1c1e;
-    border-radius: 20px 20px 0 0;
-    transform: translateY(100%);
-    transition: transform 0.3s ease;
-    z-index: 95;
-    padding: 24px 20px calc(24px + env(safe-area-inset-bottom));
-  }
-  .share-sheet.show {
-    transform: translateY(0);
-  }
-  .share-header {
+  .games-row {
     display: flex;
-    align-items: flex-start;
-    justify-content: space-between;
-    margin-bottom: 22px;
-  }
-  .share-header h2 {
-    color: #ffffff;
-    font-size: 22px;
-    font-weight: 800;
-    margin: 0;
-    line-height: 1.3;
-  }
-  .share-header .login-close {
-    flex-shrink: 0;
-    margin-left: 12px;
-  }
-  .share-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 18px 10px;
-    margin-bottom: 22px;
-  }
-  .share-item {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 8px;
-    background: none;
-    border: none;
-    cursor: pointer;
-    text-decoration: none;
-  }
-  .share-item .si-icon {
-    width: 52px;
-    height: 52px;
-    border-radius: 14px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  .share-item .si-icon svg { width: 26px; height: 26px; }
-  .share-item .si-label {
-    color: #d0d0d0;
-    font-size: 12px;
-    text-align: center;
-  }
-  .btn-copy-link {
-    width: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
     gap: 10px;
-    background: #2c2c2e;
-    color: #ffffff;
-    border: none;
-    border-radius: 12px;
-    padding: 15px;
-    font-size: 15px;
-    font-weight: 700;
-    cursor: pointer;
+    overflow-x: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
   }
-  .btn-copy-link svg { width: 18px; height: 18px; }
-
-  .game-cover-wrap {
-    display: flex;
-    justify-content: center;
-    padding: 20px 20px 10px;
+  .games-row::-webkit-scrollbar {
+    display: none;
   }
-  .game-cover {
-    width: 130px;
-    height: 180px;
+  .games-row .game-card {
+    flex: 0 0 auto;
+  }
+  .game-card-img {
+    width: 120px;
+    height: 165px;
     border-radius: 12px;
     background: #1a1a1a;
     border: 1px solid #2a2a2c;
-    overflow: hidden;
-    position: relative;
   }
-  .game-cover img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
-  }
-  .game-cover .badge {
-    position: absolute;
-    top: 12px;
-    left: 12px;
-    background: rgba(0,0,0,0.5);
-    color: #ffffff;
-    font-size: 10px;
-    font-weight: 800;
-    letter-spacing: 0.5px;
-    padding: 4px 8px;
-    border-radius: 6px;
-  }
-
-  .game-title {
-    text-align: center;
-    color: #ffffff;
-    font-size: 26px;
-    font-weight: 800;
-    margin: 18px 0 10px;
-  }
-  .game-provider {
+  .game-card-status {
     display: flex;
     align-items: center;
-    justify-content: center;
-    gap: 8px;
-    margin-bottom: 24px;
-  }
-  .game-provider .prov-badge {
-    width: 24px;
-    height: 24px;
-    border-radius: 6px;
-    background: linear-gradient(135deg, #ffb347, #ff2d78, #8b2fd6, #2f7bff);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #ffffff;
-    font-size: 10px;
-    font-weight: 800;
-  }
-  .game-provider span.name {
+    gap: 6px;
+    margin-top: 8px;
+    font-size: 13px;
     color: #cfcfcf;
-    font-size: 15px;
   }
-
-  .game-options {
-    background: #1c1c1e;
-    border: 1px solid #2a2a2c;
-    border-radius: 16px;
-    margin: 0 20px 20px;
-    overflow: hidden;
-  }
-  .option-row {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 16px 18px;
-  }
-  .option-row + .option-row {
-    border-top: 1px solid #2a2a2c;
-  }
-  .option-row .label {
-    color: #f0f0f0;
-    font-size: 15px;
-    font-weight: 600;
-  }
-  .toggle {
-    width: 46px;
-    height: 26px;
-    border-radius: 20px;
-    background: #3a3a3c;
-    position: relative;
-    cursor: pointer;
-    border: none;
-    padding: 0;
-  }
-  .toggle .knob {
-    position: absolute;
-    top: 3px;
-    left: 3px;
-    width: 20px;
-    height: 20px;
+  .game-card-status .dot {
+    width: 7px;
+    height: 7px;
     border-radius: 50%;
-    background: #ffffff;
-    transition: transform 0.2s ease;
-  }
-  .toggle.on {
-    background: #1a73e8;
-  }
-  .toggle.on .knob {
-    transform: translateX(20px);
+    background: #23c65b;
   }
 
-  .action-row {
-    display: flex;
-    gap: 12px;
-    padding: 0 20px 30px;
-  }
-  .btn-main {
-    flex: 1;
-    background: #1a73e8;
-    color: #ffffff;
-    border: none;
-    border-radius: 12px;
-    padding: 15px;
-    font-size: 16px;
-    font-weight: 700;
-    cursor: pointer;
-  }
-  .btn-demo {
-    flex: 1;
-    background: #2c2c2e;
-    color: #ffffff;
-    border: none;
-    border-radius: 12px;
-    padding: 15px;
-    font-size: 16px;
-    font-weight: 700;
-    cursor: pointer;
-  }
-
-  /* ---- Overlay pemutar game (iframe) ---- */
-  .play-overlay {
+  /* ---- Drawer Menu ---- */
+  .overlay {
     position: fixed;
     inset: 0;
-    background: #000000;
-    z-index: 100;
-    display: none;
-    flex-direction: column;
-  }
-  .play-overlay.show {
-    display: flex;
-  }
-  .play-bar {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 10px 14px;
-    background: #161616;
-  }
-  .play-bar .close-play {
-    background: #2c2c2e;
-    border: none;
-    border-radius: 8px;
-    width: 36px;
-    height: 36px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #ffffff;
-    cursor: pointer;
-  }
-  .play-bar .close-play svg { width: 18px; height: 18px; }
-  .play-bar .play-title {
-    color: #ffffff;
-    font-size: 14px;
-    font-weight: 700;
-  }
-  .play-frame {
-    flex: 1;
-    border: none;
-    width: 100%;
-    height: 100%;
-    background: #000;
-  }
-
-  /* ---- Modal Notifikasi ---- */
-  .login-overlay {
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.6);
+    background: rgba(0,0,0,0.55);
     opacity: 0;
     pointer-events: none;
     transition: opacity 0.25s ease;
-    z-index: 70;
+    z-index: 40;
   }
-  .login-overlay.show {
+  .overlay.show {
     opacity: 1;
     pointer-events: auto;
   }
-  .login-sheet {
+  .drawer {
     position: fixed;
+    top: 0;
     left: 0;
-    right: 0;
     bottom: 0;
-    max-width: 480px;
-    margin: 0 auto;
-    background: #161616;
-    border-radius: 20px 20px 0 0;
-    transform: translateY(100%);
-    transition: transform 0.3s ease;
-    z-index: 80;
-    padding: 24px 20px calc(28px + env(safe-area-inset-bottom));
-    max-height: 90vh;
+    width: min(80vw, 320px);
+    background: #1c1c1e;
+    transform: translateX(-100%);
+    transition: transform 0.25s ease;
+    z-index: 50;
     overflow-y: auto;
+    padding: 20px 0;
+    display: flex;
+    flex-direction: column;
   }
-  .login-sheet.show {
-    transform: translateY(0);
+  .drawer-footer {
+    margin-top: auto;
   }
-  .login-close {
+  .drawer.show {
+    transform: translateX(0);
+  }
+  .drawer-top {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 4px 18px 18px;
+    cursor: pointer;
+  }
+  .drawer-close {
+    position: fixed;
+    top: 18px;
+    right: 18px;
+    z-index: 60;
+    background: rgba(255,255,255,0.12);
+    border-radius: 50%;
+    width: 34px;
+    height: 34px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease;
+  }
+  .drawer-close.show {
+    opacity: 1;
+    pointer-events: auto;
+  }
+  .drawer-user {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .avatar {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    background: #3a3a3c;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #cfcfcf;
+  }
+  .avatar svg { width: 22px; height: 22px; }
+  .avatar {
+    position: relative;
+  }
+  .avatar-dot {
+    position: absolute;
+    top: -2px;
+    right: -2px;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: #ff5c1a;
+    border: 2px solid #1c1c1e;
+    display: none;
+  }
+  .drawer-user-info {
+    display: flex;
+    flex-direction: column;
+  }
+  .drawer-user-info .uname {
+    color: #ffffff;
+    font-size: 17px;
+    font-weight: 800;
+  }
+  .drawer-user-info .uid {
+    color: #9a9a9a;
+    font-size: 13px;
+    margin-top: 2px;
+  }
+  .drawer-user span {
+    color: #ffffff;
+    font-size: 17px;
+    font-weight: 700;
+  }
+  .drawer-close, .drawer-arrow {
+    background: none;
+    border: none;
+    color: #9a9a9a;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+  }
+  .drawer-close svg { width: 18px; height: 18px; }
+  .drawer-arrow svg { width: 20px; height: 20px; }
+  .drawer-divider {
+    height: 1px;
+    background: #2c2c2e;
+    margin: 8px 0;
+  }
+  .drawer-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 18px;
+    color: #f0f0f0;
+    font-size: 16px;
+    cursor: pointer;
+    background: none;
+    border: none;
+    width: 100%;
+    text-align: left;
+  }
+  .drawer-item:hover {
+    background: #26262a;
+  }
+  .drawer-item.active-item {
+    background: #2c2c30;
+    border-radius: 10px;
+    margin: 0 8px;
+    width: calc(100% - 16px);
+  }
+  .drawer-item-left {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .drawer-item-left svg {
+    width: 22px;
+    height: 22px;
+    color: #cfcfcf;
+  }
+  .drawer-item svg.chevron {
+    width: 18px;
+    height: 18px;
+    color: #8a8a8e;
+  }
+
+  .drawer-social-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 16px 18px;
+    flex-wrap: nowrap;
+  }
+  .drawer-social-btn {
+    width: 36px;
+    height: 36px;
+    border-radius: 9px;
+    background: #2c2c2e;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #ffffff;
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+  .drawer-social-btn svg { width: 17px; height: 17px; }
+  .drawer-lang-btn {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    background: #2c2c2e;
+    border: none;
+    border-radius: 9px;
+    padding: 7px 9px;
+    color: #ffffff;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    flex-shrink: 0;
+    white-space: nowrap;
+  }
+  .drawer-lang-btn .flag {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    overflow: hidden;
+    background: linear-gradient(to bottom, #ff5c5c 50%, #ffffff 50%);
+    flex-shrink: 0;
+  }
+  .drawer-lang-btn svg { width: 12px; height: 12px; color: #9a9a9a; flex-shrink: 0; }
+
+  .drawer-support {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 15px 18px;
+    cursor: pointer;
+  }
+  .drawer-support .p-icon {
+    width: 22px;
+    height: 22px;
+    color: #cfcfcf;
+    flex-shrink: 0;
+  }
+  .drawer-support .s-title {
+    color: #f0f0f0;
+    font-size: 15px;
+    font-weight: 700;
+    flex: 1;
+  }
+  .drawer-support .s-badge {
+    background: #1a73e8;
+    color: #ffffff;
+    font-size: 12px;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 20px;
+  }
+
+  /* ---- Profil Modal ---- */
+  .profile-header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    padding: 4px 0 16px;
+    border-bottom: 1px solid #2c2c2e;
+    margin-bottom: 20px;
+  }
+  .profile-header h2 {
+    color: #ffffff;
+    font-size: 20px;
+    font-weight: 700;
+    margin: 0;
+  }
+  .profile-header .profile-close {
+    position: absolute;
+    right: 0;
     background: none;
     border: none;
     color: #9a9a9a;
     cursor: pointer;
     display: flex;
   }
-  .login-close svg { width: 24px; height: 24px; }
+  .profile-header .profile-close svg { width: 22px; height: 22px; }
+  .profile-id-block {
+    text-align: center;
+    margin-bottom: 24px;
+  }
+  .profile-id-block .p-uname {
+    color: #ffffff;
+    font-size: 22px;
+    font-weight: 800;
+    display: block;
+    margin-bottom: 6px;
+  }
+  .profile-id-block .p-uid {
+    color: #9a9a9a;
+    font-size: 14px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+  }
+  .profile-id-block .p-uid svg {
+    width: 16px;
+    height: 16px;
+  }
+  .profile-section {
+    background: #1f1f21;
+    border-radius: 14px;
+    margin-bottom: 16px;
+    overflow: hidden;
+  }
+  .profile-item {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 16px;
+    cursor: pointer;
+    border-bottom: 1px solid #2a2a2c;
+  }
+  .profile-item:last-child {
+    border-bottom: none;
+  }
+  .profile-item .p-icon {
+    width: 22px;
+    height: 22px;
+    color: #cfcfcf;
+    flex-shrink: 0;
+    position: relative;
+  }
+  .profile-item .p-icon .dot {
+    position: absolute;
+    top: -2px;
+    right: -2px;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #ff5c1a;
+  }
+  .profile-item .p-text .p-title {
+    color: #f0f0f0;
+    font-size: 15px;
+    font-weight: 700;
+  }
+  .profile-item .p-text .p-sub {
+    color: #9a9a9a;
+    font-size: 13px;
+    margin-top: 2px;
+  }
+
+  /* ---- Settings (Pengaturan) Modal ---- */
+  .settings-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    position: sticky;
+    top: -24px;
+    background: #161616;
+    z-index: 5;
+    padding-top: 4px;
+    padding-bottom: 10px;
+  }
+  .settings-header-title {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%) translateY(6px);
+    color: #ffffff;
+    font-size: 17px;
+    font-weight: 700;
+    opacity: 0;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+    pointer-events: none;
+  }
+  .settings-header-title.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+  .settings-back {
+    background: none;
+    border: none;
+    color: #2f7bff;
+    font-size: 16px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    cursor: pointer;
+    padding: 0;
+  }
+  .settings-back svg { width: 20px; height: 20px; }
+  .settings-close {
+    background: none;
+    border: none;
+    color: #9a9a9a;
+    cursor: pointer;
+    display: flex;
+  }
+  .settings-close svg { width: 22px; height: 22px; }
+  .settings-title {
+    color: #ffffff;
+    font-size: 26px;
+    font-weight: 800;
+    margin: 4px 0 20px;
+  }
+  .settings-group-label {
+    color: #9a9a9a;
+    font-size: 14px;
+    margin: 0 0 8px 2px;
+  }
+  .settings-section {
+    background: #1f1f21;
+    border-radius: 14px;
+    margin-bottom: 22px;
+    overflow: hidden;
+  }
+  .settings-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 15px 16px;
+    cursor: pointer;
+    border-bottom: 1px solid #2a2a2c;
+  }
+  .settings-row:last-child {
+    border-bottom: none;
+  }
+  .settings-row .s-label {
+    color: #f0f0f0;
+    font-size: 15px;
+    font-weight: 700;
+  }
+  .settings-row .s-value {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #9a9a9a;
+    font-size: 14px;
+  }
+  .settings-row .s-value svg.chevron {
+    width: 16px;
+    height: 16px;
+    color: #7a7a7e;
+  }
+  .settings-warn {
+    color: #ff8a00;
+    font-size: 12px;
+    margin: -12px 0 14px 4px;
+  }
+  .badge-warn {
+    width: 18px;
+    height: 18px;
+    color: #ff8a00;
+  }
+  .edit-desc {
+    color: #cfcfcf;
+    font-size: 15px;
+    margin-bottom: 16px;
+  }
+  .edit-field {
+    background: #232325;
+    border-radius: 12px;
+    padding: 12px 16px;
+    margin-bottom: 20px;
+    position: relative;
+  }
+  .edit-field .e-label {
+    color: #9a9a9a;
+    font-size: 13px;
+    display: block;
+    margin-bottom: 2px;
+  }
+  .edit-field input {
+    background: none;
+    border: none;
+    outline: none;
+    color: #ffffff;
+    font-size: 17px;
+    font-weight: 600;
+    width: 100%;
+  }
+  .edit-field input::-webkit-calendar-picker-indicator {
+    filter: invert(1);
+    cursor: pointer;
+  }
+  .btn-edit-submit {
+    width: 100%;
+    border: none;
+    border-radius: 12px;
+    padding: 15px;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+  }
+  .btn-edit-submit:disabled {
+    background: #1d3a63;
+    color: #8199b8;
+    cursor: not-allowed;
+  }
+  .btn-edit-submit.enabled {
+    background: #1a73e8;
+    color: #ffffff;
+  }
+  .settings-hint {
+    color: #9a9a9a;
+    font-size: 13px;
+    margin: -12px 0 22px 4px;
+  }
+  .settings-row .s-action {
+    color: #ff5c1a;
+    font-size: 15px;
+    font-weight: 700;
+    background: none;
+    border: none;
+    cursor: pointer;
+  }
+  .btn-logout {
+    width: 100%;
+    background: #3a1a12;
+    color: #ff5c1a;
+    border: none;
+    border-radius: 12px;
+    padding: 15px;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    margin-top: 4px;
+  }
+  .btn-logout:hover {
+    background: #472016;
+  }
+  .pass-rules {
+    list-style: none;
+    padding: 0;
+    margin: -4px 0 18px 0;
+  }
+  .pass-rules li {
+    color: #9a9a9a;
+    font-size: 14px;
+    padding-left: 18px;
+    position: relative;
+    margin-bottom: 8px;
+  }
+  .pass-rules li::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 7px;
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: #9a9a9a;
+  }
+  .pass-rules li.valid {
+    color: #23c65b;
+  }
+  .pass-rules li.valid::before {
+    background: #23c65b;
+  }
+
+  /* ---- Notifikasi Modal ---- */
   .notif-header {
     display: flex;
     align-items: center;
@@ -438,6 +815,19 @@
     background: #1a73e8;
     color: #ffffff;
   }
+  .notif-tab:not(:last-child)::after {
+    content: "";
+    position: absolute;
+    right: 0;
+    top: 20%;
+    height: 60%;
+    width: 1px;
+    background: #3a3a3c;
+  }
+  .notif-tab.active::after,
+  .notif-tab.active + .notif-tab::after {
+    display: none;
+  }
   .notif-empty {
     text-align: center;
     padding: 60px 20px 20px;
@@ -459,9 +849,7 @@
     font-size: 14px;
     line-height: 1.5;
   }
-  #notifSheet {
-    min-height: 88vh;
-  }
+
   .notif-intro-card {
     display: flex;
     gap: 14px;
@@ -514,14 +902,658 @@
     font-size: 12px;
     margin-top: 6px;
   }
+
+  #notifSheet {
+    min-height: 88vh;
+  }
+
+  /* ---- Media Sosial Modal ---- */
+  .social-list-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+    position: sticky;
+    top: 0;
+    background: #161616;
+    padding-top: 4px;
+    padding-bottom: 8px;
+    z-index: 20;
+  }
+  .social-list-header .login-close {
+    position: relative;
+    z-index: 21;
+  }
+  .social-list-header h2 {
+    color: #ffffff;
+    font-size: 22px;
+    font-weight: 800;
+    margin: 0;
+  }
+  .social-list-item {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 14px 0;
+    border-bottom: 1px solid #2a2a2c;
+    cursor: pointer;
+    text-decoration: none;
+  }
+  .social-list-item:last-child {
+    border-bottom: none;
+  }
+  .social-list-item .sl-icon {
+    width: 42px;
+    height: 42px;
+    border-radius: 12px;
+    background: #2c2c2e;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #ffffff;
+    flex-shrink: 0;
+  }
+  .social-list-item .sl-icon svg { width: 20px; height: 20px; }
+  .social-list-item .sl-name {
+    color: #f0f0f0;
+    font-size: 16px;
+    font-weight: 700;
+  }
+
+  #socialListSheet {
+    left: 10px;
+    right: auto;
+    width: calc(min(80vw, 320px) - 10px);
+    top: 145px;
+    bottom: 160px;
+    max-width: none;
+    max-height: none;
+    border-radius: 20px;
+    border: 1px solid #2c2c2e;
+    box-shadow: 0 12px 32px rgba(0,0,0,0.5);
+    transform: translateY(calc(100% + 200px));
+    opacity: 0;
+    pointer-events: none;
+  }
+  #socialListSheet.show {
+    transform: translateY(0);
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  #socialListOverlay.show {
+    background: transparent;
+  }
+
+  /* ---- Login Modal ---- */
+  .login-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.6);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s ease;
+    z-index: 70;
+  }
+  .login-overlay.show {
+    opacity: 1;
+    pointer-events: auto;
+  }
+  .login-sheet {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    max-width: 480px;
+    margin: 0 auto;
+    background: #161616;
+    border-radius: 20px 20px 0 0;
+    transform: translateY(100%);
+    transition: transform 0.3s ease;
+    z-index: 80;
+    padding: 24px 20px calc(28px + env(safe-area-inset-bottom));
+    max-height: 90vh;
+    overflow-y: auto;
+  }
+  .login-sheet.show {
+    transform: translateY(0);
+  }
+  .login-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+  }
+  .login-header h2 {
+    color: #ffffff;
+    font-size: clamp(22px, 6vw, 28px);
+    margin: 0;
+    font-weight: 800;
+  }
+  .login-close {
+    background: none;
+    border: none;
+    color: #9a9a9a;
+    cursor: pointer;
+    display: flex;
+  }
+  .login-close svg { width: 24px; height: 24px; }
+
+  .login-field {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: #232325;
+    border-radius: 12px;
+    padding: 12px 16px;
+    margin-bottom: 14px;
+    border: 1.5px solid transparent;
+    transition: border-color 0.2s ease, background 0.2s ease;
+    height: 56px;
+  }
+  .login-field:focus-within {
+    background: #1e1e20;
+  }
+  .field-inner {
+    position: relative;
+    flex: 1;
+    min-width: 0;
+    height: 32px;
+  }
+  .field-inner label {
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #9a9a9a;
+    font-size: 15px;
+    pointer-events: none;
+    transition: top 0.15s ease, transform 0.15s ease, font-size 0.15s ease;
+    transform-origin: left top;
+  }
+  .field-inner input {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: none;
+    border: none;
+    outline: none;
+    color: #ffffff;
+    font-size: 15px;
+    width: 100%;
+    height: 20px;
+  }
+  .field-inner input:focus ~ label,
+  .field-inner input:not(:placeholder-shown) ~ label {
+    top: 0;
+    transform: translateY(0);
+    font-size: 12px;
+  }
+  .toggle-eye {
+    background: none;
+    border: none;
+    color: #9a9a9a;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+    padding: 0;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.15s ease;
+  }
+  .toggle-eye.show {
+    opacity: 1;
+    pointer-events: auto;
+  }
+  .toggle-eye svg { width: 20px; height: 20px; }
+  .login-field svg {
+    width: 20px;
+    height: 20px;
+    color: #9a9a9a;
+    flex-shrink: 0;
+  }
+
+  .forgot-pass {
+    text-align: right;
+    margin-bottom: 18px;
+  }
+  .forgot-pass a {
+    color: #2f7bff;
+    font-size: 14px;
+    text-decoration: none;
+    font-weight: 600;
+  }
+
+  .btn-login-submit {
+    width: 100%;
+    background: #23c65b;
+    color: #ffffff;
+    border: none;
+    border-radius: 12px;
+    padding: 15px;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    margin-bottom: 22px;
+  }
+  .btn-login-submit:hover {
+    background: #1fae4f;
+  }
+
+  .or-divider {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: #8a8a8e;
+    font-size: 14px;
+    margin-bottom: 20px;
+  }
+  .or-divider::before,
+  .or-divider::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: #2c2c2e;
+  }
+
+  .social-row {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+  }
+  .social-btn {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    background: #232325;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: #ffffff;
+  }
+  .social-btn svg { width: 22px; height: 22px; }
+
+  .signup-line {
+    text-align: center;
+    color: #b0b0b0;
+    font-size: 14px;
+  }
+  .signup-line a {
+    color: #2f7bff;
+    font-weight: 700;
+    text-decoration: none;
+    display: block;
+    margin-top: 4px;
+  }
+
+  .field-hint {
+    color: #9a9a9a;
+    font-size: 13px;
+    margin: -8px 0 16px 4px;
+  }
+  .promo-link {
+    margin-bottom: 20px;
+  }
+  .promo-link a {
+    color: #2f7bff;
+    font-size: 15px;
+    font-weight: 600;
+    text-decoration: none;
+  }
+  .terms-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    margin-bottom: 22px;
+  }
+  .terms-row input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+    margin-top: 2px;
+    accent-color: #23c65b;
+    flex-shrink: 0;
+  }
+  .terms-row label {
+    color: #d0d0d0;
+    font-size: 14px;
+    line-height: 1.4;
+  }
+  .terms-row a {
+    color: #2f7bff;
+    text-decoration: none;
+    font-weight: 600;
+  }
 </style>
 </head>
 <body>
-  <div class="header">
-    <div class="logo">orbitxy</div>
-    <button class="btn-bell" id="bellBtn">
-      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a6 6 0 0 0-6 6v3.2c0 .6-.2 1.2-.6 1.7L4 15.5c-.6.8 0 2 1 2h14c1 0 1.6-1.2 1-2l-1.4-2.6c-.4-.5-.6-1.1-.6-1.7V8a6 6 0 0 0-6-6z"/><path d="M9.5 20a2.5 2.5 0 0 0 5 0" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>
-    </button>
+  <div class="login-overlay" id="loginOverlay"></div>
+  <div class="login-sheet" id="loginSheet">
+    <div class="login-header">
+      <h2>Masuk</h2>
+      <button class="login-close" id="loginClose">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="4" y1="4" x2="20" y2="20"/><line x1="20" y1="4" x2="4" y2="20"/></svg>
+      </button>
+    </div>
+
+    <div class="login-field">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 6.5 12 13 21 6.5"/></svg>
+      <div class="field-inner">
+        <input type="email" placeholder=" " id="loginEmail">
+        <label for="loginEmail">Email</label>
+      </div>
+    </div>
+
+    <div class="login-field">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="5" y="10" width="14" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>
+      <div class="field-inner">
+        <input type="password" placeholder=" " id="loginPass">
+        <label for="loginPass">Kata sandi</label>
+      </div>
+      <button type="button" class="toggle-eye" data-target="loginPass">
+        <svg class="eye-open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="display:none;"><path d="M1.5 12s4-7.5 10.5-7.5S22.5 12 22.5 12s-4 7.5-10.5 7.5S1.5 12 1.5 12z"/><circle cx="12" cy="12" r="3"/></svg>
+        <svg class="eye-closed" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3l18 18"/><path d="M10.6 5.1A10.6 10.6 0 0 1 12 5c6.5 0 10.5 7 10.5 7a17.6 17.6 0 0 1-3.2 4.1M6.6 6.6C3.6 8.5 1.5 12 1.5 12s4 7 10.5 7c1.6 0 3-.4 4.2-1"/><path d="M9.9 10a3 3 0 0 0 4.2 4.2"/></svg>
+      </button>
+    </div>
+
+    <div class="forgot-pass">
+      <a href="#">Lupa kata sandi?</a>
+    </div>
+
+    <button class="btn-login-submit" id="loginSubmitBtn">Masuk</button>
+    <div id="loginMsg" style="text-align:center;font-size:13px;margin-bottom:12px;min-height:16px;"></div>
+
+    <div class="or-divider">atau</div>
+
+    <div class="social-row">
+      <button class="social-btn" title="Google" >
+        <svg viewBox="0 0 48 48" width="22" height="22">
+          <path fill="#FFC107" d="M43.611,20.083H42V20H24v8h11.303c-1.649,4.657-6.08,8-11.303,8c-6.627,0-12-5.373-12-12c0-6.627,5.373-12,12-12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C12.955,4,4,12.955,4,24c0,11.045,8.955,20,20,20c11.045,0,20-8.955,20-20C44,22.659,43.862,21.35,43.611,20.083z"/>
+          <path fill="#FF3D00" d="M6.306,14.691l6.571,4.819C14.655,15.108,18.961,12,24,12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C16.318,4,9.656,8.337,6.306,14.691z"/>
+          <path fill="#4CAF50" d="M24,44c5.166,0,9.86-1.977,13.409-5.192l-6.19-5.238C29.211,35.091,26.715,36,24,36c-5.202,0-9.619-3.317-11.283-7.946l-6.522,5.025C9.505,39.556,16.227,44,24,44z"/>
+          <path fill="#1976D2" d="M43.611,20.083H42V20H24v8h11.303c-0.792,2.237-2.231,4.166-4.087,5.571c0.001-0.001,0.002-0.001,0.003-0.002l6.19,5.238C36.971,39.205,44,34,44,24C44,22.659,43.862,21.35,43.611,20.083z"/>
+        </svg>
+      </button>
+    </div>
+
+    <div class="signup-line">
+      Tidak punya akun?
+      <a href="#">Daftar</a>
+    </div>
+  </div>
+
+  <div class="login-overlay" id="registerOverlay"></div>
+  <div class="login-sheet" id="registerSheet">
+    <div class="login-header">
+      <h2>Pendaftaran</h2>
+      <button class="login-close" id="registerClose">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="4" y1="4" x2="20" y2="20"/><line x1="20" y1="4" x2="4" y2="20"/></svg>
+      </button>
+    </div>
+
+    <div class="login-field">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 6.5 12 13 21 6.5"/></svg>
+      <div class="field-inner">
+        <input type="email" placeholder=" " id="regEmail">
+        <label for="regEmail">Email</label>
+      </div>
+    </div>
+
+    <div class="login-field">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="5" y="10" width="14" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>
+      <div class="field-inner">
+        <input type="password" placeholder=" " id="regPass">
+        <label for="regPass">Kata sandi</label>
+      </div>
+      <button type="button" class="toggle-eye" data-target="regPass">
+        <svg class="eye-open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="display:none;"><path d="M1.5 12s4-7.5 10.5-7.5S22.5 12 22.5 12s-4 7.5-10.5 7.5S1.5 12 1.5 12z"/><circle cx="12" cy="12" r="3"/></svg>
+        <svg class="eye-closed" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3l18 18"/><path d="M10.6 5.1A10.6 10.6 0 0 1 12 5c6.5 0 10.5 7 10.5 7a17.6 17.6 0 0 1-3.2 4.1M6.6 6.6C3.6 8.5 1.5 12 1.5 12s4 7 10.5 7c1.6 0 3-.4 4.2-1"/><path d="M9.9 10a3 3 0 0 0 4.2 4.2"/></svg>
+      </button>
+    </div>
+    <div class="field-hint">Minimal 8 karakter</div>
+
+    <div class="terms-row">
+      <input type="checkbox" id="termsCheck">
+      <label for="termsCheck">Dengan mengeklik "Daftar", saya menyetujui <a href="#">perjanjian pengguna</a></label>
+    </div>
+
+    <button class="btn-login-submit" id="registerSubmitBtn">Daftar</button>
+    <div id="registerMsg" style="text-align:center;font-size:13px;margin-bottom:12px;min-height:16px;"></div>
+
+    <div class="or-divider">atau</div>
+
+    <div class="social-row">
+      <button class="social-btn" title="Google" >
+        <svg viewBox="0 0 48 48" width="22" height="22">
+          <path fill="#FFC107" d="M43.611,20.083H42V20H24v8h11.303c-1.649,4.657-6.08,8-11.303,8c-6.627,0-12-5.373-12-12c0-6.627,5.373-12,12-12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C12.955,4,4,12.955,4,24c0,11.045,8.955,20,20,20c11.045,0,20-8.955,20-20C44,22.659,43.862,21.35,43.611,20.083z"/>
+          <path fill="#FF3D00" d="M6.306,14.691l6.571,4.819C14.655,15.108,18.961,12,24,12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C16.318,4,9.656,8.337,6.306,14.691z"/>
+          <path fill="#4CAF50" d="M24,44c5.166,0,9.86-1.977,13.409-5.192l-6.19-5.238C29.211,35.091,26.715,36,24,36c-5.202,0-9.619-3.317-11.283-7.946l-6.522,5.025C9.505,39.556,16.227,44,24,44z"/>
+          <path fill="#1976D2" d="M43.611,20.083H42V20H24v8h11.303c-0.792,2.237-2.231,4.166-4.087,5.571c0.001-0.001,0.002-0.001,0.003-0.002l6.19,5.238C36.971,39.205,44,34,44,24C44,22.659,43.862,21.35,43.611,20.083z"/>
+        </svg>
+      </button>
+    </div>
+
+    <div class="signup-line">
+      Sudah punya akun?
+      <a href="#" style="display:inline; margin-top:0;">Masuk</a>
+    </div>
+  </div>
+
+  <div class="login-overlay" id="profileOverlay"></div>
+  <div class="login-sheet" id="profileSheet">
+    <div class="profile-header">
+      <h2>Profil</h2>
+      <button class="profile-close" id="profileClose">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="4" y1="4" x2="20" y2="20"/><line x1="20" y1="4" x2="4" y2="20"/></svg>
+      </button>
+    </div>
+
+    <div class="profile-id-block">
+      <span class="p-uname" id="profileUname">-</span>
+      <span class="p-uid" id="profileUidCopy">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="7" y="7" width="12" height="12" rx="2"/><path d="M5 15V6a2 2 0 0 1 2-2h9"/></svg>
+        <span id="profileUid">ID -</span>
+      </span>
+    </div>
+
+    <div class="profile-section">
+      <div class="profile-item" id="settingsRow">
+        <div class="p-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1a2 2 0 1 1-2.9 2.9l-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.6V21a2 2 0 1 1-4 0v-.2a1.7 1.7 0 0 0-1.1-1.6 1.7 1.7 0 0 0-1.9.3l-.1.1a2 2 0 1 1-2.9-2.9l.1-.1a1.7 1.7 0 0 0 .3-1.9 1.7 1.7 0 0 0-1.6-1H3a2 2 0 1 1 0-4h.2a1.7 1.7 0 0 0 1.6-1.1 1.7 1.7 0 0 0-.3-1.9l-.1-.1a2 2 0 1 1 2.9-2.9l.1.1a1.7 1.7 0 0 0 1.9.3H9a1.7 1.7 0 0 0 1-1.6V3a2 2 0 1 1 4 0v.2a1.7 1.7 0 0 0 1 1.6 1.7 1.7 0 0 0 1.9-.3l.1-.1a2 2 0 1 1 2.9 2.9l-.1.1a1.7 1.7 0 0 0-.3 1.9V9a1.7 1.7 0 0 0 1.6 1H21a2 2 0 1 1 0 4h-.2a1.7 1.7 0 0 0-1.6 1z"/></svg>
+          <span class="dot"></span>
+        </div>
+        <div class="p-text">
+          <div class="p-title">Pengaturan</div>
+          <div class="p-sub">Edit data pribadi</div>
+        </div>
+      </div>
+      <div class="profile-item">
+        <div class="p-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 12a9 9 0 0 1 18 0v5a2 2 0 0 1-2 2h-1v-6h3M3 17v-5h3v6H5a2 2 0 0 1-2-2z"/></svg>
+        </div>
+        <div class="p-text">
+          <div class="p-title">Dukungan 24/7</div>
+          <div class="p-sub">Semua metode kontak</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="login-overlay" id="settingsOverlay"></div>
+  <div class="login-sheet" id="settingsSheet">
+    <div class="settings-header">
+      <button class="settings-back" id="settingsBack">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 6 9 12 15 18"/></svg>
+        Kembali
+      </button>
+      <span class="settings-header-title" id="settingsHeaderTitle">Pengaturan</span>
+      <button class="settings-close" id="settingsClose">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="4" y1="4" x2="20" y2="20"/><line x1="20" y1="4" x2="4" y2="20"/></svg>
+      </button>
+    </div>
+
+    <h2 class="settings-title">Pengaturan</h2>
+
+    <div class="settings-group-label">Data utama</div>
+    <div class="settings-section">
+      <div class="settings-row" id="namaRow">
+        <span class="s-label">Nama</span>
+        <span class="s-value">
+          <span id="settingsNama">-</span>
+          <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"/></svg>
+        </span>
+      </div>
+      <div class="settings-row" id="dobRow">
+        <span class="s-label">Tanggal lahir</span>
+        <span class="s-value">
+          <span id="settingsDob">Belum diatur</span>
+          <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"/></svg>
+        </span>
+      </div>
+    </div>
+
+    <div class="settings-group-label">Data kontak</div>
+    <div class="settings-section">
+      <div class="settings-row">
+        <span class="s-label">Email</span>
+        <span class="s-value">
+          <span id="settingsEmail">-</span>
+          <svg class="badge-warn" id="emailWarnIcon" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2 2 20h20L12 2z"/><rect x="11" y="9" width="2" height="6" fill="#1c1c1e"/><rect x="11" y="16" width="2" height="2" fill="#1c1c1e"/></svg>
+        </span>
+      </div>
+    </div>
+    <div class="settings-warn" id="emailWarnText">Perlu konfirmasi</div>
+
+    <div class="settings-group-label">Keamanan</div>
+    <div class="settings-section">
+      <div class="settings-row" id="passwordRow">
+        <span class="s-label">Kata sandi</span>
+        <span class="s-value">
+          <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"/></svg>
+        </span>
+      </div>
+    </div>
+    <div class="settings-hint">Untuk mengubah, masukkan kata sandi saat ini</div>
+
+    <div class="settings-group-label">Pengaturan lainnya</div>
+    <div class="settings-section">
+      <div class="settings-row">
+        <div class="p-text">
+          <div class="p-title" style="font-size:15px;">Sesi aktif</div>
+          <div class="p-sub">Mengakhiri sesi di perangkat lain</div>
+        </div>
+        <button class="s-action" id="endSessionsBtn">Akhiri</button>
+      </div>
+    </div>
+
+    <button class="btn-logout" id="logoutBtn">Keluar dari akun</button>
+  </div>
+
+  <div class="login-overlay" id="endSessionOverlay"></div>
+  <div class="login-sheet" id="endSessionSheet" style="padding-top:24px;">
+    <div class="settings-header" style="margin-bottom:14px;">
+      <h2 style="color:#fff;font-size:22px;font-weight:800;margin:0;">Mengakhiri sesi aktif</h2>
+      <button class="settings-close" id="endSessionClose">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="4" y1="4" x2="20" y2="20"/><line x1="20" y1="4" x2="4" y2="20"/></svg>
+      </button>
+    </div>
+    <div class="edit-desc" style="margin-bottom:22px;">Anda akan keluar dari akun di perangkat lain, tetapi selalu bisa masuk kembali</div>
+    <button class="btn-edit-submit enabled" id="endSessionConfirm">Akhiri</button>
+  </div>
+
+  <div class="login-overlay" id="editNameOverlay"></div>
+  <div class="login-sheet" id="editNameSheet">
+    <div class="settings-header">
+      <button class="settings-back" id="editNameBack">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 6 9 12 15 18"/></svg>
+        Kembali
+      </button>
+      <button class="settings-close" id="editNameClose">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="4" y1="4" x2="20" y2="20"/><line x1="20" y1="4" x2="4" y2="20"/></svg>
+      </button>
+    </div>
+    <h2 class="settings-title">Ubah nama</h2>
+    <div class="edit-desc">Masukkan nama</div>
+    <div class="edit-field">
+      <span class="e-label">Nama</span>
+      <input type="text" id="editNameInput">
+    </div>
+    <button class="btn-edit-submit" id="editNameSubmit" disabled>Ubah</button>
+  </div>
+
+  <div class="login-overlay" id="editDobOverlay"></div>
+  <div class="login-sheet" id="editDobSheet">
+    <div class="settings-header">
+      <button class="settings-back" id="editDobBack">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 6 9 12 15 18"/></svg>
+        Kembali
+      </button>
+      <button class="settings-close" id="editDobClose">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="4" y1="4" x2="20" y2="20"/><line x1="20" y1="4" x2="4" y2="20"/></svg>
+      </button>
+    </div>
+    <h2 class="settings-title">Ubah tanggal lahir</h2>
+    <div class="edit-desc">Silakan masukkan tanggal lahir Anda</div>
+    <div class="edit-field">
+      <input type="date" id="editDobInput">
+    </div>
+    <button class="btn-edit-submit enabled" id="editDobSubmit">Ubah</button>
+  </div>
+
+  <div class="login-overlay" id="editPassOverlay"></div>
+  <div class="login-sheet" id="editPassSheet">
+    <div class="settings-header">
+      <button class="settings-back" id="editPassBack">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 6 9 12 15 18"/></svg>
+        Kembali
+      </button>
+      <button class="settings-close" id="editPassClose">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="4" y1="4" x2="20" y2="20"/><line x1="20" y1="4" x2="4" y2="20"/></svg>
+      </button>
+    </div>
+    <h2 class="settings-title">Ubah kata sandi</h2>
+    <div class="edit-desc">Masukkan kata sandi saat ini</div>
+
+    <div class="login-field">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="5" y="10" width="14" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>
+      <div class="field-inner">
+        <input type="password" placeholder=" " id="editCurrentPass">
+        <label for="editCurrentPass">Kata sandi saat ini</label>
+      </div>
+    </div>
+
+    <div class="edit-desc" style="margin-top:8px;">Buat kata sandi baru</div>
+
+    <div class="login-field">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="5" y="10" width="14" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>
+      <div class="field-inner">
+        <input type="password" placeholder=" " id="editNewPass">
+        <label for="editNewPass">Kata sandi baru</label>
+      </div>
+    </div>
+
+    <ul class="pass-rules">
+      <li>Minimal 8 karakter</li>
+      <li>Menyertakan 1 angka</li>
+      <li>Menyertakan huruf besar dan kecil</li>
+      <li>Berbeda dari kata sandi lama sebesar 50%</li>
+    </ul>
+
+    <div class="login-field">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="5" y="10" width="14" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>
+      <div class="field-inner">
+        <input type="password" placeholder=" " id="editNewPass2">
+        <label for="editNewPass2">Kata sandi baru lagi</label>
+      </div>
+    </div>
+
+    <button class="btn-edit-submit enabled" id="editPassSubmit">Ubah</button>
+    <div id="editPassMsg" style="text-align:center;font-size:13px;margin-top:12px;"></div>
   </div>
 
   <div class="login-overlay" id="notifOverlay"></div>
@@ -535,17 +1567,11 @@
 
     <div class="notif-tabs">
       <button class="notif-tab" data-tab="semua">Semua</button>
-      <button class="notif-tab active" data-tab="pribadi">Pribadi</button>
-      <button class="notif-tab" data-tab="umum">Umum</button>
+      <button class="notif-tab" data-tab="pribadi">Pribadi</button>
+      <button class="notif-tab active" data-tab="umum">Umum</button>
     </div>
 
-    <div id="notifContentSemua" class="notif-empty" style="display:none;">
-      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a6 6 0 0 0-6 6v3.2c0 .6-.2 1.2-.6 1.7L4 15.5c-.6.8 0 2 1 2h14c1 0 1.6-1.2 1-2l-1.4-2.6c-.4-.5-.6-1.1-.6-1.7V8a6 6 0 0 0-6-6z"/><path d="M9.5 20a2.5 2.5 0 0 0 5 0" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>
-      <div class="n-title">Tidak ada apa-apa</div>
-      <div class="n-sub">Saat notifikasi diterima, akan ditampilkan di bagian ini</div>
-    </div>
-
-    <div id="notifContentPribadi">
+    <div id="notifContentSemua" style="display:none;">
       <div class="notif-intro-card">
         <div class="ic-icon">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
@@ -558,287 +1584,792 @@
       </div>
     </div>
 
-    <div id="notifContentUmum" class="notif-empty" style="display:none;">
+    <div id="notifContentDefault" class="notif-empty">
       <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a6 6 0 0 0-6 6v3.2c0 .6-.2 1.2-.6 1.7L4 15.5c-.6.8 0 2 1 2h14c1 0 1.6-1.2 1-2l-1.4-2.6c-.4-.5-.6-1.1-.6-1.7V8a6 6 0 0 0-6-6z"/><path d="M9.5 20a2.5 2.5 0 0 0 5 0" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>
       <div class="n-title">Tidak ada apa-apa</div>
       <div class="n-sub">Saat notifikasi diterima, akan ditampilkan di bagian ini</div>
     </div>
   </div>
 
-  <div class="share-overlay" id="shareOverlay"></div>
-  <div class="share-sheet" id="shareSheet">
-    <div class="share-header">
-      <h2 id="shareTitle">Bagikan permainan</h2>
-      <button class="login-close" id="shareClose">
+  <div class="login-overlay" id="socialListOverlay"></div>
+  <div class="login-sheet" id="socialListSheet">
+    <div class="social-list-header">
+      <h2>Media sosial</h2>
+      <button class="login-close" id="socialListClose">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="4" y1="4" x2="20" y2="20"/><line x1="20" y1="4" x2="4" y2="20"/></svg>
       </button>
     </div>
 
-    <div class="share-grid">
-      <a href="#" id="shareTelegram" target="_blank" class="share-item">
-        <div class="si-icon" style="background:#26A5E4;">
-          <svg viewBox="0 0 24 24" fill="#fff"><path d="M21.9 4.5 2.6 12.1c-.9.4-.9 1.6.1 1.9l4.7 1.5 1.8 5.7c.3.9 1.4 1.1 2 .4l2.6-2.8 4.9 3.6c.8.6 2 .2 2.2-.8l3-16.1c.2-1.1-.9-2-2-1.5zM8.9 14.9l9.1-6.7c.2-.1.4.1.2.3l-7.5 7c-.3.3-.5.6-.5 1l-.2 2.7-1.1-4.3z"/></svg>
+    <a href="#" class="social-list-item">
+      <div class="sl-icon">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.5 15.2L2 22l4.9-1.5A10 10 0 1 0 12 2zm0 18a8 8 0 0 1-4.1-1.1l-.3-.2-2.9.9.9-2.8-.2-.3A8 8 0 1 1 12 20z"/><path d="M16.9 14.1c-.2-.1-1.4-.7-1.6-.8-.2-.1-.4-.1-.5.1-.2.2-.6.8-.8 1-.1.2-.3.2-.5.1-.7-.3-1.4-.7-2-1.3-.5-.5-1-1.1-1.4-1.8-.1-.2 0-.4.1-.5.1-.1.2-.3.4-.4.1-.1.2-.3.2-.4.1-.1 0-.3 0-.4-.1-.1-.5-1.3-.7-1.7-.2-.5-.4-.4-.5-.4h-.4c-.2 0-.4.1-.6.3-.6.6-.9 1.3-.9 2.1.1.9.4 1.8 1 2.6 1.1 1.5 2.4 2.7 4.1 3.4.5.2.9.4 1.4.5.6.2 1.1.1 1.6-.1.5-.2 1.4-.9 1.6-1.4.2-.5.2-.9.1-1z"/></svg>
+      </div>
+      <span class="sl-name">Whatsapp</span>
+    </a>
+    <a href="#" class="social-list-item">
+      <div class="sl-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r="1"/></svg>
+      </div>
+      <span class="sl-name">Instagram</span>
+    </a>
+    <a href="#" class="social-list-item">
+      <div class="sl-icon">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M16.6 5.8a4.3 4.3 0 0 1-3-3.8h-3.1v13.7a2.6 2.6 0 1 1-1.8-2.5V9.9a5.7 5.7 0 1 0 4.9 5.6v-6a7.3 7.3 0 0 0 4.3 1.4V7.7a4.3 4.3 0 0 1-1.3-1.9z"/></svg>
+      </div>
+      <span class="sl-name">TikTok</span>
+    </a>
+  </div>
+
+  <div class="header">
+    <div class="logo">orbitxy</div>
+    <div class="buttons">
+      <button class="btn btn-masuk" id="masukBtn">Masuk</button>
+      <button class="btn btn-daftar" id="daftarBtn">Pendaftaran</button>
+    </div>
+  </div>
+
+  <div id="viewHome">
+    <div class="banner-wrap">
+      <div class="banner-box">
+        <img src="https://orbitxycom.github.io/orbitxy.png" alt="Banner promo" style="width:100%;height:100%;object-fit:cover;display:block;">
+        <div class="banner-dots">
+          <span class="active"></span><span></span><span></span><span></span>
         </div>
-        <span class="si-label">Telegram</span>
-      </a>
-      <a href="#" id="shareFacebook" target="_blank" class="share-item">
-        <div class="si-icon" style="background:#5B8DEF;">
-          <svg viewBox="0 0 24 24" fill="#fff"><path d="M13.5 21v-7.5h2.5l.4-3H13.5V8.5c0-.9.2-1.5 1.5-1.5h1.6V4.3C16.3 4.2 15.2 4 14 4c-2.4 0-4 1.5-4 4.2v2.3H7.5v3H10V21h3.5z"/></svg>
-        </div>
-        <span class="si-label">Facebook</span>
-      </a>
-      <a href="#" id="shareVk" target="_blank" class="share-item">
-        <div class="si-icon" style="background:#5B8DEF;">
-          <svg viewBox="0 0 24 24" fill="#fff"><path d="M13.2 17c-5.3 0-8.4-3.7-8.5-9.7h2.7c.1 4.4 2 6.2 3.5 6.6v-6.6h2.6v3.8c1.5-.2 3-1.9 3.6-3.8h2.5c-.4 2.3-2.1 4-3.3 4.7 1.2.6 3.1 2.1 3.8 4.9h-2.9c-.5-1.8-1.9-3.2-3.7-3.4v3.4h-.3z"/></svg>
-        </div>
-        <span class="si-label">Vkontakte</span>
-      </a>
-      <a href="#" id="shareThreads" target="_blank" class="share-item">
-        <div class="si-icon" style="background:#ffffff;">
-          <svg viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="1.8"><path d="M12 3c-4 0-6.5 2.6-6.5 6.3 0 2.4 1.3 4 3.2 5-1.5.6-2.5 1.7-2.5 3.3 0 2.4 2.3 3.4 4.8 3.4 4.5 0 7-3 7-7.4V11c0-4-2.3-8-6-8z"/><circle cx="9" cy="9.5" r="1.2" fill="#000" stroke="none"/><circle cx="14.5" cy="9.5" r="1.2" fill="#000" stroke="none"/></svg>
-        </div>
-        <span class="si-label">Threads</span>
-      </a>
-      <a href="#" id="shareX" target="_blank" class="share-item">
-        <div class="si-icon" style="background:#ffffff;">
-          <svg viewBox="0 0 24 24" fill="#000"><path d="M4 4l7.3 9.2L4.4 20h2.3l5.9-6.2 4.5 6.2H20l-7.6-9.6L19 4h-2.3l-5.4 5.7L7.3 4H4z"/></svg>
-        </div>
-        <span class="si-label">X</span>
-      </a>
-      <a href="#" id="shareWhatsapp" target="_blank" class="share-item">
-        <div class="si-icon" style="background:#25D366;">
-          <svg viewBox="0 0 24 24" fill="#fff"><path d="M12 2a10 10 0 0 0-8.5 15.2L2 22l4.9-1.5A10 10 0 1 0 12 2zm0 18a8 8 0 0 1-4.1-1.1l-.3-.2-2.9.9.9-2.8-.2-.3A8 8 0 1 1 12 20z"/><path d="M16.9 14.1c-.2-.1-1.4-.7-1.6-.8-.2-.1-.4-.1-.5.1-.2.2-.6.8-.8 1-.1.2-.3.2-.5.1-.7-.3-1.4-.7-2-1.3-.5-.5-1-1.1-1.4-1.8-.1-.2 0-.4.1-.5.1-.1.2-.3.4-.4.1-.1.2-.3.2-.4.1-.1 0-.3 0-.4-.1-.1-.5-1.3-.7-1.7-.2-.5-.4-.4-.5-.4h-.4c-.2 0-.4.1-.6.3-.6.6-.9 1.3-.9 2.1.1.9.4 1.8 1 2.6 1.1 1.5 2.4 2.7 4.1 3.4.5.2.9.4 1.4.5.6.2 1.1.1 1.6-.1.5-.2 1.4-.9 1.6-1.4.2-.5.2-.9.1-1z"/></svg>
-        </div>
-        <span class="si-label">WhatsApp</span>
-      </a>
+      </div>
     </div>
 
-    <button class="btn-copy-link" id="copyLinkBtn">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="7" y="7" width="12" height="12" rx="2"/><path d="M5 15V6a2 2 0 0 1 2-2h9"/></svg>
-      <span id="copyLinkLabel">Salin tautan</span>
+    <div class="games-section">
+      <div class="games-section-header">
+        <div class="games-section-title">
+          <span class="gs-badge">OBX</span>
+          <span class="gs-name">OBX games</span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"/></svg>
+        </div>
+        <div class="games-nav">
+          <button id="gamesPrev"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 6 9 12 15 18"/></svg></button>
+          <button id="gamesNext"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"/></svg></button>
+        </div>
+      </div>
+      <div class="games-row" id="gamesRow">
+        <!-- Kartu game diisi otomatis lewat JS dari Supabase -->
+      </div>
+    </div>
+  </div>
+
+  <div id="viewFavorit" style="display:none;">
+    <div class="page-title" style="color:#ffffff;font-size:20px;font-weight:800;padding:18px 20px 4px;">Favorit</div>
+    <div id="favoritEmpty" style="display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:90px 30px 40px;">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#0f3d47" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:64px;height:64px;margin-bottom:24px;"><path d="M6 3h12v18l-6-4-6 4V3z"/></svg>
+      <div style="color:#ffffff;font-size:20px;font-weight:800;margin-bottom:10px;">Belum ada favorit</div>
+      <div style="color:#8a8a8e;font-size:14px;">Ketuk ikon favorit pada game manapun untuk menyimpannya di sini</div>
+    </div>
+    <div id="favoritGrid" style="display:none;flex-wrap:wrap;gap:12px;padding:16px 20px 30px;"></div>
+  </div>
+
+  <div id="viewGameDetail" style="display:none;">
+    <div class="subheader-gd" style="display:flex;justify-content:space-between;align-items:center;padding:16px 20px;">
+      <button onclick="showView('home')" style="display:flex;align-items:center;gap:6px;background:none;border:none;color:#f0f0f0;font-size:16px;font-weight:700;cursor:pointer;">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="width:20px;height:20px;"><polyline points="15 6 9 12 15 18"/></svg>
+        Kembali
+      </button>
+      <div style="display:flex;gap:10px;">
+        <button class="icon-btn-gd" id="gdShareBtn" style="width:38px;height:38px;border-radius:8px;background:#232325;border:none;display:flex;align-items:center;justify-content:center;color:#cfcfcf;cursor:pointer;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:18px;height:18px;"><path d="M12 3v12"/><path d="M7 8l5-5 5 5"/><path d="M5 14v4a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-4"/></svg>
+        </button>
+        <button class="icon-btn-gd" id="gdFavBtn" style="width:38px;height:38px;border-radius:8px;background:#232325;border:none;display:flex;align-items:center;justify-content:center;color:#cfcfcf;cursor:pointer;">
+          <svg id="gdFavIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:18px;height:18px;"><path d="M6 3h12v18l-6-4-6 4V3z"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <div style="display:flex;justify-content:center;padding:10px 20px 10px;">
+      <div id="gdCover" style="width:130px;height:180px;border-radius:12px;background:#1a1a1a;border:1px solid #2a2a2c;overflow:hidden;position:relative;"></div>
+    </div>
+
+    <div id="gdTitle" style="text-align:center;color:#ffffff;font-size:26px;font-weight:800;margin:18px 0 10px;">Nama Game</div>
+    <div style="display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:24px;">
+      <div style="width:24px;height:24px;border-radius:6px;background:linear-gradient(135deg,#ffb347,#ff2d78,#8b2fd6,#2f7bff);display:flex;align-items:center;justify-content:center;color:#fff;font-size:10px;font-weight:800;">OB</div>
+      <span id="gdProvider" style="color:#cfcfcf;font-size:15px;">OBX Games</span>
+    </div>
+
+    <div style="background:#1c1c1e;border:1px solid #2a2a2c;border-radius:16px;margin:0 20px 20px;overflow:hidden;">
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:16px 18px;">
+        <span style="color:#f0f0f0;font-size:15px;font-weight:600;">Mode layar penuh</span>
+        <button id="gdFullscreenToggle" style="width:46px;height:26px;border-radius:20px;background:#3a3a3c;position:relative;cursor:pointer;border:none;padding:0;">
+          <span style="position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:#fff;transition:transform 0.2s ease;"></span>
+        </button>
+      </div>
+    </div>
+
+    <div style="display:flex;gap:12px;padding:0 20px 30px;">
+      <button id="gdPlayBtn" style="flex:1;background:#1a73e8;color:#fff;border:none;border-radius:12px;padding:15px;font-size:16px;font-weight:700;cursor:pointer;">Main</button>
+      <button id="gdDemoBtn" style="flex:1;background:#2c2c2e;color:#fff;border:none;border-radius:12px;padding:15px;font-size:16px;font-weight:700;cursor:pointer;">Mode demo</button>
+    </div>
+  </div>
+
+  <div class="overlay" id="overlay"></div>
+
+  <button class="drawer-close" id="drawerClose">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="4" y1="4" x2="20" y2="20"/><line x1="20" y1="4" x2="4" y2="20"/></svg>
+  </button>
+
+  <div class="drawer" id="drawer">
+    <div class="drawer-top" id="masukRow">
+      <div class="drawer-user">
+        <div class="avatar">
+          <svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-6 8-6s8 2 8 6"/></svg>
+          <span class="avatar-dot" id="avatarDot"></span>
+        </div>
+        <span id="drawerUserLabel">Masuk</span>
+      </div>
+      <span class="drawer-arrow">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"/></svg>
+      </span>
+    </div>
+
+    <div class="drawer-divider"></div>
+
+    <button class="drawer-item">
+      <div class="drawer-item-left">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="1.6" fill="currentColor" stroke="none"/><line x1="12" y1="4" x2="12" y2="6.5"/><line x1="12" y1="17.5" x2="12" y2="20"/><line x1="4" y1="12" x2="6.5" y2="12"/><line x1="17.5" y1="12" x2="20" y2="12"/></svg>
+        <span>Kasino</span>
+      </div>
+      <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg>
     </button>
-  </div>
 
-  <div class="subheader">
-    <button class="back-btn" onclick="location.href='../'">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 6 9 12 15 18"/></svg>
-      Kembali
+    <button class="drawer-item">
+      <div class="drawer-item-left">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><polygon points="12,8 14.3,9.7 13.4,12.4 10.6,12.4 9.7,9.7" fill="currentColor" stroke="none"/></svg>
+        <span>Olahraga</span>
+      </div>
+      <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg>
     </button>
-    <div class="sub-actions">
-      <button class="icon-btn" id="shareBtn" title="Bagikan">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="M7 8l5-5 5 5"/><path d="M5 14v4a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-4"/></svg>
-      </button>
-      <button class="icon-btn" title="Simpan">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12v18l-6-4-6 4V3z"/></svg>
-      </button>
+
+    <button class="drawer-item">
+      <div class="drawer-item-left">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M9.5 15.2c.4.9 1.3 1.4 2.5 1.4 1.6 0 2.7-.8 2.7-2 0-1.3-1.1-1.8-2.7-2.2-1.6-.4-2.6-.9-2.6-2.1 0-1.1 1-1.9 2.5-1.9 1.1 0 2 .4 2.4 1.2" stroke-linecap="round"/><line x1="12" y1="6.5" x2="12" y2="17.8"/></svg>
+        <span>Markets</span>
+      </div>
+    </button>
+
+    <button class="drawer-item active-item">
+      <div class="drawer-item-left">
+        <svg viewBox="0 0 24 24" fill="currentColor"><rect x="4" y="4" width="16" height="16" rx="4"/></svg>
+        <span>Betwave</span>
+      </div>
+      <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg>
+    </button>
+
+    <div class="drawer-footer">
+      <div class="drawer-social-row">
+        <button class="drawer-social-btn" title="WhatsApp">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.5 15.2L2 22l4.9-1.5A10 10 0 1 0 12 2zm0 18a8 8 0 0 1-4.1-1.1l-.3-.2-2.9.9.9-2.8-.2-.3A8 8 0 1 1 12 20z"/><path d="M16.9 14.1c-.2-.1-1.4-.7-1.6-.8-.2-.1-.4-.1-.5.1-.2.2-.6.8-.8 1-.1.2-.3.2-.5.1-.7-.3-1.4-.7-2-1.3-.5-.5-1-1.1-1.4-1.8-.1-.2 0-.4.1-.5.1-.1.2-.3.4-.4.1-.1.2-.3.2-.4.1-.1 0-.3 0-.4-.1-.1-.5-1.3-.7-1.7-.2-.5-.4-.4-.5-.4h-.4c-.2 0-.4.1-.6.3-.6.6-.9 1.3-.9 2.1.1.9.4 1.8 1 2.6 1.1 1.5 2.4 2.7 4.1 3.4.5.2.9.4 1.4.5.6.2 1.1.1 1.6-.1.5-.2 1.4-.9 1.6-1.4.2-.5.2-.9.1-1z"/></svg>
+        </button>
+        <button class="drawer-social-btn" title="TikTok">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M16.6 5.8a4.3 4.3 0 0 1-3-3.8h-3.1v13.7a2.6 2.6 0 1 1-1.8-2.5V9.9a5.7 5.7 0 1 0 4.9 5.6v-6a7.3 7.3 0 0 0 4.3 1.4V7.7a4.3 4.3 0 0 1-1.3-1.9z"/></svg>
+        </button>
+        <button class="drawer-social-btn" title="Instagram">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r="1"/></svg>
+        </button>
+        <button class="drawer-social-btn" title="Lainnya" id="moreSocialBtn">
+          <svg viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="19" cy="12" r="1.8"/></svg>
+        </button>
+        <button class="drawer-lang-btn">
+          <span class="flag"></span>
+          ID
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+      </div>
+
+      <div class="drawer-divider"></div>
+
+      <div class="drawer-support">
+        <svg class="p-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M21 11.5a8.4 8.4 0 0 1-1 4 8.5 8.5 0 0 1-7.5 4.5 8.4 8.4 0 0 1-4-1L3 20l1-4.5a8.4 8.4 0 0 1-1-4 8.5 8.5 0 0 1 4.5-7.5 8.4 8.4 0 0 1 4-1h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+        <span class="s-title">Dukungan</span>
+        <span class="s-badge">24/7</span>
+      </div>
     </div>
   </div>
 
-  <div class="game-cover-wrap">
-    <div class="game-cover" id="gameCover">
-      <span class="badge">OBX GAMES</span>
-    </div>
-  </div>
-
-  <div class="game-title" id="gameTitle">Nama Game</div>
-  <div class="game-provider">
-    <div class="prov-badge">OB</div>
-    <span class="name">OBX Games</span>
-  </div>
-
-  <div class="game-options">
-    <div class="option-row">
-      <span class="label">Mode layar penuh</span>
-      <button class="toggle" id="fullscreenToggle">
-        <span class="knob"></span>
-      </button>
-    </div>
-  </div>
-
-  <div class="action-row">
-    <button class="btn-main" id="playBtn">Main</button>
-    <button class="btn-demo" id="demoBtn">Mode demo</button>
-  </div>
-
-  <div class="play-overlay" id="playOverlay">
-    <div class="play-bar">
-      <span class="play-title" id="playTitle">Memuat game...</span>
-      <button class="close-play" id="closePlay">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="4" y1="4" x2="20" y2="20"/><line x1="20" y1="4" x2="4" y2="20"/></svg>
-      </button>
-    </div>
-    <iframe class="play-frame" id="playFrame" allowfullscreen></iframe>
+  <div class="bottom-nav">
+    <button class="nav-item" id="menuBtn">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      <span>Menu</span>
+    </button>
+    <button class="nav-item active" id="navHome" onclick="showView('home')">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 3 2 12h3v8h6v-6h2v6h6v-8h3z"/></svg>
+      <span>Beranda</span>
+    </button>
+    <button class="nav-item">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="1.6" fill="currentColor" stroke="none"/><line x1="12" y1="4" x2="12" y2="6.5"/><line x1="12" y1="17.5" x2="12" y2="20"/><line x1="4" y1="12" x2="6.5" y2="12"/><line x1="17.5" y1="12" x2="20" y2="12"/><line x1="6.5" y1="6.5" x2="8.2" y2="8.2"/><line x1="15.8" y1="15.8" x2="17.5" y2="17.5"/><line x1="6.5" y1="17.5" x2="8.2" y2="15.8"/><line x1="15.8" y1="8.2" x2="17.5" y2="6.5"/></svg>
+      <span>Kasino</span>
+    </button>
+    <button class="nav-item">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M9.5 15.2c.4.9 1.3 1.4 2.5 1.4 1.6 0 2.7-.8 2.7-2 0-1.3-1.1-1.8-2.7-2.2-1.6-.4-2.6-.9-2.6-2.1 0-1.1 1-1.9 2.5-1.9 1.1 0 2 .4 2.4 1.2" stroke-linecap="round"/><line x1="12" y1="6.5" x2="12" y2="17.8"/></svg>
+      <span>Free money</span>
+    </button>
+    <button class="nav-item" id="navFavorit" onclick="showView('favorit')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12v18l-6-4-6 4V3z"/></svg>
+      <span>Favorit</span>
+    </button>
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
-    const toggle = document.getElementById('fullscreenToggle');
-    toggle.addEventListener('click', function() {
-      toggle.classList.toggle('on');
+    const menuBtn = document.getElementById('menuBtn');
+    const drawer = document.getElementById('drawer');
+    const overlay = document.getElementById('overlay');
+    const drawerClose = document.getElementById('drawerClose');
+
+    function openDrawer() {
+      drawer.classList.add('show');
+      overlay.classList.add('show');
+      drawerClose.classList.add('show');
+    }
+    function closeDrawer() {
+      drawer.classList.remove('show');
+      overlay.classList.remove('show');
+      drawerClose.classList.remove('show');
+    }
+
+    menuBtn.addEventListener('click', openDrawer);
+    drawerClose.addEventListener('click', closeDrawer);
+    overlay.addEventListener('click', closeDrawer);
+
+    const masukBtn = document.getElementById('masukBtn');
+    const loginSheet = document.getElementById('loginSheet');
+    const loginOverlay = document.getElementById('loginOverlay');
+    const loginClose = document.getElementById('loginClose');
+
+    function openLogin() {
+      loginSheet.classList.add('show');
+      loginOverlay.classList.add('show');
+    }
+    function closeLogin() {
+      loginSheet.classList.remove('show');
+      loginOverlay.classList.remove('show');
+    }
+
+    masukBtn.addEventListener('click', openLogin);
+    loginClose.addEventListener('click', closeLogin);
+    loginOverlay.addEventListener('click', closeLogin);
+
+    let isLoggedIn = false;
+    let currentUname = '-';
+    let currentUid = '-';
+    let currentEmail = '-';
+    let currentEmailConfirmed = false;
+    let currentDob = '';
+
+    const masukRow = document.getElementById('masukRow');
+    masukRow.addEventListener('click', function() {
+      closeDrawer();
+      if (isLoggedIn) {
+        document.getElementById('profileUname').textContent = currentUname;
+        document.getElementById('profileUid').textContent = 'ID ' + currentUid;
+        openProfile();
+      } else {
+        openLogin();
+      }
     });
 
-    // ---- Ambil data game dari Supabase (tabel "games") berdasarkan ?id= ----
+    const daftarBtn = document.getElementById('daftarBtn');
+    const registerSheet = document.getElementById('registerSheet');
+    const registerOverlay = document.getElementById('registerOverlay');
+    const registerClose = document.getElementById('registerClose');
+
+    function openRegister() {
+      registerSheet.classList.add('show');
+      registerOverlay.classList.add('show');
+    }
+    function closeRegister() {
+      registerSheet.classList.remove('show');
+      registerOverlay.classList.remove('show');
+    }
+
+    daftarBtn.addEventListener('click', openRegister);
+    registerClose.addEventListener('click', closeRegister);
+    registerOverlay.addEventListener('click', closeRegister);
+
+    // Toggle mata (show/hide password)
+    document.querySelectorAll('.toggle-eye').forEach(function(btn) {
+      const input = document.getElementById(btn.dataset.target);
+      input.addEventListener('input', function() {
+        if (input.value.length > 0) {
+          btn.classList.add('show');
+        } else {
+          btn.classList.remove('show');
+        }
+      });
+      btn.addEventListener('click', function() {
+        const eyeOpen = btn.querySelector('.eye-open');
+        const eyeClosed = btn.querySelector('.eye-closed');
+        if (input.type === 'password') {
+          input.type = 'text';
+          eyeOpen.style.display = 'block';
+          eyeClosed.style.display = 'none';
+        } else {
+          input.type = 'password';
+          eyeOpen.style.display = 'none';
+          eyeClosed.style.display = 'block';
+        }
+      });
+    });
+
+    // ---- Supabase Auth ----
     const SUPABASE_URL = "https://xvvnnqpjiyervgnyffqs.supabase.co";
     const SUPABASE_ANON_KEY = "sb_publishable_Qp9izsQ77Ym9vzSBxwd--A_AZxfy4vs";
     const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-    let currentGame = null;
-
-    async function loadGame() {
-      const params = new URLSearchParams(window.location.search);
-      const id = params.get('id');
-      if (!id) return;
-
-      const { data: game, error } = await sb
+    // ---- Muat daftar game dari Supabase (tabel "games") ----
+    async function loadGames() {
+      const gamesRow = document.getElementById('gamesRow');
+      const { data, error } = await sb
         .from('games')
-        .select('title, image_url, provider, game_url, demo_url')
-        .eq('id', id)
-        .single();
+        .select('id, title, image_url')
+        .order('sort_order', { ascending: true });
 
-      if (error || !game) {
-        document.getElementById('gameTitle').textContent = 'Game tidak ditemukan';
+      if (error || !data || data.length === 0) {
+        gamesRow.innerHTML = '<div style="color:#8a8a8e;font-size:13px;padding:8px 0;">Belum ada game.</div>';
         return;
       }
 
-      currentGame = game;
-      document.getElementById('gameTitle').textContent = game.title;
-      if (game.provider) {
-        document.querySelector('.game-provider .name').textContent = game.provider;
-      }
-      if (game.image_url) {
-        const cover = document.getElementById('gameCover');
-        const imgEl = document.createElement('img');
-        imgEl.src = game.image_url;
-        cover.appendChild(imgEl);
-      }
+      gamesRow.innerHTML = data.map(function(game) {
+        const imgHtml = game.image_url
+          ? '<img src="' + game.image_url + '" alt="' + game.title + '" style="width:100%;height:100%;object-fit:cover;border-radius:12px;display:block;">'
+          : '';
+        return '<div class="game-card">' +
+          '<a href="#" onclick="openGameDetail(' + game.id + ');return false;" style="text-decoration:none;">' +
+          '<div class="game-card-img">' + imgHtml + '</div>' +
+          '</a></div>';
+      }).join('');
     }
-    loadGame();
+    loadGames();
 
-    // ---- Modal Bagikan ----
-    const shareBtn = document.getElementById('shareBtn');
-    const shareSheet = document.getElementById('shareSheet');
-    const shareOverlay = document.getElementById('shareOverlay');
-    const shareClose = document.getElementById('shareClose');
-
-    function openShare() {
-      const gameName = currentGame ? currentGame.title : document.getElementById('gameTitle').textContent;
-      document.getElementById('shareTitle').textContent = 'Bagikan permainan ' + gameName;
-
-      const pageUrl = window.location.href;
-      const text = encodeURIComponent('Main ' + gameName + ' di orbitxy!');
-      const url = encodeURIComponent(pageUrl);
-
-      document.getElementById('shareTelegram').href = 'https://t.me/share/url?url=' + url + '&text=' + text;
-      document.getElementById('shareFacebook').href = 'https://www.facebook.com/sharer/sharer.php?u=' + url;
-      document.getElementById('shareVk').href = 'https://vk.com/share.php?url=' + url + '&title=' + text;
-      document.getElementById('shareThreads').href = 'https://www.threads.net/intent/post?text=' + text + '%20' + url;
-      document.getElementById('shareX').href = 'https://twitter.com/intent/tweet?text=' + text + '&url=' + url;
-      document.getElementById('shareWhatsapp').href = 'https://wa.me/?text=' + text + '%20' + url;
-
-      shareSheet.classList.add('show');
-      shareOverlay.classList.add('show');
-    }
-    function closeShare() {
-      shareSheet.classList.remove('show');
-      shareOverlay.classList.remove('show');
-    }
-    shareBtn.addEventListener('click', openShare);
-    shareClose.addEventListener('click', closeShare);
-    shareOverlay.addEventListener('click', closeShare);
-
-    document.getElementById('copyLinkBtn').addEventListener('click', function() {
-      navigator.clipboard.writeText(window.location.href).then(function() {
-        const label = document.getElementById('copyLinkLabel');
-        label.textContent = 'Tautan disalin!';
-        setTimeout(function() {
-          label.textContent = 'Salin tautan';
-        }, 1500);
-      });
+    // Tombol panah kiri/kanan buat geser daftar game
+    document.getElementById('gamesPrev').addEventListener('click', function() {
+      document.getElementById('gamesRow').scrollBy({ left: -260, behavior: 'smooth' });
+    });
+    document.getElementById('gamesNext').addEventListener('click', function() {
+      document.getElementById('gamesRow').scrollBy({ left: 260, behavior: 'smooth' });
     });
 
-    // ---- Buka game di iframe ----
-    const playBtn = document.getElementById('playBtn');
-    const demoBtn = document.getElementById('demoBtn');
-    const playOverlay = document.getElementById('playOverlay');
-    const playFrame = document.getElementById('playFrame');
-    const playTitle = document.getElementById('playTitle');
-    const closePlay = document.getElementById('closePlay');
-
-    function openPlay(url, label) {
-      if (!url) {
-        alert('Link game belum diisi untuk mode ini.');
-        return;
-      }
-      playTitle.textContent = label;
-      playFrame.src = url;
-      playOverlay.classList.add('show');
-
-      // Kalau toggle "Mode layar penuh" aktif: masuk fullscreen + putar ke landscape
-      if (toggle.classList.contains('on')) {
-        requestFullscreenWithFallback(playOverlay);
-      }
+    function setMsg(el, text, isError) {
+      el.textContent = text;
+      el.style.color = isError ? "#ff5c5c" : "#23c65b";
     }
 
-    function requestFullscreenWithFallback(el) {
-      const reqFs = el.requestFullscreen || el.webkitRequestFullscreen || el.mozRequestFullScreen || el.msRequestFullscreen;
-      const tryLockLandscape = function() {
-        if (screen.orientation && screen.orientation.lock) {
-          screen.orientation.lock('landscape').catch(function() {});
-        }
-      };
+    // Daftar (Sign Up)
+    const registerSubmitBtn = document.getElementById('registerSubmitBtn');
+    const registerMsg = document.getElementById('registerMsg');
+    registerSubmitBtn.addEventListener('click', async function() {
+      const email = document.getElementById('regEmail').value.trim();
+      const password = document.getElementById('regPass').value;
+      const agreed = document.getElementById('termsCheck').checked;
 
-      if (!reqFs) {
-        tryLockLandscape();
+      if (!email || !password) {
+        setMsg(registerMsg, "Isi email dan kata sandi dulu.", true);
+        return;
+      }
+      if (password.length < 8) {
+        setMsg(registerMsg, "Kata sandi minimal 8 karakter.", true);
+        return;
+      }
+      if (!agreed) {
+        setMsg(registerMsg, "Setujui perjanjian pengguna dulu.", true);
         return;
       }
 
-      const result = reqFs.call(el);
-      if (result && result.then) {
-        result.then(tryLockLandscape).catch(function() {
-          // Fallback: coba fullscreen di seluruh halaman (documentElement)
-          const docEl = document.documentElement;
-          const reqFsDoc = docEl.requestFullscreen || docEl.webkitRequestFullscreen || docEl.mozRequestFullScreen || docEl.msRequestFullscreen;
-          if (reqFsDoc) {
-            const result2 = reqFsDoc.call(docEl);
-            if (result2 && result2.then) {
-              result2.then(tryLockLandscape).catch(tryLockLandscape);
-            } else {
-              tryLockLandscape();
-            }
-          } else {
-            tryLockLandscape();
-          }
-        });
+      registerSubmitBtn.disabled = true;
+      setMsg(registerMsg, "Memproses...", false);
+
+      const { data, error } = await sb.auth.signUp({ email, password });
+
+      registerSubmitBtn.disabled = false;
+
+      if (error) {
+        setMsg(registerMsg, error.message, true);
       } else {
-        // Browser lama (tidak pakai Promise, misal Safari webkit)
-        tryLockLandscape();
+        setMsg(registerMsg, "Berhasil daftar! Cek email untuk verifikasi.", false);
       }
+    });
+
+    // Masuk (Sign In)
+    const loginSubmitBtn = document.getElementById('loginSubmitBtn');
+    const loginMsg = document.getElementById('loginMsg');
+    loginSubmitBtn.addEventListener('click', async function() {
+      const email = document.getElementById('loginEmail').value.trim();
+      const password = document.getElementById('loginPass').value;
+
+      if (!email || !password) {
+        setMsg(loginMsg, "Isi email dan kata sandi dulu.", true);
+        return;
+      }
+
+      loginSubmitBtn.disabled = true;
+      setMsg(loginMsg, "Memproses...", false);
+
+      const { data, error } = await sb.auth.signInWithPassword({ email, password });
+
+      loginSubmitBtn.disabled = false;
+
+      if (error) {
+        setMsg(loginMsg, error.message, true);
+      } else {
+        setMsg(loginMsg, "Berhasil masuk!", false);
+        setTimeout(closeLogin, 800);
+      }
+    });
+
+    // Pantau status login, ubah tombol header jika sudah login
+    function refreshUnameDisplays() {
+      const unameSpan = document.querySelector('#masukRow .uname');
+      if (unameSpan) unameSpan.textContent = currentUname;
+      const profileUnameEl = document.getElementById('profileUname');
+      if (profileUnameEl) profileUnameEl.textContent = currentUname;
+    }
+    sb.auth.onAuthStateChange((event, session) => {
+      if (session) {
+        if (document.getElementById('masukBtn')) {
+          masukBtn.outerHTML = '<button class="btn-bell" id="bellBtn"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a6 6 0 0 0-6 6v3.2c0 .6-.2 1.2-.6 1.7L4 15.5c-.6.8 0 2 1 2h14c1 0 1.6-1.2 1-2l-1.4-2.6c-.4-.5-.6-1.1-.6-1.7V8a6 6 0 0 0-6-6z"/><path d="M9.5 20a2.5 2.5 0 0 0 5 0" fill="none" stroke="currentColor" stroke-width="1.6"/></svg></button>';
+        }
+        daftarBtn.style.display = "none";
+
+        // Nama: pakai yang sudah disimpan user (kalau ada), atau generate acak dari user id
+        const uid = session.user.id.replace(/-/g, '');
+        let uname = session.user.user_metadata && session.user.user_metadata.display_name;
+        if (!uname) {
+          const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+          uname = '';
+          for (let i = 0; i < 10; i++) {
+            const idx = parseInt(uid.substr((i * 2) % uid.length, 2), 16) % chars.length;
+            uname += chars[idx];
+          }
+        }
+        const idNum = (parseInt(uid.substr(0, 8), 16) % 900000000 + 100000000).toString();
+
+        const labelEl = document.getElementById('drawerUserLabel');
+        if (labelEl) {
+          labelEl.outerHTML =
+            '<div class="drawer-user-info"><span class="uname">' + uname + '</span><span class="uid">ID ' + idNum + '</span></div>';
+        } else {
+          document.querySelector('#masukRow .uname').textContent = uname;
+        }
+        document.getElementById('avatarDot').style.display = 'block';
+
+        isLoggedIn = true;
+        currentUname = uname;
+        currentUid = idNum;
+        currentEmail = session.user.email || '-';
+        currentEmailConfirmed = !!session.user.email_confirmed_at;
+        currentDob = (session.user.user_metadata && session.user.user_metadata.birthdate) || '';
+        refreshUnameDisplays();
+      }
+    });
+
+    // Modal Profil
+    const profileSheet = document.getElementById('profileSheet');
+    const profileOverlay = document.getElementById('profileOverlay');
+    const profileClose = document.getElementById('profileClose');
+
+    function openProfile() {
+      profileSheet.classList.add('show');
+      profileOverlay.classList.add('show');
+    }
+    function closeProfile() {
+      profileSheet.classList.remove('show');
+      profileOverlay.classList.remove('show');
+    }
+    profileClose.addEventListener('click', closeProfile);
+    profileOverlay.addEventListener('click', closeProfile);
+
+    document.getElementById('profileUidCopy').addEventListener('click', function() {
+      navigator.clipboard.writeText(currentUid);
+    });
+
+    // Modal Pengaturan
+    const settingsRow = document.getElementById('settingsRow');
+    const settingsSheet = document.getElementById('settingsSheet');
+    const settingsOverlay = document.getElementById('settingsOverlay');
+    const settingsClose = document.getElementById('settingsClose');
+    const settingsBack = document.getElementById('settingsBack');
+
+    function openSettings() {
+      document.getElementById('settingsNama').textContent = currentUname;
+      document.getElementById('settingsEmail').textContent = currentEmail || '-';
+      document.getElementById('settingsDob').textContent = currentDob ? formatDob(currentDob) : 'Belum diatur';
+      const warnIcon = document.getElementById('emailWarnIcon');
+      const warnText = document.getElementById('emailWarnText');
+      if (currentEmailConfirmed) {
+        warnIcon.style.display = 'none';
+        warnText.style.display = 'none';
+      } else {
+        warnIcon.style.display = 'block';
+        warnText.style.display = 'block';
+      }
+      settingsSheet.classList.add('show');
+      settingsOverlay.classList.add('show');
+      settingsSheet.scrollTop = 0;
+      document.getElementById('settingsHeaderTitle').classList.remove('show');
+    }
+    function closeSettings() {
+      settingsSheet.classList.remove('show');
+      settingsOverlay.classList.remove('show');
+    }
+    function formatDob(iso) {
+      const [y, m, d] = iso.split('-');
+      return d + '/' + m + '/' + y;
     }
 
-    function closePlayOverlay() {
-      playOverlay.classList.remove('show');
-      playFrame.src = 'about:blank';
+    settingsRow.addEventListener('click', function() {
+      closeProfile();
+      openSettings();
+    });
+    settingsClose.addEventListener('click', closeSettings);
+    settingsOverlay.addEventListener('click', closeSettings);
+    settingsBack.addEventListener('click', function() {
+      closeSettings();
+      openProfile();
+    });
 
-      if (document.fullscreenElement) {
-        document.exitFullscreen().catch(function(){});
+    // Animasi judul collapse saat scroll di halaman Pengaturan
+    const settingsHeaderTitle = document.getElementById('settingsHeaderTitle');
+    settingsSheet.addEventListener('scroll', function() {
+      if (settingsSheet.scrollTop > 40) {
+        settingsHeaderTitle.classList.add('show');
+      } else {
+        settingsHeaderTitle.classList.remove('show');
       }
-      if (screen.orientation && screen.orientation.unlock) {
-        try { screen.orientation.unlock(); } catch(e) {}
+    });
+
+    // ---- Ubah Nama ----
+    const namaRow = document.getElementById('namaRow');
+    const editNameSheet = document.getElementById('editNameSheet');
+    const editNameOverlay = document.getElementById('editNameOverlay');
+    const editNameClose = document.getElementById('editNameClose');
+    const editNameBack = document.getElementById('editNameBack');
+    const editNameInput = document.getElementById('editNameInput');
+    const editNameSubmit = document.getElementById('editNameSubmit');
+
+    function openEditName() {
+      editNameInput.value = currentUname;
+      editNameSubmit.disabled = true;
+      editNameSubmit.classList.remove('enabled');
+      editNameSheet.classList.add('show');
+      editNameOverlay.classList.add('show');
+    }
+    function closeEditName() {
+      editNameSheet.classList.remove('show');
+      editNameOverlay.classList.remove('show');
+    }
+    namaRow.addEventListener('click', function() {
+      closeSettings();
+      openEditName();
+    });
+    editNameClose.addEventListener('click', closeEditName);
+    editNameOverlay.addEventListener('click', closeEditName);
+    editNameBack.addEventListener('click', function() {
+      closeEditName();
+      openSettings();
+    });
+    editNameInput.addEventListener('input', function() {
+      const changed = editNameInput.value.trim() !== '' && editNameInput.value.trim() !== currentUname;
+      editNameSubmit.disabled = !changed;
+      editNameSubmit.classList.toggle('enabled', changed);
+    });
+    editNameSubmit.addEventListener('click', async function() {
+      const newName = editNameInput.value.trim();
+      if (!newName) return;
+      editNameSubmit.disabled = true;
+      await sb.auth.updateUser({ data: { display_name: newName } });
+      currentUname = newName;
+      refreshUnameDisplays();
+      closeEditName();
+      openSettings();
+    });
+
+    // ---- Ubah Tanggal Lahir ----
+    const dobRow = document.getElementById('dobRow');
+    const editDobSheet = document.getElementById('editDobSheet');
+    const editDobOverlay = document.getElementById('editDobOverlay');
+    const editDobClose = document.getElementById('editDobClose');
+    const editDobBack = document.getElementById('editDobBack');
+    const editDobInput = document.getElementById('editDobInput');
+    const editDobSubmit = document.getElementById('editDobSubmit');
+
+    function openEditDob() {
+      editDobInput.value = currentDob || '';
+      editDobSheet.classList.add('show');
+      editDobOverlay.classList.add('show');
+    }
+    function closeEditDob() {
+      editDobSheet.classList.remove('show');
+      editDobOverlay.classList.remove('show');
+    }
+    dobRow.addEventListener('click', function() {
+      closeSettings();
+      openEditDob();
+    });
+    editDobClose.addEventListener('click', closeEditDob);
+    editDobOverlay.addEventListener('click', closeEditDob);
+    editDobBack.addEventListener('click', function() {
+      closeEditDob();
+      openSettings();
+    });
+    editDobSubmit.addEventListener('click', async function() {
+      const val = editDobInput.value;
+      if (!val) return;
+      await sb.auth.updateUser({ data: { birthdate: val } });
+      currentDob = val;
+      closeEditDob();
+      openSettings();
+    });
+
+    // ---- Ubah Kata Sandi ----
+    const passwordRow = document.getElementById('passwordRow');
+    const editPassSheet = document.getElementById('editPassSheet');
+    const editPassOverlay = document.getElementById('editPassOverlay');
+    const editPassClose = document.getElementById('editPassClose');
+    const editPassBack = document.getElementById('editPassBack');
+    const editCurrentPass = document.getElementById('editCurrentPass');
+    const editNewPass = document.getElementById('editNewPass');
+    const editPassSubmit = document.getElementById('editPassSubmit');
+    const editPassMsg = document.getElementById('editPassMsg');
+
+    function openEditPass() {
+      editCurrentPass.value = '';
+      editNewPass.value = '';
+      document.getElementById('editNewPass2').value = '';
+      editPassMsg.textContent = '';
+      editPassSheet.classList.add('show');
+      editPassOverlay.classList.add('show');
+    }
+    function closeEditPass() {
+      editPassSheet.classList.remove('show');
+      editPassOverlay.classList.remove('show');
+    }
+    passwordRow.addEventListener('click', function() {
+      closeSettings();
+      openEditPass();
+    });
+    editPassClose.addEventListener('click', closeEditPass);
+    editPassOverlay.addEventListener('click', closeEditPass);
+    editPassBack.addEventListener('click', function() {
+      closeEditPass();
+      openSettings();
+    });
+
+    function diffPercent(a, b) {
+      if (!a) return 100;
+      const maxLen = Math.max(a.length, b.length);
+      let same = 0;
+      for (let i = 0; i < Math.min(a.length, b.length); i++) {
+        if (a[i] === b[i]) same++;
       }
+      return ((maxLen - same) / maxLen) * 100;
     }
 
-    playBtn.addEventListener('click', function() {
-      if (!currentGame) return;
-      openPlay(currentGame.game_url, currentGame.title);
-    });
-    demoBtn.addEventListener('click', function() {
-      if (!currentGame) return;
-      openPlay(currentGame.demo_url || currentGame.game_url, currentGame.title + ' (Demo)');
-    });
-    closePlay.addEventListener('click', closePlayOverlay);
+    editPassSubmit.addEventListener('click', async function() {
+      const curPass = editCurrentPass.value;
+      const newPass = editNewPass.value;
+      const newPass2 = document.getElementById('editNewPass2').value;
 
-    // ---- Modal Notifikasi ----
-    const bellBtn = document.getElementById('bellBtn');
+      if (!curPass || !newPass || !newPass2) {
+        editPassMsg.style.color = '#ff5c5c';
+        editPassMsg.textContent = 'Lengkapi semua kolom.';
+        return;
+      }
+      if (newPass.length < 8) {
+        editPassMsg.style.color = '#ff5c5c';
+        editPassMsg.textContent = 'Kata sandi baru minimal 8 karakter.';
+        return;
+      }
+      if (!/[0-9]/.test(newPass)) {
+        editPassMsg.style.color = '#ff5c5c';
+        editPassMsg.textContent = 'Kata sandi baru harus menyertakan 1 angka.';
+        return;
+      }
+      if (!/[a-z]/.test(newPass) || !/[A-Z]/.test(newPass)) {
+        editPassMsg.style.color = '#ff5c5c';
+        editPassMsg.textContent = 'Kata sandi baru harus ada huruf besar dan kecil.';
+        return;
+      }
+      if (diffPercent(curPass, newPass) < 50) {
+        editPassMsg.style.color = '#ff5c5c';
+        editPassMsg.textContent = 'Kata sandi baru harus cukup berbeda dari yang lama.';
+        return;
+      }
+      if (newPass !== newPass2) {
+        editPassMsg.style.color = '#ff5c5c';
+        editPassMsg.textContent = 'Kata sandi baru tidak cocok.';
+        return;
+      }
+
+      editPassSubmit.disabled = true;
+      editPassMsg.style.color = '#9a9a9a';
+      editPassMsg.textContent = 'Memproses...';
+
+      const { error: verifyError } = await sb.auth.signInWithPassword({ email: currentEmail, password: curPass });
+      if (verifyError) {
+        editPassSubmit.disabled = false;
+        editPassMsg.style.color = '#ff5c5c';
+        editPassMsg.textContent = 'Kata sandi saat ini salah.';
+        return;
+      }
+
+      const { error } = await sb.auth.updateUser({ password: newPass });
+      editPassSubmit.disabled = false;
+      if (error) {
+        editPassMsg.style.color = '#ff5c5c';
+        editPassMsg.textContent = error.message;
+      } else {
+        editPassMsg.style.color = '#23c65b';
+        editPassMsg.textContent = 'Kata sandi berhasil diubah!';
+        setTimeout(function() {
+          closeEditPass();
+          openSettings();
+        }, 900);
+      }
+    });
+
+    // ---- Sesi aktif: akhiri sesi di perangkat lain ----
+    const endSessionsBtn = document.getElementById('endSessionsBtn');
+    const endSessionSheet = document.getElementById('endSessionSheet');
+    const endSessionOverlay = document.getElementById('endSessionOverlay');
+    const endSessionClose = document.getElementById('endSessionClose');
+    const endSessionConfirm = document.getElementById('endSessionConfirm');
+
+    function openEndSession() {
+      endSessionSheet.classList.add('show');
+      endSessionOverlay.classList.add('show');
+    }
+    function closeEndSession() {
+      endSessionSheet.classList.remove('show');
+      endSessionOverlay.classList.remove('show');
+    }
+    endSessionsBtn.addEventListener('click', openEndSession);
+    endSessionClose.addEventListener('click', closeEndSession);
+    endSessionOverlay.addEventListener('click', closeEndSession);
+    endSessionConfirm.addEventListener('click', async function() {
+      endSessionConfirm.disabled = true;
+      endSessionConfirm.textContent = 'Memproses...';
+      await sb.auth.signOut({ scope: 'others' });
+      endSessionConfirm.textContent = 'Berhasil!';
+      setTimeout(function() {
+        endSessionConfirm.disabled = false;
+        endSessionConfirm.textContent = 'Akhiri';
+        closeEndSession();
+      }, 900);
+    });
+
+    // ---- Keluar dari akun ----
+    const logoutBtn = document.getElementById('logoutBtn');
+    logoutBtn.addEventListener('click', async function() {
+      await sb.auth.signOut();
+      location.reload();
+    });
+
+    // ---- Notifikasi ----
     const notifSheet = document.getElementById('notifSheet');
     const notifOverlay = document.getElementById('notifOverlay');
     const notifClose = document.getElementById('notifClose');
@@ -851,25 +2382,261 @@
       notifSheet.classList.remove('show');
       notifOverlay.classList.remove('show');
     }
-    bellBtn.addEventListener('click', openNotif);
     notifClose.addEventListener('click', closeNotif);
     notifOverlay.addEventListener('click', closeNotif);
 
+    // Delegasi klik lonceng (elemen dibuat dinamis saat login)
+    document.body.addEventListener('click', function(e) {
+      if (e.target.closest('#bellBtn')) {
+        openNotif();
+      }
+    });
+
+    // Switch tab notifikasi
     const notifContentSemua = document.getElementById('notifContentSemua');
-    const notifContentPribadi = document.getElementById('notifContentPribadi');
-    const notifContentUmum = document.getElementById('notifContentUmum');
+    const notifContentDefault = document.getElementById('notifContentDefault');
     document.querySelectorAll('.notif-tab').forEach(function(tab) {
       tab.addEventListener('click', function() {
         document.querySelectorAll('.notif-tab').forEach(t => t.classList.remove('active'));
         tab.classList.add('active');
-        notifContentSemua.style.display = 'none';
-        notifContentPribadi.style.display = 'none';
-        notifContentUmum.style.display = 'none';
-        if (tab.dataset.tab === 'semua') notifContentSemua.style.display = 'block';
-        else if (tab.dataset.tab === 'pribadi') notifContentPribadi.style.display = 'block';
-        else notifContentUmum.style.display = 'block';
+        if (tab.dataset.tab === 'pribadi') {
+          notifContentSemua.style.display = 'block';
+          notifContentDefault.style.display = 'none';
+        } else {
+          notifContentSemua.style.display = 'none';
+          notifContentDefault.style.display = 'block';
+        }
       });
     });
+
+    // ---- Media Sosial ----
+    const moreSocialBtn = document.getElementById('moreSocialBtn');
+    const socialListSheet = document.getElementById('socialListSheet');
+    const socialListOverlay = document.getElementById('socialListOverlay');
+    const socialListClose = document.getElementById('socialListClose');
+
+    function openSocialList() {
+      socialListSheet.classList.add('show');
+      socialListOverlay.classList.add('show');
+    }
+    function closeSocialList() {
+      socialListSheet.classList.remove('show');
+      socialListOverlay.classList.remove('show');
+    }
+    moreSocialBtn.addEventListener('click', openSocialList);
+    socialListClose.addEventListener('click', closeSocialList);
+    socialListOverlay.addEventListener('click', closeSocialList);
+
+    // ================= ROUTING (ganti tampilan tanpa pindah file) =================
+    function showView(name) {
+      document.getElementById('viewHome').style.display = (name === 'home') ? '' : 'none';
+      document.getElementById('viewFavorit').style.display = (name === 'favorit') ? '' : 'none';
+      document.getElementById('viewGameDetail').style.display = (name === 'gameDetail') ? '' : 'none';
+
+      document.getElementById('navHome').classList.toggle('active', name === 'home');
+      document.getElementById('navFavorit').classList.toggle('active', name === 'favorit');
+
+      window.scrollTo(0, 0);
+      history.replaceState(null, '', name === 'home' ? '#' : '#' + name);
+
+      if (name === 'favorit') {
+        renderFavorites();
+      }
+    }
+
+    // ---- Detail game (di dalam halaman yang sama) ----
+    let gdCurrentGame = null;
+
+    async function openGameDetail(id) {
+      showView('gameDetail');
+      gdCurrentId = id;
+      document.getElementById('gdTitle').textContent = 'Memuat...';
+      document.getElementById('gdCover').innerHTML = '';
+      updateGdFavIcon(id);
+
+      const { data: game, error } = await sb
+        .from('games')
+        .select('title, image_url, provider, game_url, demo_url')
+        .eq('id', id)
+        .single();
+
+      if (error || !game) {
+        document.getElementById('gdTitle').textContent = 'Game tidak ditemukan';
+        return;
+      }
+
+      gdCurrentGame = game;
+      document.getElementById('gdTitle').textContent = game.title;
+      document.getElementById('gdProvider').textContent = game.provider || 'OBX Games';
+      if (game.image_url) {
+        document.getElementById('gdCover').innerHTML =
+          '<img src="' + game.image_url + '" style="width:100%;height:100%;object-fit:cover;display:block;">';
+      }
+    }
+
+    // Toggle Mode layar penuh
+    const gdFullscreenToggle = document.getElementById('gdFullscreenToggle');
+    let gdFullscreenOn = false;
+    gdFullscreenToggle.addEventListener('click', function() {
+      gdFullscreenOn = !gdFullscreenOn;
+      gdFullscreenToggle.style.background = gdFullscreenOn ? '#1a73e8' : '#3a3a3c';
+      gdFullscreenToggle.querySelector('span').style.transform = gdFullscreenOn ? 'translateX(20px)' : 'translateX(0)';
+    });
+
+    // ---- Overlay pemutar game (iframe) ----
+    const playOverlayGd = document.createElement('div');
+    playOverlayGd.id = 'playOverlayGd';
+    playOverlayGd.style.cssText = 'position:fixed;inset:0;background:#000;z-index:100;display:none;flex-direction:column;';
+    playOverlayGd.innerHTML =
+      '<div style="display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:#161616;">' +
+        '<span id="gdPlayTitle" style="color:#fff;font-size:14px;font-weight:700;">Memuat game...</span>' +
+        '<button id="gdClosePlay" style="background:#2c2c2e;border:none;border-radius:8px;width:36px;height:36px;display:flex;align-items:center;justify-content:center;color:#fff;cursor:pointer;">' +
+          '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="width:18px;height:18px;"><line x1="4" y1="4" x2="20" y2="20"/><line x1="20" y1="4" x2="4" y2="20"/></svg>' +
+        '</button>' +
+      '</div>' +
+      '<iframe id="gdPlayFrame" allowfullscreen style="flex:1;border:none;width:100%;height:100%;background:#000;"></iframe>';
+    document.body.appendChild(playOverlayGd);
+
+    function gdOpenPlay(url, label) {
+      if (!url) { alert('Link game belum diisi untuk mode ini.'); return; }
+      document.getElementById('gdPlayTitle').textContent = label;
+      document.getElementById('gdPlayFrame').src = url;
+      playOverlayGd.style.display = 'flex';
+
+      if (gdFullscreenOn) {
+        const reqFs = playOverlayGd.requestFullscreen || playOverlayGd.webkitRequestFullscreen || playOverlayGd.mozRequestFullScreen;
+        if (reqFs) {
+          const r = reqFs.call(playOverlayGd);
+          if (r && r.then) {
+            r.then(function() {
+              if (screen.orientation && screen.orientation.lock) {
+                screen.orientation.lock('landscape').catch(function(){});
+              }
+            }).catch(function(){});
+          }
+        }
+      }
+    }
+    function gdClosePlayOverlay() {
+      playOverlayGd.style.display = 'none';
+      document.getElementById('gdPlayFrame').src = 'about:blank';
+      if (document.fullscreenElement) document.exitFullscreen().catch(function(){});
+      if (screen.orientation && screen.orientation.unlock) {
+        try { screen.orientation.unlock(); } catch(e) {}
+      }
+    }
+    document.getElementById('gdPlayBtn').addEventListener('click', function() {
+      if (!gdCurrentGame) return;
+      gdOpenPlay(gdCurrentGame.game_url, gdCurrentGame.title);
+    });
+    document.getElementById('gdDemoBtn').addEventListener('click', function() {
+      if (!gdCurrentGame) return;
+      gdOpenPlay(gdCurrentGame.demo_url || gdCurrentGame.game_url, gdCurrentGame.title + ' (Demo)');
+    });
+    document.body.addEventListener('click', function(e) {
+      if (e.target.closest('#gdClosePlay')) gdClosePlayOverlay();
+    });
+
+    // ---- Share (pakai modal share sederhana lewat Web Share API kalau ada) ----
+    document.getElementById('gdShareBtn').addEventListener('click', function() {
+      const title = gdCurrentGame ? gdCurrentGame.title : 'Game';
+      const shareUrl = window.location.href;
+      if (navigator.share) {
+        navigator.share({ title: 'Main ' + title + ' di orbitxy', url: shareUrl }).catch(function(){});
+      } else {
+        navigator.clipboard.writeText(shareUrl).then(function() {
+          alert('Tautan disalin!');
+        });
+      }
+    });
+
+    // ---- Baca hash URL saat halaman dibuka langsung ke #favorit / #gameDetail ----
+    // ================= FAVORIT =================
+    function getFavorites() {
+      try {
+        return JSON.parse(localStorage.getItem('orbitxy_favorites') || '[]');
+      } catch(e) { return []; }
+    }
+    function setFavorites(arr) {
+      localStorage.setItem('orbitxy_favorites', JSON.stringify(arr));
+    }
+    function isFavorite(id) {
+      return getFavorites().includes(String(id));
+    }
+    function toggleFavorite(id) {
+      id = String(id);
+      let favs = getFavorites();
+      if (favs.includes(id)) {
+        favs = favs.filter(f => f !== id);
+      } else {
+        favs.push(id);
+      }
+      setFavorites(favs);
+      return favs.includes(id);
+    }
+    function updateGdFavIcon(id) {
+      const icon = document.getElementById('gdFavIcon');
+      if (isFavorite(id)) {
+        icon.setAttribute('fill', '#2f7bff');
+        icon.setAttribute('stroke', '#2f7bff');
+      } else {
+        icon.setAttribute('fill', 'none');
+        icon.setAttribute('stroke', 'currentColor');
+      }
+    }
+
+    let gdCurrentId = null;
+    document.getElementById('gdFavBtn').addEventListener('click', function() {
+      if (!gdCurrentId) return;
+      toggleFavorite(gdCurrentId);
+      updateGdFavIcon(gdCurrentId);
+    });
+
+    async function renderFavorites() {
+      const favEmpty = document.getElementById('favoritEmpty');
+      const favGrid = document.getElementById('favoritGrid');
+      const favs = getFavorites();
+
+      if (favs.length === 0) {
+        favEmpty.style.display = 'flex';
+        favGrid.style.display = 'none';
+        favGrid.innerHTML = '';
+        return;
+      }
+
+      const { data, error } = await sb
+        .from('games')
+        .select('id, title, image_url')
+        .in('id', favs);
+
+      if (error || !data || data.length === 0) {
+        favEmpty.style.display = 'flex';
+        favGrid.style.display = 'none';
+        favGrid.innerHTML = '';
+        return;
+      }
+
+      favEmpty.style.display = 'none';
+      favGrid.style.display = 'flex';
+      favGrid.innerHTML = data.map(function(game) {
+        const imgHtml = game.image_url
+          ? '<img src="' + game.image_url + '" alt="' + game.title + '" style="width:100%;height:100%;object-fit:cover;border-radius:12px;display:block;">'
+          : '';
+        return '<div class="game-card">' +
+          '<a href="#" onclick="openGameDetail(' + game.id + ');return false;" style="text-decoration:none;">' +
+          '<div class="game-card-img">' + imgHtml + '</div>' +
+          '</a></div>';
+      }).join('');
+    }
+
+    (function initRoute() {
+      const hash = window.location.hash.replace('#', '');
+      if (hash === 'favorit') {
+        showView('favorit');
+      } else {
+        showView('home');
+      }
+    })();
   </script>
 </body>
 </html>
