@@ -220,6 +220,51 @@
     cursor: pointer;
   }
 
+  /* ---- Overlay pemutar game (iframe) ---- */
+  .play-overlay {
+    position: fixed;
+    inset: 0;
+    background: #000000;
+    z-index: 100;
+    display: none;
+    flex-direction: column;
+  }
+  .play-overlay.show {
+    display: flex;
+  }
+  .play-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 14px;
+    background: #161616;
+  }
+  .play-bar .close-play {
+    background: #2c2c2e;
+    border: none;
+    border-radius: 8px;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #ffffff;
+    cursor: pointer;
+  }
+  .play-bar .close-play svg { width: 18px; height: 18px; }
+  .play-bar .play-title {
+    color: #ffffff;
+    font-size: 14px;
+    font-weight: 700;
+  }
+  .play-frame {
+    flex: 1;
+    border: none;
+    width: 100%;
+    height: 100%;
+    background: #000;
+  }
+
   /* ---- Modal Notifikasi ---- */
   .login-overlay {
     position: fixed;
@@ -462,8 +507,18 @@
   </div>
 
   <div class="action-row">
-    <button class="btn-main">Main</button>
-    <button class="btn-demo">Mode demo</button>
+    <button class="btn-main" id="playBtn">Main</button>
+    <button class="btn-demo" id="demoBtn">Mode demo</button>
+  </div>
+
+  <div class="play-overlay" id="playOverlay">
+    <div class="play-bar">
+      <span class="play-title" id="playTitle">Memuat game...</span>
+      <button class="close-play" id="closePlay">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="4" y1="4" x2="20" y2="20"/><line x1="20" y1="4" x2="4" y2="20"/></svg>
+      </button>
+    </div>
+    <iframe class="play-frame" id="playFrame" allowfullscreen></iframe>
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -478,6 +533,8 @@
     const SUPABASE_ANON_KEY = "sb_publishable_Qp9izsQ77Ym9vzSBxwd--A_AZxfy4vs";
     const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
+    let currentGame = null;
+
     async function loadGame() {
       const params = new URLSearchParams(window.location.search);
       const id = params.get('id');
@@ -485,7 +542,7 @@
 
       const { data: game, error } = await sb
         .from('games')
-        .select('title, image_url, provider')
+        .select('title, image_url, provider, game_url, demo_url')
         .eq('id', id)
         .single();
 
@@ -494,6 +551,7 @@
         return;
       }
 
+      currentGame = game;
       document.getElementById('gameTitle').textContent = game.title;
       if (game.provider) {
         document.querySelector('.game-provider .name').textContent = game.provider;
@@ -506,6 +564,38 @@
       }
     }
     loadGame();
+
+    // ---- Buka game di iframe ----
+    const playBtn = document.getElementById('playBtn');
+    const demoBtn = document.getElementById('demoBtn');
+    const playOverlay = document.getElementById('playOverlay');
+    const playFrame = document.getElementById('playFrame');
+    const playTitle = document.getElementById('playTitle');
+    const closePlay = document.getElementById('closePlay');
+
+    function openPlay(url, label) {
+      if (!url) {
+        alert('Link game belum diisi untuk mode ini.');
+        return;
+      }
+      playTitle.textContent = label;
+      playFrame.src = url;
+      playOverlay.classList.add('show');
+    }
+    function closePlayOverlay() {
+      playOverlay.classList.remove('show');
+      playFrame.src = 'about:blank';
+    }
+
+    playBtn.addEventListener('click', function() {
+      if (!currentGame) return;
+      openPlay(currentGame.game_url, currentGame.title);
+    });
+    demoBtn.addEventListener('click', function() {
+      if (!currentGame) return;
+      openPlay(currentGame.demo_url || currentGame.game_url, currentGame.title + ' (Demo)');
+    });
+    closePlay.addEventListener('click', closePlayOverlay);
 
     // ---- Modal Notifikasi ----
     const bellBtn = document.getElementById('bellBtn');
