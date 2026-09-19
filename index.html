@@ -2779,10 +2779,14 @@
 
       const { data, error } = await sb
         .from('news')
-        .select('id, title, description, image_url, tags')
-        .order('sort_order', { ascending: true });
+        .select('*')
+        .order('id', { ascending: true });
 
-      if (error || !data || data.length === 0) {
+      if (error) {
+        newsGrid.innerHTML = '<div class="news-empty">Gagal memuat data: ' + error.message + '</div>';
+        return;
+      }
+      if (!data || data.length === 0) {
         newsGrid.innerHTML = '<div class="news-empty">Belum ada artikel/panduan.</div>';
         return;
       }
@@ -2791,19 +2795,23 @@
         const imgHtml = item.image_url
           ? '<img src="' + item.image_url + '" alt="' + item.title + '">'
           : '';
-        const tagsArr = Array.isArray(item.tags) ? item.tags : (item.tags ? String(item.tags).split(',') : []);
-        const tagsHtml = tagsArr.map(function(t) {
-          return '<span class="nc-tag">' + t.trim().toUpperCase() + '</span>';
-        }).join('');
         const href = item.url ? item.url : '#';
         const target = item.url ? ' target="_blank" rel="noopener"' : '';
+
+        let tagsHtml = '';
+        if (item.tags) {
+          const tagsArr = Array.isArray(item.tags) ? item.tags : String(item.tags).split(',');
+          tagsHtml = '<div class="nc-tags">' + tagsArr.map(function(t) {
+            return '<span class="nc-tag">' + t.trim().toUpperCase() + '</span>';
+          }).join('') + '</div>';
+        }
 
         return '<a class="news-card" href="' + href + '"' + target + ' style="text-decoration:none;">' +
           '<div class="nc-img">' + imgHtml + '</div>' +
           '<div class="nc-body">' +
             '<div class="nc-title">' + item.title + '</div>' +
             '<div class="nc-desc">' + (item.description || '') + '</div>' +
-            '<div class="nc-tags">' + tagsHtml + '</div>' +
+            tagsHtml +
           '</div>' +
         '</a>';
       }).join('');
