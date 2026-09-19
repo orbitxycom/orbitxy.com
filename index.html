@@ -288,6 +288,106 @@
     font-weight: 800;
   }
 
+  /* ---- View News (Game Guides) ---- */
+  .news-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 16px 16px;
+  }
+  .news-header .nh-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .news-header .nh-bar {
+    width: 4px;
+    height: 22px;
+    background: #2f7bff;
+    border-radius: 2px;
+  }
+  .news-header h2 {
+    color: #ffffff;
+    font-size: 20px;
+    font-weight: 800;
+    margin: 0;
+  }
+  .news-header .nh-more {
+    color: #2f7bff;
+    font-size: 14px;
+    font-weight: 700;
+    text-decoration: none;
+  }
+  .news-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    padding: 0 16px 30px;
+  }
+  .news-card {
+    background: #1c1c1e;
+    border: 1px solid #2a2a2c;
+    border-radius: 14px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+  .news-card .nc-img {
+    width: 100%;
+    aspect-ratio: 16/10;
+    background: #141416;
+  }
+  .news-card .nc-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  .news-card .nc-body {
+    padding: 12px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+  .news-card .nc-title {
+    color: #ffffff;
+    font-size: 15px;
+    font-weight: 800;
+    margin-bottom: 6px;
+    line-height: 1.3;
+  }
+  .news-card .nc-desc {
+    color: #9a9a9a;
+    font-size: 12px;
+    line-height: 1.4;
+    margin-bottom: 10px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .news-card .nc-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: auto;
+  }
+  .news-card .nc-tag {
+    background: rgba(47,123,255,0.12);
+    color: #5b9dff;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 4px 9px;
+    border-radius: 20px;
+    border: 1px solid rgba(47,123,255,0.3);
+  }
+  .news-empty {
+    text-align: center;
+    color: #8a8a8e;
+    font-size: 14px;
+    padding: 60px 30px;
+  }
+
   /* ---- Drawer Menu ---- */
   .overlay {
     position: fixed;
@@ -1843,6 +1943,17 @@
     <div id="favoritGrid" style="display:none;flex-wrap:wrap;gap:12px;padding:16px 20px 30px;"></div>
   </div>
 
+  <div id="viewNews" style="display:none;">
+    <div class="news-header">
+      <div class="nh-title">
+        <span class="nh-bar"></span>
+        <h2>Game Guides</h2>
+      </div>
+      <a href="#" class="nh-more">View more</a>
+    </div>
+    <div class="news-grid" id="newsGrid"></div>
+  </div>
+
   <div class="overlay" id="overlay"></div>
 
   <button class="drawer-close" id="drawerClose">
@@ -1940,7 +2051,7 @@
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="1.6" fill="currentColor" stroke="none"/><line x1="12" y1="4" x2="12" y2="6.5"/><line x1="12" y1="17.5" x2="12" y2="20"/><line x1="4" y1="12" x2="6.5" y2="12"/><line x1="17.5" y1="12" x2="20" y2="12"/><line x1="6.5" y1="6.5" x2="8.2" y2="8.2"/><line x1="15.8" y1="15.8" x2="17.5" y2="17.5"/><line x1="6.5" y1="17.5" x2="8.2" y2="15.8"/><line x1="15.8" y1="8.2" x2="17.5" y2="6.5"/></svg>
       <span>Kasino</span>
     </button>
-    <button class="nav-item">
+    <button class="nav-item" id="navNews" onclick="showView('news')">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><line x1="7" y1="8" x2="17" y2="8"/><line x1="7" y1="12" x2="17" y2="12"/><line x1="7" y1="16" x2="13" y2="16"/></svg>
       <span>News</span>
     </button>
@@ -2567,14 +2678,19 @@
     function showView(name) {
       document.getElementById('viewHome').style.display = (name === 'home') ? '' : 'none';
       document.getElementById('viewFavorit').style.display = (name === 'favorit') ? '' : 'none';
+      document.getElementById('viewNews').style.display = (name === 'news') ? '' : 'none';
 
       document.getElementById('navHome').classList.toggle('active', name === 'home');
       document.getElementById('navFavorit').classList.toggle('active', name === 'favorit');
+      document.getElementById('navNews').classList.toggle('active', name === 'news');
 
       window.scrollTo(0, 0);
 
       if (name === 'favorit') {
         renderFavorites();
+      }
+      if (name === 'news') {
+        renderNews();
       }
     }
 
@@ -2653,6 +2769,41 @@
           '<a href="game-detail/?id=' + game.id + '" style="text-decoration:none;">' +
           '<div class="game-card-img">' + imgHtml + '</div>' +
           '</a></div>';
+      }).join('');
+    }
+
+    // ================= NEWS (Game Guides) =================
+    async function renderNews() {
+      const newsGrid = document.getElementById('newsGrid');
+      newsGrid.innerHTML = '<div class="news-empty">Memuat...</div>';
+
+      const { data, error } = await sb
+        .from('news')
+        .select('id, title, description, image_url, tags')
+        .order('sort_order', { ascending: true });
+
+      if (error || !data || data.length === 0) {
+        newsGrid.innerHTML = '<div class="news-empty">Belum ada artikel/panduan.</div>';
+        return;
+      }
+
+      newsGrid.innerHTML = data.map(function(item) {
+        const imgHtml = item.image_url
+          ? '<img src="' + item.image_url + '" alt="' + item.title + '">'
+          : '';
+        const tagsArr = Array.isArray(item.tags) ? item.tags : (item.tags ? String(item.tags).split(',') : []);
+        const tagsHtml = tagsArr.map(function(t) {
+          return '<span class="nc-tag">' + t.trim().toUpperCase() + '</span>';
+        }).join('');
+
+        return '<div class="news-card">' +
+          '<div class="nc-img">' + imgHtml + '</div>' +
+          '<div class="nc-body">' +
+            '<div class="nc-title">' + item.title + '</div>' +
+            '<div class="nc-desc">' + (item.description || '') + '</div>' +
+            '<div class="nc-tags">' + tagsHtml + '</div>' +
+          '</div>' +
+        '</div>';
       }).join('');
     }
 
