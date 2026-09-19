@@ -2800,7 +2800,7 @@
 
         let tagsHtml = '';
         if (item.tags) {
-          const tagsArr = Array.isArray(item.tags) ? item.tags : String(item.tags).split(',');
+          const tagsArr = Array.isArray(item.tags) ? item.tags : String(item.tags).split(/[,\s]+/).filter(Boolean);
           tagsHtml = '<div class="nc-tags">' + tagsArr.map(function(t) {
             return '<span class="nc-tag">' + t.trim().toUpperCase() + '</span>';
           }).join('') + '</div>';
