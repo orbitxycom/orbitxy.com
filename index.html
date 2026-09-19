@@ -2490,7 +2490,6 @@
       document.getElementById('navFavorit').classList.toggle('active', name === 'favorit');
 
       window.scrollTo(0, 0);
-      history.replaceState(null, '', name === 'home' ? '#' : '#' + name);
 
       if (name === 'favorit') {
         renderFavorites();
@@ -2575,14 +2574,8 @@
       }).join('');
     }
 
-    (function initRoute() {
-      const hash = window.location.hash.replace('#', '');
-      if (hash === 'favorit') {
-        showView('favorit');
-      } else {
-        showView('home');
-      }
-    })();
+    // Selalu mulai dari Beranda saat halaman dibuka
+    showView('home');
   </script>
 </body>
 </html>
