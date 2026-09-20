@@ -288,6 +288,62 @@
     font-weight: 800;
   }
 
+  /* ---- Promo Row ---- */
+  .promo-row {
+    display: flex;
+    gap: 10px;
+    padding: 0 16px 4px;
+  }
+  .promo-big {
+    flex: 2.2;
+    aspect-ratio: 2.1/1;
+    border-radius: 16px;
+    background: linear-gradient(135deg, #7a6a4f 0%, #cbb188 60%, #8a7654 100%);
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .promo-big .pb-title {
+    color: #ffffff;
+    font-size: 19px;
+    font-weight: 800;
+    line-height: 1.2;
+  }
+  .promo-big .pb-sub {
+    color: rgba(255,255,255,0.85);
+    font-size: 12px;
+    margin-top: 8px;
+    line-height: 1.4;
+  }
+  .promo-small {
+    flex: 1;
+    aspect-ratio: 1/1;
+    border-radius: 16px;
+    background: linear-gradient(160deg, #4a6b8a, #2c3e54);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    overflow: hidden;
+    position: relative;
+  }
+  .promo-small .ps-title {
+    color: #ffffff;
+    font-size: 15px;
+    font-weight: 800;
+    z-index: 2;
+  }
+  .promo-small img {
+    width: 46%;
+    height: 46%;
+    object-fit: contain;
+    z-index: 2;
+  }
+
   /* ---- View News (Game Guides) ---- */
   .news-header {
     display: flex;
@@ -1884,6 +1940,17 @@
         <div class="banner-dots">
           <span class="active"></span><span></span><span></span><span></span>
         </div>
+      </div>
+    </div>
+
+    <div class="promo-row">
+      <div class="promo-big">
+        <div class="pb-title">Free money</div>
+        <div class="pb-sub">Pengundian hadiah & bonus lainnya</div>
+      </div>
+      <div class="promo-small">
+        <img src="https://orbitxy.com/levelup.png" alt="Bonus">
+        <div class="ps-title">Bonus</div>
       </div>
     </div>
 
