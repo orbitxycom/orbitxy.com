@@ -2013,7 +2013,7 @@
         <span class="nh-bar"></span>
         <h2>Game Guides</h2>
       </div>
-      <a href="#" class="nh-more">View more</a>
+      <a href="#" class="nh-more" id="newsViewMoreBtn">View more</a>
     </div>
     <div class="news-grid" id="newsGrid"></div>
   </div>
@@ -2837,9 +2837,58 @@
     }
 
     // ================= NEWS (Game Guides) =================
+    let newsData = [];
+    let newsExpanded = false;
+    const NEWS_PREVIEW_COUNT = 4;
+
+    function buildNewsCardHtml(item) {
+      const imgHtml = item.image_url
+        ? '<img src="' + item.image_url + '" alt="' + item.title + '">'
+        : '';
+      const href = item.url ? item.url : '#';
+      const target = item.url ? ' target="_blank" rel="noopener"' : '';
+
+      let tagsHtml = '';
+      if (item.tags) {
+        const tagsArr = Array.isArray(item.tags) ? item.tags : String(item.tags).split(/[,\s]+/).filter(Boolean);
+        tagsHtml = '<div class="nc-tags">' + tagsArr.map(function(t) {
+          return '<span class="nc-tag">' + t.trim().toUpperCase() + '</span>';
+        }).join('') + '</div>';
+      }
+
+      return '<a class="news-card" href="' + href + '"' + target + ' style="text-decoration:none;">' +
+        '<div class="nc-img">' + imgHtml + '</div>' +
+        '<div class="nc-body">' +
+          '<div class="nc-title">' + item.title + '</div>' +
+          '<div class="nc-desc">' + (item.description || '') + '</div>' +
+          tagsHtml +
+        '</div>' +
+      '</a>';
+    }
+
+    function renderNewsGrid() {
+      const newsGrid = document.getElementById('newsGrid');
+      const viewMoreBtn = document.getElementById('newsViewMoreBtn');
+      const itemsToShow = newsExpanded ? newsData : newsData.slice(0, NEWS_PREVIEW_COUNT);
+      newsGrid.innerHTML = itemsToShow.map(buildNewsCardHtml).join('');
+
+      if (newsData.length > NEWS_PREVIEW_COUNT && !newsExpanded) {
+        viewMoreBtn.style.display = 'inline';
+      } else {
+        viewMoreBtn.style.display = 'none';
+      }
+    }
+
+    document.getElementById('newsViewMoreBtn').addEventListener('click', function(e) {
+      e.preventDefault();
+      newsExpanded = true;
+      renderNewsGrid();
+    });
+
     async function renderNews() {
       const newsGrid = document.getElementById('newsGrid');
       newsGrid.innerHTML = '<div class="news-empty">Memuat...</div>';
+      newsExpanded = false;
 
       const { data, error } = await sb
         .from('news')
@@ -2848,37 +2897,17 @@
 
       if (error) {
         newsGrid.innerHTML = '<div class="news-empty">Gagal memuat data: ' + error.message + '</div>';
+        document.getElementById('newsViewMoreBtn').style.display = 'none';
         return;
       }
       if (!data || data.length === 0) {
         newsGrid.innerHTML = '<div class="news-empty">Belum ada artikel/panduan.</div>';
+        document.getElementById('newsViewMoreBtn').style.display = 'none';
         return;
       }
 
-      newsGrid.innerHTML = data.map(function(item) {
-        const imgHtml = item.image_url
-          ? '<img src="' + item.image_url + '" alt="' + item.title + '">'
-          : '';
-        const href = item.url ? item.url : '#';
-        const target = item.url ? ' target="_blank" rel="noopener"' : '';
-
-        let tagsHtml = '';
-        if (item.tags) {
-          const tagsArr = Array.isArray(item.tags) ? item.tags : String(item.tags).split(/[,\s]+/).filter(Boolean);
-          tagsHtml = '<div class="nc-tags">' + tagsArr.map(function(t) {
-            return '<span class="nc-tag">' + t.trim().toUpperCase() + '</span>';
-          }).join('') + '</div>';
-        }
-
-        return '<a class="news-card" href="' + href + '"' + target + ' style="text-decoration:none;">' +
-          '<div class="nc-img">' + imgHtml + '</div>' +
-          '<div class="nc-body">' +
-            '<div class="nc-title">' + item.title + '</div>' +
-            '<div class="nc-desc">' + (item.description || '') + '</div>' +
-            tagsHtml +
-          '</div>' +
-        '</a>';
-      }).join('');
+      newsData = data;
+      renderNewsGrid();
     }
 
     // Selalu mulai dari Beranda saat halaman dibuka
