@@ -2890,24 +2890,29 @@
       newsGrid.innerHTML = '<div class="news-empty">Memuat...</div>';
       newsExpanded = false;
 
-      const { data, error } = await sb
-        .from('news')
-        .select('*')
-        .order('id', { ascending: true });
+      try {
+        const { data, error } = await sb
+          .from('news')
+          .select('*')
+          .order('id', { ascending: true });
 
-      if (error) {
-        newsGrid.innerHTML = '<div class="news-empty">Gagal memuat data: ' + error.message + '</div>';
-        document.getElementById('newsViewMoreBtn').style.display = 'none';
-        return;
-      }
-      if (!data || data.length === 0) {
-        newsGrid.innerHTML = '<div class="news-empty">Belum ada artikel/panduan.</div>';
-        document.getElementById('newsViewMoreBtn').style.display = 'none';
-        return;
-      }
+        if (error) {
+          newsGrid.innerHTML = '<div class="news-empty">Gagal memuat data: ' + error.message + '</div>';
+          document.getElementById('newsViewMoreBtn').style.display = 'none';
+          return;
+        }
+        if (!data || data.length === 0) {
+          newsGrid.innerHTML = '<div class="news-empty">Belum ada artikel/panduan.</div>';
+          document.getElementById('newsViewMoreBtn').style.display = 'none';
+          return;
+        }
 
-      newsData = data;
-      renderNewsGrid();
+        newsData = data;
+        renderNewsGrid();
+      } catch (err) {
+        newsGrid.innerHTML = '<div class="news-empty">Terjadi kesalahan: ' + (err && err.message ? err.message : String(err)) + '</div>';
+        document.getElementById('newsViewMoreBtn').style.display = 'none';
+      }
     }
 
     // Selalu mulai dari Beranda saat halaman dibuka
