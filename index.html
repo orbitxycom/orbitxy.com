@@ -2885,16 +2885,23 @@
       renderNewsGrid();
     });
 
+    function withTimeout(promise, ms) {
+      return Promise.race([
+        promise,
+        new Promise((_, reject) => setTimeout(() => reject(new Error('Waktu tunggu habis (server tidak merespons)')), ms))
+      ]);
+    }
+
     async function renderNews() {
       const newsGrid = document.getElementById('newsGrid');
       newsGrid.innerHTML = '<div class="news-empty">Memuat...</div>';
       newsExpanded = false;
 
       try {
-        const { data, error } = await sb
-          .from('news')
-          .select('*')
-          .order('id', { ascending: true });
+        const { data, error } = await withTimeout(
+          sb.from('news').select('*').order('id', { ascending: true }),
+          8000
+        );
 
         if (error) {
           newsGrid.innerHTML = '<div class="news-empty">Gagal memuat data: ' + error.message + '</div>';
