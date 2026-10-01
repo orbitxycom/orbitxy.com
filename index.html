@@ -2796,22 +2796,6 @@
       setFavorites(favs);
       return favs.includes(id);
     }
-    function updateGdFavIcon(id) {
-      const icon = document.getElementById('gdFavIcon');
-      if (isFavorite(id)) {
-        icon.setAttribute('fill', '#2f7bff');
-        icon.setAttribute('stroke', '#2f7bff');
-      } else {
-        icon.setAttribute('fill', 'none');
-        icon.setAttribute('stroke', 'currentColor');
-      }
-    }
-
-    document.getElementById('gdFavBtn').addEventListener('click', function() {
-      if (!gdCurrentId) return;
-      toggleFavorite(gdCurrentId);
-      updateGdFavIcon(gdCurrentId);
-    });
 
     async function renderFavorites() {
       const favEmpty = document.getElementById('favoritEmpty');
