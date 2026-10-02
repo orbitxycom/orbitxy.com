@@ -2,27 +2,26 @@
 <html lang="id">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <title>SEKTOR-7 — Simulasi Pertahanan</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
-  :root{
-    --amber:#ff8c2e; --amber2:#ffb457; --red:#ff3526; --ink:#ece5d8; --dim:#8a8378; --bg:#0e0c0a;
-  }
-  *{margin:0;padding:0;box-sizing:border-box}
-  html,body{height:100%;overflow:hidden;background:var(--bg);font-family:'IBM Plex Mono',monospace;color:var(--ink)}
-  #game{position:fixed;inset:0;display:block;cursor:crosshair}
+  :root{--amber:#ff8c2e;--amber2:#ffb457;--red:#ff3526;--ink:#ece5d8;--dim:#8a8378;--bg:#0e0c0a}
+  *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html,body{height:100%;overflow:hidden;background:var(--bg);font-family:'IBM Plex Mono',monospace;color:var(--ink);
+    user-select:none;-webkit-user-select:none;touch-action:none;overscroll-behavior:none}
+  #game{position:fixed;inset:0;display:block;touch-action:none}
+  body.playing,body.playing *{cursor:none}
 
   /* ---------- HUD ---------- */
   #hud{position:fixed;inset:0;pointer-events:none;z-index:5;opacity:0;transition:opacity .4s}
   #hud.on{opacity:1}
   .lbl{font:600 10px 'IBM Plex Mono';letter-spacing:.38em;text-transform:uppercase;color:var(--dim)}
-  .big{font:700 30px 'Chakra Petch';letter-spacing:.06em}
 
   #tl{position:absolute;top:22px;left:26px}
-  #tl .brand{font:700 15px 'Chakra Petch';letter-spacing:.22em;color:var(--ink)}
-  #tl .brand b{color:var(--amber);font-weight:700}
+  #tl .brand{font:700 15px 'Chakra Petch';letter-spacing:.22em}
+  #tl .brand b{color:var(--amber)}
   #tl .lbl{margin-top:6px}
   #elThreat{color:var(--amber);font:600 13px 'IBM Plex Mono';letter-spacing:.2em;margin-top:2px}
 
@@ -38,6 +37,8 @@
   #hpBar{width:230px;height:8px;background:rgba(236,229,216,.09);outline:1px solid rgba(236,229,216,.14)}
   #hpFill{height:100%;width:100%;background:var(--amber);transition:width .25s}
   #hpFill.low{background:var(--red)}
+  body.touch #bl{left:50%;transform:translateX(-50%);bottom:10px;text-align:center}
+  body.touch #bl .row{justify-content:center}
 
   #br{position:absolute;bottom:26px;right:26px;text-align:right}
   #elAmmo{font:700 52px 'Chakra Petch';letter-spacing:.04em;line-height:1}
@@ -48,6 +49,11 @@
   #elReload.on{opacity:1}
   @keyframes blink{50%{opacity:.25}}
 
+  #hint{position:fixed;bottom:92px;left:0;right:0;text-align:center;pointer-events:none;z-index:5;display:none;
+    font:500 10px 'IBM Plex Mono';letter-spacing:.35em;color:var(--dim)}
+  body.playing #hint{display:block;animation:hintfade 9s forwards}
+  @keyframes hintfade{0%,75%{opacity:.8}100%{opacity:0}}
+
   /* crosshair */
   #cross{position:fixed;left:50%;top:50%;--g:6px;pointer-events:none}
   #cross span{position:absolute;background:var(--ink);box-shadow:0 0 3px rgba(0,0,0,.9)}
@@ -57,7 +63,6 @@
   #cross .r{width:8px;height:2px;top:-1px;left:var(--g)}
   #cross .c{width:3px;height:3px;top:-1.5px;left:-1.5px;background:var(--amber)}
 
-  /* hitmarker */
   #hm{position:fixed;left:50%;top:50%;opacity:0;pointer-events:none;transition:opacity .12s}
   #hm.show{opacity:1;transition:none}
   #hm i{position:absolute;width:2px;height:9px;background:var(--ink)}
@@ -67,23 +72,20 @@
   #hm i:nth-child(4){transform:translate(6px,5px) rotate(-45deg)}
   #hm.kill i{background:var(--red);height:13px}
 
-  /* popup skor */
   #pops{position:fixed;inset:0;pointer-events:none;z-index:6}
-  .pop{position:absolute;color:var(--ink);font:600 15px 'IBM Plex Mono';letter-spacing:.1em;
+  .pop{position:absolute;font:600 15px 'IBM Plex Mono';letter-spacing:.1em;
     text-shadow:0 1px 3px rgba(0,0,0,.8);animation:popf .85s ease-out forwards}
   .pop.mult{color:var(--amber)}
   .pop.heal{color:#45e08a}
   @keyframes popf{0%{opacity:0;transform:translateY(8px) scale(.85)}18%{opacity:1;transform:none}
     100%{opacity:0;transform:translateY(-44px) scale(1)}}
 
-  /* banner gelombang */
   #banner{position:fixed;top:15%;left:0;right:0;text-align:center;opacity:0;pointer-events:none;z-index:6}
   #banner.show{animation:ban 2.6s ease forwards}
   #bnT{font:700 36px 'Chakra Petch';letter-spacing:.35em;color:var(--amber);text-indent:.35em}
   #bnS{margin-top:8px;font:600 11px 'IBM Plex Mono';letter-spacing:.5em;color:var(--dim);text-indent:.5em}
   @keyframes ban{0%{opacity:0;letter-spacing:.1em}12%{opacity:1}78%{opacity:1}100%{opacity:0}}
 
-  /* vignette luka */
   #vig{position:fixed;inset:0;pointer-events:none;z-index:4;opacity:0;
     background:radial-gradient(ellipse at center,transparent 52%,rgba(255,32,20,.55) 100%)}
   #vigLow{position:fixed;inset:0;pointer-events:none;z-index:4;opacity:0;
@@ -91,40 +93,74 @@
   #vigLow.on{animation:lowp 1.5s infinite}
   @keyframes lowp{0%,100%{opacity:.12}50%{opacity:.4}}
 
+  /* ---------- kontrol sentuh ---------- */
+  #touchUI{position:fixed;inset:0;z-index:7;pointer-events:none;display:none}
+  body.touch #touchUI{display:block}
+  #touchUI .tbtn{pointer-events:auto;touch-action:none;position:absolute;border-radius:50%;
+    border:2px solid rgba(236,229,216,.35);background:rgba(14,12,10,.45);color:var(--ink);
+    font:600 11px 'IBM Plex Mono';letter-spacing:.15em;display:flex;align-items:center;justify-content:center}
+  #touchUI .tbtn:active{background:rgba(255,140,46,.28);border-color:var(--amber)}
+  #btnFire{width:100px;height:100px;right:22px;bottom:160px;border-color:rgba(255,140,46,.75);
+    color:var(--amber);font-size:13px;letter-spacing:.22em}
+  #btnJump{width:64px;height:64px;right:140px;bottom:96px}
+  #btnReload{width:56px;height:56px;right:36px;bottom:284px}
+
+  #joy{position:fixed;z-index:7;pointer-events:none;display:none}
+  #joy.on{display:block}
+  #joyBase{position:absolute;width:112px;height:112px;border:2px solid rgba(236,229,216,.25);
+    border-radius:50%;transform:translate(-50%,-50%)}
+  #joyStick{position:absolute;width:48px;height:48px;background:rgba(255,140,46,.3);
+    border:2px solid rgba(255,140,46,.7);border-radius:50%;transform:translate(-50%,-50%)}
+
+  /* layar saran lanskap */
+  #rotate{position:fixed;inset:0;z-index:30;display:none;align-items:center;justify-content:center;
+    background:rgba(10,8,6,.94);text-align:center}
+  #rotate .in{font:600 14px 'IBM Plex Mono';letter-spacing:.3em;color:var(--ink)}
+  #rotate .sub{margin-top:10px;font:500 10px 'IBM Plex Mono';letter-spacing:.3em;color:var(--dim)}
+  #rotate svg{display:block;margin:0 auto 20px;color:var(--amber)}
+  @media (orientation:portrait){body.touch #rotate{display:flex}}
+
   /* ---------- overlay ---------- */
-  .ov{position:fixed;inset:0;z-index:10;display:flex;background:rgba(10,8,6,.55);
-    transition:opacity .35s}
+  .ov{position:fixed;inset:0;z-index:10;display:flex;background:rgba(10,8,6,.55);transition:opacity .35s}
   .ov.hidden{opacity:0;pointer-events:none}
   kbd{display:inline-block;min-width:26px;text-align:center;padding:3px 6px;border:1px solid rgba(236,229,216,.3);
-    border-bottom-width:2px;font:600 11px 'IBM Plex Mono';color:var(--ink);background:rgba(236,229,216,.05)}
+    border-bottom-width:2px;font:600 11px 'IBM Plex Mono';background:rgba(236,229,216,.05)}
   .btn{font:600 14px 'IBM Plex Mono';letter-spacing:.22em;background:var(--amber);color:#140b03;
     border:0;padding:17px 30px;cursor:pointer;transition:all .15s;text-transform:uppercase}
-  .btn:hover{background:var(--amber2);transform:translate(2px,-2px);box-shadow:-3px 3px 0 rgba(0,0,0,.45)}
+  .btn:hover,.btn:active{background:var(--amber2);transform:translate(2px,-2px);box-shadow:-3px 3px 0 rgba(0,0,0,.45)}
 
   #ovStart{align-items:flex-end}
   #ovStart .panel{margin:0 6vw 7vh;max-width:560px;padding:34px 38px;background:rgba(14,12,10,.92);
     border-left:3px solid var(--amber)}
   .kicker{font:600 11px 'IBM Plex Mono';letter-spacing:.45em;color:var(--amber)}
-  #ovStart h1{font:700 clamp(44px,7vw,68px) 'Chakra Petch';letter-spacing:.02em;line-height:1;margin:12px 0 4px}
+  #ovStart h1{font:700 clamp(44px,7vw,68px) 'Chakra Petch';line-height:1;margin:12px 0 4px}
   #ovStart h1 b{color:var(--amber)}
   #ovStart p{font:400 13px/1.75 'IBM Plex Mono';color:var(--dim);margin:14px 0 22px;max-width:46ch}
   .ctrls{display:grid;grid-template-columns:auto 1fr;gap:9px 18px;align-items:center;margin-bottom:26px}
   .ctrls span{font:500 11px 'IBM Plex Mono';letter-spacing:.14em;color:var(--dim)}
   .foot{margin-top:18px;font:400 10px 'IBM Plex Mono';letter-spacing:.18em;color:#5c564c}
 
-  #ovPause{align-items:center;justify-content:center;cursor:pointer}
-  #ovPause .in{text-align:center}
-  #ovPause h2{font:700 44px 'Chakra Petch';letter-spacing:.4em;text-indent:.4em}
-  #ovPause p{margin-top:12px;font:500 12px 'IBM Plex Mono';letter-spacing:.3em;color:var(--dim)}
-
   #ovOver{align-items:center;justify-content:center}
   #ovOver .panel{padding:40px 52px;background:rgba(14,12,10,.94);border-top:3px solid var(--red);text-align:center}
   #ovOver h2{font:700 42px 'Chakra Petch';letter-spacing:.18em;color:var(--red)}
   #ovOver .sub{margin-top:8px;font:600 11px 'IBM Plex Mono';letter-spacing:.4em;color:var(--dim)}
-  .stats{display:flex;gap:42px;justify-content:center;margin:34px 0}
+  .stats{display:flex;gap:42px;justify-content:center;margin:34px 0;flex-wrap:wrap}
   .stats .lbl{margin-bottom:8px}
   .stats .v{font:700 28px 'Chakra Petch'}
   .stats .v.am{color:var(--amber)}
+
+  /* layar kecil */
+  @media (max-width:820px){
+    #ovStart .panel{margin:0 4vw 4vh;padding:24px 24px}
+    #ovStart p{font-size:12px}
+    #elScore{font-size:22px}#elHp{font-size:22px}#elAmmo{font-size:40px}
+    #hpBar{width:150px}
+    #tl{top:14px;left:14px}#tr{top:14px;right:14px}
+    #bnT{font-size:26px}
+    #ovOver .panel{padding:28px 26px}
+    #ovOver h2{font-size:30px}
+    .stats{gap:26px}
+  }
 </style>
 </head>
 <body>
@@ -155,12 +191,32 @@
     <div id="elReload">MENGISI ULANG</div>
   </div>
 </div>
+<div id="hint">R — ISI ULANG</div>
 
 <div id="cross"><span class="t"></span><span class="b"></span><span class="l"></span><span class="r"></span><span class="c"></span></div>
 <div id="hm"><i></i><i></i><i></i><i></i></div>
 <div id="pops"></div>
 <div id="banner"><div id="bnT">GELOMBANG 01</div><div id="bnS">—</div></div>
 <div id="vig"></div><div id="vigLow"></div>
+
+<!-- Kontrol sentuh -->
+<div id="touchUI">
+  <div class="tbtn" id="btnFire">TEMBAK</div>
+  <div class="tbtn" id="btnJump">LOMPAT</div>
+  <div class="tbtn" id="btnReload">ISI</div>
+</div>
+<div id="joy"><div id="joyBase"></div><div id="joyStick"></div></div>
+
+<!-- Saran lanskap -->
+<div id="rotate">
+  <div>
+    <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M20 12a8 8 0 1 1-2.34-5.66"/><path d="M20 4v4h-4"/>
+    </svg>
+    <div class="in">PUTAR KE MODE LANSKAP</div>
+    <div class="sub">SEKTOR-7 BUTUH LAYAR LEBAR</div>
+  </div>
+</div>
 
 <!-- Layar mulai -->
 <div class="ov" id="ovStart">
@@ -170,22 +226,22 @@
     <p>Jaringan drone otonom telah menembus perimeter. Tahan setiap gelombang selama mungkin —
        tidak ada ekstraksi sampai sinyal hostil hilang. Bidik <em>mata merah</em> untuk kerusakan kritis,
        dan ambil kapsul medis hijau yang dijatuhkan musuh.</p>
-    <div class="ctrls">
+    <div class="ctrls" id="ctrlKB">
       <span><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd></span><span>BERGERAK</span>
       <span><kbd>MOUSE</kbd></span><span>BIDIK / TAHAN KLIK KIRI UNTUK TEMBAK OTOMATIS</span>
-      <span><kbd>SHIFT</kbd></span><SPANS><span>SPRINT</span></span>
+      <span><kbd>SHIFT</kbd></span><span>SPRINT</span>
       <span><kbd>SPASI</kbd></span><span>LOMPAT (BISA DI ATAS BETON)</span>
       <span><kbd>R</kbd></span><span>ISI ULANG</span>
-      <span><kbd>ESC</kbd></span><span>JEDA</span>
+    </div>
+    <div class="ctrls" id="ctrlTouch" style="display:none">
+      <span>SISI KIRI LAYAR</span><span>JOYSTICK — SENTUH &amp; GESER (DORONG PENUH = SPRINT)</span>
+      <span>SISI KANAN LAYAR</span><span>GESER UNTUK BIDIK</span>
+      <span><kbd>TEMBAK</kbd></span><span>TAHAN TOMBOL BESAR UNTUK MENEMBAK OTOMATIS</span>
+      <span><kbd>LOMPAT</kbd> <kbd>ISI</kbd></span><span>TOMBOL DI LAYAR</span>
     </div>
     <button class="btn" id="btnStart">MASUKI SIMULASI</button>
-    <div class="foot">BUTUH MOUSE + KEYBOARD (DESKTOP) // REKOMENDASI: HEADSET</div>
+    <div class="foot" id="footNote">MOUSE + KEYBOARD (DESKTOP) // GAME JALAN TANPA PERLU PENGUNCIAN KURSOR</div>
   </div>
-</div>
-
-<!-- Jeda -->
-<div class="ov hidden" id="ovPause">
-  <div class="in"><h2>DIJEDA</h2><p>KLIK DI MANA SAJA UNTUK MELANJUTKAN</p></div>
 </div>
 
 <!-- Game over -->
@@ -204,10 +260,14 @@
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>window.THREE||document.write('<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"><\/script>');</script>
+<script>window.THREE||document.write('<script src="https://unpkg.com/three@0.128.0/build/three.min.js"><\/script>');</script>
 <script>
 'use strict';
 /* =========================================================
-   SEKTOR-7 — arena FPS gelombangan, satu file, tanpa aset
+   SEKTOR-7 — arena FPS gelombangan (satu file, tanpa aset)
+   - Tidak ada sistem jeda sama sekali
+   - Kontrol sentuh penuh untuk HP + mouse/keyboard untuk desktop
    ========================================================= */
 const $=id=>document.getElementById(id);
 const canvas=$('game'), hud=$('hud');
@@ -216,14 +276,24 @@ const elScore=$('elScore'), elMult=$('elMult'), elThreat=$('elThreat'),
       crossEl=$('cross'), hmEl=$('hm'), pops=$('pops'),
       banner=$('banner'), bnT=$('bnT'), bnS=$('bnS'),
       vig=$('vig'), vigLow=$('vigLow'),
-      ovStart=$('ovStart'), ovPause=$('ovPause'), ovOver=$('ovOver');
+      ovStart=$('ovStart'), ovOver=$('ovOver');
 
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
 const rand=(a,b)=>a+Math.random()*(b-a);
 function easeOutBack(x){const c=1.70158;return 1+(c+1)*Math.pow(x-1,3)+c*Math.pow(x-1,2);}
 
+/* ---------- deteksi perangkat sentuh ---------- */
+const IS_TOUCH=('ontouchstart' in window)||navigator.maxTouchPoints>0;
+if(IS_TOUCH){
+  document.body.classList.add('touch');
+  $('ctrlKB').style.display='none';
+  $('ctrlTouch').style.display='grid';
+  $('hint').textContent='GESER KANAN = BIDIK // DORONG JOYSTICK PENUH = SPRINT';
+  $('footNote').textContent='MODE SENTUH AKTIF // DISARANKAN MODE LANSKAP';
+}
+
 /* ---------- state global ---------- */
-let state='menu';            // menu | pending | playing | paused | over
+let state='menu';            // menu | playing | over (tanpa jeda)
 let t=0;
 const stats={score:0,kills:0,shots:0,hits:0,wave:0};
 let hp=100, lastHurt=-10, ammo=24, reloading=false, reloadT=0;
@@ -232,7 +302,7 @@ const MAG=24, RELOAD=1.15;
 
 /* ---------- three.js dasar ---------- */
 const renderer=new THREE.WebGLRenderer({canvas,antialias:true});
-renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+renderer.setPixelRatio(Math.min(devicePixelRatio,IS_TOUCH?1.5:2));
 renderer.setSize(innerWidth,innerHeight);
 renderer.shadowMap.enabled=true;
 renderer.shadowMap.type=THREE.PCFSoftShadowMap;
@@ -249,35 +319,35 @@ scene.add(camera);
 scene.add(new THREE.HemisphereLight(0x35302a,0x0b0908,0.75));
 const dirL=new THREE.DirectionalLight(0xffd9a8,0.8);
 dirL.position.set(20,34,12); dirL.castShadow=true;
-dirL.shadow.mapSize.set(2048,2048);
-dirL.shadow.camera.left=-35; dirL.shadow.camera.right=35;
-dirL.shadow.camera.top=35; dirL.shadow.camera.bottom=-35;
-dirL.shadow.camera.near=1; dirL.shadow.camera.far=90;
+dirL.shadow.mapSize.set(IS_TOUCH?1024:2048,IS_TOUCH?1024:2048);
+dirL.shadow.camera.left=-35;dirL.shadow.camera.right=35;
+dirL.shadow.camera.top=35;dirL.shadow.camera.bottom=-35;
+dirL.shadow.camera.near=1;dirL.shadow.camera.far=90;
 dirL.shadow.bias=-0.0004;
 scene.add(dirL);
-const fill=new THREE.PointLight(0xffd0a0,0.25,45); fill.position.set(0,10,0); scene.add(fill);
+const fill=new THREE.PointLight(0xffd0a0,0.25,45);fill.position.set(0,10,0);scene.add(fill);
 
 /* ---------- tekstur kanvas ---------- */
 function makeTex(w,h,draw){
-  const c=document.createElement('canvas'); c.width=w; c.height=h;
+  const c=document.createElement('canvas');c.width=w;c.height=h;
   draw(c.getContext('2d'),w,h);
   const tx=new THREE.CanvasTexture(c);
   tx.wrapS=tx.wrapT=THREE.RepeatWrapping;
   return tx;
 }
 const floorTex=makeTex(256,256,(g)=>{
-  g.fillStyle='#17130e'; g.fillRect(0,0,256,256);
-  g.strokeStyle='rgba(205,195,175,0.045)'; g.lineWidth=1;
+  g.fillStyle='#17130e';g.fillRect(0,0,256,256);
+  g.strokeStyle='rgba(205,195,175,0.045)';g.lineWidth=1;
   for(let i=0;i<=256;i+=32){g.beginPath();g.moveTo(i,0);g.lineTo(i,256);g.moveTo(0,i);g.lineTo(256,i);g.stroke();}
-  g.strokeStyle='rgba(255,150,70,0.10)'; g.lineWidth=2;
+  g.strokeStyle='rgba(255,150,70,0.10)';g.lineWidth=2;
   for(let i=0;i<=256;i+=128){g.beginPath();g.moveTo(i,0);g.lineTo(i,256);g.moveTo(0,i);g.lineTo(256,i);g.stroke();}
   for(let i=0;i<400;i++){g.fillStyle=Math.random()<.7?'rgba(0,0,0,.22)':'rgba(255,240,210,.02)';
     g.fillRect(Math.random()*256,Math.random()*256,1.5,1.5);}
 });
 floorTex.repeat.set(8,8);
 const wallTex=makeTex(256,256,(g)=>{
-  g.fillStyle='#1d1915'; g.fillRect(0,0,256,256);
-  g.strokeStyle='rgba(0,0,0,.4)'; g.lineWidth=2;
+  g.fillStyle='#1d1915';g.fillRect(0,0,256,256);
+  g.strokeStyle='rgba(0,0,0,.4)';g.lineWidth=2;
   for(let i=0;i<=256;i+=64){g.beginPath();g.moveTo(0,i);g.lineTo(256,i);g.stroke();}
   g.beginPath();g.moveTo(128,0);g.lineTo(128,256);g.stroke();
   g.fillStyle='rgba(255,190,120,.05)';
@@ -297,18 +367,17 @@ const flashTex=makeTex(128,128,(g)=>{
   for(let i=0;i<6;i++){const a=i/6*Math.PI*2+Math.random()*.5;
     g.beginPath();g.moveTo(64,64);g.lineTo(64+Math.cos(a)*62,64+Math.sin(a)*62);g.stroke();}
 });
-/* papan tanda dinding — digambar ulang setelah font siap */
 const signRedraws=[];
 function makeSignTex(draw){
   const c=document.createElement('canvas');c.width=1024;c.height=256;
   const tx=new THREE.CanvasTexture(c);
   const fn=()=>{draw(c.getContext('2d'));tx.needsUpdate=true;};
-  fn(); signRedraws.push(fn); return tx;
+  fn();signRedraws.push(fn);return tx;
 }
 const signTex=makeSignTex(g=>{
   g.clearRect(0,0,1024,256);
   g.fillStyle='#e8933c';g.fillRect(40,26,944,4);
-  g.font='700 150px "Chakra Petch", sans-serif';g.textBaseline='alphabetic';
+  g.font='700 150px "Chakra Petch", sans-serif';
   g.fillText('SEKTOR-07',40,172);
   g.font='600 34px "IBM Plex Mono", monospace';g.fillStyle='rgba(232,147,60,.75)';
   g.fillText('ZONA UJI TEMBAK // AKSES TERBATAS',44,226);
@@ -316,81 +385,73 @@ const signTex=makeSignTex(g=>{
 if(document.fonts&&document.fonts.ready)document.fonts.ready.then(()=>signRedraws.forEach(f=>f()));
 
 /* ---------- arena ---------- */
-const worldMeshes=[], losMeshes=[], circleCols=[], covers=[];
+const worldMeshes=[],losMeshes=[],circleCols=[],covers=[];
 const amberBasic=new THREE.MeshBasicMaterial({color:0xd97a2e});
 
 const floor=new THREE.Mesh(new THREE.PlaneGeometry(60,60),
   new THREE.MeshStandardMaterial({map:floorTex,roughness:.92,metalness:.05}));
-floor.rotation.x=-Math.PI/2; floor.receiveShadow=true; scene.add(floor); worldMeshes.push(floor);
+floor.rotation.x=-Math.PI/2;floor.receiveShadow=true;scene.add(floor);worldMeshes.push(floor);
 
 const wallMat=new THREE.MeshStandardMaterial({map:wallTex,roughness:.85,metalness:.1});
 const wallGeo=new THREE.BoxGeometry(58,7,1);
 [[0,3.5,-28.5,0],[0,3.5,28.5,0],[-28.5,3.5,0,Math.PI/2],[28.5,3.5,0,Math.PI/2]].forEach(([x,y,z,ry])=>{
-  const w=new THREE.Mesh(wallGeo,wallMat); w.position.set(x,y,z); w.rotation.y=ry;
-  w.receiveShadow=true; scene.add(w); worldMeshes.push(w);
+  const w=new THREE.Mesh(wallGeo,wallMat);w.position.set(x,y,z);w.rotation.y=ry;
+  w.receiveShadow=true;scene.add(w);worldMeshes.push(w);
   const s=new THREE.Mesh(new THREE.BoxGeometry(58,.07,.06),amberBasic);
-  s.position.set(0,4.7,0); w.add(s); s.position.z=0.53;
+  s.position.set(0,4.7,.53);w.add(s);
 });
 
-/* papan tanda dinding */
 const signMat=new THREE.MeshBasicMaterial({map:signTex,transparent:true,opacity:.9});
 const sign1=new THREE.Mesh(new THREE.PlaneGeometry(14,3.5),signMat);
-sign1.position.set(0,4,-27.94); scene.add(sign1);
-const sign2=sign1.clone(); sign2.position.set(27.94,4,-8); sign2.rotation.y=-Math.PI/2; scene.add(sign2);
+sign1.position.set(0,4,-27.94);scene.add(sign1);
+const sign2=sign1.clone();sign2.position.set(27.94,4,-8);sign2.rotation.y=-Math.PI/2;scene.add(sign2);
 
-/* pilar + lampu */
 const pillarMat=new THREE.MeshStandardMaterial({color:0x24201b,roughness:.7,metalness:.2});
 [[14,14],[-14,14],[14,-14],[-14,-14]].forEach(([x,z])=>{
-  const grp=new THREE.Group(); grp.position.set(x,3.5,z);
+  const grp=new THREE.Group();grp.position.set(x,3.5,z);
   grp.rotation.y=Math.atan2(-x,-z);
   const cyl=new THREE.Mesh(new THREE.CylinderGeometry(1.15,1.32,7,14),pillarMat);
-  cyl.castShadow=cyl.receiveShadow=true; grp.add(cyl); worldMeshes.push(cyl); losMeshes.push(cyl);
+  cyl.castShadow=cyl.receiveShadow=true;grp.add(cyl);worldMeshes.push(cyl);losMeshes.push(cyl);
   const st=new THREE.Mesh(new THREE.BoxGeometry(.18,5.2,.06),amberBasic);
-  st.position.set(0,0,1.16); grp.add(st);
+  st.position.set(0,0,1.16);grp.add(st);
   scene.add(grp);
   circleCols.push({x,z,r:1.15});
-  const pl=new THREE.PointLight(0xff8c2e,1.0,22,2); pl.position.set(x,6.1,z); scene.add(pl);
+  const pl=new THREE.PointLight(0xff8c2e,1.0,22,2);pl.position.set(x,6.1,z);scene.add(pl);
 });
 
-/* beton perlindungan */
 const coverMat=new THREE.MeshStandardMaterial({color:0x26221c,roughness:.85,metalness:.1});
 function addCover(x,z,w,d){
   const h=1.1;
   const m=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),coverMat);
-  m.position.set(x,h/2,z); m.castShadow=m.receiveShadow=true;
-  scene.add(m); worldMeshes.push(m); losMeshes.push(m);
+  m.position.set(x,h/2,z);m.castShadow=m.receiveShadow=true;
+  scene.add(m);worldMeshes.push(m);losMeshes.push(m);
   const st=new THREE.Mesh(new THREE.BoxGeometry(w*.9,.05,.07),amberBasic);
-  st.position.set(x,h+.025,z+d/2-.035); scene.add(st);
+  st.position.set(x,h+.025,z+d/2-.035);scene.add(st);
   covers.push({x,z,hw:w/2,hd:d/2,h});
 }
-addCover(0,-10,5.2,1.2); addCover(-9,4,1.2,5.2); addCover(9,4,1.2,5.2);
-addCover(-16,-14,3.6,1.2); addCover(16,-14,3.6,1.2); addCover(0,14,6,1.2);
-addCover(-6,-18,1.2,3.2); addCover(6,-18,1.2,3.2);
+addCover(0,-10,5.2,1.2);addCover(-9,4,1.2,5.2);addCover(9,4,1.2,5.2);
+addCover(-16,-14,3.6,1.2);addCover(16,-14,3.6,1.2);addCover(0,14,6,1.2);
+addCover(-6,-18,1.2,3.2);addCover(6,-18,1.2,3.2);
 
-/* drum */
 const barrelMat=new THREE.MeshStandardMaterial({color:0x6b3b22,roughness:.55,metalness:.35});
 [[11.5,-8.5],[12.3,-9.4],[-11.8,-8.2],[-12.6,-9.3],[8.2,16.5],[-8.0,16.8]].forEach(([x,z])=>{
   const b=new THREE.Mesh(new THREE.CylinderGeometry(.38,.38,1.05,12),barrelMat);
-  b.position.set(x,.525,z); b.castShadow=b.receiveShadow=true;
-  scene.add(b); worldMeshes.push(b); circleCols.push({x,z,r:.38});
+  b.position.set(x,.525,z);b.castShadow=b.receiveShadow=true;
+  scene.add(b);worldMeshes.push(b);circleCols.push({x,z,r:.38});
 });
 
-/* markah lantai */
 const ringMat=new THREE.MeshBasicMaterial({color:0xff8c2e,transparent:true,opacity:.4});
 [[5.6,5.75],[1.9,2.02]].forEach(([ri,ro])=>{
   const r=new THREE.Mesh(new THREE.RingGeometry(ri,ro,64),ringMat);
-  r.rotation.x=-Math.PI/2; r.position.y=.02; scene.add(r);
+  r.rotation.x=-Math.PI/2;r.position.y=.02;scene.add(r);
 });
-[[0,0,.09,11],[0,0,11,.09],[0,0,.09,-11]].forEach(()=>{});
 const lineMat=new THREE.MeshBasicMaterial({color:0xff8c2e,transparent:true,opacity:.16});
-[[.09,11],[-11,0,0,0]].forEach(()=>{});
-const l1=new THREE.Mesh(new THREE.PlaneGeometry(.09,11),lineMat);l1.rotation.x=-Math.PI/2;l1.position.set(3.9,.02,0);scene.add(l1);
-const l2=l1.clone();l2.position.set(-3.9,.02,0);scene.add(l2);
-const l3=new THREE.Mesh(new THREE.PlaneGeometry(11,.09),lineMat);l3.rotation.x=-Math.PI/2;l3.position.set(0,.02,3.9);scene.add(l3);
-const l4=l3.clone();l4.position.set(0,.02,-3.9);scene.add(l4);
+[[3.9,0,.09,11],[-3.9,0,.09,11],[0,3.9,11,.09],[0,-3.9,11,.09]].forEach(([x,z,w,d])=>{
+  const l=new THREE.Mesh(new THREE.PlaneGeometry(w,d),lineMat);
+  l.rotation.x=-Math.PI/2;l.position.set(x,.02,z);scene.add(l);
+});
 
-/* bintang */
-{
+{ /* bintang */
   const N=340,pos=new Float32Array(N*3);
   for(let i=0;i<N;i++){
     const a=Math.random()*Math.PI*2,r=rand(40,140),y=rand(22,90);
@@ -407,7 +468,7 @@ const weapon=new THREE.Group();
   const m1=new THREE.MeshStandardMaterial({color:0x1f2126,roughness:.35,metalness:.75});
   const m2=new THREE.MeshStandardMaterial({color:0x2c2f36,roughness:.5,metalness:.6});
   const am=new THREE.MeshBasicMaterial({color:0xff8c2e});
-  const add=(geo,mat,x,y,z,rx=0)=>{const m=new THREE.Mesh(geo,mat);m.position.set(x,y,z);m.rotation.x=rx;weapon.add(m);return m;};
+  const add=(geo,mat,x,y,z,rx=0)=>{const m=new THREE.Mesh(geo,mat);m.position.set(x,y,z);m.rotation.x=rx;weapon.add(m);};
   add(new THREE.BoxGeometry(.13,.15,.46),m1,0,0,-.05);
   add(new THREE.BoxGeometry(.06,.03,.3),m2,0,.09,-.02);
   add(new THREE.CylinderGeometry(.03,.037,.36,10),m1,0,.02,-.42,Math.PI/2);
@@ -418,20 +479,20 @@ const weapon=new THREE.Group();
   add(new THREE.BoxGeometry(.012,.012,.012),am,0,.135,-.18);
   add(new THREE.BoxGeometry(.135,.015,.22),am,0,.045,-.12);
 }
-const muzzle=new THREE.Object3D(); muzzle.position.set(0,.02,-.63); weapon.add(muzzle);
+const muzzle=new THREE.Object3D();muzzle.position.set(0,.02,-.63);weapon.add(muzzle);
 const flashMesh=new THREE.Mesh(new THREE.PlaneGeometry(.34,.34),
   new THREE.MeshBasicMaterial({map:flashTex,transparent:true,blending:THREE.AdditiveBlending,depthWrite:false,side:THREE.DoubleSide}));
-flashMesh.position.set(0,.02,-.66); flashMesh.visible=false; weapon.add(flashMesh);
-const muzzleLight=new THREE.PointLight(0xffa540,0,7); muzzle.add(muzzleLight);
-weapon.position.set(.28,-.26,-.5); weapon.visible=false; camera.add(weapon);
+flashMesh.position.set(0,.02,-.66);flashMesh.visible=false;weapon.add(flashMesh);
+const muzzleLight=new THREE.PointLight(0xffa540,0,7);muzzle.add(muzzleLight);
+weapon.position.set(.28,-.26,-.5);weapon.visible=false;camera.add(weapon);
 
-/* ---------- tracer (pool) ---------- */
+/* ---------- tracer ---------- */
 const tracers=[];
 {
   const g=new THREE.BoxGeometry(.03,.03,1);
   for(let i=0;i<14;i++){
     const m=new THREE.Mesh(g,new THREE.MeshBasicMaterial({color:0xffc070,transparent:true,blending:THREE.AdditiveBlending,depthWrite:false}));
-    m.visible=false; scene.add(m); tracers.push({m,life:0});
+    m.visible=false;scene.add(m);tracers.push({m,life:0});
   }
 }
 const TV=new THREE.Vector3();
@@ -440,30 +501,30 @@ function spawnTracer(a,b){
   tr.m.position.copy(a).add(b).multiplyScalar(.5);
   tr.m.lookAt(TV.copy(b));
   tr.m.scale.set(1,1,a.distanceTo(b));
-  tr.m.visible=true; tr.life=1;
+  tr.m.visible=true;tr.life=1;
 }
 
-/* ---------- ledakan partikel (pool) ---------- */
+/* ---------- ledakan partikel ---------- */
 const bursts=[];
 class Burst{
   constructor(){
     const N=this.N=48;
-    this.pos=new Float32Array(N*3); this.col=new Float32Array(N*3); this.vel=new Float32Array(N*3);
+    this.pos=new Float32Array(N*3);this.col=new Float32Array(N*3);this.vel=new Float32Array(N*3);
     this.geo=new THREE.BufferGeometry();
     this.geo.setAttribute('position',new THREE.BufferAttribute(this.pos,3));
     this.geo.setAttribute('color',new THREE.BufferAttribute(this.col,3));
     this.mat=new THREE.PointsMaterial({size:.16,map:softTex,transparent:true,depthWrite:false,blending:THREE.AdditiveBlending,vertexColors:true});
     this.pts=new THREE.Points(this.geo,this.mat);
-    this.pts.visible=false; this.pts.frustumCulled=false;
+    this.pts.visible=false;this.pts.frustumCulled=false;
     scene.add(this.pts);
-    this.life=0; this.count=0;
+    this.life=0;this.count=0;
   }
   spawn(p,r,g,b,count,speed,dur,size,grav){
     this.count=Math.min(count,this.N);
-    this.mat.size=size; this.life=dur; this.dur=dur; this.grav=grav;
+    this.mat.size=size;this.life=dur;this.dur=dur;this.grav=grav;
     for(let i=0;i<this.count;i++){
       this.pos[i*3]=p.x;this.pos[i*3+1]=p.y;this.pos[i*3+2]=p.z;
-      const th=Math.random()*Math.PI*2, ph=Math.acos(rand(-1,1)), sp=speed*rand(.3,1.15);
+      const th=Math.random()*Math.PI*2,ph=Math.acos(rand(-1,1)),sp=speed*rand(.3,1.15);
       this.vel[i*3]=Math.sin(ph)*Math.cos(th)*sp;
       this.vel[i*3+1]=Math.cos(ph)*sp;
       this.vel[i*3+2]=Math.sin(ph)*Math.sin(th)*sp;
@@ -493,12 +554,12 @@ function spawnBurst(p,r,g,b,count,speed,dur,size,grav){
   (bursts.find(x=>x.life<=0)||bursts[0]).spawn(p,r,g,b,count,speed,dur,size,grav);
 }
 
-/* ---------- audio prosedural (WebAudio) ---------- */
+/* ---------- audio prosedural ---------- */
 let AC=null,master=null,noiseBuf=null,ambOn=false;
 function initAudio(){
   if(AC)return;
-  AC=new (window.AudioContext||window.webkitAudioContext)();
-  master=AC.createGain(); master.gain.value=.5; master.connect(AC.destination);
+  try{AC=new (window.AudioContext||window.webkitAudioContext)();}catch(e){return;}
+  master=AC.createGain();master.gain.value=.5;master.connect(AC.destination);
   const len=AC.sampleRate;
   noiseBuf=AC.createBuffer(1,len,AC.sampleRate);
   const d=noiseBuf.getChannelData(0);
@@ -537,7 +598,7 @@ const sfx={
   over(){envOsc('sawtooth',220,55,1.1,.3);noiseBurst(.9,.3,'lowpass',800,80);},
 };
 function startAmbience(){
-  if(ambOn||!AC)return; ambOn=true;
+  if(ambOn||!AC)return;ambOn=true;
   const o1=AC.createOscillator(),o2=AC.createOscillator(),g=AC.createGain();
   o1.frequency.value=52;o2.frequency.value=52.7;g.gain.value=.02;
   o1.connect(g);o2.connect(g);g.connect(master);o1.start();o2.start();
@@ -549,49 +610,54 @@ const keys={};
 let trauma=0,recoilP=0,recoilA=0,heat=0,fireCd=0,firing=false,dryPlayed=false,flashT=0;
 let swayT=0,swayCur=0,lastFov=75;
 
+/* status joystick virtual (disetel oleh handler sentuh) */
+let joyOn=false,joyX=0,joyY=0;
+
 function groundHeightAt(x,z){
   let g=0;
   for(const c of covers)
     if(Math.abs(x-c.x)<c.hw+.3&&Math.abs(z-c.z)<c.hd+.3)g=Math.max(g,c.h);
   return g;
 }
-function resolveCollision(pos,feetY){
+function resolveCollision(pos){
   const R=.45;
-  pos.x=clamp(pos.x,-27.5+R? -27.5+R:-27.5+R); // placeholder (diganti baris bawah)
   pos.x=clamp(pos.x,-27.5,27.5);
   pos.z=clamp(pos.z,-27.5,27.5);
   for(const c of circleCols){
     const dx=pos.x-c.x,dz=pos.z-c.z,rr=c.r+R,d2=dx*dx+dz*dz;
     if(d2<rr*rr&&d2>1e-6){const d=Math.sqrt(d2),push=rr-d;pos.x+=dx/d*push;pos.z+=dz/d*push;}
   }
-  if(feetY<1.1-.3){
+  if(pos.y<.8){
     for(const c of covers){
       const ex=c.hw+R,ez=c.hd+R,dx=pos.x-c.x,dz=pos.z-c.z;
       if(Math.abs(dx)<ex&&Math.abs(dz)<ez){
         const px=ex-Math.abs(dx),pz=ez-Math.abs(dz);
-        if(px<pz)pos.x=c.x+Math.sign(dx)*ex; else pos.z=c.z+Math.sign(dz)*ez;
+        if(px<pz)pos.x=c.x+Math.sign(dx)*ex;else pos.z=c.z+Math.sign(dz)*ez;
       }
     }
   }
 }
 function updatePlayer(dt){
-  const f=(keys.KeyW?1:0)-(keys.KeyS?1:0), s=(keys.KeyD?1:0)-(keys.KeyA?1:0);
-  const sprint=keys.ShiftLeft||keys.ShiftRight;
+  /* gerakan: gabungan keyboard + joystick virtual */
+  let f=(keys.KeyW?1:0)-(keys.KeyS?1:0),s=(keys.KeyD?1:0)-(keys.KeyA?1:0);
+  if(joyOn){s+=joyX;f-=joyY;}
   let wx=s,wz=-f;
-  const wl=Math.hypot(wx,wz);
-  if(wl>0){wx/=wl;wz/=wl;}
+  let wl=Math.hypot(wx,wz);
+  if(wl>1){wx/=wl;wz/=wl;wl=1;}
+  const sprint=(keys.ShiftLeft||keys.ShiftRight)||(joyOn&&wl>.95);
+  const target=(sprint?11.5:7.5)*wl;
+
   const cs=Math.cos(player.yaw),sn=Math.sin(player.yaw);
-  const dwx=wx*cs+wz*sn, dwz=-wx*sn+wz*cs;
-  const target=(sprint?11.5:7.5)*(wl>0?1:0);
+  const dwx=wx*cs+wz*sn,dwz=-wx*sn+wz*cs;
   if(player.grounded){
     const k=Math.min(1,10*dt);
     player.vel.x+=(dwx*target-player.vel.x)*k;
     player.vel.z+=(dwz*target-player.vel.z)*k;
   }else{
-    player.vel.x+=dwx*10*dt; player.vel.z+=dwz*10*dt;
+    player.vel.x+=dwx*10*dt;player.vel.z+=dwz*10*dt;
   }
   player.vel.y-=24*dt;
-  const wasAir=!player.grounded, fallV=player.vel.y;
+  const wasAir=!player.grounded,fallV=player.vel.y;
   player.pos.x+=player.vel.x*dt;
   player.pos.y+=player.vel.y*dt;
   player.pos.z+=player.vel.z*dt;
@@ -600,7 +666,7 @@ function updatePlayer(dt){
     if(wasAir&&fallV<-8){trauma=Math.max(trauma,.15);sfx.land();}
     player.pos.y=gh;player.vel.y=0;player.grounded=true;
   }else player.grounded=false;
-  resolveCollision(player.pos,player.pos.y);
+  resolveCollision(player.pos);
   if(player.pos.y<gh)player.pos.y=gh;
 
   const sp=Math.hypot(player.vel.x,player.vel.z);
@@ -613,7 +679,7 @@ function updatePlayer(dt){
 
   const bobY=Math.sin(player.bobPhase*2)*.03*player.bobAmt;
   camera.position.set(player.pos.x,player.pos.y+1.7+bobY,player.pos.z);
-  const shX=(Math.random()*2-1)*trauma*trauma*.03, shY=(Math.random()*2-1)*trauma*trauma*.03;
+  const shX=(Math.random()*2-1)*trauma*trauma*.03,shY=(Math.random()*2-1)*trauma*trauma*.03;
   camera.rotation.set(player.pitch+recoilP+shX,player.yaw+shY,0);
 
   const tf=75+((sprint&&sp>6)?7:0);
@@ -623,7 +689,7 @@ function updatePlayer(dt){
   if(t-lastHurt>4&&hp<100&&hp>0){hp=Math.min(100,hp+7*dt);updateHpHUD();}
 }
 
-/* ---------- animasi senjata & menembak ---------- */
+/* ---------- senjata & menembak ---------- */
 function updateWeapon(dt){
   recoilA*=Math.exp(-9*dt);
   swayT*=Math.exp(-8*dt);
@@ -641,7 +707,7 @@ function updateWeapon(dt){
   flashMesh.visible=flashT>0;
   muzzleLight.intensity=flashT>0?2.6:0;
 }
-const rayShot=new THREE.Raycaster(), rayLOS=new THREE.Raycaster();
+const rayShot=new THREE.Raycaster(),rayLOS=new THREE.Raycaster();
 const V1=new THREE.Vector3(),V2=new THREE.Vector3(),V3=new THREE.Vector3(),V4=new THREE.Vector3();
 const M1=new THREE.Matrix4(),Q1=new THREE.Quaternion(),UP=new THREE.Vector3(0,1,0);
 let hitMeshes=[];
@@ -663,6 +729,8 @@ function updateShooting(dt){
   if(!firing)dryPlayed=false;
   crossEl.style.setProperty('--g',(6+heat*3.5).toFixed(1)+'px');
 }
+/* bantuan bidik ringan khusus layar sentuh */
+const AIM_ASSIST=IS_TOUCH?0.06:0;
 function fireShot(){
   stats.shots++;ammo--;fireCd=.105;heat=Math.min(7,heat+1);
   recoilA=Math.min(1,recoilA+.55);
@@ -684,6 +752,22 @@ function fireShot(){
   let dist=120,point=null,drone=null,part=null;
   if(eh.length&&eh[0].distance<dist){dist=eh[0].distance;point=eh[0].point;drone=eh[0].object.userData.drone;part=eh[0].object.userData.part;}
   if(wh.length&&wh[0].distance<dist){dist=wh[0].distance;point=wh[0].point;drone=null;}
+
+  /* jika meleset tipis di layar sentuh, "tempel" ke musuh terdekat sudut */
+  if(!drone&&AIM_ASSIST){
+    let best=null,bestAng=AIM_ASSIST;
+    const maxD=wh.length?wh[0].distance:120;
+    for(const d of drones){
+      V2.copy(d.group.position).sub(V3);
+      const dd=V2.length();
+      if(dd>=maxD)continue;
+      V2.normalize();
+      const ang=V2.angleTo(V1);
+      if(ang<bestAng){bestAng=ang;best=d;}
+    }
+    if(best){drone=best;part='body';point=best.group.position.clone();}
+  }
+
   if(!point)point=V3.clone().addScaledVector(V1,90);
   if(drone){stats.hits++;damageDrone(drone,part);}
   else if(wh.length&&dist<120)spawnBurst(point,1,.75,.4,7,3,.3,.06,7);
@@ -721,7 +805,7 @@ class Drone{
     eye.position.set(0,.05,.42);eye.userData={drone:this,part:'eye'};
     const glow=new THREE.Sprite(new THREE.SpriteMaterial({map:softTex,color:0xff3526,transparent:true,blending:THREE.AdditiveBlending,depthWrite:false}));
     glow.scale.set(.55,.55,1);eye.add(glow);
-    const rg=new THREE.Group();
+    const rg=this.ringG=new THREE.Group();
     const ring=new THREE.Mesh(droneRingGeo,droneRingMat);
     ring.rotation.x=Math.PI/2;ring.userData={drone:this,part:'body'};rg.add(ring);
     for(let i=0;i<3;i++){
@@ -730,7 +814,6 @@ class Drone{
       p.position.set(Math.cos(a)*.85,0,Math.sin(a)*.85);
       p.userData={drone:this,part:'body'};rg.add(p);
     }
-    this.ringG=rg;
     const thr=new THREE.Sprite(new THREE.SpriteMaterial({map:softTex,color:0xff8c2e,transparent:true,blending:THREE.AdditiveBlending,depthWrite:false}));
     thr.scale.set(.5,.5,1);thr.position.set(0,-.55,0);
     this.hpBg=new THREE.Sprite(new THREE.SpriteMaterial({color:0x000000,opacity:.55,transparent:true}));
@@ -740,7 +823,7 @@ class Drone{
     g.add(body,eye,rg,thr,this.hpBg,this.hpFg);
     g.position.set(x,this.hoverY,z);
     scene.add(g);
-    if(!dec){drones.push(this);hitMeshes.push(body,eye,ring,...rg.children);}
+    if(!dec){drones.push(this);hitMeshes.push(body,eye,...rg.children);}
     else decoDrones.push(this);
   }
   update(dt){
@@ -910,7 +993,7 @@ function updatePickups(dt){
   }
 }
 
-/* ---------- sistem gelombangan ---------- */
+/* ---------- gelombangan ---------- */
 let wavePhase='idle',waveTimer=0,toSpawn=0,spawnedCount=0,enemiesAlive=0,spawnTimer=0,maxAlive=5,spawnInt=1.6;
 function startWave(n){
   stats.wave=n;
@@ -1001,7 +1084,7 @@ function hurtFlash(){
   }));
 }
 
-/* ---------- damage & alur permainan ---------- */
+/* ---------- damage & alur permainan (TANPA JEDA) ---------- */
 function damagePlayer(d){
   if(state!=='playing')return;
   hp-=d;lastHurt=t;
@@ -1009,10 +1092,16 @@ function damagePlayer(d){
   hurtFlash();sfx.hurt();updateHpHUD();
   if(hp<=0){hp=0;gameOver();}
 }
+function clearKeys(){
+  for(const k in keys)keys[k]=false;
+  firing=false;
+}
 function gameOver(){
-  state='over';firing=false;
-  document.exitPointerLock&&document.exitPointerLock();
+  state='over';firing=false;clearKeys();
+  joyOn=false;joyX=joyY=0;joyEl.classList.remove('on');
+  try{document.exitPointerLock&&document.exitPointerLock();}catch(e){}
   hud.classList.remove('on');weapon.visible=false;
+  document.body.classList.remove('playing');
   $('stScore').textContent=String(stats.score).padStart(6,'0');
   $('stWave').textContent=String(stats.wave).padStart(2,'0');
   $('stKills').textContent=String(stats.kills).padStart(3,'0');
@@ -1042,63 +1131,148 @@ function resetGame(){
   updateHpHUD();updateAmmoHUD();updateScoreHUD();updateThreatHUD();
 }
 
-/* ---------- event ---------- */
- $('btnStart').addEventListener('click',()=>{
-  initAudio();AC.resume&&AC.resume();startAmbience();
-  ovStart.classList.add('hidden');
+/* ---------- pointer lock: opsional, hanya desktop, TIDAK pernah menjeda ---------- */
+let lockDead=false;
+function tryLock(){
+  if(IS_TOUCH||lockDead||!canvas.requestPointerLock)return;
+  try{
+    const p=canvas.requestPointerLock();
+    if(p&&p.catch)p.catch(()=>{});
+  }catch(e){lockDead=true;}
+}
+document.addEventListener('pointerlockerror',()=>{lockDead=true;});
+
+/* ---------- mulai / ulang ---------- */
+function beginGame(){
+  initAudio();AC&&AC.resume&&AC.resume();startAmbience();
   removeDeco();resetGame();
-  state='pending';
-  canvas.requestPointerLock();
-});
- $('btnAgain').addEventListener('click',()=>{
-  ovOver.classList.add('hidden');resetGame();
-  state='pending';
-  canvas.requestPointerLock();
-});
-ovPause.addEventListener('click',()=>canvas.requestPointerLock());
+  state='playing';
+  hud.classList.add('on');weapon.visible=true;
+  document.body.classList.add('playing');
+  startWave(1);
+  tryLock();
+}
+ $('btnStart').addEventListener('click',()=>{ovStart.classList.add('hidden');beginGame();});
+ $('btnAgain').addEventListener('click',()=>{ovOver.classList.add('hidden');beginGame();});
 
-document.addEventListener('pointerlockchange',()=>{
-  if(document.pointerLockElement===canvas){
-    if(state==='pending'){state='playing';hud.classList.add('on');weapon.visible=true;startWave(1);}
-    else if(state==='paused'){state='playing';hud.classList.add('on');weapon.visible=true;}
-    ovPause.classList.add('hidden');
-  }else{
-    if(state==='playing'||state==='pending'){
-      state='paused';firing=false;ovPause.classList.remove('hidden');
-    }
-  }
-});
-document.addEventListener('pointerlockerror',()=>{
-  if(state==='pending'){state='paused';ovPause.classList.remove('hidden');}
-});
-
+/* ---------- input keyboard & mouse (desktop) ---------- */
 document.addEventListener('keydown',e=>{
   keys[e.code]=true;
-  if(e.code==='Space')e.preventDefault();
+  if(e.code==='Space'){
+    e.preventDefault();
+    if(state==='playing'&&player.grounded){player.vel.y=8.2;player.grounded=false;}
+  }
   if(e.code==='KeyR')startReload();
   if(e.code==='Enter'&&!ovStart.classList.contains('hidden'))$('btnStart').click();
 });
 document.addEventListener('keyup',e=>keys[e.code]=false);
+
+let lastCX=null,lastCY=null;
 document.addEventListener('mousemove',e=>{
-  if(document.pointerLockElement!==canvas)return;
-  const mx=clamp(e.movementX,-100,100),my=clamp(e.movementY,-100,100);
+  if(state!=='playing')return;
+  let mx=e.movementX,my=e.movementY;
+  if(mx===undefined){
+    if(lastCX===null){lastCX=e.clientX;lastCY=e.clientY;return;}
+    mx=e.clientX-lastCX;my=e.clientY-lastCY;
+    lastCX=e.clientX;lastCY=e.clientY;
+  }
+  mx=clamp(mx,-120,120);my=clamp(my,-120,120);
   const s=.0021;
   player.yaw-=mx*s;
   player.pitch=clamp(player.pitch-my*s,-1.53,1.53);
   swayT=clamp(swayT-mx*.00025,-.04,.04);
 });
 document.addEventListener('mousedown',e=>{
-  if(document.pointerLockElement===canvas&&e.button===0)firing=true;
+  if(state!=='playing'||e.button!==0)return;
+  firing=true;
+  if(!IS_TOUCH&&document.pointerLockElement!==canvas)tryLock();
 });
 document.addEventListener('mouseup',e=>{if(e.button===0)firing=false;});
-canvas.addEventListener('contextmenu',e=>e.preventDefault());
+document.addEventListener('contextmenu',e=>{if(state!=='menu')e.preventDefault();});
+addEventListener('blur',clearKeys);   /* hanya mencegah tombol nyangkut — TIDAK menjeda */
+document.addEventListener('visibilitychange',()=>{if(document.hidden)clearKeys();});
 addEventListener('resize',()=>{
   camera.aspect=innerWidth/innerHeight;
   camera.updateProjectionMatrix();
   renderer.setSize(innerWidth,innerHeight);
 });
 
-/* ---------- drone dekoratif untuk layar menu ---------- */
+/* ---------- input sentuh (HP) ----------
+   - sentuh sisi kiri layar  → joystick bergerak (muncul di titik sentuh)
+   - geser sisi kanan layar  → memutar kamera / membidik
+   - tombol TEMBAK / LOMPAT / ISI di layar                            */
+const joyEl=$('joy'),joyStick=$('joyStick');
+let joyId=null,joyBX=0,joyBY=0,lookId=null,lookLX=0,lookLY=0;
+const LOOK_SENS=.0045,JOY_R=55;
+
+canvas.addEventListener('touchstart',e=>{
+  e.preventDefault();                       /* cegah zoom/scroll/gestur bawaan */
+  if(state!=='playing')return;
+  for(const tc of e.changedTouches){
+    if(tc.clientX<innerWidth*.45&&joyId===null){
+      joyId=tc.identifier;joyBX=tc.clientX;joyBY=tc.clientY;
+      joyOn=true;joyX=joyY=0;
+      joyEl.classList.add('on');
+      joyEl.style.left=joyBX+'px';joyEl.style.top=joyBY+'px';
+      joyStick.style.left='0px';joyStick.style.top='0px';
+    }else if(lookId===null){
+      lookId=tc.identifier;lookLX=tc.clientX;lookLY=tc.clientY;
+    }
+  }
+},{passive:false});
+
+canvas.addEventListener('touchmove',e=>{
+  e.preventDefault();
+  if(state!=='playing')return;
+  for(const tc of e.changedTouches){
+    if(tc.identifier===joyId){
+      let dx=tc.clientX-joyBX,dy=tc.clientY-joyBY;
+      const d=Math.hypot(dx,dy);
+      if(d>JOY_R){dx=dx/d*JOY_R;dy=dy/d*JOY_R;}
+      joyX=dx/JOY_R;joyY=dy/JOY_R;
+      joyStick.style.left=dx+'px';joyStick.style.top=dy+'px';
+    }else if(tc.identifier===lookId){
+      const dx=tc.clientX-lookLX,dy=tc.clientY-lookLY;
+      lookLX=tc.clientX;lookLY=tc.clientY;
+      player.yaw-=dx*LOOK_SENS;
+      player.pitch=clamp(player.pitch-dy*LOOK_SENS,-1.53,1.53);
+      swayT=clamp(swayT-dx*.00025,-.04,.04);
+    }
+  }
+},{passive:false});
+
+function endTouch(e){
+  e.preventDefault();
+  for(const tc of e.changedTouches){
+    if(tc.identifier===joyId){
+      joyId=null;joyOn=false;joyX=joyY=0;
+      joyEl.classList.remove('on');
+    }
+    if(tc.identifier===lookId)lookId=null;
+  }
+}
+canvas.addEventListener('touchend',endTouch,{passive:false});
+canvas.addEventListener('touchcancel',endTouch,{passive:false});
+/* cegah scroll halaman saat sentuh di luar canvas (mis. HUD) */
+document.addEventListener('touchmove',e=>{
+  if(state==='playing')e.preventDefault();
+},{passive:false});
+
+function bindBtn(el,down,up){
+  const opts={passive:false};
+  el.addEventListener('touchstart',e=>{e.preventDefault();e.stopPropagation();down();},opts);
+  const end=e=>{e.preventDefault();up&&up();};
+  el.addEventListener('touchend',end,opts);
+  el.addEventListener('touchcancel',end,opts);
+}
+bindBtn($('btnFire'),
+  ()=>{if(state==='playing')firing=true;},
+  ()=>firing=false);
+bindBtn($('btnJump'),
+  ()=>{if(state==='playing'&&player.grounded){player.vel.y=8.2;player.grounded=false;}});
+bindBtn($('btnReload'),()=>startReload());
+
+/* ---------- drone dekoratif layar menu ---------- */
 for(let i=0;i<4;i++)new Drone(Math.cos(i/4*Math.PI*2)*10,Math.sin(i/4*Math.PI*2)*10,true);
 
 /* ---------- loop utama ---------- */
@@ -1113,7 +1287,7 @@ function updateFX(dt){
 function tick(){
   requestAnimationFrame(tick);
   const now=performance.now();
-  let dt=Math.min((now-lastTime)/1000,.05);
+  const dt=Math.min((now-lastTime)/1000,.05);
   lastTime=now;
   if(state==='menu'){
     t+=dt;
