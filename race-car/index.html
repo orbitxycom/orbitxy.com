@@ -2,7 +2,7 @@
 <html lang="id">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>OrbitXY Race Car</title>
 
 <style>
@@ -12,14 +12,18 @@
   padding: 0;
 }
 
+html, body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: #08090c;
+}
+
 body {
-  background: #0b0d12;
-  min-height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
   font-family: monospace;
-  overflow: hidden;
 }
 
 #gameBox {
@@ -34,56 +38,51 @@ canvas {
   height: auto;
   background: #222;
   image-rendering: pixelated;
+  touch-action: none;
 }
 
-button {
+.gameButton {
   position: absolute;
   left: 50%;
   top: 58%;
   transform: translate(-50%, -50%);
   padding: 15px 40px;
+  border: 3px solid white;
+  border-radius: 6px;
+  background: #ff9d00;
+  color: white;
   font-family: monospace;
   font-size: 22px;
   font-weight: bold;
-  color: white;
-  background: #ff9d00;
-  border: 3px solid white;
-  border-radius: 6px;
   cursor: pointer;
   z-index: 10;
 }
 
-button:hover {
+.gameButton:hover {
   background: #ffbd3c;
 }
 
-#restart {
+#restartButton {
   display: none;
 }
 
-#mobileControls {
+/* Area sentuh kiri/kanan */
+#touchLeft,
+#touchRight {
   position: absolute;
-  bottom: 15px;
+  top: 70px;
+  bottom: 0;
+  width: 50%;
+  z-index: 5;
+  touch-action: none;
+}
+
+#touchLeft {
   left: 0;
-  width: 100%;
-  display: none;
-  justify-content: space-between;
-  padding: 0 20px;
 }
 
-.control {
-  position: static;
-  transform: none;
-  width: 80px;
-  height: 55px;
-  padding: 0;
-  font-size: 28px;
-}
-
-@media (max-width: 600px) {
-  #mobileControls {
-    display: flex;
-  }
+#touchRight {
+  right: 0;
 }
 </style>
 </head>
@@ -92,37 +91,50 @@ button:hover {
 
 <div id="gameBox">
 
-<canvas id="gameCanvas" width="480" height="600"></canvas>
+  <canvas id="gameCanvas" width="480" height="600"></canvas>
 
-<button id="startButton">START</button>
-<button id="restartButton">RESTART</button>
+  <button id="startButton" class="gameButton">
+    START
+  </button>
 
-<div id="mobileControls">
-  <button class="control" id="leftButton">◀</button>
-  <button class="control" id="rightButton">▶</button>
-</div>
+  <button id="restartButton" class="gameButton">
+    RESTART
+  </button>
+
+  <!--
+    Tidak ada tombol kiri/kanan.
+    Cukup sentuh sisi kiri/kanan layar.
+  -->
+  <div id="touchLeft"></div>
+  <div id="touchRight"></div>
 
 </div>
 
 <script>
 
-/* =========================
+/* =========================================
    CANVAS
-========================= */
+========================================= */
 
 const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
 
-const startButton = document.getElementById("startButton");
-const restartButton = document.getElementById("restartButton");
+const startButton =
+  document.getElementById("startButton");
 
-const leftButton = document.getElementById("leftButton");
-const rightButton = document.getElementById("rightButton");
+const restartButton =
+  document.getElementById("restartButton");
+
+const touchLeft =
+  document.getElementById("touchLeft");
+
+const touchRight =
+  document.getElementById("touchRight");
 
 
-/* =========================
+/* =========================================
    GAME SETTINGS
-========================= */
+========================================= */
 
 const WIDTH = 480;
 const HEIGHT = 600;
@@ -152,9 +164,9 @@ let enemies = [];
 let boss = null;
 
 
-/* =========================
+/* =========================================
    PLAYER
-========================= */
+========================================= */
 
 const player = {
   lane: 1,
@@ -166,9 +178,9 @@ const player = {
 };
 
 
-/* =========================
+/* =========================================
    START GAME
-========================= */
+========================================= */
 
 function startGame() {
 
@@ -177,17 +189,15 @@ function startGame() {
   level = 1;
   score = 0;
   lives = 2;
+
   speed = 3;
   levelTime = 10;
 
   enemies = [];
-
   boss = null;
 
   spawnTimer = 0;
-
   invincible = 0;
-
   roadOffset = 0;
 
   player.lane = 1;
@@ -203,135 +213,256 @@ function startGame() {
 }
 
 
-/* =========================
+/* =========================================
    RESTART
-========================= */
+========================================= */
 
 function restartGame() {
   startGame();
 }
 
 
-/* =========================
-   MOVE PLAYER
-========================= */
+/* =========================================
+   MOVE LEFT
+========================================= */
 
 function moveLeft() {
 
-  if (gameState !== "PLAYING") return;
+  if (gameState !== "PLAYING")
+    return;
 
   if (player.lane > 0) {
+
     player.lane--;
-    player.targetX = LANES[player.lane];
+
+    player.targetX =
+      LANES[player.lane];
+
   }
 }
 
+
+/* =========================================
+   MOVE RIGHT
+========================================= */
 
 function moveRight() {
 
-  if (gameState !== "PLAYING") return;
+  if (gameState !== "PLAYING")
+    return;
 
   if (player.lane < 2) {
+
     player.lane++;
-    player.targetX = LANES[player.lane];
+
+    player.targetX =
+      LANES[player.lane];
+
   }
 }
 
 
-/* =========================
-   KEYBOARD
-========================= */
+/* =========================================
+   KEYBOARD PC
+========================================= */
 
 document.addEventListener("keydown", function(e) {
 
   if (e.key === "ArrowLeft") {
+
     e.preventDefault();
+
     moveLeft();
   }
 
   if (e.key === "ArrowRight") {
+
     e.preventDefault();
+
     moveRight();
   }
 
-  if (e.key === "Enter" && gameState === "START") {
+  if (
+    e.key === "Enter" &&
+    gameState === "START"
+  ) {
+
     startGame();
   }
 
-  if (e.key === "Enter" &&
-      (gameState === "GAMEOVER" || gameState === "WIN")) {
+  if (
+    e.key === "Enter" &&
+    (
+      gameState === "GAMEOVER" ||
+      gameState === "WIN"
+    )
+  ) {
+
     restartGame();
   }
 
 });
 
 
-/* =========================
-   MOBILE BUTTON
-========================= */
+/* =========================================
+   SENTUH KIRI
+========================================= */
 
-leftButton.addEventListener("click", moveLeft);
-rightButton.addEventListener("click", moveRight);
+function touchLeftScreen(e) {
 
+  e.preventDefault();
 
-/* =========================
-   BUTTON EVENTS
-========================= */
+  if (gameState !== "PLAYING")
+    return;
 
-startButton.addEventListener("click", function() {
-  startGame();
-});
-
-restartButton.addEventListener("click", function() {
-  restartGame();
-});
+  moveLeft();
+}
 
 
-/* =========================
+/* =========================================
+   SENTUH KANAN
+========================================= */
+
+function touchRightScreen(e) {
+
+  e.preventDefault();
+
+  if (gameState !== "PLAYING")
+    return;
+
+  moveRight();
+}
+
+
+/* =========================================
+   TOUCH EVENTS
+========================================= */
+
+touchLeft.addEventListener(
+  "touchstart",
+  touchLeftScreen,
+  { passive: false }
+);
+
+touchRight.addEventListener(
+  "touchstart",
+  touchRightScreen,
+  { passive: false }
+);
+
+
+/* =========================================
+   MOUSE TEST
+   PC bisa klik kiri/kanan canvas
+========================================= */
+
+canvas.addEventListener(
+  "click",
+  function(e) {
+
+    if (gameState !== "PLAYING")
+      return;
+
+    const rect =
+      canvas.getBoundingClientRect();
+
+    const x =
+      e.clientX - rect.left;
+
+    const realX =
+      x * (canvas.width / rect.width);
+
+    if (realX < WIDTH / 2) {
+
+      moveLeft();
+
+    } else {
+
+      moveRight();
+
+    }
+
+  }
+);
+
+
+/* =========================================
+   BUTTONS
+========================================= */
+
+startButton.addEventListener(
+  "click",
+  startGame
+);
+
+restartButton.addEventListener(
+  "click",
+  restartGame
+);
+
+
+/* =========================================
    CREATE ENEMY
-========================= */
+========================================= */
 
 function createEnemy() {
 
-  const lane = Math.floor(Math.random() * 3);
+  const lane =
+    Math.floor(Math.random() * 3);
 
   enemies.push({
+
     lane: lane,
+
     x: LANES[lane],
+
     y: -100,
+
     width: 42,
+
     height: 72,
-    speed: speed + Math.random() * 1.5
+
+    speed:
+      speed + Math.random() * 1.5
+
   });
 
 }
 
 
-/* =========================
-   BOSS
-========================= */
+/* =========================================
+   CREATE BOSS
+========================================= */
 
 function createBoss() {
 
   boss = {
+
     x: LANES[1],
+
     targetX: LANES[1],
+
     y: -130,
+
     width: 62,
+
     height: 95,
+
     speed: 2.2
+
   };
 
 }
 
 
-/* =========================
+/* =========================================
    COLLISION
-========================= */
+========================================= */
 
 function collision(a, b) {
 
   return (
+
     a.x - a.width / 2 <
       b.x + b.width / 2 &&
 
@@ -343,18 +474,20 @@ function collision(a, b) {
 
     a.y + a.height / 2 >
       b.y - b.height / 2
+
   );
 
 }
 
 
-/* =========================
+/* =========================================
    LOSE LIFE
-========================= */
+========================================= */
 
 function loseLife() {
 
-  if (invincible > 0) return;
+  if (invincible > 0)
+    return;
 
   lives--;
 
@@ -364,20 +497,22 @@ function loseLife() {
 
     gameState = "GAMEOVER";
 
-    restartButton.style.display = "block";
+    restartButton.style.display =
+      "block";
 
   }
 
 }
 
 
-/* =========================
+/* =========================================
    UPDATE GAME
-========================= */
+========================================= */
 
 function updateGame(delta) {
 
-  if (gameState !== "PLAYING") return;
+  if (gameState !== "PLAYING")
+    return;
 
 
   /* PLAYER */
@@ -387,20 +522,23 @@ function updateGame(delta) {
     Math.min(1, delta * 12);
 
 
-  /* INVINCIBILITY */
+  /* INVINCIBLE */
 
   if (invincible > 0) {
-    invincible -= delta * 60;
+
+    invincible -=
+      delta * 60;
+
   }
 
 
   /* ROAD */
 
-  roadOffset += speed * delta * 60;
+  roadOffset +=
+    speed * delta * 60;
 
-  if (roadOffset >= 40) {
+  if (roadOffset >= 40)
     roadOffset = 0;
-  }
 
 
   /* TIMER */
@@ -428,7 +566,8 @@ function updateGame(delta) {
 
       gameState = "WIN";
 
-      restartButton.style.display = "block";
+      restartButton.style.display =
+        "block";
 
       return;
 
@@ -445,23 +584,29 @@ function updateGame(delta) {
 
     createEnemy();
 
-    if (level === 1) {
-      spawnTimer = 0.8;
-    }
-    else {
-      spawnTimer = 0.6;
-    }
+    spawnTimer =
+      level === 1
+      ? 0.8
+      : 0.6;
 
   }
 
 
   /* ENEMIES */
 
-  for (let i = enemies.length - 1; i >= 0; i--) {
+  for (
+    let i = enemies.length - 1;
+    i >= 0;
+    i--
+  ) {
 
-    const enemy = enemies[i];
+    const enemy =
+      enemies[i];
 
-    enemy.y += enemy.speed * delta * 60;
+    enemy.y +=
+      enemy.speed *
+      delta *
+      60;
 
 
     if (enemy.y > HEIGHT + 100) {
@@ -475,7 +620,9 @@ function updateGame(delta) {
     }
 
 
-    if (collision(player, enemy)) {
+    if (
+      collision(player, enemy)
+    ) {
 
       enemies.splice(i, 1);
 
@@ -490,10 +637,16 @@ function updateGame(delta) {
 
   if (boss) {
 
-    boss.y += boss.speed * delta * 60;
+    boss.y +=
+      boss.speed *
+      delta *
+      60;
 
 
-    if (boss.y > HEIGHT + 150) {
+    if (
+      boss.y >
+      HEIGHT + 150
+    ) {
 
       boss.y = -150;
 
@@ -509,7 +662,9 @@ function updateGame(delta) {
       delta * 2;
 
 
-    if (collision(player, boss)) {
+    if (
+      collision(player, boss)
+    ) {
 
       loseLife();
 
@@ -520,9 +675,9 @@ function updateGame(delta) {
 }
 
 
-/* =========================
-   DRAW ROAD
-========================= */
+/* =========================================
+   ROAD
+========================================= */
 
 function drawRoad() {
 
@@ -536,8 +691,6 @@ function drawRoad() {
   );
 
 
-  /* ROAD */
-
   ctx.fillStyle = "#333";
 
   ctx.fillRect(
@@ -548,7 +701,7 @@ function drawRoad() {
   );
 
 
-  /* OUTER LINES */
+  /* ROAD EDGE */
 
   ctx.fillStyle = "#eeeeee";
 
@@ -567,7 +720,7 @@ function drawRoad() {
   );
 
 
-  /* LANE LINES */
+  /* LANE DIVIDERS */
 
   for (
     let y = -40 + roadOffset;
@@ -594,9 +747,9 @@ function drawRoad() {
 }
 
 
-/* =========================
-   DRAW CAR
-========================= */
+/* =========================================
+   CAR
+========================================= */
 
 function drawCar(
   x,
@@ -609,10 +762,13 @@ function drawCar(
 
   ctx.save();
 
-  ctx.translate(x, y);
+  ctx.translate(
+    x,
+    y
+  );
 
 
-  /* SHADOW */
+  /* WHEELS */
 
   ctx.fillStyle = "#111";
 
@@ -630,6 +786,20 @@ function drawCar(
     25
   );
 
+  ctx.fillRect(
+    -width / 2 - 5,
+    height / 2 - 35,
+    10,
+    25
+  );
+
+  ctx.fillRect(
+    width / 2 - 5,
+    height / 2 - 35,
+    10,
+    25
+  );
+
 
   /* BODY */
 
@@ -643,7 +813,7 @@ function drawCar(
   );
 
 
-  /* WINDOWS */
+  /* WINDOW */
 
   ctx.fillStyle = "#9edfff";
 
@@ -655,7 +825,7 @@ function drawCar(
   );
 
 
-  /* FRONT */
+  /* LIGHT */
 
   ctx.fillStyle = "#fff";
 
@@ -667,11 +837,12 @@ function drawCar(
   );
 
 
-  /* BOSS */
+  /* BOSS BORDER */
 
   if (bossCar) {
 
-    ctx.strokeStyle = "#ffb000";
+    ctx.strokeStyle =
+      "#ffb000";
 
     ctx.lineWidth = 4;
 
@@ -684,19 +855,19 @@ function drawCar(
 
   }
 
-
   ctx.restore();
 
 }
 
 
-/* =========================
-   DRAW HUD
-========================= */
+/* =========================================
+   HUD
+========================================= */
 
 function drawHUD() {
 
-  ctx.fillStyle = "rgba(0,0,0,.8)";
+  ctx.fillStyle =
+    "rgba(0,0,0,.8)";
 
   ctx.fillRect(
     0,
@@ -706,22 +877,29 @@ function drawHUD() {
   );
 
 
-  ctx.fillStyle = "#ff3333";
+  ctx.fillStyle =
+    "#ff3333";
 
-  ctx.font = "bold 24px monospace";
+  ctx.font =
+    "bold 24px monospace";
 
-  ctx.textAlign = "left";
+  ctx.textAlign =
+    "left";
 
   ctx.fillText(
-    "♥".repeat(Math.max(0, lives)),
+    "♥".repeat(
+      Math.max(0, lives)
+    ),
     15,
     28
   );
 
 
-  ctx.fillStyle = "#fff";
+  ctx.fillStyle =
+    "#fff";
 
-  ctx.font = "bold 18px monospace";
+  ctx.font =
+    "bold 18px monospace";
 
   ctx.fillText(
     "SCORE: " + score,
@@ -730,7 +908,8 @@ function drawHUD() {
   );
 
 
-  ctx.textAlign = "right";
+  ctx.textAlign =
+    "right";
 
   ctx.fillText(
     "LEVEL " + level,
@@ -748,9 +927,9 @@ function drawHUD() {
 }
 
 
-/* =========================
+/* =========================================
    START SCREEN
-========================= */
+========================================= */
 
 function drawStartScreen() {
 
@@ -765,11 +944,14 @@ function drawStartScreen() {
   );
 
 
-  ctx.textAlign = "center";
+  ctx.textAlign =
+    "center";
 
-  ctx.fillStyle = "#ff9d00";
+  ctx.fillStyle =
+    "#ff9d00";
 
-  ctx.font = "bold 52px monospace";
+  ctx.font =
+    "bold 52px monospace";
 
   ctx.fillText(
     "RACE CAR",
@@ -778,18 +960,20 @@ function drawStartScreen() {
   );
 
 
-  ctx.fillStyle = "#fff";
+  ctx.fillStyle =
+    "#fff";
 
-  ctx.font = "18px monospace";
+  ctx.font =
+    "18px monospace";
 
   ctx.fillText(
-    "HINDARI MOBIL LAWAN",
+    "SENTUH KIRI = KE KIRI",
     240,
     275
   );
 
   ctx.fillText(
-    "← → UNTUK PINDAH JALUR",
+    "SENTUH KANAN = KE KANAN",
     240,
     305
   );
@@ -797,9 +981,9 @@ function drawStartScreen() {
 }
 
 
-/* =========================
+/* =========================================
    GAME OVER
-========================= */
+========================================= */
 
 function drawGameOver() {
 
@@ -814,11 +998,14 @@ function drawGameOver() {
   );
 
 
-  ctx.textAlign = "center";
+  ctx.textAlign =
+    "center";
 
-  ctx.fillStyle = "#ff3333";
+  ctx.fillStyle =
+    "#ff3333";
 
-  ctx.font = "bold 50px monospace";
+  ctx.font =
+    "bold 50px monospace";
 
   ctx.fillText(
     "GAME OVER",
@@ -827,9 +1014,11 @@ function drawGameOver() {
   );
 
 
-  ctx.fillStyle = "#fff";
+  ctx.fillStyle =
+    "#fff";
 
-  ctx.font = "24px monospace";
+  ctx.font =
+    "24px monospace";
 
   ctx.fillText(
     "Score: " + score,
@@ -840,9 +1029,9 @@ function drawGameOver() {
 }
 
 
-/* =========================
+/* =========================================
    WIN
-========================= */
+========================================= */
 
 function drawWin() {
 
@@ -857,11 +1046,14 @@ function drawWin() {
   );
 
 
-  ctx.textAlign = "center";
+  ctx.textAlign =
+    "center";
 
-  ctx.fillStyle = "#ffb000";
+  ctx.fillStyle =
+    "#ffb000";
 
-  ctx.font = "bold 55px monospace";
+  ctx.font =
+    "bold 55px monospace";
 
   ctx.fillText(
     "YOU WIN!",
@@ -870,9 +1062,11 @@ function drawWin() {
   );
 
 
-  ctx.fillStyle = "#fff";
+  ctx.fillStyle =
+    "#fff";
 
-  ctx.font = "24px monospace";
+  ctx.font =
+    "24px monospace";
 
   ctx.fillText(
     "Score: " + score,
@@ -883,9 +1077,9 @@ function drawWin() {
 }
 
 
-/* =========================
-   DRAW EVERYTHING
-========================= */
+/* =========================================
+   DRAW
+========================================= */
 
 function drawGame() {
 
@@ -894,7 +1088,9 @@ function drawGame() {
 
   /* ENEMIES */
 
-  for (const enemy of enemies) {
+  for (
+    const enemy of enemies
+  ) {
 
     drawCar(
       enemy.x,
@@ -927,7 +1123,9 @@ function drawGame() {
 
   if (
     invincible <= 0 ||
-    Math.floor(invincible / 6) % 2 === 0
+    Math.floor(
+      invincible / 6
+    ) % 2 === 0
   ) {
 
     drawCar(
@@ -944,26 +1142,38 @@ function drawGame() {
   drawHUD();
 
 
-  if (gameState === "START") {
+  if (
+    gameState === "START"
+  ) {
+
     drawStartScreen();
+
   }
 
 
-  if (gameState === "GAMEOVER") {
+  if (
+    gameState === "GAMEOVER"
+  ) {
+
     drawGameOver();
+
   }
 
 
-  if (gameState === "WIN") {
+  if (
+    gameState === "WIN"
+  ) {
+
     drawWin();
+
   }
 
 }
 
 
-/* =========================
+/* =========================================
    GAME LOOP
-========================= */
+========================================= */
 
 function gameLoop(time) {
 
@@ -993,9 +1203,9 @@ function gameLoop(time) {
 }
 
 
-/* =========================
-   INITIAL DRAW
-========================= */
+/* =========================================
+   INITIAL
+========================================= */
 
 drawGame();
 
