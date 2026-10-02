@@ -2,21 +2,31 @@
 <html lang="id">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+<meta
+  name="viewport"
+  content="width=device-width,
+  initial-scale=1.0,
+  maximum-scale=1.0,
+  user-scalable=no,
+  viewport-fit=cover"
+>
+
 <title>OrbitXY Race Car</title>
 
 <style>
 * {
-  box-sizing: border-box;
   margin: 0;
   padding: 0;
+  box-sizing: border-box;
 }
 
-html, body {
+html,
+body {
   width: 100%;
   height: 100%;
   overflow: hidden;
-  background: #08090c;
+  background: #050609;
 }
 
 body {
@@ -24,100 +34,140 @@ body {
   justify-content: center;
   align-items: center;
   font-family: monospace;
-}
-
-#gameBox {
-  position: relative;
-  width: 480px;
-  max-width: 100vw;
-}
-
-canvas {
-  display: block;
-  width: 100%;
-  height: auto;
-  background: #222;
-  image-rendering: pixelated;
   touch-action: none;
 }
 
+/* =================================
+   GAME CONTAINER
+================================= */
+
+#gameContainer {
+  position: relative;
+
+  width: 100vw;
+  height: 100vh;
+
+  width: 100dvw;
+  height: 100dvh;
+
+  overflow: hidden;
+
+  background: #111;
+}
+
+/* =================================
+   CANVAS 9:16
+================================= */
+
+#gameCanvas {
+  position: absolute;
+
+  left: 50%;
+  top: 50%;
+
+  transform: translate(-50%, -50%);
+
+  width: 100%;
+  height: 100%;
+
+  display: block;
+
+  touch-action: none;
+}
+
+/* =================================
+   BUTTON
+================================= */
+
 .gameButton {
   position: absolute;
+
   left: 50%;
   top: 58%;
+
   transform: translate(-50%, -50%);
-  padding: 15px 40px;
-  border: 3px solid white;
-  border-radius: 6px;
+
+  min-width: 190px;
+
+  padding: 16px 35px;
+
+  border: 2px solid #fff;
+  border-radius: 8px;
+
   background: #ff9d00;
-  color: white;
+
+  color: #111;
+
   font-family: monospace;
   font-size: 22px;
   font-weight: bold;
+
   cursor: pointer;
-  z-index: 10;
+
+  z-index: 20;
 }
 
-.gameButton:hover {
-  background: #ffbd3c;
+.gameButton:active {
+  transform:
+    translate(-50%, -50%)
+    scale(.95);
 }
 
 #restartButton {
   display: none;
 }
 
-/* Area sentuh kiri/kanan */
-#touchLeft,
-#touchRight {
-  position: absolute;
-  top: 70px;
-  bottom: 0;
-  width: 50%;
-  z-index: 5;
-  touch-action: none;
-}
+/* =================================
+   SAFE AREA
+================================= */
 
-#touchLeft {
-  left: 0;
-}
+@supports (padding: env(safe-area-inset-top)) {
 
-#touchRight {
-  right: 0;
+  #gameContainer {
+    padding-top: env(safe-area-inset-top);
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+
 }
 </style>
 </head>
 
 <body>
 
-<div id="gameBox">
+<div id="gameContainer">
 
-  <canvas id="gameCanvas" width="480" height="600"></canvas>
+  <canvas
+    id="gameCanvas"
+    width="360"
+    height="640">
+  </canvas>
 
-  <button id="startButton" class="gameButton">
+  <button
+    id="startButton"
+    class="gameButton">
     START
   </button>
 
-  <button id="restartButton" class="gameButton">
+  <button
+    id="restartButton"
+    class="gameButton">
     RESTART
   </button>
 
-  <!--
-    Tidak ada tombol kiri/kanan.
-    Cukup sentuh sisi kiri/kanan layar.
-  -->
-  <div id="touchLeft"></div>
-  <div id="touchRight"></div>
-
 </div>
+
 
 <script>
 
-/* =========================================
+/* =====================================================
    CANVAS
-========================================= */
+===================================================== */
 
-const canvas = document.getElementById("gameCanvas");
-const ctx = canvas.getContext("2d");
+const canvas =
+  document.getElementById("gameCanvas");
+
+const ctx =
+  canvas.getContext("2d");
 
 const startButton =
   document.getElementById("startButton");
@@ -125,33 +175,50 @@ const startButton =
 const restartButton =
   document.getElementById("restartButton");
 
-const touchLeft =
-  document.getElementById("touchLeft");
 
-const touchRight =
-  document.getElementById("touchRight");
+/* =====================================================
+   INTERNAL GAME SIZE
+   9 : 16
+===================================================== */
+
+const GAME_WIDTH = 360;
+const GAME_HEIGHT = 640;
 
 
-/* =========================================
-   GAME SETTINGS
-========================================= */
+/* =====================================================
+   CANVAS
+===================================================== */
 
-const WIDTH = 480;
-const HEIGHT = 600;
+canvas.width = GAME_WIDTH;
+canvas.height = GAME_HEIGHT;
 
-const LANES = [120, 240, 360];
+
+/* =====================================================
+   LANES
+===================================================== */
+
+const LANES = [
+  95,
+  180,
+  265
+];
+
+
+/* =====================================================
+   GAME VARIABLES
+===================================================== */
 
 let gameState = "START";
 
 let level = 1;
+
 let score = 0;
+
 let lives = 2;
 
 let speed = 3;
 
 let levelTime = 10;
-
-let lastTime = 0;
 
 let spawnTimer = 0;
 
@@ -159,77 +226,164 @@ let roadOffset = 0;
 
 let invincible = 0;
 
+let lastTime = 0;
+
 let enemies = [];
 
 let boss = null;
 
 
-/* =========================================
+/* =====================================================
    PLAYER
-========================================= */
+===================================================== */
 
 const player = {
+
   lane: 1,
+
   x: LANES[1],
+
   targetX: LANES[1],
-  y: 510,
-  width: 42,
-  height: 72
+
+  y: 535,
+
+  width: 34,
+
+  height: 62
+
 };
 
 
-/* =========================================
-   START GAME
-========================================= */
+/* =====================================================
+   RESIZE
+===================================================== */
+
+function resizeCanvas() {
+
+  const screenWidth =
+    window.innerWidth;
+
+  const screenHeight =
+    window.innerHeight;
+
+  const screenRatio =
+    screenWidth / screenHeight;
+
+  const gameRatio =
+    GAME_WIDTH / GAME_HEIGHT;
+
+
+  /*
+    Canvas tetap 9:16.
+  */
+
+  if (screenRatio > gameRatio) {
+
+    canvas.style.height =
+      "100vh";
+
+    canvas.style.width =
+      "auto";
+
+  } else {
+
+    canvas.style.width =
+      "100vw";
+
+    canvas.style.height =
+      "auto";
+
+  }
+
+}
+
+
+window.addEventListener(
+  "resize",
+  resizeCanvas
+);
+
+resizeCanvas();
+
+
+/* =====================================================
+   START
+===================================================== */
 
 function startGame() {
 
   gameState = "PLAYING";
 
   level = 1;
+
   score = 0;
+
   lives = 2;
 
   speed = 3;
+
   levelTime = 10;
 
-  enemies = [];
-  boss = null;
-
   spawnTimer = 0;
-  invincible = 0;
+
   roadOffset = 0;
 
+  invincible = 0;
+
+  enemies = [];
+
+  boss = null;
+
+
   player.lane = 1;
+
   player.x = LANES[1];
-  player.targetX = LANES[1];
 
-  startButton.style.display = "none";
-  restartButton.style.display = "none";
+  player.targetX =
+    LANES[1];
 
-  lastTime = performance.now();
 
-  requestAnimationFrame(gameLoop);
+  startButton.style.display =
+    "none";
+
+  restartButton.style.display =
+    "none";
+
+
+  lastTime =
+    performance.now();
+
+
+  requestAnimationFrame(
+    gameLoop
+  );
+
 }
 
 
-/* =========================================
+/* =====================================================
    RESTART
-========================================= */
+===================================================== */
 
 function restartGame() {
+
   startGame();
+
 }
 
 
-/* =========================================
+/* =====================================================
    MOVE LEFT
-========================================= */
+===================================================== */
 
 function moveLeft() {
 
-  if (gameState !== "PLAYING")
+  if (
+    gameState !== "PLAYING"
+  ) {
     return;
+  }
+
 
   if (player.lane > 0) {
 
@@ -239,17 +393,22 @@ function moveLeft() {
       LANES[player.lane];
 
   }
+
 }
 
 
-/* =========================================
+/* =====================================================
    MOVE RIGHT
-========================================= */
+===================================================== */
 
 function moveRight() {
 
-  if (gameState !== "PLAYING")
+  if (
+    gameState !== "PLAYING"
+  ) {
     return;
+  }
+
 
   if (player.lane < 2) {
 
@@ -259,120 +418,101 @@ function moveRight() {
       LANES[player.lane];
 
   }
+
 }
 
 
-/* =========================================
-   KEYBOARD PC
-========================================= */
+/* =====================================================
+   KEYBOARD
+===================================================== */
 
-document.addEventListener("keydown", function(e) {
-
-  if (e.key === "ArrowLeft") {
-
-    e.preventDefault();
-
-    moveLeft();
-  }
-
-  if (e.key === "ArrowRight") {
-
-    e.preventDefault();
-
-    moveRight();
-  }
-
-  if (
-    e.key === "Enter" &&
-    gameState === "START"
-  ) {
-
-    startGame();
-  }
-
-  if (
-    e.key === "Enter" &&
-    (
-      gameState === "GAMEOVER" ||
-      gameState === "WIN"
-    )
-  ) {
-
-    restartGame();
-  }
-
-});
-
-
-/* =========================================
-   SENTUH KIRI
-========================================= */
-
-function touchLeftScreen(e) {
-
-  e.preventDefault();
-
-  if (gameState !== "PLAYING")
-    return;
-
-  moveLeft();
-}
-
-
-/* =========================================
-   SENTUH KANAN
-========================================= */
-
-function touchRightScreen(e) {
-
-  e.preventDefault();
-
-  if (gameState !== "PLAYING")
-    return;
-
-  moveRight();
-}
-
-
-/* =========================================
-   TOUCH EVENTS
-========================================= */
-
-touchLeft.addEventListener(
-  "touchstart",
-  touchLeftScreen,
-  { passive: false }
-);
-
-touchRight.addEventListener(
-  "touchstart",
-  touchRightScreen,
-  { passive: false }
-);
-
-
-/* =========================================
-   MOUSE TEST
-   PC bisa klik kiri/kanan canvas
-========================================= */
-
-canvas.addEventListener(
-  "click",
+document.addEventListener(
+  "keydown",
   function(e) {
 
-    if (gameState !== "PLAYING")
+    if (
+      e.key === "ArrowLeft"
+    ) {
+
+      e.preventDefault();
+
+      moveLeft();
+
+    }
+
+
+    if (
+      e.key === "ArrowRight"
+    ) {
+
+      e.preventDefault();
+
+      moveRight();
+
+    }
+
+
+    if (
+      e.key === "Enter" &&
+      gameState === "START"
+    ) {
+
+      startGame();
+
+    }
+
+
+    if (
+      e.key === "Enter" &&
+      (
+        gameState === "GAMEOVER" ||
+        gameState === "WIN"
+      )
+    ) {
+
+      restartGame();
+
+    }
+
+  }
+);
+
+
+/* =====================================================
+   TOUCH SCREEN
+===================================================== */
+
+/*
+   Tap kiri  = kiri
+   Tap kanan = kanan
+*/
+
+canvas.addEventListener(
+  "pointerdown",
+  function(e) {
+
+    if (
+      gameState !== "PLAYING"
+    ) {
       return;
+    }
+
 
     const rect =
       canvas.getBoundingClientRect();
 
+
     const x =
       e.clientX - rect.left;
 
-    const realX =
-      x * (canvas.width / rect.width);
 
-    if (realX < WIDTH / 2) {
+    const relativeX =
+      x / rect.width;
+
+
+    if (
+      relativeX < 0.5
+    ) {
 
       moveLeft();
 
@@ -382,33 +522,24 @@ canvas.addEventListener(
 
     }
 
+  },
+  {
+    passive: true
   }
 );
 
 
-/* =========================================
-   BUTTONS
-========================================= */
-
-startButton.addEventListener(
-  "click",
-  startGame
-);
-
-restartButton.addEventListener(
-  "click",
-  restartGame
-);
-
-
-/* =========================================
+/* =====================================================
    CREATE ENEMY
-========================================= */
+===================================================== */
 
 function createEnemy() {
 
   const lane =
-    Math.floor(Math.random() * 3);
+    Math.floor(
+      Math.random() * 3
+    );
+
 
   enemies.push({
 
@@ -416,23 +547,24 @@ function createEnemy() {
 
     x: LANES[lane],
 
-    y: -100,
+    y: -90,
 
-    width: 42,
+    width: 34,
 
-    height: 72,
+    height: 62,
 
     speed:
-      speed + Math.random() * 1.5
+      speed +
+      Math.random() * 1.3
 
   });
 
 }
 
 
-/* =========================================
+/* =====================================================
    CREATE BOSS
-========================================= */
+===================================================== */
 
 function createBoss() {
 
@@ -442,11 +574,11 @@ function createBoss() {
 
     targetX: LANES[1],
 
-    y: -130,
+    y: -120,
 
-    width: 62,
+    width: 52,
 
-    height: 95,
+    height: 82,
 
     speed: 2.2
 
@@ -455,9 +587,9 @@ function createBoss() {
 }
 
 
-/* =========================================
+/* =====================================================
    COLLISION
-========================================= */
+===================================================== */
 
 function collision(a, b) {
 
@@ -480,20 +612,27 @@ function collision(a, b) {
 }
 
 
-/* =========================================
+/* =====================================================
    LOSE LIFE
-========================================= */
+===================================================== */
 
 function loseLife() {
 
-  if (invincible > 0)
+  if (
+    invincible > 0
+  ) {
     return;
+  }
+
 
   lives--;
 
-  invincible = 80;
+  invincible = 75;
 
-  if (lives <= 0) {
+
+  if (
+    lives <= 0
+  ) {
 
     gameState = "GAMEOVER";
 
@@ -505,26 +644,37 @@ function loseLife() {
 }
 
 
-/* =========================================
-   UPDATE GAME
-========================================= */
+/* =====================================================
+   UPDATE
+===================================================== */
 
 function updateGame(delta) {
 
-  if (gameState !== "PLAYING")
+  if (
+    gameState !== "PLAYING"
+  ) {
     return;
+  }
 
 
   /* PLAYER */
 
   player.x +=
-    (player.targetX - player.x) *
-    Math.min(1, delta * 12);
+    (
+      player.targetX -
+      player.x
+    ) *
+    Math.min(
+      1,
+      delta * 12
+    );
 
 
-  /* INVINCIBLE */
+  /* INVINCIBILITY */
 
-  if (invincible > 0) {
+  if (
+    invincible > 0
+  ) {
 
     invincible -=
       delta * 60;
@@ -535,20 +685,32 @@ function updateGame(delta) {
   /* ROAD */
 
   roadOffset +=
-    speed * delta * 60;
+    speed *
+    delta *
+    60;
 
-  if (roadOffset >= 40)
+
+  if (
+    roadOffset >= 48
+  ) {
+
     roadOffset = 0;
 
+  }
 
-  /* TIMER */
+
+  /* LEVEL TIMER */
 
   levelTime -= delta;
 
 
-  if (levelTime <= 0) {
+  if (
+    levelTime <= 0
+  ) {
 
-    if (level === 1) {
+    if (
+      level === 1
+    ) {
 
       level = 2;
 
@@ -580,9 +742,13 @@ function updateGame(delta) {
 
   spawnTimer -= delta;
 
-  if (spawnTimer <= 0) {
+
+  if (
+    spawnTimer <= 0
+  ) {
 
     createEnemy();
+
 
     spawnTimer =
       level === 1
@@ -595,13 +761,17 @@ function updateGame(delta) {
   /* ENEMIES */
 
   for (
-    let i = enemies.length - 1;
+    let i =
+      enemies.length - 1;
+
     i >= 0;
+
     i--
   ) {
 
     const enemy =
       enemies[i];
+
 
     enemy.y +=
       enemy.speed *
@@ -609,9 +779,15 @@ function updateGame(delta) {
       60;
 
 
-    if (enemy.y > HEIGHT + 100) {
+    if (
+      enemy.y >
+      GAME_HEIGHT + 100
+    ) {
 
-      enemies.splice(i, 1);
+      enemies.splice(
+        i,
+        1
+      );
 
       score++;
 
@@ -621,10 +797,16 @@ function updateGame(delta) {
 
 
     if (
-      collision(player, enemy)
+      collision(
+        player,
+        enemy
+      )
     ) {
 
-      enemies.splice(i, 1);
+      enemies.splice(
+        i,
+        1
+      );
 
       loseLife();
 
@@ -645,10 +827,10 @@ function updateGame(delta) {
 
     if (
       boss.y >
-      HEIGHT + 150
+      GAME_HEIGHT + 130
     ) {
 
-      boss.y = -150;
+      boss.y = -130;
 
     }
 
@@ -658,12 +840,19 @@ function updateGame(delta) {
 
 
     boss.x +=
-      (boss.targetX - boss.x) *
-      delta * 2;
+      (
+        boss.targetX -
+        boss.x
+      ) *
+      delta *
+      2;
 
 
     if (
-      collision(player, boss)
+      collision(
+        player,
+        boss
+      )
     ) {
 
       loseLife();
@@ -675,71 +864,82 @@ function updateGame(delta) {
 }
 
 
-/* =========================================
+/* =====================================================
    ROAD
-========================================= */
+===================================================== */
 
 function drawRoad() {
 
-  ctx.fillStyle = "#151515";
+  /* BACKGROUND */
+
+  ctx.fillStyle =
+    "#101114";
 
   ctx.fillRect(
     0,
     0,
-    WIDTH,
-    HEIGHT
+    GAME_WIDTH,
+    GAME_HEIGHT
   );
 
 
-  ctx.fillStyle = "#333";
+  /* ROAD */
+
+  ctx.fillStyle =
+    "#303236";
 
   ctx.fillRect(
-    40,
+    35,
     0,
-    400,
-    HEIGHT
+    290,
+    GAME_HEIGHT
   );
 
 
-  /* ROAD EDGE */
+  /* EDGE */
 
-  ctx.fillStyle = "#eeeeee";
+  ctx.fillStyle =
+    "#e8e8e8";
 
   ctx.fillRect(
-    40,
+    35,
     0,
-    7,
-    HEIGHT
+    6,
+    GAME_HEIGHT
   );
 
   ctx.fillRect(
-    433,
+    319,
     0,
-    7,
-    HEIGHT
+    6,
+    GAME_HEIGHT
   );
 
 
-  /* LANE DIVIDERS */
+  /* LANE MARKINGS */
 
   for (
-    let y = -40 + roadOffset;
-    y < HEIGHT;
-    y += 40
+    let y =
+      -48 + roadOffset;
+
+    y < GAME_HEIGHT;
+
+    y += 48
   ) {
 
     ctx.fillRect(
-      196,
+      134,
       y,
-      6,
-      22
+      5,
+      25
     );
 
+
     ctx.fillRect(
-      278,
+      221,
       y,
-      6,
-      22
+      5,
+      25
     );
 
   }
@@ -747,9 +947,9 @@ function drawRoad() {
 }
 
 
-/* =========================================
+/* =====================================================
    CAR
-========================================= */
+===================================================== */
 
 function drawCar(
   x,
@@ -757,7 +957,7 @@ function drawCar(
   width,
   height,
   color,
-  bossCar = false
+  isBoss = false
 ) {
 
   ctx.save();
@@ -770,40 +970,47 @@ function drawCar(
 
   /* WHEELS */
 
-  ctx.fillStyle = "#111";
+  ctx.fillStyle =
+    "#0b0b0b";
+
 
   ctx.fillRect(
-    -width / 2 - 5,
+    -width / 2 - 4,
     -height / 2 + 10,
-    10,
-    25
+    8,
+    22
   );
 
+
   ctx.fillRect(
-    width / 2 - 5,
+    width / 2 - 4,
     -height / 2 + 10,
-    10,
-    25
+    8,
+    22
   );
 
-  ctx.fillRect(
-    -width / 2 - 5,
-    height / 2 - 35,
-    10,
-    25
-  );
 
   ctx.fillRect(
-    width / 2 - 5,
-    height / 2 - 35,
-    10,
-    25
+    -width / 2 - 4,
+    height / 2 - 32,
+    8,
+    22
+  );
+
+
+  ctx.fillRect(
+    width / 2 - 4,
+    height / 2 - 32,
+    8,
+    22
   );
 
 
   /* BODY */
 
-  ctx.fillStyle = color;
+  ctx.fillStyle =
+    color;
+
 
   ctx.fillRect(
     -width / 2,
@@ -813,38 +1020,42 @@ function drawCar(
   );
 
 
-  /* WINDOW */
+  /* WINDOWS */
 
-  ctx.fillStyle = "#9edfff";
+  ctx.fillStyle =
+    "#a9e6ff";
+
 
   ctx.fillRect(
-    -width * 0.3,
-    -height * 0.28,
-    width * 0.6,
-    height * 0.23
+    -width * .30,
+    -height * .28,
+    width * .60,
+    height * .22
   );
 
 
   /* LIGHT */
 
-  ctx.fillStyle = "#fff";
+  ctx.fillStyle =
+    "#ffffff";
+
 
   ctx.fillRect(
-    -width * 0.35,
-    height * 0.23,
-    width * 0.7,
-    7
+    -width * .32,
+    height * .23,
+    width * .64,
+    6
   );
 
 
-  /* BOSS BORDER */
+  /* BOSS */
 
-  if (bossCar) {
+  if (isBoss) {
 
     ctx.strokeStyle =
       "#ffb000";
 
-    ctx.lineWidth = 4;
+    ctx.lineWidth = 3;
 
     ctx.strokeRect(
       -width / 2 - 4,
@@ -855,231 +1066,281 @@ function drawCar(
 
   }
 
+
   ctx.restore();
 
 }
 
 
-/* =========================================
+/* =====================================================
    HUD
-========================================= */
+===================================================== */
 
 function drawHUD() {
 
   ctx.fillStyle =
-    "rgba(0,0,0,.8)";
+    "rgba(0,0,0,.82)";
+
 
   ctx.fillRect(
     0,
     0,
-    WIDTH,
-    70
+    GAME_WIDTH,
+    64
   );
 
 
-  ctx.fillStyle =
-    "#ff3333";
-
-  ctx.font =
-    "bold 24px monospace";
+  /* LIVES */
 
   ctx.textAlign =
     "left";
 
-  ctx.fillText(
-    "♥".repeat(
-      Math.max(0, lives)
-    ),
-    15,
-    28
-  );
-
+  ctx.font =
+    "bold 21px monospace";
 
   ctx.fillStyle =
-    "#fff";
+    "#ff3434";
 
-  ctx.font =
-    "bold 18px monospace";
 
   ctx.fillText(
-    "SCORE: " + score,
-    15,
-    55
+    "♥".repeat(
+      Math.max(
+        0,
+        lives
+      )
+    ),
+    12,
+    25
   );
 
+
+  /* SCORE */
+
+  ctx.font =
+    "bold 15px monospace";
+
+  ctx.fillStyle =
+    "#ffffff";
+
+
+  ctx.fillText(
+    "SCORE " + score,
+    12,
+    49
+  );
+
+
+  /* LEVEL */
 
   ctx.textAlign =
     "right";
 
+
+  ctx.font =
+    "bold 15px monospace";
+
+
   ctx.fillText(
     "LEVEL " + level,
-    465,
-    28
+    348,
+    25
   );
 
 
   ctx.fillText(
-    Math.ceil(levelTime) + "s",
-    465,
-    55
+    Math.ceil(
+      levelTime
+    ) + "s",
+    348,
+    49
   );
 
 }
 
 
-/* =========================================
+/* =====================================================
    START SCREEN
-========================================= */
+===================================================== */
 
 function drawStartScreen() {
 
   ctx.fillStyle =
-    "rgba(0,0,0,.72)";
+    "rgba(0,0,0,.76)";
+
 
   ctx.fillRect(
     0,
     0,
-    WIDTH,
-    HEIGHT
+    GAME_WIDTH,
+    GAME_HEIGHT
   );
 
 
   ctx.textAlign =
     "center";
+
 
   ctx.fillStyle =
     "#ff9d00";
 
+
   ctx.font =
-    "bold 52px monospace";
+    "bold 42px monospace";
+
 
   ctx.fillText(
     "RACE CAR",
-    240,
-    220
+    180,
+    245
   );
 
 
   ctx.fillStyle =
-    "#fff";
+    "#ffffff";
+
 
   ctx.font =
-    "18px monospace";
+    "14px monospace";
+
 
   ctx.fillText(
-    "SENTUH KIRI = KE KIRI",
-    240,
-    275
+    "TAP KIRI  ←",
+    180,
+    285
   );
 
+
   ctx.fillText(
-    "SENTUH KANAN = KE KANAN",
-    240,
-    305
+    "TAP KANAN  →",
+    180,
+    310
+  );
+
+
+  ctx.fillStyle =
+    "#999";
+
+
+  ctx.fillText(
+    "HINDARI MOBIL LAWAN",
+    180,
+    350
   );
 
 }
 
 
-/* =========================================
+/* =====================================================
    GAME OVER
-========================================= */
+===================================================== */
 
 function drawGameOver() {
 
   ctx.fillStyle =
-    "rgba(0,0,0,.75)";
+    "rgba(0,0,0,.78)";
+
 
   ctx.fillRect(
     0,
     0,
-    WIDTH,
-    HEIGHT
+    GAME_WIDTH,
+    GAME_HEIGHT
   );
 
 
   ctx.textAlign =
     "center";
+
 
   ctx.fillStyle =
     "#ff3333";
 
+
   ctx.font =
-    "bold 50px monospace";
+    "bold 42px monospace";
+
 
   ctx.fillText(
     "GAME OVER",
-    240,
-    270
+    180,
+    285
   );
 
 
   ctx.fillStyle =
-    "#fff";
+    "#ffffff";
+
 
   ctx.font =
-    "24px monospace";
+    "20px monospace";
+
 
   ctx.fillText(
-    "Score: " + score,
-    240,
-    315
+    "SCORE: " + score,
+    180,
+    325
   );
 
 }
 
 
-/* =========================================
+/* =====================================================
    WIN
-========================================= */
+===================================================== */
 
 function drawWin() {
 
   ctx.fillStyle =
-    "rgba(0,70,0,.82)";
+    "rgba(0,70,0,.84)";
+
 
   ctx.fillRect(
     0,
     0,
-    WIDTH,
-    HEIGHT
+    GAME_WIDTH,
+    GAME_HEIGHT
   );
 
 
   ctx.textAlign =
     "center";
 
+
   ctx.fillStyle =
     "#ffb000";
 
+
   ctx.font =
-    "bold 55px monospace";
+    "bold 46px monospace";
+
 
   ctx.fillText(
     "YOU WIN!",
-    240,
-    270
+    180,
+    285
   );
 
 
   ctx.fillStyle =
-    "#fff";
+    "#ffffff";
+
 
   ctx.font =
-    "24px monospace";
+    "20px monospace";
+
 
   ctx.fillText(
-    "Score: " + score,
-    240,
-    315
+    "SCORE: " + score,
+    180,
+    325
   );
 
 }
 
 
-/* =========================================
-   DRAW
-========================================= */
+/* =====================================================
+   DRAW EVERYTHING
+===================================================== */
 
 function drawGame() {
 
@@ -1097,7 +1358,7 @@ function drawGame() {
       enemy.y,
       enemy.width,
       enemy.height,
-      "#d93636"
+      "#d93838"
     );
 
   }
@@ -1171,9 +1432,9 @@ function drawGame() {
 }
 
 
-/* =========================================
+/* =====================================================
    GAME LOOP
-========================================= */
+===================================================== */
 
 function gameLoop(time) {
 
@@ -1183,7 +1444,9 @@ function gameLoop(time) {
       (time - lastTime) / 1000
     );
 
+
   lastTime = time;
+
 
   updateGame(delta);
 
@@ -1203,9 +1466,25 @@ function gameLoop(time) {
 }
 
 
-/* =========================================
+/* =====================================================
+   BUTTON
+===================================================== */
+
+startButton.addEventListener(
+  "click",
+  startGame
+);
+
+
+restartButton.addEventListener(
+  "click",
+  restartGame
+);
+
+
+/* =====================================================
    INITIAL
-========================================= */
+===================================================== */
 
 drawGame();
 
