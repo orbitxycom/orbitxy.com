@@ -1,38 +1,774 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Race Car</title>
-    <style>
-      * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Race Car</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+    }
+    body {
+      background: #111;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    canvas {
+      display: block;
+      background: #333;
+      max-width: 100vw;
+      max-height: 100vh;
+      image-rendering: pixelated;
+    }
+    #loading {
+      color: #fff;
+      font-family: monospace;
+      font-size: 24px;
+    }
+  </style>
+</head>
+<body>
+  <div id="loading">Loading...</div>
+  <canvas id="gameCanvas" style="display:none"></canvas>
+
+  <audio id="overAudio" src="https://jskidz.au/audio/game-over.wav"></audio>
+  <audio id="winAudio" src="https://jskidz.au/audio/winning-chimes.wav"></audio>
+
+  <script type="module">
+    /* =========================================================
+       REMOTE GAME ENGINE
+       The original gamedoh-engine.js was a wrapper around these
+       modules. They stay remote so this remains one local HTML.
+       ========================================================= */
+    import BaseGame from 'https://jskidz.au/gamedoh-engine/v1/Game.js';
+    import Button from 'https://jskidz.au/gamedoh-engine/v1/Button.js';
+    import Countdown from 'https://jskidz.au/gamedoh-engine/v1/Countdown.js';
+    import GameTimer from 'https://jskidz.au/gamedoh-engine/v1/GameTimer.js';
+    import Image from 'https://jskidz.au/gamedoh-engine/v1/Image.js';
+    import FrameworkLevel from 'https://jskidz.au/gamedoh-engine/v1/Level.js';
+    import LevelIntro from 'https://jskidz.au/gamedoh-engine/v1/LevelIntro.js';
+    import PixelButton from 'https://jskidz.au/gamedoh-engine/v1/PixelButton.js';
+    import ScoreBoard from 'https://jskidz.au/gamedoh-engine/v1/ScoreBoard.js';
+    import SoundManager from 'https://jskidz.au/gamedoh-engine/v1/SoundManager.js';
+    import State from 'https://jskidz.au/gamedoh-engine/v1/State.js';
+    import Timer from 'https://jskidz.au/gamedoh-engine/v1/Timer.js';
+    import { GAME_STATE } from 'https://jskidz.au/gamedoh-engine/v1/constants.js';
+    import {
+      drawGrid,
+      drawShape,
+      isCollision,
+      getRandomNumber,
+      shuffle,
+      delay,
+      stopAllAudio,
+      Shake,
+    } from 'https://jskidz.au/gamedoh-engine/v1/utils.js';
+
+    /* =========================================================
+       constants.js
+       ========================================================= */
+    const BLOCK_SIZE = 5;
+    const CANVAS_WIDTH = 480;
+    const CANVAS_HEIGHT = 600;
+    const HEART_BEAT = 30;
+
+    const INITIAL_SPEED = 2;
+    const MAX_SPEED = 6;
+    const SPEED_UP_EVERY = 15;
+
+    const LIVES = 2;
+    const LEVELS = [10, 20];
+    const INVINCIBILITY_FRAMES = 60;
+
+    const LANE_POSITIONS = [14, 43, 72];
+    const BOSS_POSITIONS = [9, 38, 67];
+    const OPPONENT_COUNT = 3;
+    const OPPONENT_SPACING = 40;
+
+    const IDLE = 'IDLE';
+    const MOVING_LEFT = 'MOVING_LEFT';
+    const MOVING_RIGHT = 'MOVING_RIGHT';
+
+    /* =========================================================
+       images.js
+       ========================================================= */
+    const playerCar1 = [
+      ['d','d','_','b','b','b','b','_','d','d'],
+      ['w','d','r','b','r','r','b','r','d','w'],
+      ['d','d','r','r','r','r','r','r','d','d'],
+      ['d','d','_','r','w','w','r','_','d','d'],
+      ['_','_','_','r','w','w','r','_','_','_'],
+      ['_','_','_','r','w','w','r','_','_','_'],
+      ['_','_','_','r','d','d','r','_','_','_'],
+      ['_','_','_','r','r','r','r','_','_','_'],
+      ['d','d','_','r','r','r','r','_','d','d'],
+      ['d','d','r','r','b','b','r','r','d','d'],
+      ['w','d','r','b','b','b','b','r','d','w'],
+      ['d','d','_','_','_','_','_','_','d','d'],
+    ];
+
+    const playerCar2 = [
+      ['d','d','_','b','b','b','b','_','d','d'],
+      ['d','d','r','b','r','r','b','r','d','d'],
+      ['w','d','r','r','r','r','r','r','d','w'],
+      ['d','d','_','r','w','w','r','_','d','d'],
+      ['_','_','_','r','w','w','r','_','_','_'],
+      ['_','_','_','r','w','w','r','_','_','_'],
+      ['_','_','_','r','d','d','r','_','_','_'],
+      ['_','_','_','r','r','r','r','_','_','_'],
+      ['d','d','_','r','r','r','r','_','d','d'],
+      ['w','d','r','r','b','b','r','r','d','w'],
+      ['d','d','r','b','b','b','b','r','d','d'],
+      ['d','d','_','_','_','_','_','_','d','d'],
+    ];
+
+    const oponentCar = [
+      ['d','d','_','_','_','_','_','_','d','d'],
+      ['d','d','b','b','b','b','b','b','d','d'],
+      ['d','d','p','d','b','b','d','p','d','d'],
+      ['d','d','p','d','p','p','d','p','d','d'],
+      ['_','_','p','d','p','p','d','p','_','_'],
+      ['_','_','p','d','p','p','d','p','_','_'],
+      ['_','_','p','d','d','d','d','p','_','_'],
+      ['d','d','p','p','w','w','p','p','d','d'],
+      ['d','d','p','p','w','w','p','p','d','d'],
+      ['d','d','p','p','p','p','p','p','d','d'],
+      ['d','d','p','p','p','p','p','p','d','d'],
+      ['d','d','_','b','b','b','b','_','d','d'],
+    ];
+
+    const border = [
+      ['o','o','e','e','e'],
+      ['o','o','e','e','e'],
+      ['o','o','e','o','o'],
+      ['e','e','e','o','o'],
+      ['e','e','e','o','o'],
+    ];
+
+    const bossSprite = [
+      ['d','d','_','_','_','_','_','_','_','_','_','_','_','_','_','_','_','_','d','d'],
+      ['d','d','r','r','d','d','d','d','d','d','d','d','d','d','d','r','r','d','d','d'],
+      ['d','d','r','d','d','w','w','w','w','w','w','w','w','w','d','d','r','d','d'],
+      ['d','d','r','d','d','w','d','d','d','d','d','d','d','w','d','d','r','d','d'],
+      ['_','o','r','d','d','d','d','d','d','d','d','d','d','d','d','d','r','o','_'],
+      ['_','y','r','d','d','d','d','d','d','d','d','d','d','d','d','d','r','y','_'],
+      ['_','o','r','d','d','d','d','d','d','d','d','d','d','d','d','d','r','o','_'],
+      ['_','y','r','d','d','d','d','d','d','d','d','d','d','d','d','d','r','y','_'],
+      ['d','d','r','d','d','d','d','d','d','d','d','d','d','d','d','d','r','d','d'],
+      ['d','d','r','r','d','d','d','d','d','d','d','d','d','d','d','r','r','d','d'],
+      ['d','d','r','r','r','d','d','d','d','d','d','d','d','d','d','r','r','r','d','d'],
+      ['d','d','_','r','r','r','r','r','r','r','r','r','r','r','r','r','_','d','d'],
+    ];
+
+    const colorVariant = (sprite, from, to) =>
+      sprite.map(row => row.map(cell => cell === from ? to : cell));
+
+    const opponentVariants = [
+      oponentCar,
+      colorVariant(oponentCar, 'p', 'g'),
+      colorVariant(oponentCar, 'p', 'o'),
+    ];
+
+    /* =========================================================
+       screens.js
+       ========================================================= */
+    const drawStartScreen = (ctx, startButton) => {
+      ctx.save();
+      ctx.fillStyle = '#1a1a2e';
+      ctx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+
+      ctx.fillStyle = '#333';
+      ctx.fillRect(60, 0, CANVAS_WIDTH - 120, CANVAS_HEIGHT);
+      ctx.fillStyle = '#555';
+      for (let y = 0; y < CANVAS_HEIGHT; y += 60) {
+        ctx.fillRect(CANVAS_WIDTH / 2 - 2, y, 4, 30);
       }
-      body {
-        background: #111;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 100vh;
+
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillStyle = '#f5a623';
+      ctx.font = 'bold 52px monospace';
+      ctx.fillText('RACE CAR', CANVAS_WIDTH / 2, CANVAS_HEIGHT / 2 - 100);
+
+      ctx.fillStyle = '#ccc';
+      ctx.font = '18px monospace';
+      ctx.fillText('← → Arrow keys to change lanes', CANVAS_WIDTH / 2, CANVAS_HEIGHT / 2 - 30);
+      ctx.fillText('Avoid opponent cars', CANVAS_WIDTH / 2, CANVAS_HEIGHT / 2);
+      ctx.fillText('[P] to pause', CANVAS_WIDTH / 2, CANVAS_HEIGHT / 2 + 30);
+      ctx.restore();
+
+      startButton.draw(ctx);
+    };
+
+    const drawPauseOverlay = (ctx) => {
+      ctx.save();
+      ctx.fillStyle = 'rgba(0,0,0,0.55)';
+      ctx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+      ctx.fillStyle = '#fff';
+      ctx.font = 'bold 48px monospace';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText('PAUSED', CANVAS_WIDTH / 2, CANVAS_HEIGHT / 2 - 20);
+      ctx.fillStyle = '#aaa';
+      ctx.font = '20px monospace';
+      ctx.fillText('[P] to resume', CANVAS_WIDTH / 2, CANVAS_HEIGHT / 2 + 30);
+      ctx.restore();
+    };
+
+    const drawLevelTransition = async (game, levelNumber) => {
+      game.transitioning = true;
+      let remaining = 3;
+
+      game.transitionRenderer = () => {
+        const { ctx } = game;
+        ctx.save();
+        ctx.fillStyle = 'rgba(0,0,0,0.65)';
+        ctx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillStyle = '#f5a623';
+        ctx.font = 'bold 52px monospace';
+        ctx.fillText(`Level ${levelNumber}`, CANVAS_WIDTH / 2, CANVAS_HEIGHT / 2 - 50);
+        ctx.fillStyle = '#fff';
+        ctx.font = 'bold 80px monospace';
+        ctx.fillText(remaining, CANVAS_WIDTH / 2, CANVAS_HEIGHT / 2 + 40);
+        ctx.restore();
+      };
+
+      const timer = new Timer(3);
+      await timer.start(r => { remaining = r; });
+
+      game.transitioning = false;
+      game.transitionRenderer = null;
+    };
+
+    const drawGameOverScreen = (ctx, score, restartButton) => {
+      ctx.save();
+      ctx.fillStyle = 'rgba(0,0,0,0.75)';
+      ctx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillStyle = '#e33';
+      ctx.font = 'bold 52px monospace';
+      ctx.fillText('GAME OVER', CANVAS_WIDTH / 2, CANVAS_HEIGHT / 2 - 60);
+      ctx.fillStyle = '#fff';
+      ctx.font = '24px monospace';
+      ctx.fillText(`Score: ${score}`, CANVAS_WIDTH / 2, CANVAS_HEIGHT / 2);
+      ctx.restore();
+      restartButton.draw(ctx);
+    };
+
+    const drawWinScreen = (ctx, score, restartButton) => {
+      ctx.save();
+      ctx.fillStyle = 'rgba(0,80,0,0.8)';
+      ctx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillStyle = '#f5a623';
+      ctx.font = 'bold 52px monospace';
+      ctx.fillText('YOU WIN!', CANVAS_WIDTH / 2, CANVAS_HEIGHT / 2 - 60);
+      ctx.fillStyle = '#fff';
+      ctx.font = '24px monospace';
+      ctx.fillText(`Score: ${score}`, CANVAS_WIDTH / 2, CANVAS_HEIGHT / 2);
+      ctx.restore();
+      restartButton.draw(ctx);
+    };
+
+    /* =========================================================
+       road.js
+       ========================================================= */
+    const BORDER_PX = 5 * BLOCK_SIZE;
+    const DIVIDER_1_X = 168;
+    const DIVIDER_2_X = 312;
+    const DASH_H = 20;
+    const GAP_H = 20;
+    const PERIOD = DASH_H + GAP_H;
+
+    class Road {
+      constructor(game) {
+        this.game = game;
+        this._offset = 0;
       }
-      canvas {
-        display: block;
-        background: #333;
+
+      update() {
+        this._offset = (this._offset + this.game.speed * BLOCK_SIZE) % CANVAS_HEIGHT;
+        return this;
       }
-      #loading {
-        color: #fff;
-        font-family: monospace;
-        font-size: 24px;
+
+      draw(ctx) {
+        ctx.save();
+
+        ctx.fillStyle = '#2a2a2a';
+        ctx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+
+        ctx.fillStyle = '#333';
+        ctx.fillRect(BORDER_PX, 0, CANVAS_WIDTH - BORDER_PX * 2, CANVAS_HEIGHT);
+
+        ctx.fillStyle = '#fff';
+        const startDash = (this._offset % PERIOD) - PERIOD;
+        for (let y = startDash; y < CANVAS_HEIGHT; y += PERIOD) {
+          ctx.fillRect(DIVIDER_1_X, y, 4, DASH_H);
+          ctx.fillRect(DIVIDER_2_X, y, 4, DASH_H);
+        }
+
+        const startBorder = (this._offset % BORDER_PX) - BORDER_PX;
+        for (let y = startBorder; y < CANVAS_HEIGHT; y += BORDER_PX) {
+          drawShape(ctx, BLOCK_SIZE, border, 0, y);
+          drawShape(ctx, BLOCK_SIZE, border, CANVAS_WIDTH - BORDER_PX, y);
+        }
+
+        ctx.restore();
+        return this;
       }
-    </style>
-  </head>
-  <body>
-    <div id="loading">Loading...</div>
-    <canvas id="gameCanvas" style="display: none"></canvas>
-    <script type="module" src="./main.js"></script>
-    <audio id="overAudio" src="https://jskidz.au/audio/game-over.wav"></audio>
-    <audio id="winAudio" src="https://jskidz.au/audio/winning-chimes.wav"></audio>
-  </body>
+    }
+
+    /* =========================================================
+       playerCar.js
+       ========================================================= */
+    class IdleState extends State {
+      constructor(car) {
+        super(car, IDLE);
+        this.image = new Image([playerCar1, playerCar2]);
+        this._timer = 0;
+      }
+      enter() {
+        this.image.index = 0;
+        this._timer = 0;
+      }
+      getImage() { return this.image.getImage(); }
+      nextFrame() {
+        if (++this._timer >= 8) {
+          this._timer = 0;
+          this.image.next();
+        }
+      }
+    }
+
+    class MovingLeftState extends State {
+      constructor(car) {
+        super(car, MOVING_LEFT);
+        this.image = new Image([playerCar1, playerCar2]);
+        this._timer = 0;
+      }
+      enter() { this._timer = 0; }
+      getImage() { return this.image.getImage(); }
+      nextFrame() {
+        const target = LANE_POSITIONS[this.entity.lane];
+        if (this.entity.x > target) {
+          this.entity.x = Math.max(this.entity.x - 3, target);
+        }
+        if (this.entity.x <= target) this.entity.enterState(IDLE);
+        if (++this._timer >= 8) {
+          this._timer = 0;
+          this.image.next();
+        }
+      }
+    }
+
+    class MovingRightState extends State {
+      constructor(car) {
+        super(car, MOVING_RIGHT);
+        this.image = new Image([playerCar1, playerCar2]);
+        this._timer = 0;
+      }
+      enter() { this._timer = 0; }
+      getImage() { return this.image.getImage(); }
+      nextFrame() {
+        const target = LANE_POSITIONS[this.entity.lane];
+        if (this.entity.x < target) {
+          this.entity.x = Math.min(this.entity.x + 3, target);
+        }
+        if (this.entity.x >= target) this.entity.enterState(IDLE);
+        if (++this._timer >= 8) {
+          this._timer = 0;
+          this.image.next();
+        }
+      }
+    }
+
+    class PlayerCar {
+      constructor(game) {
+        this.game = game;
+        this.lane = 1;
+        this.width = 10;
+        this.height = 12;
+        this.x = LANE_POSITIONS[1];
+        this.y = Math.floor(CANVAS_HEIGHT / BLOCK_SIZE) - this.height - 4;
+        this.invincible = 0;
+        this.states = {
+          [IDLE]: new IdleState(this),
+          [MOVING_LEFT]: new MovingLeftState(this),
+          [MOVING_RIGHT]: new MovingRightState(this),
+        };
+        this.currentState = this.states[IDLE];
+        this.currentState.enter();
+      }
+
+      enterState(state) {
+        if (this.currentState.state === state) return;
+        this.currentState = this.states[state];
+        this.currentState.enter();
+      }
+
+      move(dir) {
+        if (dir === 'left' && this.lane > 0) {
+          this.lane--;
+          this.enterState(MOVING_LEFT);
+        }
+        if (dir === 'right' && this.lane < 2) {
+          this.lane++;
+          this.enterState(MOVING_RIGHT);
+        }
+      }
+
+      update() {
+        if (this.invincible > 0) this.invincible--;
+        this.currentState.nextFrame();
+        return this;
+      }
+
+      draw(ctx) {
+        if (this.invincible > 0 && Math.floor(this.invincible / 5) % 2 === 0) return this;
+        drawShape(
+          ctx,
+          this.game.blockSize,
+          this.currentState.getImage(),
+          this.x * this.game.blockSize,
+          this.y * this.game.blockSize
+        );
+        return this;
+      }
+    }
+
+    /* =========================================================
+       opponentCar.js
+       ========================================================= */
+    class OpponentCar {
+      constructor(game, laneIndex, variantIndex, yOffset = 0) {
+        this.game = game;
+        this.width = 10;
+        this.height = 12;
+        this._setup(laneIndex, variantIndex, yOffset);
+      }
+
+      _setup(laneIndex, variantIndex, yOffset) {
+        this.lane = laneIndex;
+        this.x = LANE_POSITIONS[laneIndex];
+        this.y = -(this.height + yOffset);
+        this._image = opponentVariants[variantIndex % opponentVariants.length];
+      }
+
+      _recycle() {
+        const lane = getRandomNumber(3);
+        const variant = getRandomNumber(opponentVariants.length);
+        this._setup(lane, variant, getRandomNumber(OPPONENT_SPACING));
+      }
+
+      update() {
+        this.y += this.game.speed;
+
+        if (this.y * BLOCK_SIZE > CANVAS_HEIGHT) {
+          this._recycle();
+          this.game.addScore(1);
+          return;
+        }
+
+        if (isCollision(this, this.game.playerCar)) {
+          this._recycle();
+          this.game.loseLife();
+        }
+      }
+
+      draw(ctx) {
+        drawShape(
+          ctx,
+          this.game.blockSize,
+          this._image,
+          this.x * this.game.blockSize,
+          this.y * this.game.blockSize
+        );
+        return this;
+      }
+    }
+
+    /* =========================================================
+       bossCar.js
+       ========================================================= */
+    const TRACK_EVERY = 60;
+    const SLIDE_SPEED = 2;
+
+    class BossCar {
+      constructor(game) {
+        this.game = game;
+        this.width = 20;
+        this.height = 12;
+        this._positionIndex = 1;
+        this.x = BOSS_POSITIONS[1];
+        this._targetX = this.x;
+        this.y = -(this.height + 8);
+        this._trackTick = 0;
+      }
+
+      update() {
+        this.y += this.game.speed * 0.5;
+
+        if (this.y * BLOCK_SIZE > CANVAS_HEIGHT) {
+          this.y = -(this.height + 8);
+        }
+
+        this._trackTick++;
+        if (this._trackTick >= TRACK_EVERY) {
+          this._trackTick = 0;
+          const playerLane = this.game.playerCar.lane;
+          if (playerLane < this._positionIndex && this._positionIndex > 0) {
+            this._positionIndex--;
+            this._targetX = BOSS_POSITIONS[this._positionIndex];
+          } else if (playerLane > this._positionIndex && this._positionIndex < 2) {
+            this._positionIndex++;
+            this._targetX = BOSS_POSITIONS[this._positionIndex];
+          }
+        }
+
+        if (this.x < this._targetX) this.x = Math.min(this.x + SLIDE_SPEED, this._targetX);
+        else if (this.x > this._targetX) this.x = Math.max(this.x - SLIDE_SPEED, this._targetX);
+
+        if (isCollision(this, this.game.playerCar)) {
+          this.y = -(this.height + 8);
+          this.game.loseLife();
+        }
+      }
+
+      draw(ctx) {
+        drawShape(
+          ctx,
+          this.game.blockSize,
+          bossSprite,
+          this.x * this.game.blockSize,
+          this.y * this.game.blockSize
+        );
+      }
+    }
+
+    /* =========================================================
+       level.js
+       ========================================================= */
+    class Level extends FrameworkLevel {
+      constructor(game) {
+        super(game, LEVELS, null);
+        this._remaining = LEVELS[0];
+        this._createTimer();
+      }
+
+      get duration() { return LEVELS[this.index]; }
+
+      _createTimer() {
+        this.timer = new GameTimer(
+          this.duration,
+          HEART_BEAT,
+          remaining => {
+            this._remaining = remaining;
+            this.game.addScore(1);
+          },
+          () => {
+            if (this.isLast()) {
+              this.game.win();
+            } else {
+              this._advance();
+            }
+          }
+        );
+        this._remaining = this.duration;
+      }
+
+      async _advance() {
+        this.index++;
+        await drawLevelTransition(this.game, this.number);
+        this.game.lives = LIVES;
+        this.game.playerCar.invincible = 0;
+        this._createTimer();
+        this.timer.start();
+        if (this.game.onLevelSetup) this.game.onLevelSetup();
+      }
+
+      reset() {
+        this.index = 0;
+        this._createTimer();
+      }
+
+      draw() {
+        const { ctx, blockSize } = this.game;
+        ctx.save();
+        ctx.textAlign = 'right';
+        ctx.textBaseline = 'top';
+        ctx.font = `bold ${blockSize * 3}px monospace`;
+        ctx.fillStyle = '#fff';
+        ctx.fillText(
+          `LVL ${this.number}`,
+          this.game.width * blockSize - blockSize * 2,
+          blockSize * 5
+        );
+        ctx.fillStyle = this._remaining <= 3 ? '#e33' : '#fff';
+        ctx.fillText(
+          `${this._remaining}s`,
+          this.game.width * blockSize - blockSize * 2,
+          blockSize * 9
+        );
+        ctx.restore();
+      }
+    }
+
+    /* =========================================================
+       game.js
+       ========================================================= */
+    class Game extends BaseGame {
+      constructor(ctx, opts) {
+        super(ctx, opts, {
+          canvasWidth: CANVAS_WIDTH,
+          canvasHeight: CANVAS_HEIGHT,
+          blockSize: BLOCK_SIZE,
+          heartbeat: HEART_BEAT,
+          lives: LIVES,
+          initialSpeed: INITIAL_SPEED,
+          maxSpeed: MAX_SPEED,
+          speedUpEvery: SPEED_UP_EVERY,
+        });
+        this.level = new Level(this);
+      }
+
+      _update() {
+        this.road.update();
+        this.opponents.forEach(o => o.update());
+        this.boss?.update();
+        this.playerCar.update();
+      }
+
+      _drawWorld() {
+        this.road.draw(this.ctx);
+        this.opponents.forEach(o => o.draw(this.ctx));
+        this.boss?.draw(this.ctx);
+        this.playerCar.draw(this.ctx);
+      }
+
+      loseLife() {
+        if (this.playerCar.invincible > 0) return;
+        this.playerCar.invincible = INVINCIBILITY_FRAMES;
+        super.loseLife();
+      }
+
+      drawStartScreen() {
+        drawStartScreen(this.ctx, this.startButton);
+      }
+
+      drawPauseOverlay() {
+        drawPauseOverlay(this.ctx);
+      }
+
+      drawGameOverScreen() {
+        drawGameOverScreen(this.ctx, this.score, this.restartButton);
+      }
+
+      drawWinScreen() {
+        drawWinScreen(this.ctx, this.score, this.restartButton);
+      }
+
+      drawHUD() {
+        const { ctx, blockSize } = this;
+        ctx.save();
+        ctx.textBaseline = 'top';
+
+        ctx.fillStyle = '#e33';
+        ctx.font = `bold ${blockSize * 3}px monospace`;
+        ctx.textAlign = 'left';
+        ctx.fillText('♥'.repeat(this.lives), blockSize * 2, blockSize * 1.5);
+
+        if (this.boss) {
+          ctx.fillStyle = '#f50';
+          ctx.font = `bold ${blockSize * 2.5}px monospace`;
+          ctx.textAlign = 'right';
+          ctx.fillText('⚠ BOSS!', this.canvasWidth - blockSize * 2, blockSize * 1.5);
+        }
+
+        ctx.fillStyle = '#aaa';
+        ctx.font = `${blockSize * 2}px monospace`;
+        ctx.textAlign = 'center';
+        ctx.fillText('[P] pause', this.canvasWidth / 2, blockSize * 13);
+        ctx.restore();
+      }
+    }
+
+    /* =========================================================
+       inputHandler.js
+       ========================================================= */
+    const inputHandler = game => {
+      document.body.addEventListener('keydown', e => {
+        if (e.metaKey || e.ctrlKey) return;
+        e.preventDefault();
+
+        game.handleKey(e.key);
+
+        if (game.state === GAME_STATE.PLAYING) {
+          if (e.key === 'ArrowLeft') game.playerCar.move('left');
+          if (e.key === 'ArrowRight') game.playerCar.move('right');
+        }
+      });
+    };
+
+    /* =========================================================
+       main.js
+       ========================================================= */
+    const canvas = document.getElementById('gameCanvas');
+    canvas.width = CANVAS_WIDTH;
+    canvas.height = CANVAS_HEIGHT;
+    const ctx = canvas.getContext('2d');
+
+    const game = new Game(ctx, { canvas });
+
+    const setupGame = () => {
+      game.playerCar = new PlayerCar(game);
+      game.opponents = Array.from(
+        { length: OPPONENT_COUNT },
+        (_, i) => new OpponentCar(game, i % 3, i % 3, i * OPPONENT_SPACING)
+      );
+      game.boss = null;
+      game.road = new Road(game);
+      game.scoreBoard = new ScoreBoard(game);
+    };
+
+    const resetOpponents = () => {
+      game.opponents = Array.from(
+        { length: OPPONENT_COUNT },
+        (_, i) => new OpponentCar(game, i % 3, i % 3, i * OPPONENT_SPACING)
+      );
+      game.boss = game.level.number === 2 ? new BossCar(game) : null;
+    };
+
+    setupGame();
+    game.onRestart = setupGame;
+    game.onLevelSetup = resetOpponents;
+
+    inputHandler(game);
+
+    const loadAssets = () =>
+      new Promise(resolve => {
+        if (document.readyState === 'complete') resolve();
+        else window.addEventListener('load', resolve);
+      });
+
+    (async () => {
+      try {
+        await loadAssets();
+        document.getElementById('loading').style.display = 'none';
+        document.getElementById('gameCanvas').style.display = 'block';
+        game.init();
+      } catch (error) {
+        console.error('Race Car failed to start:', error);
+        document.getElementById('loading').textContent = 'Game failed to load. Check the console.';
+      }
+    })();
+  </script>
+</body>
 </html>
