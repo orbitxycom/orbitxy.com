@@ -67,7 +67,7 @@
   .btn-daftar:hover {
     background: #1fae4f;
   }
-  .btn-bell {
+  .btn-theme {
     background: #2c2c2e;
     border: none;
     border-radius: 8px;
@@ -77,9 +77,58 @@
     align-items: center;
     justify-content: center;
     cursor: pointer;
+    color: #ffffff;
   }
-  .btn-bell svg {
+  .btn-theme svg {
     width: 20px;
+    height: 20px;
+  }
+
+  /* ---- Mode Terang ---- */
+  body.light-mode {
+    background: #f2f2f4;
+  }
+  body.light-mode .header,
+  body.light-mode .bottom-nav,
+  body.light-mode .drawer,
+  body.light-mode .login-sheet,
+  body.light-mode .share-sheet,
+  body.light-mode .games-section .game-card-img,
+  body.light-mode .banner-box,
+  body.light-mode .footer-box,
+  body.light-mode .news-card,
+  body.light-mode .profile-section,
+  body.light-mode .settings-section {
+    background: #ffffff !important;
+    border-color: #e2e2e6 !important;
+  }
+  body.light-mode .btn-theme,
+  body.light-mode .btn-bell,
+  body.light-mode .icon-btn,
+  body.light-mode .nav-item,
+  body.light-mode .drawer-social-btn,
+  body.light-mode .games-nav button {
+    background: #eceef1 !important;
+    color: #26262c !important;
+  }
+  body.light-mode .nc-title,
+  body.light-mode .nc-desc,
+  body.light-mode .gs-name,
+  body.light-mode .f-title,
+  body.light-mode .page-title,
+  body.light-mode .news-header h2,
+  body.light-mode .fb-value,
+  body.light-mode .nav-item span {
+    color: #1c1c1e !important;
+  }
+  body.light-mode .nav-item {
+    color: #6a6a6e !important;
+  }
+  body.light-mode .fb-label,
+  body.light-mode .n-sub,
+  body.light-mode .footer-bottom {
+    color: #6a6a6e !important;
+  }
     height: 20px;
     color: #ffffff;
   }
@@ -1922,6 +1971,10 @@
   <div class="header">
     <div class="logo">orbitxy</div>
     <div class="buttons">
+      <button class="btn-theme" id="themeToggleBtn" title="Ganti tema">
+        <svg id="themeIconMoon" viewBox="0 0 24 24" fill="currentColor"><path d="M21 12.8A9 9 0 1 1 11.2 3 7 7 0 0 0 21 12.8z"/></svg>
+        <svg id="themeIconSun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" style="display:none;"><circle cx="12" cy="12" r="4.5"/><line x1="12" y1="2" x2="12" y2="4.5"/><line x1="12" y1="19.5" x2="12" y2="22"/><line x1="2" y1="12" x2="4.5" y2="12"/><line x1="19.5" y1="12" x2="22" y2="12"/><line x1="4.9" y1="4.9" x2="6.6" y2="6.6"/><line x1="17.4" y1="17.4" x2="19.1" y2="19.1"/><line x1="4.9" y1="19.1" x2="6.6" y2="17.4"/><line x1="17.4" y1="6.6" x2="19.1" y2="4.9"/></svg>
+      </button>
       <button class="btn btn-masuk" id="masukBtn">Masuk</button>
       <button class="btn btn-daftar" id="daftarBtn">Pendaftaran</button>
     </div>
