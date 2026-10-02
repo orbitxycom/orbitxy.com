@@ -3,14 +3,12 @@
 <head>
 <meta charset="UTF-8">
 
-<meta
-  name="viewport"
-  content="width=device-width,
-  initial-scale=1.0,
-  maximum-scale=1.0,
-  user-scalable=no,
-  viewport-fit=cover"
->
+<meta name="viewport"
+      content="width=device-width,
+      initial-scale=1.0,
+      maximum-scale=1.0,
+      user-scalable=no,
+      viewport-fit=cover">
 
 <title>OrbitXY Race Car</title>
 
@@ -37,53 +35,36 @@ body {
   touch-action: none;
 }
 
-/* =================================
-   GAME CONTAINER
-================================= */
-
 #gameContainer {
   position: relative;
-
   width: 100vw;
   height: 100vh;
-
   width: 100dvw;
   height: 100dvh;
-
   overflow: hidden;
-
   background: #111;
 }
 
-/* =================================
-   CANVAS 9:16
-================================= */
-
 #gameCanvas {
   position: absolute;
-
   left: 50%;
   top: 50%;
-
   transform: translate(-50%, -50%);
-
+  display: block;
   width: 100%;
   height: 100%;
-
-  display: block;
-
   touch-action: none;
 }
 
-/* =================================
-   BUTTON
-================================= */
+/* =========================
+   START / RESTART
+========================= */
 
 .gameButton {
   position: absolute;
 
   left: 50%;
-  top: 58%;
+  top: 80%;
 
   transform: translate(-50%, -50%);
 
@@ -95,7 +76,6 @@ body {
   border-radius: 8px;
 
   background: #ff9d00;
-
   color: #111;
 
   font-family: monospace;
@@ -103,31 +83,20 @@ body {
   font-weight: bold;
 
   cursor: pointer;
-
   z-index: 20;
+
+  box-shadow:
+    0 0 20px rgba(255,157,0,.35);
 }
 
 .gameButton:active {
   transform:
     translate(-50%, -50%)
-    scale(.95);
+    scale(.94);
 }
 
 #restartButton {
   display: none;
-}
-
-/* =================================
-   SAFE AREA
-================================= */
-
-@supports (padding: env(safe-area-inset-top)) {
-
-  #gameContainer {
-    padding-top: env(safe-area-inset-top);
-    padding-bottom: env(safe-area-inset-bottom);
-  }
-
 }
 </style>
 </head>
@@ -136,26 +105,25 @@ body {
 
 <div id="gameContainer">
 
-  <canvas
-    id="gameCanvas"
-    width="360"
-    height="640">
-  </canvas>
+<canvas
+  id="gameCanvas"
+  width="360"
+  height="640">
+</canvas>
 
-  <button
-    id="startButton"
-    class="gameButton">
-    START
-  </button>
+<button
+  id="startButton"
+  class="gameButton">
+  START
+</button>
 
-  <button
-    id="restartButton"
-    class="gameButton">
-    RESTART
-  </button>
+<button
+  id="restartButton"
+  class="gameButton">
+  RESTART
+</button>
 
 </div>
-
 
 <script>
 
@@ -176,18 +144,8 @@ const restartButton =
   document.getElementById("restartButton");
 
 
-/* =====================================================
-   INTERNAL GAME SIZE
-   9 : 16
-===================================================== */
-
 const GAME_WIDTH = 360;
 const GAME_HEIGHT = 640;
-
-
-/* =====================================================
-   CANVAS
-===================================================== */
 
 canvas.width = GAME_WIDTH;
 canvas.height = GAME_HEIGHT;
@@ -255,7 +213,7 @@ const player = {
 
 
 /* =====================================================
-   RESIZE
+   RESPONSIVE
 ===================================================== */
 
 function resizeCanvas() {
@@ -272,10 +230,6 @@ function resizeCanvas() {
   const gameRatio =
     GAME_WIDTH / GAME_HEIGHT;
 
-
-  /*
-    Canvas tetap 9:16.
-  */
 
   if (screenRatio > gameRatio) {
 
@@ -296,7 +250,6 @@ function resizeCanvas() {
   }
 
 }
-
 
 window.addEventListener(
   "resize",
@@ -339,8 +292,7 @@ function startGame() {
 
   player.x = LANES[1];
 
-  player.targetX =
-    LANES[1];
+  player.targetX = LANES[1];
 
 
   startButton.style.display =
@@ -366,9 +318,7 @@ function startGame() {
 ===================================================== */
 
 function restartGame() {
-
   startGame();
-
 }
 
 
@@ -380,12 +330,12 @@ function moveLeft() {
 
   if (
     gameState !== "PLAYING"
+  ) return;
+
+
+  if (
+    player.lane > 0
   ) {
-    return;
-  }
-
-
-  if (player.lane > 0) {
 
     player.lane--;
 
@@ -405,12 +355,12 @@ function moveRight() {
 
   if (
     gameState !== "PLAYING"
+  ) return;
+
+
+  if (
+    player.lane < 2
   ) {
-    return;
-  }
-
-
-  if (player.lane < 2) {
 
     player.lane++;
 
@@ -482,20 +432,13 @@ document.addEventListener(
    TOUCH SCREEN
 ===================================================== */
 
-/*
-   Tap kiri  = kiri
-   Tap kanan = kanan
-*/
-
 canvas.addEventListener(
   "pointerdown",
   function(e) {
 
     if (
       gameState !== "PLAYING"
-    ) {
-      return;
-    }
+    ) return;
 
 
     const rect =
@@ -620,9 +563,7 @@ function loseLife() {
 
   if (
     invincible > 0
-  ) {
-    return;
-  }
+  ) return;
 
 
   lives--;
@@ -652,9 +593,7 @@ function updateGame(delta) {
 
   if (
     gameState !== "PLAYING"
-  ) {
-    return;
-  }
+  ) return;
 
 
   /* PLAYER */
@@ -699,7 +638,7 @@ function updateGame(delta) {
   }
 
 
-  /* LEVEL TIMER */
+  /* TIMER */
 
   levelTime -= delta;
 
@@ -722,9 +661,7 @@ function updateGame(delta) {
 
       createBoss();
 
-    }
-
-    else {
+    } else {
 
       gameState = "WIN";
 
@@ -748,7 +685,6 @@ function updateGame(delta) {
   ) {
 
     createEnemy();
-
 
     spawnTimer =
       level === 1
@@ -870,8 +806,6 @@ function updateGame(delta) {
 
 function drawRoad() {
 
-  /* BACKGROUND */
-
   ctx.fillStyle =
     "#101114";
 
@@ -882,8 +816,6 @@ function drawRoad() {
     GAME_HEIGHT
   );
 
-
-  /* ROAD */
 
   ctx.fillStyle =
     "#303236";
@@ -896,10 +828,8 @@ function drawRoad() {
   );
 
 
-  /* EDGE */
-
   ctx.fillStyle =
-    "#e8e8e8";
+    "#eeeeee";
 
   ctx.fillRect(
     35,
@@ -916,8 +846,6 @@ function drawRoad() {
   );
 
 
-  /* LANE MARKINGS */
-
   for (
     let y =
       -48 + roadOffset;
@@ -933,7 +861,6 @@ function drawRoad() {
       5,
       25
     );
-
 
     ctx.fillRect(
       221,
@@ -971,7 +898,7 @@ function drawCar(
   /* WHEELS */
 
   ctx.fillStyle =
-    "#0b0b0b";
+    "#090909";
 
 
   ctx.fillRect(
@@ -1011,7 +938,6 @@ function drawCar(
   ctx.fillStyle =
     color;
 
-
   ctx.fillRect(
     -width / 2,
     -height / 2,
@@ -1020,11 +946,10 @@ function drawCar(
   );
 
 
-  /* WINDOWS */
+  /* WINDOW */
 
   ctx.fillStyle =
     "#a9e6ff";
-
 
   ctx.fillRect(
     -width * .30,
@@ -1039,7 +964,6 @@ function drawCar(
   ctx.fillStyle =
     "#ffffff";
 
-
   ctx.fillRect(
     -width * .32,
     height * .23,
@@ -1048,9 +972,11 @@ function drawCar(
   );
 
 
-  /* BOSS */
+  /* BOSS BORDER */
 
-  if (isBoss) {
+  if (
+    isBoss
+  ) {
 
     ctx.strokeStyle =
       "#ffb000";
@@ -1081,7 +1007,6 @@ function drawHUD() {
   ctx.fillStyle =
     "rgba(0,0,0,.82)";
 
-
   ctx.fillRect(
     0,
     0,
@@ -1101,7 +1026,6 @@ function drawHUD() {
   ctx.fillStyle =
     "#ff3434";
 
-
   ctx.fillText(
     "♥".repeat(
       Math.max(
@@ -1120,8 +1044,7 @@ function drawHUD() {
     "bold 15px monospace";
 
   ctx.fillStyle =
-    "#ffffff";
-
+    "#fff";
 
   ctx.fillText(
     "SCORE " + score,
@@ -1135,11 +1058,6 @@ function drawHUD() {
   ctx.textAlign =
     "right";
 
-
-  ctx.font =
-    "bold 15px monospace";
-
-
   ctx.fillText(
     "LEVEL " + level,
     348,
@@ -1148,9 +1066,8 @@ function drawHUD() {
 
 
   ctx.fillText(
-    Math.ceil(
-      levelTime
-    ) + "s",
+    Math.ceil(levelTime) +
+    "s",
     348,
     49
   );
@@ -1167,7 +1084,6 @@ function drawStartScreen() {
   ctx.fillStyle =
     "rgba(0,0,0,.76)";
 
-
   ctx.fillRect(
     0,
     0,
@@ -1183,48 +1099,42 @@ function drawStartScreen() {
   ctx.fillStyle =
     "#ff9d00";
 
-
   ctx.font =
     "bold 42px monospace";
-
 
   ctx.fillText(
     "RACE CAR",
     180,
-    245
+    225
   );
 
 
   ctx.fillStyle =
-    "#ffffff";
-
+    "#fff";
 
   ctx.font =
     "14px monospace";
 
-
   ctx.fillText(
     "TAP KIRI  ←",
     180,
-    285
+    275
   );
-
 
   ctx.fillText(
     "TAP KANAN  →",
     180,
-    310
+    300
   );
 
 
   ctx.fillStyle =
-    "#999";
-
+    "#888";
 
   ctx.fillText(
     "HINDARI MOBIL LAWAN",
     180,
-    350
+    340
   );
 
 }
@@ -1239,7 +1149,6 @@ function drawGameOver() {
   ctx.fillStyle =
     "rgba(0,0,0,.78)";
 
-
   ctx.fillRect(
     0,
     0,
@@ -1251,14 +1160,11 @@ function drawGameOver() {
   ctx.textAlign =
     "center";
 
-
   ctx.fillStyle =
     "#ff3333";
 
-
   ctx.font =
     "bold 42px monospace";
-
 
   ctx.fillText(
     "GAME OVER",
@@ -1268,12 +1174,10 @@ function drawGameOver() {
 
 
   ctx.fillStyle =
-    "#ffffff";
-
+    "#fff";
 
   ctx.font =
     "20px monospace";
-
 
   ctx.fillText(
     "SCORE: " + score,
@@ -1293,7 +1197,6 @@ function drawWin() {
   ctx.fillStyle =
     "rgba(0,70,0,.84)";
 
-
   ctx.fillRect(
     0,
     0,
@@ -1305,14 +1208,11 @@ function drawWin() {
   ctx.textAlign =
     "center";
 
-
   ctx.fillStyle =
     "#ffb000";
 
-
   ctx.font =
     "bold 46px monospace";
-
 
   ctx.fillText(
     "YOU WIN!",
@@ -1322,12 +1222,10 @@ function drawWin() {
 
 
   ctx.fillStyle =
-    "#ffffff";
-
+    "#fff";
 
   ctx.font =
     "20px monospace";
-
 
   ctx.fillText(
     "SCORE: " + score,
@@ -1339,7 +1237,7 @@ function drawWin() {
 
 
 /* =====================================================
-   DRAW EVERYTHING
+   DRAW GAME
 ===================================================== */
 
 function drawGame() {
@@ -1347,7 +1245,7 @@ function drawGame() {
   drawRoad();
 
 
-  /* ENEMIES */
+  /* ENEMY */
 
   for (
     const enemy of enemies
@@ -1467,14 +1365,13 @@ function gameLoop(time) {
 
 
 /* =====================================================
-   BUTTON
+   BUTTON EVENTS
 ===================================================== */
 
 startButton.addEventListener(
   "click",
   startGame
 );
-
 
 restartButton.addEventListener(
   "click",
@@ -1483,7 +1380,7 @@ restartButton.addEventListener(
 
 
 /* =====================================================
-   INITIAL
+   INITIAL DRAW
 ===================================================== */
 
 drawGame();
