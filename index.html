@@ -2161,6 +2161,36 @@
     drawerClose.addEventListener('click', closeDrawer);
     overlay.addEventListener('click', closeDrawer);
 
+    // ---- Geser kanan dari tepi kiri layar untuk buka menu (kayak ChatGPT) ----
+    let edgeSwipeStartX = null;
+    let edgeSwipeStartY = null;
+    const EDGE_ZONE = 24; // lebar area tepi kiri yang bisa dipakai mulai geser (px)
+    const SWIPE_THRESHOLD = 60; // jarak minimal geser biar dianggap sah (px)
+
+    document.addEventListener('touchstart', function(e) {
+      if (drawer.classList.contains('show')) return; // drawer udah kebuka, skip
+      const t = e.touches[0];
+      if (t.clientX <= EDGE_ZONE) {
+        edgeSwipeStartX = t.clientX;
+        edgeSwipeStartY = t.clientY;
+      } else {
+        edgeSwipeStartX = null;
+        edgeSwipeStartY = null;
+      }
+    }, { passive: true });
+
+    document.addEventListener('touchend', function(e) {
+      if (edgeSwipeStartX === null) return;
+      const t = e.changedTouches[0];
+      const dx = t.clientX - edgeSwipeStartX;
+      const dy = Math.abs(t.clientY - edgeSwipeStartY);
+      if (dx > SWIPE_THRESHOLD && dy < 80) {
+        openDrawer();
+      }
+      edgeSwipeStartX = null;
+      edgeSwipeStartY = null;
+    }, { passive: true });
+
     const masukBtn = document.getElementById('masukBtn');
     const loginSheet = document.getElementById('loginSheet');
     const loginOverlay = document.getElementById('loginOverlay');
