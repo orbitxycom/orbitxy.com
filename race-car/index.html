@@ -1,181 +1,1005 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="id">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>OrbitXY Race Car</title>
+
 <style>
-*{box-sizing:border-box;margin:0}
-body{min-height:100vh;background:#111;display:flex;align-items:center;justify-content:center;font-family:monospace;overflow:hidden}
-#wrap{position:relative}
-canvas{display:block;background:#333;width:min(480px,100vw);height:auto;image-rendering:pixelated}
-button{font:700 22px monospace;padding:14px 28px;cursor:pointer;border:2px solid #fff;background:#f5a623;color:#111}
-#start,#restart{position:absolute;left:50%;transform:translateX(-50%);top:58%;z-index:5}
-#restart{display:none}
-#hint{position:absolute;bottom:10px;left:0;width:100%;text-align:center;color:#aaa;font-size:13px;pointer-events:none}
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background: #0b0d12;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: monospace;
+  overflow: hidden;
+}
+
+#gameBox {
+  position: relative;
+  width: 480px;
+  max-width: 100vw;
+}
+
+canvas {
+  display: block;
+  width: 100%;
+  height: auto;
+  background: #222;
+  image-rendering: pixelated;
+}
+
+button {
+  position: absolute;
+  left: 50%;
+  top: 58%;
+  transform: translate(-50%, -50%);
+  padding: 15px 40px;
+  font-family: monospace;
+  font-size: 22px;
+  font-weight: bold;
+  color: white;
+  background: #ff9d00;
+  border: 3px solid white;
+  border-radius: 6px;
+  cursor: pointer;
+  z-index: 10;
+}
+
+button:hover {
+  background: #ffbd3c;
+}
+
+#restart {
+  display: none;
+}
+
+#mobileControls {
+  position: absolute;
+  bottom: 15px;
+  left: 0;
+  width: 100%;
+  display: none;
+  justify-content: space-between;
+  padding: 0 20px;
+}
+
+.control {
+  position: static;
+  transform: none;
+  width: 80px;
+  height: 55px;
+  padding: 0;
+  font-size: 28px;
+}
+
+@media (max-width: 600px) {
+  #mobileControls {
+    display: flex;
+  }
+}
 </style>
 </head>
+
 <body>
-<div id="wrap">
-<canvas id="game" width="480" height="600"></canvas>
-<button id="start">START</button>
-<button id="restart">RESTART</button>
-<div id="hint">← → untuk pindah jalur • P untuk pause</div>
+
+<div id="gameBox">
+
+<canvas id="gameCanvas" width="480" height="600"></canvas>
+
+<button id="startButton">START</button>
+<button id="restartButton">RESTART</button>
+
+<div id="mobileControls">
+  <button class="control" id="leftButton">◀</button>
+  <button class="control" id="rightButton">▶</button>
+</div>
+
 </div>
 
 <script>
-const canvas=document.getElementById("game"),ctx=canvas.getContext("2d");
-const startBtn=document.getElementById("start"),restartBtn=document.getElementById("restart");
 
-const W=480,H=600;
-const lanes=[100,240,380], roadLeft=40,roadRight=440;
-let state="start",level=1,lives=2,score=0,speed=3,boss=null;
-let player={lane:1,x:lanes[1],y:510,w:38,h:70,targetX:lanes[1]};
-let enemies=[],keys={};
-let last=0,spawnTimer=0,levelTimer=10,invincible=0,roadOffset=0;
-let paused=false;
+/* =========================
+   CANVAS
+========================= */
 
-function resetGame(){
- state="playing";level=1;lives=2;score=0;speed=3;levelTimer=10;
- player={lane:1,x:lanes[1],y:510,w:38,h:70,targetX:lanes[1]};
- enemies=[];boss=null;spawnTimer=0;invincible=0;roadOffset=0;paused=false;
- startBtn.style.display="none";restartBtn.style.display="none";
- last=performance.now();requestAnimationFrame(loop);
+const canvas = document.getElementById("gameCanvas");
+const ctx = canvas.getContext("2d");
+
+const startButton = document.getElementById("startButton");
+const restartButton = document.getElementById("restartButton");
+
+const leftButton = document.getElementById("leftButton");
+const rightButton = document.getElementById("rightButton");
+
+
+/* =========================
+   GAME SETTINGS
+========================= */
+
+const WIDTH = 480;
+const HEIGHT = 600;
+
+const LANES = [120, 240, 360];
+
+let gameState = "START";
+
+let level = 1;
+let score = 0;
+let lives = 2;
+
+let speed = 3;
+
+let levelTime = 10;
+
+let lastTime = 0;
+
+let spawnTimer = 0;
+
+let roadOffset = 0;
+
+let invincible = 0;
+
+let enemies = [];
+
+let boss = null;
+
+
+/* =========================
+   PLAYER
+========================= */
+
+const player = {
+  lane: 1,
+  x: LANES[1],
+  targetX: LANES[1],
+  y: 510,
+  width: 42,
+  height: 72
+};
+
+
+/* =========================
+   START GAME
+========================= */
+
+function startGame() {
+
+  gameState = "PLAYING";
+
+  level = 1;
+  score = 0;
+  lives = 2;
+  speed = 3;
+  levelTime = 10;
+
+  enemies = [];
+
+  boss = null;
+
+  spawnTimer = 0;
+
+  invincible = 0;
+
+  roadOffset = 0;
+
+  player.lane = 1;
+  player.x = LANES[1];
+  player.targetX = LANES[1];
+
+  startButton.style.display = "none";
+  restartButton.style.display = "none";
+
+  lastTime = performance.now();
+
+  requestAnimationFrame(gameLoop);
 }
 
-function newEnemy(){
- const lane=Math.floor(Math.random()*3);
- enemies.push({lane,x:lanes[lane],y:-80,w:38,h:70,spd:speed+(Math.random()*1.4)});
+
+/* =========================
+   RESTART
+========================= */
+
+function restartGame() {
+  startGame();
 }
 
-function rectHit(a,b){
- return a.x-a.w/2<b.x+b.w/2 && a.x+a.w/2>b.x-b.w/2 &&
-        a.y-a.h/2<b.y+b.h/2 && a.y+a.h/2>b.y-b.h/2;
+
+/* =========================
+   MOVE PLAYER
+========================= */
+
+function moveLeft() {
+
+  if (gameState !== "PLAYING") return;
+
+  if (player.lane > 0) {
+    player.lane--;
+    player.targetX = LANES[player.lane];
+  }
 }
 
-function loseLife(){
- if(invincible>0)return;
- lives--;invincible=80;
- if(lives<=0){state="over";restartBtn.style.display="block";}
+
+function moveRight() {
+
+  if (gameState !== "PLAYING") return;
+
+  if (player.lane < 2) {
+    player.lane++;
+    player.targetX = LANES[player.lane];
+  }
 }
 
-function nextLevel(){
- if(level===1){
-  level=2;levelTimer=20;speed=4;enemies=[];boss={x:lanes[1],y:-120,w:58,h:92,spd:2.2,target:lanes[1]};
- }else{
-  state="win";restartBtn.style.display="block";
- }
-}
 
-function update(dt){
- if(state!=="playing"||paused)return;
- roadOffset=(roadOffset+speed*dt*60)%40;
- if(invincible>0)invincible-=dt*60;
+/* =========================
+   KEYBOARD
+========================= */
 
- levelTimer-=dt;
- if(levelTimer<=0){nextLevel();return;}
+document.addEventListener("keydown", function(e) {
 
- spawnTimer-=dt;
- if(spawnTimer<=0){
-  newEnemy();
-  spawnTimer=level===1?0.75:0.58;
- }
+  if (e.key === "ArrowLeft") {
+    e.preventDefault();
+    moveLeft();
+  }
 
- player.x+=(player.targetX-player.x)*Math.min(1,dt*12);
+  if (e.key === "ArrowRight") {
+    e.preventDefault();
+    moveRight();
+  }
 
- enemies.forEach(e=>e.y+=e.spd*dt*60);
- enemies=enemies.filter(e=>{
-  if(e.y>H+100){score++;return false}
-  if(rectHit(player,e)){loseLife();return false}
-  return true;
- });
+  if (e.key === "Enter" && gameState === "START") {
+    startGame();
+  }
 
- if(level===2&&boss){
-  boss.y+=boss.spd*dt*60;
-  if(boss.y>H+120)boss.y=-120;
-  if(player.lane<Math.round((lanes.indexOf(boss.target))))boss.target=lanes[Math.max(0,player.lane)];
-  if(player.lane>Math.round((lanes.indexOf(boss.target))))boss.target=lanes[Math.min(2,player.lane)];
-  boss.x+=(boss.target-boss.x)*Math.min(1,dt*3);
-  if(rectHit(player,boss))loseLife();
- }
-}
+  if (e.key === "Enter" &&
+      (gameState === "GAMEOVER" || gameState === "WIN")) {
+    restartGame();
+  }
 
-function drawCar(x,y,w,h,main,glass="#bde9ff"){
- ctx.save();ctx.translate(x,y);
- ctx.fillStyle="#111";ctx.fillRect(-w*.52,-h*.38,w*.18,h*.25);ctx.fillRect(w*.34,-h*.38,w*.18,h*.25);
- ctx.fillRect(-w*.52,h*.13,w*.18,h*.25);ctx.fillRect(w*.34,h*.13,w*.18,h*.25);
- ctx.fillStyle=main;ctx.fillRect(-w/2,-h/2,w,h);
- ctx.fillStyle=glass;ctx.fillRect(-w*.30,-h*.30,w*.60,h*.22);
- ctx.fillStyle="#fff";ctx.fillRect(-w*.35,h*.22,w*.70,h*.10);
- ctx.restore();
-}
-
-function draw(){
- ctx.clearRect(0,0,W,H);
- ctx.fillStyle="#181818";ctx.fillRect(0,0,W,H);
- ctx.fillStyle="#333";ctx.fillRect(40,0,400,H);
-
- ctx.fillStyle="#666";
- for(let y=-40+roadOffset;y<H;y+=40){ctx.fillRect(195,y,6,20);ctx.fillRect(279,y,6,20)}
-
- ctx.fillStyle="#e5e5e5";
- for(let y=-40+roadOffset;y<H;y+=40){ctx.fillRect(40,y,8,20);ctx.fillRect(432,y,8,20)}
-
- enemies.forEach(e=>drawCar(e.x,e.y,e.w,e.h,"#d43b3b"));
- if(boss)drawCar(boss.x,boss.y,boss.w,boss.h,"#7b38ff","#ffd85c");
-
- if(invincible<=0||Math.floor(invincible/6)%2===0)
-  drawCar(player.x,player.y,player.w,player.h,"#1687ff");
-
- ctx.fillStyle="#111";ctx.fillRect(0,0,W,70);
- ctx.fillStyle="#fff";ctx.font="bold 20px monospace";
- ctx.textAlign="left";ctx.fillText("❤".repeat(Math.max(0,lives)),15,28);
- ctx.fillText("SCORE "+score,15,55);
- ctx.textAlign="right";ctx.fillText("LEVEL "+level,465,28);
- ctx.fillText(Math.ceil(levelTimer)+"s",465,55);
-
- if(state==="start"){
-  overlay();
-  ctx.fillStyle="#f5a623";ctx.font="bold 52px monospace";ctx.textAlign="center";
-  ctx.fillText("RACE CAR",240,220);
-  ctx.fillStyle="#fff";ctx.font="18px monospace";
-  ctx.fillText("Hindari mobil lawan",240,270);
-  ctx.fillText("Gunakan ← dan →",240,300);
- }
- if(paused&&state==="playing"){
-  overlay();ctx.fillStyle="#fff";ctx.font="bold 48px monospace";ctx.textAlign="center";ctx.fillText("PAUSED",240,300);
- }
- if(state==="over"){
-  overlay();ctx.fillStyle="#e33";ctx.font="bold 50px monospace";ctx.textAlign="center";ctx.fillText("GAME OVER",240,270);
-  ctx.fillStyle="#fff";ctx.font="24px monospace";ctx.fillText("Score: "+score,240,315);
- }
- if(state==="win"){
-  overlay();ctx.fillStyle="#f5a623";ctx.font="bold 55px monospace";ctx.textAlign="center";ctx.fillText("YOU WIN!",240,270);
-  ctx.fillStyle="#fff";ctx.font="24px monospace";ctx.fillText("Score: "+score,240,315);
- }
-}
-
-function overlay(){ctx.fillStyle="rgba(0,0,0,.72)";ctx.fillRect(0,0,W,H)}
-
-function loop(t){
- const dt=Math.min(.033,(t-last)/1000);last=t;
- update(dt);draw();
- if(state==="playing")requestAnimationFrame(loop);
-}
-
-startBtn.onclick=resetGame;
-restartBtn.onclick=resetGame;
-
-document.addEventListener("keydown",e=>{
- if(["ArrowLeft","ArrowRight"," ","p","P"].includes(e.key))e.preventDefault();
- if(state==="start"&&(e.key==="Enter"||e.key===" "))resetGame();
- if(state==="playing"){
-  if(e.key==="ArrowLeft"&&player.lane>0){player.lane--;player.targetX=lanes[player.lane]}
-  if(e.key==="ArrowRight"&&player.lane<2){player.lane++;player.targetX=lanes[player.lane]}
-  if(e.key==="p"||e.key==="P")paused=!paused;
- }
 });
-draw();
+
+
+/* =========================
+   MOBILE BUTTON
+========================= */
+
+leftButton.addEventListener("click", moveLeft);
+rightButton.addEventListener("click", moveRight);
+
+
+/* =========================
+   BUTTON EVENTS
+========================= */
+
+startButton.addEventListener("click", function() {
+  startGame();
+});
+
+restartButton.addEventListener("click", function() {
+  restartGame();
+});
+
+
+/* =========================
+   CREATE ENEMY
+========================= */
+
+function createEnemy() {
+
+  const lane = Math.floor(Math.random() * 3);
+
+  enemies.push({
+    lane: lane,
+    x: LANES[lane],
+    y: -100,
+    width: 42,
+    height: 72,
+    speed: speed + Math.random() * 1.5
+  });
+
+}
+
+
+/* =========================
+   BOSS
+========================= */
+
+function createBoss() {
+
+  boss = {
+    x: LANES[1],
+    targetX: LANES[1],
+    y: -130,
+    width: 62,
+    height: 95,
+    speed: 2.2
+  };
+
+}
+
+
+/* =========================
+   COLLISION
+========================= */
+
+function collision(a, b) {
+
+  return (
+    a.x - a.width / 2 <
+      b.x + b.width / 2 &&
+
+    a.x + a.width / 2 >
+      b.x - b.width / 2 &&
+
+    a.y - a.height / 2 <
+      b.y + b.height / 2 &&
+
+    a.y + a.height / 2 >
+      b.y - b.height / 2
+  );
+
+}
+
+
+/* =========================
+   LOSE LIFE
+========================= */
+
+function loseLife() {
+
+  if (invincible > 0) return;
+
+  lives--;
+
+  invincible = 80;
+
+  if (lives <= 0) {
+
+    gameState = "GAMEOVER";
+
+    restartButton.style.display = "block";
+
+  }
+
+}
+
+
+/* =========================
+   UPDATE GAME
+========================= */
+
+function updateGame(delta) {
+
+  if (gameState !== "PLAYING") return;
+
+
+  /* PLAYER */
+
+  player.x +=
+    (player.targetX - player.x) *
+    Math.min(1, delta * 12);
+
+
+  /* INVINCIBILITY */
+
+  if (invincible > 0) {
+    invincible -= delta * 60;
+  }
+
+
+  /* ROAD */
+
+  roadOffset += speed * delta * 60;
+
+  if (roadOffset >= 40) {
+    roadOffset = 0;
+  }
+
+
+  /* TIMER */
+
+  levelTime -= delta;
+
+
+  if (levelTime <= 0) {
+
+    if (level === 1) {
+
+      level = 2;
+
+      levelTime = 20;
+
+      speed = 4;
+
+      enemies = [];
+
+      createBoss();
+
+    }
+
+    else {
+
+      gameState = "WIN";
+
+      restartButton.style.display = "block";
+
+      return;
+
+    }
+
+  }
+
+
+  /* SPAWN */
+
+  spawnTimer -= delta;
+
+  if (spawnTimer <= 0) {
+
+    createEnemy();
+
+    if (level === 1) {
+      spawnTimer = 0.8;
+    }
+    else {
+      spawnTimer = 0.6;
+    }
+
+  }
+
+
+  /* ENEMIES */
+
+  for (let i = enemies.length - 1; i >= 0; i--) {
+
+    const enemy = enemies[i];
+
+    enemy.y += enemy.speed * delta * 60;
+
+
+    if (enemy.y > HEIGHT + 100) {
+
+      enemies.splice(i, 1);
+
+      score++;
+
+      continue;
+
+    }
+
+
+    if (collision(player, enemy)) {
+
+      enemies.splice(i, 1);
+
+      loseLife();
+
+    }
+
+  }
+
+
+  /* BOSS */
+
+  if (boss) {
+
+    boss.y += boss.speed * delta * 60;
+
+
+    if (boss.y > HEIGHT + 150) {
+
+      boss.y = -150;
+
+    }
+
+
+    boss.targetX =
+      LANES[player.lane];
+
+
+    boss.x +=
+      (boss.targetX - boss.x) *
+      delta * 2;
+
+
+    if (collision(player, boss)) {
+
+      loseLife();
+
+    }
+
+  }
+
+}
+
+
+/* =========================
+   DRAW ROAD
+========================= */
+
+function drawRoad() {
+
+  ctx.fillStyle = "#151515";
+
+  ctx.fillRect(
+    0,
+    0,
+    WIDTH,
+    HEIGHT
+  );
+
+
+  /* ROAD */
+
+  ctx.fillStyle = "#333";
+
+  ctx.fillRect(
+    40,
+    0,
+    400,
+    HEIGHT
+  );
+
+
+  /* OUTER LINES */
+
+  ctx.fillStyle = "#eeeeee";
+
+  ctx.fillRect(
+    40,
+    0,
+    7,
+    HEIGHT
+  );
+
+  ctx.fillRect(
+    433,
+    0,
+    7,
+    HEIGHT
+  );
+
+
+  /* LANE LINES */
+
+  for (
+    let y = -40 + roadOffset;
+    y < HEIGHT;
+    y += 40
+  ) {
+
+    ctx.fillRect(
+      196,
+      y,
+      6,
+      22
+    );
+
+    ctx.fillRect(
+      278,
+      y,
+      6,
+      22
+    );
+
+  }
+
+}
+
+
+/* =========================
+   DRAW CAR
+========================= */
+
+function drawCar(
+  x,
+  y,
+  width,
+  height,
+  color,
+  bossCar = false
+) {
+
+  ctx.save();
+
+  ctx.translate(x, y);
+
+
+  /* SHADOW */
+
+  ctx.fillStyle = "#111";
+
+  ctx.fillRect(
+    -width / 2 - 5,
+    -height / 2 + 10,
+    10,
+    25
+  );
+
+  ctx.fillRect(
+    width / 2 - 5,
+    -height / 2 + 10,
+    10,
+    25
+  );
+
+
+  /* BODY */
+
+  ctx.fillStyle = color;
+
+  ctx.fillRect(
+    -width / 2,
+    -height / 2,
+    width,
+    height
+  );
+
+
+  /* WINDOWS */
+
+  ctx.fillStyle = "#9edfff";
+
+  ctx.fillRect(
+    -width * 0.3,
+    -height * 0.28,
+    width * 0.6,
+    height * 0.23
+  );
+
+
+  /* FRONT */
+
+  ctx.fillStyle = "#fff";
+
+  ctx.fillRect(
+    -width * 0.35,
+    height * 0.23,
+    width * 0.7,
+    7
+  );
+
+
+  /* BOSS */
+
+  if (bossCar) {
+
+    ctx.strokeStyle = "#ffb000";
+
+    ctx.lineWidth = 4;
+
+    ctx.strokeRect(
+      -width / 2 - 4,
+      -height / 2 - 4,
+      width + 8,
+      height + 8
+    );
+
+  }
+
+
+  ctx.restore();
+
+}
+
+
+/* =========================
+   DRAW HUD
+========================= */
+
+function drawHUD() {
+
+  ctx.fillStyle = "rgba(0,0,0,.8)";
+
+  ctx.fillRect(
+    0,
+    0,
+    WIDTH,
+    70
+  );
+
+
+  ctx.fillStyle = "#ff3333";
+
+  ctx.font = "bold 24px monospace";
+
+  ctx.textAlign = "left";
+
+  ctx.fillText(
+    "♥".repeat(Math.max(0, lives)),
+    15,
+    28
+  );
+
+
+  ctx.fillStyle = "#fff";
+
+  ctx.font = "bold 18px monospace";
+
+  ctx.fillText(
+    "SCORE: " + score,
+    15,
+    55
+  );
+
+
+  ctx.textAlign = "right";
+
+  ctx.fillText(
+    "LEVEL " + level,
+    465,
+    28
+  );
+
+
+  ctx.fillText(
+    Math.ceil(levelTime) + "s",
+    465,
+    55
+  );
+
+}
+
+
+/* =========================
+   START SCREEN
+========================= */
+
+function drawStartScreen() {
+
+  ctx.fillStyle =
+    "rgba(0,0,0,.72)";
+
+  ctx.fillRect(
+    0,
+    0,
+    WIDTH,
+    HEIGHT
+  );
+
+
+  ctx.textAlign = "center";
+
+  ctx.fillStyle = "#ff9d00";
+
+  ctx.font = "bold 52px monospace";
+
+  ctx.fillText(
+    "RACE CAR",
+    240,
+    220
+  );
+
+
+  ctx.fillStyle = "#fff";
+
+  ctx.font = "18px monospace";
+
+  ctx.fillText(
+    "HINDARI MOBIL LAWAN",
+    240,
+    275
+  );
+
+  ctx.fillText(
+    "← → UNTUK PINDAH JALUR",
+    240,
+    305
+  );
+
+}
+
+
+/* =========================
+   GAME OVER
+========================= */
+
+function drawGameOver() {
+
+  ctx.fillStyle =
+    "rgba(0,0,0,.75)";
+
+  ctx.fillRect(
+    0,
+    0,
+    WIDTH,
+    HEIGHT
+  );
+
+
+  ctx.textAlign = "center";
+
+  ctx.fillStyle = "#ff3333";
+
+  ctx.font = "bold 50px monospace";
+
+  ctx.fillText(
+    "GAME OVER",
+    240,
+    270
+  );
+
+
+  ctx.fillStyle = "#fff";
+
+  ctx.font = "24px monospace";
+
+  ctx.fillText(
+    "Score: " + score,
+    240,
+    315
+  );
+
+}
+
+
+/* =========================
+   WIN
+========================= */
+
+function drawWin() {
+
+  ctx.fillStyle =
+    "rgba(0,70,0,.82)";
+
+  ctx.fillRect(
+    0,
+    0,
+    WIDTH,
+    HEIGHT
+  );
+
+
+  ctx.textAlign = "center";
+
+  ctx.fillStyle = "#ffb000";
+
+  ctx.font = "bold 55px monospace";
+
+  ctx.fillText(
+    "YOU WIN!",
+    240,
+    270
+  );
+
+
+  ctx.fillStyle = "#fff";
+
+  ctx.font = "24px monospace";
+
+  ctx.fillText(
+    "Score: " + score,
+    240,
+    315
+  );
+
+}
+
+
+/* =========================
+   DRAW EVERYTHING
+========================= */
+
+function drawGame() {
+
+  drawRoad();
+
+
+  /* ENEMIES */
+
+  for (const enemy of enemies) {
+
+    drawCar(
+      enemy.x,
+      enemy.y,
+      enemy.width,
+      enemy.height,
+      "#d93636"
+    );
+
+  }
+
+
+  /* BOSS */
+
+  if (boss) {
+
+    drawCar(
+      boss.x,
+      boss.y,
+      boss.width,
+      boss.height,
+      "#792cff",
+      true
+    );
+
+  }
+
+
+  /* PLAYER */
+
+  if (
+    invincible <= 0 ||
+    Math.floor(invincible / 6) % 2 === 0
+  ) {
+
+    drawCar(
+      player.x,
+      player.y,
+      player.width,
+      player.height,
+      "#1687ff"
+    );
+
+  }
+
+
+  drawHUD();
+
+
+  if (gameState === "START") {
+    drawStartScreen();
+  }
+
+
+  if (gameState === "GAMEOVER") {
+    drawGameOver();
+  }
+
+
+  if (gameState === "WIN") {
+    drawWin();
+  }
+
+}
+
+
+/* =========================
+   GAME LOOP
+========================= */
+
+function gameLoop(time) {
+
+  const delta =
+    Math.min(
+      0.033,
+      (time - lastTime) / 1000
+    );
+
+  lastTime = time;
+
+  updateGame(delta);
+
+  drawGame();
+
+
+  if (
+    gameState === "PLAYING"
+  ) {
+
+    requestAnimationFrame(
+      gameLoop
+    );
+
+  }
+
+}
+
+
+/* =========================
+   INITIAL DRAW
+========================= */
+
+drawGame();
+
 </script>
+
 </body>
 </html>
