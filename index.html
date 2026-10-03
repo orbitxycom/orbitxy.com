@@ -129,6 +129,19 @@
   body.light-mode .footer-bottom {
     color: #6a6a6e !important;
   }
+  .btn-bell {
+    background: #2c2c2e;
+    border: none;
+    border-radius: 8px;
+    width: 38px;
+    height: 38px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+  }
+  .btn-bell svg {
+    width: 20px;
     height: 20px;
     color: #ffffff;
   }
@@ -2444,6 +2457,9 @@
           masukBtn.outerHTML = '<button class="btn-bell" id="bellBtn"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a6 6 0 0 0-6 6v3.2c0 .6-.2 1.2-.6 1.7L4 15.5c-.6.8 0 2 1 2h14c1 0 1.6-1.2 1-2l-1.4-2.6c-.4-.5-.6-1.1-.6-1.7V8a6 6 0 0 0-6-6z"/><path d="M9.5 20a2.5 2.5 0 0 0 5 0" fill="none" stroke="currentColor" stroke-width="1.6"/></svg></button>';
         }
         daftarBtn.style.display = "none";
+
+        const themeBtnEl = document.getElementById('themeToggleBtn');
+        if (themeBtnEl) themeBtnEl.style.display = "flex";
 
         // Nama: pakai yang sudah disimpan user (kalau ada), atau generate acak dari user id
         const uid = session.user.id.replace(/-/g, '');
