@@ -2227,6 +2227,26 @@
     drawerClose.addEventListener('click', closeDrawer);
     overlay.addEventListener('click', closeDrawer);
 
+    // ---- Toggle tema terang/gelap ----
+    const themeToggleBtn = document.getElementById('themeToggleBtn');
+    const themeIconMoon = document.getElementById('themeIconMoon');
+    const themeIconSun = document.getElementById('themeIconSun');
+
+    function applyTheme(isLight) {
+      document.body.classList.toggle('light-mode', isLight);
+      themeIconMoon.style.display = isLight ? 'none' : 'block';
+      themeIconSun.style.display = isLight ? 'block' : 'none';
+    }
+
+    const savedTheme = localStorage.getItem('orbitxy_theme');
+    applyTheme(savedTheme === 'light');
+
+    themeToggleBtn.addEventListener('click', function() {
+      const nowLight = !document.body.classList.contains('light-mode');
+      applyTheme(nowLight);
+      localStorage.setItem('orbitxy_theme', nowLight ? 'light' : 'dark');
+    });
+
     // ---- Geser kanan dari tepi kiri layar untuk buka menu (kayak ChatGPT) ----
     let edgeSwipeStartX = null;
     let edgeSwipeStartY = null;
