@@ -105,8 +105,9 @@
     color:var(--amber);font-size:14px;letter-spacing:.22em}
   #btnJump{width:70px;height:70px;right:158px;bottom:80px}
   #btnReload{width:60px;height:60px;right:40px;bottom:300px}
-  #btnAuto{width:104px;height:42px;right:24px;top:104px;border-radius:21px;
-    font-size:10px;letter-spacing:.18em}
+  /* tombol AUTO: persegi kecil di TENGAH ATAS — tidak mengganggu */
+  #btnAuto{width:92px;height:24px;left:50%;transform:translateX(-50%);top:8px;
+    border-radius:3px;border-width:1px;font-size:9px;letter-spacing:.14em;padding:0}
 
   #joy{position:fixed;z-index:7;pointer-events:none;display:none}
   #joy.on{display:block}
@@ -164,7 +165,6 @@
     #ovOver .panel{padding:28px 26px}
     #ovOver h2{font-size:30px}
     .stats{gap:26px}
-    #btnAuto{top:64px}
   }
   @media (max-height:430px){
     #btnFire{width:104px;height:104px;bottom:118px}
@@ -247,10 +247,10 @@
       <span><kbd>R</kbd></span><span>ISI ULANG</span>
     </div>
     <div class="ctrls" id="ctrlTouch" style="display:none">
-      <span>SISI KIRI LAYAR</span><span>JOYSTICK — SENTUH &amp; GESER (DORONG JAUH = SPRINT, KNOB MEMBESAR)</span>
+      <span>SISI KIRI LAYAR</span><span>JOYSTICK — SENTUH &amp; GESER (DORONG JAUH = SPRINT)</span>
       <span>SISI KANAN LAYAR</span><span>GESER = BIDIK // GESER CEPAT = PUTAR CEPAT</span>
       <span><kbd>AUTO</kbd></span><span>AKTIF: ARAHKAN CROSSHAIR KE MUSUH — SENJATA MENEMBAK SENDIRI</span>
-      <span><kbd>TEMBAK</kbd></span><span>BOLEH DIGESER SAJAKAN MENEMBAK UNTUK FINE-TUNE BIDIKAN</span>
+      <span><kbd>TEMBAK</kbd></span><span>BOLEH DIGESER SAAT MENEMBAK UNTUK FINE-TUNE BIDIKAN</span>
       <span><kbd>LOMPAT</kbd> <kbd>ISI</kbd></span><span>TOMBOL DI LAYAR</span>
     </div>
     <button class="btn" id="btnStart">MASUKI SIMULASI</button>
@@ -280,8 +280,7 @@
 'use strict';
 /* =========================================================
    SEKTOR-7 — FPS gelombangan. Arena acak: PERKOTAAN / SAWAH
-   Sentuh super-responsif: joystick enteng, AUTO-AKTIF,
-   tombol tembak bisa geser untuk membidik, haptic feedback.
+   Tombol AUTO: persegi kecil di tengah atas layar.
    ========================================================= */
 const $=id=>document.getElementById(id);
 const canvas=$('game'), hud=$('hud');
@@ -314,7 +313,7 @@ const stats={score:0,kills:0,shots:0,hits:0,wave:0};
 let hp=100, lastHurt=-10, ammo=24, reloading=false, reloadT=0;
 let mult=1, lastKill=-10;
 const MAG=24, RELOAD=1.15;
-let autoFire=IS_TOUCH;               /* mode tembak otomatis (layar sentuh) */
+let autoFire=IS_TOUCH;
 
 /* ---------- three.js dasar ---------- */
 const renderer=new THREE.WebGLRenderer({canvas,antialias:true});
@@ -937,16 +936,15 @@ function resolveCollision(pos){
   }
 }
 function updatePlayer(dt){
-  /* gerakan: keyboard + joystick — kurva SANGAT responsif */
   let jf=0,js=0;
   if(joyOn){
     const mag=Math.hypot(joyX,joyY);
-    if(mag>0.10){                             /* dead-zone kecil */
+    if(mag>0.10){
       const norm=(mag-0.10)/0.90;
-      const eff=Math.min(1,norm*1.5);          /* 65% dorong = kecepatan penuh */
+      const eff=Math.min(1,norm*1.5);
       js=joyX/mag*eff;
       jf=-joyY/mag*eff;
-      joySprint=norm>0.78;                     /* sprint otomatis lebih mudah */
+      joySprint=norm>0.78;
     }else joySprint=false;
   }
   let f=(keys.KeyW?1:0)-(keys.KeyS?1:0)+jf;
@@ -955,9 +953,8 @@ function updatePlayer(dt){
   if(mag>1e-4){dirX=s/mag;dirZ=-f/mag;}
   if(mag>1)mag=1;
   const sprint=(keys.ShiftLeft||keys.ShiftRight)||(joyOn&&joySprint);
-  const target=(sprint?12:8)*mag;              /* lebih cepat dari sebelumnya */
+  const target=(sprint?12:8)*mag;
 
-  /* indikator visual sprint pada joystick */
   if((joyOn&&joySprint)!==joySpUI){
     joySpUI=joyOn&&joySprint;
     joyStick.classList.toggle('sp',joySpUI);
@@ -966,7 +963,6 @@ function updatePlayer(dt){
   const cs=Math.cos(player.yaw),sn=Math.sin(player.yaw);
   const dwx=dirX*cs+dirZ*sn,dwz=-dirX*sn+dirZ*cs;
   if(player.grounded){
-    /* akselerasi cepat, pengereman lebih cepat lagi (crisp) */
     const k=Math.min(1,(mag>0.05?22:30)*dt);
     player.vel.x+=(dwx*target-player.vel.x)*k;
     player.vel.z+=(dwz*target-player.vel.z)*k;
@@ -994,7 +990,7 @@ function updatePlayer(dt){
   recoilP*=Math.exp(-9*dt);
   heat=Math.max(0,heat-5*dt);
 
-  /* bantuan bidik magnetis — lebih kuat */
+  /* bantuan bidik magnetis (khusus sentuh) */
   if(IS_TOUCH&&drones.length){
     camera.getWorldDirection(V1);
     let bx=0,by=0,bz=0,bestAng=0.07;
@@ -1066,7 +1062,7 @@ function updateShooting(dt){
     if(ammo>0)fireShot();
     else{if(!dryPlayed){sfx.dry();dryPlayed=true;}startReload();}
   }
-  /* ==== AUTO-AKTIF: menembak sendiri saat crosshair mengarah ke musuh ==== */
+  /* AUTO-AKTIF: menembak sendiri saat crosshair mengarah ke musuh */
   if(!firing&&autoFire&&state==='playing'&&!reloading&&fireCd<=0&&drones.length){
     if(ammo===0)startReload();
     else{
@@ -1075,7 +1071,8 @@ function updateShooting(dt){
       let best=null,bestAng=0.10;
       for(const d of drones){
         V2.copy(d.group.position).sub(V3);
-        if(V2.length()>70||V2.length()<1)continue;
+        const dd=V2.length();
+        if(dd>70||dd<1)continue;
         V2.normalize();
         const ang=V2.angleTo(V1);
         if(ang<bestAng){bestAng=ang;best=d;}
@@ -1579,11 +1576,7 @@ addEventListener('resize',()=>{
   renderer.setSize(innerWidth,innerHeight);
 });
 
-/* ---------- input sentuh super-responsif ----------
-   - joystick: zona 50% layar, trailing, kurva enteng
-   - look: sens lebih tinggi + flick boost kuat
-   - tombol TEMBAK: bisa DIGESER untuk membidik sambil menembak
-   - tombol AUTO: senjata menembak sendiri saat crosshair kena musuh */
+/* ---------- input sentuh super-responsif ---------- */
 const joyEl=$('joy');
 let joyId=null,joyBX=0,joyBY=0,lookId=null,lookLX=0,lookLY=0,lastLookMs=0;
 const LOOK_SENS=.0058,JOY_R=66;
@@ -1600,7 +1593,7 @@ canvas.addEventListener('touchstart',e=>{
   e.preventDefault();
   if(state!=='playing')return;
   for(const tc of e.changedTouches){
-    if(tc.clientX<innerWidth*.5&&joyId===null){     /* zona joystick 50% */
+    if(tc.clientX<innerWidth*.5&&joyId===null){
       joyId=tc.identifier;joyBX=tc.clientX;joyBY=tc.clientY;
       joyOn=true;joyX=joyY=0;joySprint=false;
       joyEl.classList.add('on');
@@ -1655,7 +1648,6 @@ document.addEventListener('touchmove',e=>{
   if(state==='playing')e.preventDefault();
 },{passive:false});
 
-/* tombol sederhana (lompat / isi) */
 function bindBtn(el,down,up){
   const opts={passive:false};
   el.addEventListener('touchstart',e=>{e.preventDefault();e.stopPropagation();down();},opts);
@@ -1667,7 +1659,7 @@ bindBtn($('btnJump'),
   ()=>{if(state==='playing'&&player.grounded){player.vel.y=8.2;player.grounded=false;}});
 bindBtn($('btnReload'),()=>startReload());
 
-/* tombol AUTO (tembak otomatis) */
+/* tombol AUTO — persegi kecil di tengah atas (lihat CSS #btnAuto) */
 const btnAuto=$('btnAuto');
 function setAuto(v){
   autoFire=v;
@@ -1680,7 +1672,7 @@ btnAuto.addEventListener('touchstart',e=>{
   setAuto(!autoFire);buzz(15);
 },{passive:false});
 
-/* tombol TEMBAK: tahan untuk menembak + GESES JARI untuk membidik */
+/* tombol TEMBAK: tahan untuk menembak + geser jari untuk membidik */
 const bf=$('btnFire');
 let bfX=0,bfY=0,bfMs=0;
 bf.addEventListener('touchstart',e=>{
