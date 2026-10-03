@@ -52,7 +52,7 @@
 
   #hint{position:fixed;bottom:92px;left:0;right:0;text-align:center;pointer-events:none;z-index:5;display:none;
     font:500 10px 'IBM Plex Mono';letter-spacing:.35em;color:var(--dim)}
-  body.playing #hint{display:block;animation:hintfade 9s forwards}
+  body.playing #hint{display:block;animation:hintfade 10s forwards}
   @keyframes hintfade{0%,75%{opacity:.8}100%{opacity:0}}
 
   #cross{position:fixed;left:50%;top:50%;--g:6px;pointer-events:none}
@@ -100,19 +100,23 @@
     border:2px solid rgba(236,229,216,.35);background:rgba(14,12,10,.45);color:var(--ink);
     font:600 11px 'IBM Plex Mono';letter-spacing:.15em;display:flex;align-items:center;justify-content:center}
   #touchUI .tbtn:active{background:rgba(255,140,46,.28);border-color:var(--amber)}
-  #btnFire{width:116px;height:116px;right:20px;bottom:148px;border-color:rgba(255,140,46,.75);
-    color:var(--amber);font-size:13px;letter-spacing:.22em}
-  #btnJump{width:68px;height:68px;right:152px;bottom:84px}
-  #btnReload{width:60px;height:60px;right:44px;bottom:290px}
+  #touchUI .tbtn.on{background:rgba(255,140,46,.22);border-color:rgba(255,140,46,.8);color:var(--amber)}
+  #btnFire{width:128px;height:128px;right:18px;bottom:150px;border-color:rgba(255,140,46,.75);
+    color:var(--amber);font-size:14px;letter-spacing:.22em}
+  #btnJump{width:70px;height:70px;right:158px;bottom:80px}
+  #btnReload{width:60px;height:60px;right:40px;bottom:300px}
+  #btnAuto{width:104px;height:42px;right:24px;top:104px;border-radius:21px;
+    font-size:10px;letter-spacing:.18em}
 
   #joy{position:fixed;z-index:7;pointer-events:none;display:none}
   #joy.on{display:block}
-  #joyBase{position:absolute;width:132px;height:132px;border:2px solid rgba(236,229,216,.3);
+  #joyBase{position:absolute;width:136px;height:136px;border:2px solid rgba(236,229,216,.3);
     border-radius:50%;transform:translate(-50%,-50%)}
-  #joyBase::after{content:'';position:absolute;inset:44px;border-radius:50%;
+  #joyBase::after{content:'';position:absolute;inset:46px;border-radius:50%;
     border:1px solid rgba(236,229,216,.15)}
-  #joyStick{position:absolute;width:58px;height:58px;background:rgba(255,140,46,.35);
+  #joyStick{position:absolute;width:60px;height:60px;background:rgba(255,140,46,.35);
     border:2px solid rgba(255,140,46,.8);border-radius:50%;transform:translate(-50%,-50%)}
+  #joyStick.sp{background:rgba(255,150,60,.62);border-color:#ffca7e}
 
   #rotate{position:fixed;inset:0;z-index:30;display:none;align-items:center;justify-content:center;
     background:rgba(10,8,6,.94);text-align:center}
@@ -160,6 +164,13 @@
     #ovOver .panel{padding:28px 26px}
     #ovOver h2{font-size:30px}
     .stats{gap:26px}
+    #btnAuto{top:64px}
+  }
+  @media (max-height:430px){
+    #btnFire{width:104px;height:104px;bottom:118px}
+    #btnJump{right:132px;bottom:64px;width:60px;height:60px}
+    #btnReload{bottom:244px}
+    #hint{bottom:auto;top:56px}
   }
 </style>
 </head>
@@ -202,6 +213,7 @@
 
 <!-- Kontrol sentuh -->
 <div id="touchUI">
+  <div class="tbtn on" id="btnAuto">AUTO AKTIF</div>
   <div class="tbtn" id="btnFire">TEMBAK</div>
   <div class="tbtn" id="btnJump">LOMPAT</div>
   <div class="tbtn" id="btnReload">ISI</div>
@@ -235,9 +247,10 @@
       <span><kbd>R</kbd></span><span>ISI ULANG</span>
     </div>
     <div class="ctrls" id="ctrlTouch" style="display:none">
-      <span>SISI KIRI LAYAR</span><span>JOYSTICK — SENTUH &amp; GESER (DORONG JAUH = SPRINT OTOMATIS)</span>
-      <span>SISI KANAN LAYAR</span><span>GESER PELAN = BIDIK PRESISI // GESER CEPAT = PUTAR CEPAT</span>
-      <span><kbd>TEMBAK</kbd></span><span>TAHAN TOMBOL BESAR UNTUK MENEMBAK OTOMATIS</span>
+      <span>SISI KIRI LAYAR</span><span>JOYSTICK — SENTUH &amp; GESER (DORONG JAUH = SPRINT, KNOB MEMBESAR)</span>
+      <span>SISI KANAN LAYAR</span><span>GESER = BIDIK // GESER CEPAT = PUTAR CEPAT</span>
+      <span><kbd>AUTO</kbd></span><span>AKTIF: ARAHKAN CROSSHAIR KE MUSUH — SENJATA MENEMBAK SENDIRI</span>
+      <span><kbd>TEMBAK</kbd></span><span>BOLEH DIGESER SAJAKAN MENEMBAK UNTUK FINE-TUNE BIDIKAN</span>
       <span><kbd>LOMPAT</kbd> <kbd>ISI</kbd></span><span>TOMBOL DI LAYAR</span>
     </div>
     <button class="btn" id="btnStart">MASUKI SIMULASI</button>
@@ -266,8 +279,9 @@
 <script>
 'use strict';
 /* =========================================================
-   SEKTOR-7 — FPS gelombangan, ARENA ACAK: PERKOTAAN / SAWAH
-   Satu file. Tanpa jeda. Sentuh responsif + desktop.
+   SEKTOR-7 — FPS gelombangan. Arena acak: PERKOTAAN / SAWAH
+   Sentuh super-responsif: joystick enteng, AUTO-AKTIF,
+   tombol tembak bisa geser untuk membidik, haptic feedback.
    ========================================================= */
 const $=id=>document.getElementById(id);
 const canvas=$('game'), hud=$('hud');
@@ -282,14 +296,15 @@ const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
 const rand=(a,b)=>a+Math.random()*(b-a);
 function easeOutBack(x){const c=1.70158;return 1+(c+1)*Math.pow(x-1,3)+c*Math.pow(x-1,2);}
 
-/* ---------- deteksi perangkat sentuh ---------- */
+/* ---------- deteksi sentuh + haptic ---------- */
 const IS_TOUCH=('ontouchstart' in window)||navigator.maxTouchPoints>0;
+function buzz(ms){if(IS_TOUCH&&navigator.vibrate){try{navigator.vibrate(ms);}catch(e){}}}
 if(IS_TOUCH){
   document.body.classList.add('touch');
   $('ctrlKB').style.display='none';
   $('ctrlTouch').style.display='grid';
-  $('hint').textContent='DORONG JOYSTICK JAUH = SPRINT // GESER KANAN = BIDIK';
-  $('footNote').textContent='MODE SENTUH AKTIF // ARENA ACAK: PERKOTAAN / SAWAH';
+  $('hint').textContent='AUTO AKTIF — ARAHKAN CROSSHAIR, SENJATA MENEMBAK SENDIRI';
+  $('footNote').textContent='MODE SENTUH RESPONSIF // ARENA ACAK: PERKOTAAN / SAWAH';
 }
 
 /* ---------- state global ---------- */
@@ -299,6 +314,7 @@ const stats={score:0,kills:0,shots:0,hits:0,wave:0};
 let hp=100, lastHurt=-10, ammo=24, reloading=false, reloadT=0;
 let mult=1, lastKill=-10;
 const MAG=24, RELOAD=1.15;
+let autoFire=IS_TOUCH;               /* mode tembak otomatis (layar sentuh) */
 
 /* ---------- three.js dasar ---------- */
 const renderer=new THREE.WebGLRenderer({canvas,antialias:true});
@@ -346,8 +362,6 @@ const flashTex=makeTex(128,128,(g)=>{
   for(let i=0;i<6;i++){const a=i/6*Math.PI*2+Math.random()*.5;
     g.beginPath();g.moveTo(64,64);g.lineTo(64+Math.cos(a)*62,64+Math.sin(a)*62);g.stroke();}
 });
-/* papan tanda (digambar ulang setelah font siap) */
-const signRedraws=[];
 const signTex=makeTex(1024,256,(g)=>{
   g.clearRect(0,0,1024,256);
   g.fillStyle='#e8933c';g.fillRect(40,26,944,4);
@@ -356,15 +370,15 @@ const signTex=makeTex(1024,256,(g)=>{
   g.font='600 34px "IBM Plex Mono", monospace';g.fillStyle='rgba(232,147,60,.75)';
   g.fillText('ZONA UJI TEMBAK // AKSES TERBATAS',44,226);
 });
-signRedraws.push(()=>{const c=signTex.image;const g=c.getContext('2d');g.clearRect(0,0,1024,256);
+if(document.fonts&&document.fonts.ready)document.fonts.ready.then(()=>{
+  const c=signTex.image,g=c.getContext('2d');
+  g.clearRect(0,0,1024,256);
   g.fillStyle='#e8933c';g.fillRect(40,26,944,4);
   g.font='700 150px "Chakra Petch", sans-serif';g.fillText('SEKTOR-07',40,172);
   g.font='600 34px "IBM Plex Mono", monospace';g.fillStyle='rgba(232,147,60,.75)';
   g.fillText('ZONA UJI TEMBAK // AKSES TERBATAS',44,226);
-  signTex.needsUpdate=true;});
-if(document.fonts&&document.fonts.ready)document.fonts.ready.then(()=>signRedraws.forEach(f=>f()));
-
-/* aspal perkotaan: jalan silang + zebra cross + nat beton */
+  signTex.needsUpdate=true;
+});
 const asphaltTex=makeTex(512,512,(g)=>{
   g.fillStyle='#15161a';g.fillRect(0,0,512,512);
   g.fillStyle='#1a1b20';
@@ -395,7 +409,6 @@ const asphaltTex=makeTex(512,512,(g)=>{
   for(let i=0;i<700;i++){g.fillStyle=Math.random()<.6?'rgba(0,0,0,.2)':'rgba(255,255,255,.02)';
     g.fillRect(Math.random()*512,Math.random()*512,2,2);}
 });
-/* jendela gedung: sebagian menyala */
 function makeWindowTex(cols,rows){
   return makeTex(128,256,(g)=>{
     g.fillStyle='#14161c';g.fillRect(0,0,128,256);
@@ -412,7 +425,6 @@ function makeWindowTex(cols,rows){
     g.fillStyle='rgba(0,0,0,.5)';g.fillRect(0,244,128,12);
   });
 }
-/* gradasi pantulan bulan di air */
 const streakTex=makeTex(64,256,(g)=>{
   const lg=g.createLinearGradient(0,0,0,256);
   lg.addColorStop(0,'rgba(255,255,255,0)');lg.addColorStop(.5,'rgba(255,255,255,.8)');lg.addColorStop(1,'rgba(255,255,255,0)');
@@ -453,7 +465,6 @@ const lightMat=new THREE.MeshBasicMaterial({color:0xfff2cc});
 const tailMat=new THREE.MeshBasicMaterial({color:0xff3526});
 const lampPoleMat=new THREE.MeshStandardMaterial({color:0x1e2126,roughness:.5,metalness:.7});
 const lampHeadMat=new THREE.MeshBasicMaterial({color:0xffc890});
-/* sawah */
 const waterMat=new THREE.MeshStandardMaterial({color:0x0b1712,roughness:.25,metalness:.5});
 const pathMat=new THREE.MeshStandardMaterial({color:0x4a3a24,roughness:1});
 const bundMat=new THREE.MeshStandardMaterial({color:0x33261a,roughness:1});
@@ -472,11 +483,10 @@ const riceMat=new THREE.MeshStandardMaterial({color:0xffffff,roughness:.9});
 const fireflyMat=new THREE.PointsMaterial({color:0xd7ff9a,size:.17,transparent:true,opacity:.9,blending:THREE.AdditiveBlending,depthWrite:false});
 const sparkleMat=new THREE.PointsMaterial({color:0xaee8cf,size:.08,transparent:true,opacity:.5,blending:THREE.AdditiveBlending,depthWrite:false});
 
-/* ---------- objek tema persisten (toggle, tanpa rebuild GPU) ---------- */
+/* ---------- objek tema persisten ---------- */
 const riceMesh=new THREE.InstancedMesh(riceGeo,riceMat,540);
 riceMesh.visible=false;riceMesh.frustumCulled=false;riceMesh.castShadow=false;
 scene.add(riceMesh);
-
 const FFN=80;
 const ffPos=new Float32Array(FFN*3),ffBase=new Float32Array(FFN*3),ffPhase=new Float32Array(FFN);
 const ffGeo=new THREE.BufferGeometry();
@@ -484,7 +494,6 @@ ffGeo.setAttribute('position',new THREE.BufferAttribute(ffPos,3));
 const ffPts=new THREE.Points(ffGeo,fireflyMat);
 ffPts.visible=false;ffPts.frustumCulled=false;
 scene.add(ffPts);
-
 const SPN=220;
 const spkPos=new Float32Array(SPN*3);
 const spkGeo=new THREE.BufferGeometry();
@@ -493,7 +502,7 @@ const spkPts=new THREE.Points(spkGeo,sparkleMat);
 spkPts.visible=false;spkPts.frustumCulled=false;
 scene.add(spkPts);
 
-/* ---------- bintang (kedua tema) ---------- */
+/* bintang */
 {
   const N=340,pos=new Float32Array(N*3);
   for(let i=0;i<N;i++){
@@ -505,7 +514,7 @@ scene.add(spkPts);
   scene.add(new THREE.Points(g,new THREE.PointsMaterial({color:0x9db4c9,size:.6,transparent:true,opacity:.7,depthWrite:false,fog:false})));
 }
 
-/* ---------- sistem arena acak ---------- */
+/* ---------- arena acak: PERKOTAAN / SAWAH ---------- */
 const envGroup=new THREE.Group();scene.add(envGroup);
 const worldMeshes=[],losMeshes=[],circleCols=[],covers=[];
 let themeFX=null,currentTheme=null;
@@ -539,36 +548,29 @@ function setTheme(name){
   elArea.textContent='AREA: '+(name==='kota'?'PERKOTAAN':'SAWAH');
 }
 
-/* ============ TEMA 1: PERKOTAAN ============ */
+/* ===== TEMA: PERKOTAAN ===== */
 function buildCity(){
-  /* lantai aspal + tanah luar */
   const fl=new THREE.Mesh(planeG,asphaltMat);
   fl.rotation.x=-Math.PI/2;fl.receiveShadow=true;
   envGroup.add(fl);worldMeshes.push(fl);
   const outer=new THREE.Mesh(planeG,outerCityMat);
   outer.rotation.x=-Math.PI/2;outer.position.y=-.04;outer.scale.set(6,6,1);
   envGroup.add(outer);
-  /* backdrop gelap menutup celah gedung */
   [[0,8,37,76,1],[0,8,-37,76,1],[37,8,0,1,76],[-37,8,0,1,76]].forEach(([x,y,z,sx,sz])=>{
     const m=new THREE.Mesh(boxG,backMat);
     m.scale.set(sx,16,sz);m.position.set(x,y,z);
     envGroup.add(m);
   });
-  /* gedung perimeter (jendela menyala) */
   for(let i=-3;i<=3;i++){
     const z=i*8.6;
     addCityBuilding(33.5,z,true);addCityBuilding(-33.5,z,true);
     addCityBuilding(z,33.5,false);addCityBuilding(z,-33.5,false);
   }
-  /* blok gedung tinggi di tengah (cover besar) */
   addCityBlock(14,14);addCityBlock(-14,14);addCityBlock(14,-14);addCityBlock(-14,-14);
-  /* mobil sebagai cover rendah (slot sama seperti pematang sawah) */
   addCar(0,-10,true);addCar(-9,4,false);addCar(9,4,false);
   addCar(-16,-14,true);addCar(16,-14,true);addCar(0,14,true);
   addCar(-6,-18,false);addCar(6,-18,false);
-  /* lampu jalan */
   addLamp(5,10);addLamp(-5,-10);addLamp(12,-5);addLamp(-12,5);
-  /* papan tanda di gedung */
   const s1=new THREE.Mesh(signG,signMat);s1.position.set(0,5.2,-29.7);envGroup.add(s1);
   const s2=new THREE.Mesh(signG,signMat);s2.position.set(29.7,5,-10);s2.rotation.y=-Math.PI/2;envGroup.add(s2);
 }
@@ -623,19 +625,16 @@ function addLamp(x,z){
   worldMeshes.push(pole);
 }
 
-/* ============ TEMA 2: SAWAH ============ */
+/* ===== TEMA: SAWAH ===== */
 function buildPaddy(){
-  /* lantai air (sawah tergenang) + tanah luar */
   const fl=new THREE.Mesh(planeG,waterMat);
   fl.rotation.x=-Math.PI/2;fl.receiveShadow=true;
   envGroup.add(fl);worldMeshes.push(fl);
   const outer=new THREE.Mesh(planeG,outerPaddyMat);
   outer.rotation.x=-Math.PI/2;outer.position.y=-.04;outer.scale.set(6,6,1);
   envGroup.add(outer);
-  /* jalur setapak tanah (persilangan tengah) */
   const p1=new THREE.Mesh(boxG,pathMat);p1.scale.set(4.6,.05,56);p1.position.set(0,.025,0);p1.receiveShadow=true;envGroup.add(p1);
   const p2=new THREE.Mesh(boxG,pathMat);p2.scale.set(56,.05,4.6);p2.position.set(0,.045,0);p2.receiveShadow=true;envGroup.add(p2);
-  /* pematang sawah (cover rendah — slot sama seperti mobil kota) */
   const slots=[[0,-10,5.2,1.2],[-9,4,1.2,5.2],[9,4,1.2,5.2],[-16,-14,3.6,1.2],
                [16,-14,3.6,1.2],[0,14,6,1.2],[-6,-18,1.2,3.2],[6,-18,1.2,3.2]];
   for(const[bx,bz,w,d]of slots){
@@ -646,9 +645,7 @@ function buildPaddy(){
     worldMeshes.push(b);
     covers.push({x:bx,z:bz,hw:w/2,hd:d/2,h:1});
   }
-  /* saung (pondok kayu — cover tinggi) */
   addHut(14,14);addHut(-14,-14);
-  /* pohon besar di tengah */
   {
     const trunk=new THREE.Mesh(cylG,trunkMat);trunk.scale.set(.5,4.4,.5);trunk.position.set(0,2.2,0);trunk.castShadow=true;
     const cr1=new THREE.Mesh(ballG,crownMatA);cr1.scale.setScalar(2.7);cr1.position.set(0,5.4,0);cr1.castShadow=true;
@@ -658,7 +655,6 @@ function buildPaddy(){
     worldMeshes.push(trunk,cr1);
     losMeshes.push(trunk);
   }
-  /* pepohonan pinggiran */
   for(let i=0;i<20;i++){
     const a=i/20*Math.PI*2+rand(-.1,.1),R=rand(31.5,36);
     const x=Math.cos(a)*R,z=Math.sin(a)*R;
@@ -668,7 +664,6 @@ function buildPaddy(){
     cw.scale.set(cr,chh,cr);cw.position.set(x,th+chh/2-.3,z);cw.castShadow=true;
     envGroup.add(tr,cw);
   }
-  /* bukit siluet + bulan + pantulan */
   for(let i=0;i<7;i++){
     const a=i/7*Math.PI*2+.4;
     const m=new THREE.Mesh(coneG,hillMat);
@@ -683,7 +678,6 @@ function buildPaddy(){
     const glow=new THREE.Sprite(new THREE.SpriteMaterial({map:softTex,color:0x9fc4ff,transparent:true,blending:THREE.AdditiveBlending,depthWrite:false,fog:false}));
     glow.scale.set(26,26,1);glow.position.copy(moon.position);
     envGroup.add(moon,glow);
-    /* pantulan bulan di air */
     const dx=.566,dz=-.825;
     const sg=new THREE.Group();
     const sp=new THREE.Mesh(streakG,streakMat);sp.rotation.x=-Math.PI/2;
@@ -692,7 +686,6 @@ function buildPaddy(){
     sg.position.set(dx*13,.022,dz*13);
     envGroup.add(sg);
   }
-  /* papan tanda kayu dekat titik spawn */
   {
     const board=new THREE.Mesh(signSmallG,signMat);board.position.set(-7,1.8,20);envGroup.add(board);
     for(const sx of[-2.2,2.2]){
@@ -703,7 +696,6 @@ function buildPaddy(){
   }
   refreshPaddyFX();
   themeFX={update(){
-    /* kunang-kunang melayang */
     for(let i=0;i<FFN;i++){
       const i3=i*3,p=ffPhase[i];
       ffPos[i3]=ffBase[i3]+Math.sin(t*.6+p)*1.3;
@@ -727,7 +719,6 @@ function addHut(x,z){
   covers.push({x,z,hw:1.7,hd:1.7,h:3.3});
 }
 function refreshPaddyFX(){
-  /* rumpun padi — instanced, warna bervariasi, hindari jalur/cover/pohon */
   const dummy=new THREE.Object3D(),col=new THREE.Color();
   let n=0,guard=0;
   while(n<540&&guard<5000){
@@ -752,7 +743,6 @@ function refreshPaddyFX(){
   riceMesh.instanceMatrix.needsUpdate=true;
   if(riceMesh.instanceColor)riceMesh.instanceColor.needsUpdate=true;
   riceMesh.visible=true;
-  /* kunang-kunang */
   for(let i=0;i<FFN;i++){
     const i3=i*3;
     ffBase[i3]=rand(-26,26);
@@ -763,7 +753,6 @@ function refreshPaddyFX(){
   }
   ffGeo.attributes.position.needsUpdate=true;
   ffPts.visible=true;
-  /* kilau air */
   for(let i=0;i<SPN;i++){
     const i3=i*3;
     spkPos[i3]=rand(-27,27);spkPos[i3+1]=.03;spkPos[i3+2]=rand(-27,27);
@@ -920,6 +909,8 @@ const keys={};
 let trauma=0,recoilP=0,recoilA=0,heat=0,fireCd=0,firing=false,dryPlayed=false,flashT=0;
 let swayT=0,swayCur=0,lastFov=75;
 let joyOn=false,joyX=0,joyY=0,joySprint=false;
+let joySpUI=false;
+const joyStick=$('joyStick');
 
 function groundHeightAt(x,z){
   let g=0;
@@ -936,7 +927,7 @@ function resolveCollision(pos){
     if(d2<rr*rr&&d2>1e-6){const d=Math.sqrt(d2),push=rr-d;pos.x+=dx/d*push;pos.z+=dz/d*push;}
   }
   for(const c of covers){
-    if(pos.y<c.h-.25){                       /* hanya jika tak berdiri di atasnya */
+    if(pos.y<c.h-.25){
       const ex=c.hw+R,ez=c.hd+R,dx=pos.x-c.x,dz=pos.z-c.z;
       if(Math.abs(dx)<ex&&Math.abs(dz)<ez){
         const px=ex-Math.abs(dx),pz=ez-Math.abs(dz);
@@ -946,15 +937,16 @@ function resolveCollision(pos){
   }
 }
 function updatePlayer(dt){
+  /* gerakan: keyboard + joystick — kurva SANGAT responsif */
   let jf=0,js=0;
   if(joyOn){
     const mag=Math.hypot(joyX,joyY);
-    if(mag>0.12){
-      const norm=(mag-0.12)/0.88;
-      const eff=Math.min(1,norm*1.35);
+    if(mag>0.10){                             /* dead-zone kecil */
+      const norm=(mag-0.10)/0.90;
+      const eff=Math.min(1,norm*1.5);          /* 65% dorong = kecepatan penuh */
       js=joyX/mag*eff;
       jf=-joyY/mag*eff;
-      joySprint=norm>0.85;
+      joySprint=norm>0.78;                     /* sprint otomatis lebih mudah */
     }else joySprint=false;
   }
   let f=(keys.KeyW?1:0)-(keys.KeyS?1:0)+jf;
@@ -963,16 +955,23 @@ function updatePlayer(dt){
   if(mag>1e-4){dirX=s/mag;dirZ=-f/mag;}
   if(mag>1)mag=1;
   const sprint=(keys.ShiftLeft||keys.ShiftRight)||(joyOn&&joySprint);
-  const target=(sprint?11.5:7.5)*mag;
+  const target=(sprint?12:8)*mag;              /* lebih cepat dari sebelumnya */
+
+  /* indikator visual sprint pada joystick */
+  if((joyOn&&joySprint)!==joySpUI){
+    joySpUI=joyOn&&joySprint;
+    joyStick.classList.toggle('sp',joySpUI);
+  }
 
   const cs=Math.cos(player.yaw),sn=Math.sin(player.yaw);
   const dwx=dirX*cs+dirZ*sn,dwz=-dirX*sn+dirZ*cs;
   if(player.grounded){
-    const k=Math.min(1,16*dt);
+    /* akselerasi cepat, pengereman lebih cepat lagi (crisp) */
+    const k=Math.min(1,(mag>0.05?22:30)*dt);
     player.vel.x+=(dwx*target-player.vel.x)*k;
     player.vel.z+=(dwz*target-player.vel.z)*k;
   }else{
-    player.vel.x+=dwx*14*dt;player.vel.z+=dwz*14*dt;
+    player.vel.x+=dwx*16*dt;player.vel.z+=dwz*16*dt;
   }
   player.vel.y-=24*dt;
   const wasAir=!player.grounded,fallV=player.vel.y;
@@ -981,7 +980,7 @@ function updatePlayer(dt){
   player.pos.z+=player.vel.z*dt;
   const gh=groundHeightAt(player.pos.x,player.pos.z);
   if(player.pos.y<=gh){
-    if(wasAir&&fallV<-8){trauma=Math.max(trauma,.15);sfx.land();}
+    if(wasAir&&fallV<-8){trauma=Math.max(trauma,.15);sfx.land();buzz(15);}
     player.pos.y=gh;player.vel.y=0;player.grounded=true;
   }else player.grounded=false;
   resolveCollision(player.pos);
@@ -995,10 +994,10 @@ function updatePlayer(dt){
   recoilP*=Math.exp(-9*dt);
   heat=Math.max(0,heat-5*dt);
 
-  /* bantuan bidik magnetis (khusus sentuh) */
+  /* bantuan bidik magnetis — lebih kuat */
   if(IS_TOUCH&&drones.length){
     camera.getWorldDirection(V1);
-    let bx=0,by=0,bz=0,bestAng=0.06;
+    let bx=0,by=0,bz=0,bestAng=0.07;
     for(const d of drones){
       V2.copy(d.group.position).sub(camera.position);
       const dd=V2.length();
@@ -1007,12 +1006,12 @@ function updatePlayer(dt){
       const ang=V2.angleTo(V1);
       if(ang<bestAng){bestAng=ang;bx=V2.x;by=V2.y;bz=V2.z;}
     }
-    if(bestAng<0.06){
+    if(bestAng<0.07){
       const wantYaw=Math.atan2(-bx,-bz);
       const wantPitch=Math.asin(clamp(by,-1,1));
       let dYaw=wantYaw-player.yaw;
       dYaw=((dYaw%(Math.PI*2))+Math.PI*3)%(Math.PI*2)-Math.PI;
-      const pull=Math.min(1,3.5*dt)*(1-bestAng/0.06);
+      const pull=Math.min(1,5*dt)*(1-bestAng/0.07);
       player.yaw+=dYaw*pull;
       player.pitch+=(wantPitch-player.pitch)*pull;
     }
@@ -1067,10 +1066,32 @@ function updateShooting(dt){
     if(ammo>0)fireShot();
     else{if(!dryPlayed){sfx.dry();dryPlayed=true;}startReload();}
   }
-  if(!firing)dryPlayed=false;
+  /* ==== AUTO-AKTIF: menembak sendiri saat crosshair mengarah ke musuh ==== */
+  if(!firing&&autoFire&&state==='playing'&&!reloading&&fireCd<=0&&drones.length){
+    if(ammo===0)startReload();
+    else{
+      camera.getWorldDirection(V1);
+      camera.getWorldPosition(V3);
+      let best=null,bestAng=0.10;
+      for(const d of drones){
+        V2.copy(d.group.position).sub(V3);
+        if(V2.length()>70||V2.length()<1)continue;
+        V2.normalize();
+        const ang=V2.angleTo(V1);
+        if(ang<bestAng){bestAng=ang;best=d;}
+      }
+      if(best){
+        const bd=best.group.position.distanceTo(V3);
+        V2.copy(best.group.position).sub(V3).normalize();
+        rayLOS.set(V3,V2);rayLOS.far=bd-.6;
+        if(rayLOS.intersectObjects(losMeshes,false).length===0)fireShot();
+      }
+    }
+  }
+  if(!firing&&!autoFire)dryPlayed=false;
   crossEl.style.setProperty('--g',(6+heat*3.5).toFixed(1)+'px');
 }
-const AIM_ASSIST=IS_TOUCH?0.08:0;
+const AIM_ASSIST=IS_TOUCH?0.085:0;
 function fireShot(){
   stats.shots++;ammo--;fireCd=.105;heat=Math.min(7,heat+1);
   recoilA=Math.min(1,recoilA+.55);
@@ -1119,7 +1140,7 @@ function damageDrone(d,part){
   d.hp-=crit?2:1;
   d.flash=1;
   if(d.hp<=0)killDrone(d);
-  else{hitmark(false);sfx.hit(crit);}
+  else{hitmark(false);sfx.hit(crit);buzz(10);}
 }
 
 /* ---------- drone musuh ---------- */
@@ -1194,7 +1215,6 @@ class Drone{
       const ox=g.position.x-c.x,oz=g.position.z-c.z,d=Math.hypot(ox,oz),rr=c.r+1.5;
       if(d<rr&&d>.01){const f=(rr-d)/rr*2.2;mx+=ox/d*f;mz+=oz/d*f;}
     }
-    /* hindari gedung/saung (cover kotak) — terbang di atas yang rendah */
     for(const c of covers){
       if(c.h<g.position.y-.4)continue;
       const cx=clamp(g.position.x,c.x-c.hw,c.x+c.hw);
@@ -1262,7 +1282,7 @@ function killDrone(d){
   lastKill=t;
   const gain=100*mult;stats.score+=gain;
   popup('+'+gain+(mult>1?'  ×'+mult:''),mult>1?'mult':'');
-  hitmark(true);sfx.kill();
+  hitmark(true);sfx.kill();buzz(40);
   spawnBurst(pos,1,.5,.15,42,6.5,.85,.16,5);
   trauma=Math.max(trauma,.12);
   if(Math.random()<.22)spawnPickup(pos);
@@ -1339,7 +1359,7 @@ function updatePickups(dt){
     const dx=p.g.position.x-player.pos.x,dz=p.g.position.z-player.pos.z;
     if(dx*dx+dz*dz<1.56&&Math.abs(player.pos.y+1-p.g.position.y)<1.6){
       hp=Math.min(100,hp+25);
-      popup('+25 INTEGRITAS','heal');sfx.pick();updateHpHUD();
+      popup('+25 INTEGRITAS','heal');sfx.pick();buzz(20);updateHpHUD();
       scene.remove(p.g);pickups.splice(i,1);
     }else if(p.life<=0){scene.remove(p.g);pickups.splice(i,1);}
   }
@@ -1445,7 +1465,7 @@ function damagePlayer(d){
   if(state!=='playing')return;
   hp-=d;lastHurt=t;
   trauma=Math.max(trauma,.45);
-  hurtFlash();sfx.hurt();updateHpHUD();
+  hurtFlash();sfx.hurt();buzz(60);updateHpHUD();
   if(hp<=0){hp=0;gameOver();}
 }
 function clearKeys(){
@@ -1454,7 +1474,8 @@ function clearKeys(){
 }
 function gameOver(){
   state='over';firing=false;clearKeys();
-  joyOn=false;joyX=joyY=0;joySprint=false;joyEl.classList.remove('on');
+  joyOn=false;joyX=joyY=0;joySprint=false;
+  joyEl.classList.remove('on');joyStick.classList.remove('sp');joySpUI=false;
   try{document.exitPointerLock&&document.exitPointerLock();}catch(e){}
   hud.classList.remove('on');weapon.visible=false;
   document.body.classList.remove('playing');
@@ -1498,7 +1519,7 @@ function tryLock(){
 }
 document.addEventListener('pointerlockerror',()=>{lockDead=true;});
 
-/* ---------- mulai / ulang: ARENA DIPILIH ACAK ---------- */
+/* ---------- mulai / ulang: ARENA ACAK ---------- */
 function beginGame(){
   initAudio();AC&&AC.resume&&AC.resume();startAmbience();
   removeDeco();resetGame();
@@ -1558,16 +1579,28 @@ addEventListener('resize',()=>{
   renderer.setSize(innerWidth,innerHeight);
 });
 
-/* ---------- input sentuh responsif ---------- */
-const joyEl=$('joy'),joyStick=$('joyStick');
+/* ---------- input sentuh super-responsif ----------
+   - joystick: zona 50% layar, trailing, kurva enteng
+   - look: sens lebih tinggi + flick boost kuat
+   - tombol TEMBAK: bisa DIGESER untuk membidik sambil menembak
+   - tombol AUTO: senjata menembak sendiri saat crosshair kena musuh */
+const joyEl=$('joy');
 let joyId=null,joyBX=0,joyBY=0,lookId=null,lookLX=0,lookLY=0,lastLookMs=0;
-const LOOK_SENS=.005,JOY_R=66;
+const LOOK_SENS=.0058,JOY_R=66;
+
+function applyLook(dx,dy,dtms,scale){
+  const speed=Math.hypot(dx,dy)/Math.max(4,dtms);
+  const sens=LOOK_SENS*(1+Math.min(1.6,speed*.65))*scale;
+  player.yaw-=dx*sens;
+  player.pitch=clamp(player.pitch-dy*sens,-1.53,1.53);
+  swayT=clamp(swayT-dx*.00025,-.04,.04);
+}
 
 canvas.addEventListener('touchstart',e=>{
   e.preventDefault();
   if(state!=='playing')return;
   for(const tc of e.changedTouches){
-    if(tc.clientX<innerWidth*.45&&joyId===null){
+    if(tc.clientX<innerWidth*.5&&joyId===null){     /* zona joystick 50% */
       joyId=tc.identifier;joyBX=tc.clientX;joyBY=tc.clientY;
       joyOn=true;joyX=joyY=0;joySprint=false;
       joyEl.classList.add('on');
@@ -1598,13 +1631,9 @@ canvas.addEventListener('touchmove',e=>{
     }else if(tc.identifier===lookId){
       const dx=tc.clientX-lookLX,dy=tc.clientY-lookLY;
       const nowMs=performance.now();
-      const dtms=Math.max(4,nowMs-lastLookMs);lastLookMs=nowMs;
-      const speed=Math.hypot(dx,dy)/dtms;
-      const sens=LOOK_SENS*(1+Math.min(1.5,speed*.55));
+      const dtms=nowMs-lastLookMs;lastLookMs=nowMs;
+      applyLook(dx,dy,dtms,1);
       lookLX=tc.clientX;lookLY=tc.clientY;
-      player.yaw-=dx*sens;
-      player.pitch=clamp(player.pitch-dy*sens,-1.53,1.53);
-      swayT=clamp(swayT-dx*.00025,-.04,.04);
     }
   }
 },{passive:false});
@@ -1615,6 +1644,7 @@ function endTouch(e){
     if(tc.identifier===joyId){
       joyId=null;joyOn=false;joyX=joyY=0;joySprint=false;
       joyEl.classList.remove('on');
+      joyStick.classList.remove('sp');joySpUI=false;
     }
     if(tc.identifier===lookId)lookId=null;
   }
@@ -1625,6 +1655,7 @@ document.addEventListener('touchmove',e=>{
   if(state==='playing')e.preventDefault();
 },{passive:false});
 
+/* tombol sederhana (lompat / isi) */
 function bindBtn(el,down,up){
   const opts={passive:false};
   el.addEventListener('touchstart',e=>{e.preventDefault();e.stopPropagation();down();},opts);
@@ -1632,12 +1663,46 @@ function bindBtn(el,down,up){
   el.addEventListener('touchend',end,opts);
   el.addEventListener('touchcancel',end,opts);
 }
-bindBtn($('btnFire'),
-  ()=>{if(state==='playing')firing=true;},
-  ()=>firing=false);
 bindBtn($('btnJump'),
   ()=>{if(state==='playing'&&player.grounded){player.vel.y=8.2;player.grounded=false;}});
 bindBtn($('btnReload'),()=>startReload());
+
+/* tombol AUTO (tembak otomatis) */
+const btnAuto=$('btnAuto');
+function setAuto(v){
+  autoFire=v;
+  btnAuto.textContent='AUTO '+(v?'AKTIF':'MATI');
+  btnAuto.classList.toggle('on',v);
+}
+setAuto(IS_TOUCH);
+btnAuto.addEventListener('touchstart',e=>{
+  e.preventDefault();e.stopPropagation();
+  setAuto(!autoFire);buzz(15);
+},{passive:false});
+
+/* tombol TEMBAK: tahan untuk menembak + GESES JARI untuk membidik */
+const bf=$('btnFire');
+let bfX=0,bfY=0,bfMs=0;
+bf.addEventListener('touchstart',e=>{
+  e.preventDefault();e.stopPropagation();
+  const tc=e.changedTouches[0];
+  bfX=tc.clientX;bfY=tc.clientY;bfMs=performance.now();
+  if(state==='playing')firing=true;
+},{passive:false});
+bf.addEventListener('touchmove',e=>{
+  e.preventDefault();
+  if(state!=='playing')return;
+  for(const tc of e.changedTouches){
+    const dx=tc.clientX-bfX,dy=tc.clientY-bfY;
+    const nowMs=performance.now();
+    const dtms=nowMs-bfMs;bfMs=nowMs;
+    applyLook(dx,dy,dtms,.9);
+    bfX=tc.clientX;bfY=tc.clientY;
+  }
+},{passive:false});
+const bfEnd=e=>{e.preventDefault();firing=false;};
+bf.addEventListener('touchend',bfEnd,{passive:false});
+bf.addEventListener('touchcancel',bfEnd,{passive:false});
 
 /* ---------- latar menu: tema acak pertama ---------- */
 setTheme(Math.random()<.5?'kota':'sawah');
