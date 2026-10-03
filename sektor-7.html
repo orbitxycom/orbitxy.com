@@ -7,7 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
-  :root{--amber:#ff8c2e;--amber2:#ffb457;--red:#ff3526;--ink:#ece5d8;--dim:#8a8378;--bg:#0e0c0a}
+  :root{--amber:#ff8c2e;--amber2:#ffb457;--red:#ff3526;--cyan:#35d0ff;--ink:#ece5d8;--dim:#8a8378;--bg:#0e0c0a}
   *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
   html,body{height:100%;overflow:hidden;background:var(--bg);font-family:'IBM Plex Mono',monospace;color:var(--ink);
     user-select:none;-webkit-user-select:none;touch-action:none;overscroll-behavior:none}
@@ -31,6 +31,14 @@
   #elMult{display:inline-block;margin-top:4px;color:var(--amber);font:600 13px 'IBM Plex Mono';letter-spacing:.25em;
     opacity:0;transform:translateY(-4px);transition:all .2s}
   #elMult.show{opacity:1;transform:none}
+
+  /* skor tim 5v5 (di bawah tombol AUTO) */
+  #elTeams{position:fixed;top:40px;left:50%;transform:translateX(-50%);z-index:5;pointer-events:none;display:none;
+    font:600 13px 'IBM Plex Mono';letter-spacing:.22em}
+  #elTeams.on{display:block}
+  #elTeams .tp{color:#7fd8ff}
+  #elTeams .te{color:#ff7a6a}
+  #elTeams .sep{color:var(--dim);margin:0 10px}
 
   #bl{position:absolute;bottom:26px;left:26px}
   #bl .row{display:flex;align-items:center;gap:14px;margin-top:6px}
@@ -77,6 +85,8 @@
     text-shadow:0 1px 3px rgba(0,0,0,.8);animation:popf .85s ease-out forwards}
   .pop.mult{color:var(--amber)}
   .pop.heal{color:#45e08a}
+  .pop.ally{color:#7fd8ff}
+  .pop.enemy{color:#ff7a6a}
   @keyframes popf{0%{opacity:0;transform:translateY(8px) scale(.85)}18%{opacity:1;transform:none}
     100%{opacity:0;transform:translateY(-44px) scale(1)}}
 
@@ -93,6 +103,14 @@
   #vigLow.on{animation:lowp 1.5s infinite}
   @keyframes lowp{0%,100%{opacity:.12}50%{opacity:.4}}
 
+  /* layar respawn 5v5 */
+  #respawn{position:fixed;inset:0;z-index:8;display:none;flex-direction:column;align-items:center;justify-content:center;
+    background:rgba(8,6,5,.85);text-align:center;pointer-events:none}
+  #respawn.on{display:flex}
+  #respawn .rsT{font:700 30px 'Chakra Petch';letter-spacing:.3em;color:var(--red)}
+  #respawn .rsN{font:700 72px 'Chakra Petch';color:var(--amber);margin:10px 0 6px}
+  #respawn .rsS{font:500 11px 'IBM Plex Mono';letter-spacing:.4em;color:var(--dim)}
+
   /* ---------- kontrol sentuh ---------- */
   #touchUI{position:fixed;inset:0;z-index:7;pointer-events:none;display:none}
   body.touch #touchUI{display:block}
@@ -105,7 +123,6 @@
     color:var(--amber);font-size:14px;letter-spacing:.22em}
   #btnJump{width:70px;height:70px;right:158px;bottom:80px}
   #btnReload{width:60px;height:60px;right:40px;bottom:300px}
-  /* tombol AUTO: persegi kecil di TENGAH ATAS — tidak mengganggu */
   #btnAuto{width:92px;height:24px;left:50%;transform:translateX(-50%);top:8px;
     border-radius:3px;border-width:1px;font-size:9px;letter-spacing:.14em;padding:0}
 
@@ -126,7 +143,7 @@
   #rotate svg{display:block;margin:0 auto 20px;color:var(--amber)}
   @media (orientation:portrait){body.touch #rotate{display:flex}}
 
-  /* ---------- overlay ---------- */
+  /* ---------- overlay / lobi ---------- */
   .ov{position:fixed;inset:0;z-index:10;display:flex;background:rgba(10,8,6,.55);transition:opacity .35s}
   .ov.hidden{opacity:0;pointer-events:none}
   kbd{display:inline-block;min-width:26px;text-align:center;padding:3px 6px;border:1px solid rgba(236,229,216,.3);
@@ -134,6 +151,8 @@
   .btn{font:600 14px 'IBM Plex Mono';letter-spacing:.22em;background:var(--amber);color:#140b03;
     border:0;padding:17px 30px;cursor:pointer;transition:all .15s;text-transform:uppercase}
   .btn:hover,.btn:active{background:var(--amber2);transform:translate(2px,-2px);box-shadow:-3px 3px 0 rgba(0,0,0,.45)}
+  .btn.ghost{background:transparent;color:var(--ink);border:1px solid rgba(236,229,216,.4)}
+  .btn.ghost:hover{background:rgba(236,229,216,.08);box-shadow:none}
 
   #ovStart{align-items:flex-end}
   #ovStart .panel{margin:0 6vw 7vh;max-width:560px;padding:34px 38px;background:rgba(14,12,10,.92);
@@ -141,19 +160,28 @@
   .kicker{font:600 11px 'IBM Plex Mono';letter-spacing:.45em;color:var(--amber)}
   #ovStart h1{font:700 clamp(44px,7vw,68px) 'Chakra Petch';line-height:1;margin:12px 0 4px}
   #ovStart h1 b{color:var(--amber)}
-  #ovStart p{font:400 13px/1.75 'IBM Plex Mono';color:var(--dim);margin:14px 0 22px;max-width:46ch}
-  .ctrls{display:grid;grid-template-columns:auto 1fr;gap:9px 18px;align-items:center;margin-bottom:26px}
+  #ovStart p{font:400 13px/1.75 'IBM Plex Mono';color:var(--dim);margin:10px 0 20px;max-width:46ch}
+  .modes{display:flex;flex-direction:column;gap:12px;margin:0 0 22px}
+  .modeBtn{display:block;text-align:left;cursor:pointer;border:0;background:var(--amber);color:#140b03;
+    padding:16px 20px;transition:all .15s}
+  .modeBtn b{display:block;font:700 21px 'Chakra Petch';letter-spacing:.14em}
+  .modeBtn span{display:block;margin-top:5px;font:500 11px/1.5 'IBM Plex Mono';letter-spacing:.04em;opacity:.85}
+  .modeBtn:hover,.modeBtn:active{transform:translate(2px,-2px);box-shadow:-3px 3px 0 rgba(0,0,0,.45);background:var(--amber2)}
+  .modeBtn.cyan{background:#2e8fb8;color:#041014}
+  .modeBtn.cyan:hover,.modeBtn.cyan:active{background:#3ea9d6}
+  .ctrls{display:grid;grid-template-columns:auto 1fr;gap:9px 18px;align-items:center;margin-bottom:24px}
   .ctrls span{font:500 11px 'IBM Plex Mono';letter-spacing:.14em;color:var(--dim)}
-  .foot{margin-top:18px;font:400 10px 'IBM Plex Mono';letter-spacing:.18em;color:#5c564c}
+  .foot{font:400 10px 'IBM Plex Mono';letter-spacing:.18em;color:#5c564c}
 
   #ovOver{align-items:center;justify-content:center}
   #ovOver .panel{padding:40px 52px;background:rgba(14,12,10,.94);border-top:3px solid var(--red);text-align:center}
-  #ovOver h2{font:700 42px 'Chakra Petch';letter-spacing:.18em;color:var(--red)}
+  #ovOver h2{font:700 42px 'Chakra Petch';letter-spacing:.18em}
   #ovOver .sub{margin-top:8px;font:600 11px 'IBM Plex Mono';letter-spacing:.4em;color:var(--dim)}
   .stats{display:flex;gap:42px;justify-content:center;margin:34px 0;flex-wrap:wrap}
   .stats .lbl{margin-bottom:8px}
   .stats .v{font:700 28px 'Chakra Petch'}
   .stats .v.am{color:var(--amber)}
+  .rowBtns{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
 
   @media (max-width:820px){
     #ovStart .panel{margin:0 4vw 4vh;padding:24px 24px}
@@ -166,11 +194,17 @@
     #ovOver h2{font-size:30px}
     .stats{gap:26px}
   }
+  @media (max-height:560px){
+    .ctrls{display:none}
+    #ovStart p{margin:8px 0 14px}
+    .modes{margin-bottom:14px}
+  }
   @media (max-height:430px){
     #btnFire{width:104px;height:104px;bottom:118px}
     #btnJump{right:132px;bottom:64px;width:60px;height:60px}
     #btnReload{bottom:244px}
-    #hint{bottom:auto;top:56px}
+    #hint{bottom:auto;top:70px}
+    #elTeams{top:38px;font-size:11px}
   }
 </style>
 </head>
@@ -190,6 +224,7 @@
     <div id="elScore">000000</div>
     <div id="elMult">RANTAI ×2</div>
   </div>
+  <div id="elTeams"><span class="tp" id="tP">KITA 00</span><span class="sep">/</span><span class="te" id="tE">00 MUSUH</span></div>
   <div id="bl">
     <div class="lbl">Integritas Unit</div>
     <div class="row">
@@ -211,6 +246,13 @@
 <div id="banner"><div id="bnT">GELOMBANG 01</div><div id="bnS">—</div></div>
 <div id="vig"></div><div id="vigLow"></div>
 
+<!-- layar respawn mode 5v5 -->
+<div id="respawn">
+  <div class="rsT">UNIT-02 DIRESET</div>
+  <div class="rsN" id="rsCount">3</div>
+  <div class="rsS">PENEMPATAN ULANG DI BASIS // PERISAI 2 DETIK</div>
+</div>
+
 <!-- Kontrol sentuh -->
 <div id="touchUI">
   <div class="tbtn on" id="btnAuto">AUTO AKTIF</div>
@@ -231,14 +273,23 @@
   </div>
 </div>
 
-<!-- Layar mulai -->
+<!-- LOBI -->
 <div class="ov" id="ovStart">
   <div class="panel">
     <div class="kicker">PROTOKOL PERTAHANAN // UNIT-02</div>
     <h1>SEKTOR<b>-7</b></h1>
-    <p>Jaringan drone otonom telah menembus perimeter. Tahan setiap gelombang selama mungkin —
-       <em>arena dipilih acak setiap operasi: kawasan PERKOTAAN gelap atau SAWAH malam yang tergenang.</em>
-       Bidik mata merah untuk kerusakan kritis, dan ambil kapsul medis hijau yang dijatuhkan musuh.</p>
+    <p>Pilih protokol simulasi. Arena dipilih acak setiap operasi —
+       kawasan PERKOTAAN gelap atau SAWAH malam yang tergenang.</p>
+    <div class="modes">
+      <button class="modeBtn" id="btnLatihan">
+        <b>LATIHAN</b>
+        <span>Bertahan dari gelombangan drone hostil tanpa henti. Bidik mata merah untuk kerusakan kritis; kapsul hijau memulihkan integritas.</span>
+      </button>
+      <button class="modeBtn cyan" id="btn5v5">
+        <b>5 VS 5</b>
+        <span>Duel tim — Anda + 4 unit sekutu biru melawan 5 drone hostil. Unit yang jatuh di-reset. Tim pertama mencapai 20 eliminasi menang.</span>
+      </button>
+    </div>
     <div class="ctrls" id="ctrlKB">
       <span><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd></span><span>BERGERAK</span>
       <span><kbd>MOUSE</kbd></span><span>BIDIK / TAHAN KLIK KIRI UNTUK TEMBAK OTOMATIS</span>
@@ -253,23 +304,25 @@
       <span><kbd>TEMBAK</kbd></span><span>BOLEH DIGESER SAAT MENEMBAK UNTUK FINE-TUNE BIDIKAN</span>
       <span><kbd>LOMPAT</kbd> <kbd>ISI</kbd></span><span>TOMBOL DI LAYAR</span>
     </div>
-    <button class="btn" id="btnStart">MASUKI SIMULASI</button>
     <div class="foot" id="footNote">MOUSE + KEYBOARD (DESKTOP) // ARENA ACAK: PERKOTAAN / SAWAH</div>
   </div>
 </div>
 
-<!-- Game over -->
+<!-- Game over / hasil pertandingan -->
 <div class="ov hidden" id="ovOver">
   <div class="panel">
-    <h2>UNIT-02 OFFLINE</h2>
-    <div class="sub">SINYAL HILANG // LOG OPERASI TERSIMPAN</div>
+    <h2 id="stTitle">UNIT-02 OFFLINE</h2>
+    <div class="sub" id="stSub">SINYAL HILANG // LOG OPERASI TERSIMPAN</div>
     <div class="stats">
       <div><div class="lbl">Skor</div><div class="v am" id="stScore">0</div></div>
-      <div><div class="lbl">Gelombang</div><div class="v" id="stWave">0</div></div>
+      <div><div class="lbl" id="stL2">Gelombang</div><div class="v" id="stV2">0</div></div>
       <div><div class="lbl">Eliminasi</div><div class="v" id="stKills">0</div></div>
       <div><div class="lbl">Akurasi</div><div class="v" id="stAcc">0%</div></div>
     </div>
-    <button class="btn" id="btnAgain">ULANGI OPERASI</button>
+    <div class="rowBtns">
+      <button class="btn" id="btnAgain">ULANGI</button>
+      <button class="btn ghost" id="btnLobby">KE LOBI</button>
+    </div>
   </div>
 </div>
 
@@ -279,8 +332,8 @@
 <script>
 'use strict';
 /* =========================================================
-   SEKTOR-7 — FPS gelombangan. Arena acak: PERKOTAAN / SAWAH
-   Tombol AUTO: persegi kecil di tengah atas layar.
+   SEKTOR-7 — Lobi + 2 mode: LATIHAN (gelombangan) & 5 VS 5
+   Arena acak: PERKOTAAN / SAWAH. Tanpa jeda. Sentuh responsif.
    ========================================================= */
 const $=id=>document.getElementById(id);
 const canvas=$('game'), hud=$('hud');
@@ -289,7 +342,9 @@ const elScore=$('elScore'), elMult=$('elMult'), elThreat=$('elThreat'), elArea=$
       crossEl=$('cross'), hmEl=$('hm'), pops=$('pops'),
       banner=$('banner'), bnT=$('bnT'), bnS=$('bnS'),
       vig=$('vig'), vigLow=$('vigLow'),
-      ovStart=$('ovStart'), ovOver=$('ovOver');
+      ovStart=$('ovStart'), ovOver=$('ovOver'),
+      elTeams=$('elTeams'), tP=$('tP'), tE=$('tE'),
+      respawnEl=$('respawn'), rsCount=$('rsCount');
 
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
 const rand=(a,b)=>a+Math.random()*(b-a);
@@ -303,17 +358,24 @@ if(IS_TOUCH){
   $('ctrlKB').style.display='none';
   $('ctrlTouch').style.display='grid';
   $('hint').textContent='AUTO AKTIF — ARAHKAN CROSSHAIR, SENJATA MENEMBAK SENDIRI';
-  $('footNote').textContent='MODE SENTUH RESPONSIF // ARENA ACAK: PERKOTAAN / SAWAH';
+  $('footNote').textContent='MODE SENTUH RESPONSIF // LOBI: LATIHAN / 5 VS 5';
 }
 
 /* ---------- state global ---------- */
-let state='menu';
+let state='menu';          // menu | playing | over
+let mode='latihan';        // 'latihan' | '5v5'
 let t=0;
-const stats={score:0,kills:0,shots:0,hits:0,wave:0};
+const stats={score:0,kills:0,deaths:0,shots:0,hits:0,wave:0};
 let hp=100, lastHurt=-10, ammo=24, reloading=false, reloadT=0;
 let mult=1, lastKill=-10;
 const MAG=24, RELOAD=1.15;
 let autoFire=IS_TOUCH;
+
+/* khusus 5v5 */
+const TEAM_TARGET=20;
+let teamP=0, teamE=0, alliesAlive=0;
+let playerDead=false, playerRespawnT=0, playerInvT=0;
+const pending=[];          // antrean respawn bot
 
 /* ---------- three.js dasar ---------- */
 const renderer=new THREE.WebGLRenderer({canvas,antialias:true});
@@ -885,7 +947,7 @@ const sfx={
   hit(c){envOsc('triangle',c?1500:1250,c?800:650,.05,.2);},
   kill(){noiseBurst(.35,.5,'lowpass',1000,90);envOsc('sine',150,38,.35,.5);},
   hurt(){envOsc('sine',120,50,.22,.5);noiseBurst(.12,.25,'lowpass',420,120);},
-  eshoot(){envOsc('sawtooth',920,230,.13,.09);},
+  eshoot(){envOsc('sawtooth',920,230,.13,.07);},
   dry(){envOsc('square',240,200,.04,.16);},
   relA(){envOsc('square',380,300,.05,.16);noiseBurst(.04,.1,'highpass',2000,null,.02);},
   relB(){envOsc('square',560,440,.05,.2);noiseBurst(.05,.12,'highpass',1600,null);},
@@ -894,6 +956,8 @@ const sfx={
   wave(){envOsc('triangle',330,330,.16,.18);envOsc('triangle',495,495,.22,.18,.14);},
   land(){noiseBurst(.07,.12,'lowpass',300,150);},
   over(){envOsc('sawtooth',220,55,1.1,.3);noiseBurst(.9,.3,'lowpass',800,80);},
+  win(){envOsc('triangle',440,440,.18,.25);envOsc('triangle',660,660,.32,.25,.16);},
+  lose(){envOsc('sawtooth',300,80,.9,.25);},
 };
 function startAmbience(){
   if(ambOn||!AC)return;ambOn=true;
@@ -936,6 +1000,7 @@ function resolveCollision(pos){
   }
 }
 function updatePlayer(dt){
+  playerInvT=Math.max(0,playerInvT-dt);
   let jf=0,js=0;
   if(joyOn){
     const mag=Math.hypot(joyX,joyY);
@@ -990,11 +1055,12 @@ function updatePlayer(dt){
   recoilP*=Math.exp(-9*dt);
   heat=Math.max(0,heat-5*dt);
 
-  /* bantuan bidik magnetis (khusus sentuh) */
+  /* bantuan bidik magnetis (khusus sentuh, musuh saja) */
   if(IS_TOUCH&&drones.length){
     camera.getWorldDirection(V1);
     let bx=0,by=0,bz=0,bestAng=0.07;
     for(const d of drones){
+      if(d.team!=='musuh'||d.hp<=0)continue;
       V2.copy(d.group.position).sub(camera.position);
       const dd=V2.length();
       if(dd<1||dd>40)continue;
@@ -1062,14 +1128,15 @@ function updateShooting(dt){
     if(ammo>0)fireShot();
     else{if(!dryPlayed){sfx.dry();dryPlayed=true;}startReload();}
   }
-  /* AUTO-AKTIF: menembak sendiri saat crosshair mengarah ke musuh */
-  if(!firing&&autoFire&&state==='playing'&&!reloading&&fireCd<=0&&drones.length){
+  /* AUTO-AKTIF */
+  if(!firing&&autoFire&&state==='playing'&&!playerDead&&!reloading&&fireCd<=0&&drones.length){
     if(ammo===0)startReload();
     else{
       camera.getWorldDirection(V1);
       camera.getWorldPosition(V3);
       let best=null,bestAng=0.10;
       for(const d of drones){
+        if(d.team!=='musuh'||d.hp<=0)continue;
         V2.copy(d.group.position).sub(V3);
         const dd=V2.length();
         if(dd>70||dd<1)continue;
@@ -1115,6 +1182,7 @@ function fireShot(){
     let best=null,bestAng=AIM_ASSIST;
     const maxD=wh.length?wh[0].distance:120;
     for(const d of drones){
+      if(d.team!=='musuh'||d.hp<=0)continue;
       V2.copy(d.group.position).sub(V3);
       const dd=V2.length();
       if(dd>=maxD)continue;
@@ -1126,41 +1194,46 @@ function fireShot(){
   }
 
   if(!point)point=V3.clone().addScaledVector(V1,90);
-  if(drone){stats.hits++;damageDrone(drone,part);}
+  if(drone){stats.hits++;damageDrone(drone,part,true);}
   else if(wh.length&&dist<120)spawnBurst(point,1,.75,.4,7,3,.3,.06,7);
   muzzle.getWorldPosition(V4);
   spawnTracer(V4,point);
   updateAmmoHUD();
 }
-function damageDrone(d,part){
+function damageDrone(d,part,byPlayer){
   const crit=part==='eye';
   d.hp-=crit?2:1;
   d.flash=1;
-  if(d.hp<=0)killDrone(d);
-  else{hitmark(false);sfx.hit(crit);buzz(10);}
+  if(d.hp<=0)killDrone(d,byPlayer);
+  else{if(byPlayer){hitmark(false);sfx.hit(crit);buzz(10);}}
 }
 
-/* ---------- drone musuh ---------- */
+/* ---------- drone: musuh (merah) & sekutu (biru) ---------- */
 const drones=[],decoDrones=[];
 const droneBodyGeo=new THREE.OctahedronGeometry(.55);
 const droneEyeGeo=new THREE.SphereGeometry(.2,10,8);
 const droneRingGeo=new THREE.TorusGeometry(.85,.045,8,26);
 const droneRingMat=new THREE.MeshStandardMaterial({color:0x1c1c22,roughness:.4,metalness:.7});
 const podGeo=new THREE.BoxGeometry(.16,.1,.12);
+const PT={isPlayer:true};   // penanda target "pemain"
+
 class Drone{
-  constructor(x,z,dec=false){
-    this.dec=dec;this.hp=3;this.flash=0;this.spawnT=0;
+  constructor(x,z,team='musuh',dec=false){
+    this.team=team;this.dec=dec;this.hp=3;this.flash=0;this.spawnT=0;
     this.phase=Math.random()*7;this.hoverY=rand(1.7,3);
     this.shootCd=rand(1.5,3.5);this.orbitDir=Math.random()<.5?1:-1;
     this.speed=3.1+Math.min(2.4,stats.wave*.15);
     this.vx=0;this.vz=0;
+    this.target=null;this.retargetT=0;
+    const isAlly=team==='kawan';
+    const eyeCol=isAlly?0x35d0ff:0xff3526;
     const g=this.group=new THREE.Group();
-    this.bodyMat=new THREE.MeshStandardMaterial({color:0x2a2a30,roughness:.35,metalness:.55,flatShading:true});
+    this.bodyMat=new THREE.MeshStandardMaterial({color:isAlly?0x25303a:0x2a2a30,roughness:.35,metalness:.55,flatShading:true});
     const body=this.body=new THREE.Mesh(droneBodyGeo,this.bodyMat);
     body.castShadow=true;body.userData={drone:this,part:'body'};
-    const eye=this.eye=new THREE.Mesh(droneEyeGeo,new THREE.MeshBasicMaterial({color:0xff3526}));
+    const eye=this.eye=new THREE.Mesh(droneEyeGeo,new THREE.MeshBasicMaterial({color:eyeCol}));
     eye.position.set(0,.05,.42);eye.userData={drone:this,part:'eye'};
-    const glow=new THREE.Sprite(new THREE.SpriteMaterial({map:softTex,color:0xff3526,transparent:true,blending:THREE.AdditiveBlending,depthWrite:false}));
+    const glow=new THREE.Sprite(new THREE.SpriteMaterial({map:softTex,color:eyeCol,transparent:true,blending:THREE.AdditiveBlending,depthWrite:false}));
     glow.scale.set(.55,.55,1);eye.add(glow);
     const rg=this.ringG=new THREE.Group();
     const ring=new THREE.Mesh(droneRingGeo,droneRingMat);
@@ -1171,17 +1244,41 @@ class Drone{
       p.position.set(Math.cos(a)*.85,0,Math.sin(a)*.85);
       p.userData={drone:this,part:'body'};rg.add(p);
     }
-    const thr=new THREE.Sprite(new THREE.SpriteMaterial({map:softTex,color:0xff8c2e,transparent:true,blending:THREE.AdditiveBlending,depthWrite:false}));
+    const thr=new THREE.Sprite(new THREE.SpriteMaterial({map:softTex,color:isAlly?0x45c8ff:0xff8c2e,transparent:true,blending:THREE.AdditiveBlending,depthWrite:false}));
     thr.scale.set(.5,.5,1);thr.position.set(0,-.55,0);
     this.hpBg=new THREE.Sprite(new THREE.SpriteMaterial({color:0x000000,opacity:.55,transparent:true}));
     this.hpBg.center.set(0,.5);this.hpBg.scale.set(.9,.07,1);this.hpBg.position.set(-.45,1.12,0);
-    this.hpFg=new THREE.Sprite(new THREE.SpriteMaterial({color:0xff4030}));
+    this.hpFg=new THREE.Sprite(new THREE.SpriteMaterial({color:isAlly?0x35b0ff:0xff4030}));
     this.hpFg.center.set(0,.5);this.hpFg.scale.set(.9,.045,1);this.hpFg.position.set(-.45,1.12,0);
     g.add(body,eye,rg,thr,this.hpBg,this.hpFg);
     g.position.set(x,this.hoverY,z);
     scene.add(g);
-    if(!dec){drones.push(this);hitMeshes.push(body,eye,...rg.children);}
-    else decoDrones.push(this);
+    if(!dec){
+      drones.push(this);
+      if(isAlly)alliesAlive++;else enemiesAlive++;
+      if(!isAlly)hitMeshes.push(body,eye,...rg.children);  /* hanya musuh bisa ditembak pemain */
+    }else decoDrones.push(this);
+  }
+  pickTarget(){
+    let best=null,bd=1e9;
+    if(this.team==='musuh'){
+      if(!playerDead&&state==='playing'){
+        const d=this.group.position.distanceToSquared(player.pos);
+        if(d<bd){bd=d;best=PT;}
+      }
+      for(const o of drones){
+        if(o.team!=='kawan'||o.hp<=0)continue;
+        const d=this.group.position.distanceToSquared(o.group.position);
+        if(d<bd){bd=d;best=o;}
+      }
+    }else{
+      for(const o of drones){
+        if(o.team!=='musuh'||o.hp<=0)continue;
+        const d=this.group.position.distanceToSquared(o.group.position);
+        if(d<bd){bd=d;best=o;}
+      }
+    }
+    return best;
   }
   update(dt){
     const g=this.group;
@@ -1201,11 +1298,24 @@ class Drone{
       g.quaternion.slerp(Q1,Math.min(1,3*dt));
       return;
     }
-    const px=player.pos.x,pz=player.pos.z;
+    /* pilih target (pemain / bot lawan) secara berkala */
+    this.retargetT-=dt;
+    if(this.retargetT<=0||!this.target||(this.target!==PT&&this.target.hp<=0)){
+      this.target=this.pickTarget();
+      this.retargetT=.8+Math.random()*.7;
+    }
+    let px=0,pz=0,py=2.2,hasT=false;
+    if(this.target){
+      if(this.target===PT){px=player.pos.x;pz=player.pos.z;py=player.pos.y+1.5;hasT=true;}
+      else{px=this.target.group.position.x;pz=this.target.group.position.z;py=this.target.group.position.y;hasT=true;}
+    }
     const dx=px-g.position.x,dz=pz-g.position.z;
     const dist=Math.hypot(dx,dz)||.001;
     let mx=0,mz=0;
-    if(dist>15){mx=dx/dist;mz=dz/dist;}
+    if(!hasT){
+      const a=this.phase+t*.3;
+      mx=Math.cos(a)*.35;mz=Math.sin(a)*.35;
+    }else if(dist>15){mx=dx/dist;mz=dz/dist;}
     else if(dist<8){mx=-dx/dist*.8;mz=-dz/dist*.8;}
     else{mx=-dz/dist*.85*this.orbitDir;mz=dx/dist*.85*this.orbitDir;}
     for(const c of circleCols){
@@ -1237,31 +1347,41 @@ class Drone{
     g.position.z=clamp(g.position.z+this.vz*dt,-26.5,26.5);
     const ty=this.hoverY+Math.sin(t*1.6+this.phase)*.25;
     g.position.y+=(ty-g.position.y)*Math.min(1,3*dt);
-    M1.lookAt(V1.set(px,player.pos.y+1.5,pz),g.position,UP);
+    M1.lookAt(V1.set(px,py,pz),g.position,UP);
     Q1.setFromRotationMatrix(M1);
     g.quaternion.slerp(Q1,Math.min(1,6*dt));
-    if(this.spawnT>1.2){
+    if(this.spawnT>1.2&&hasT){
       this.shootCd-=dt;
       const chg=this.shootCd<.5?Math.max(0,(.5-this.shootCd)/.5):0;
       this.eye.scale.setScalar(1+chg*.8);
       if(this.shootCd<=0){
-        if(dist<26&&this.hasLOS(dist))this.fire();
+        if(dist<26&&this.hasLOS(px,py,pz,dist))this.fire();
         this.shootCd=Math.max(1.1,2.4-stats.wave*.07)+Math.random()*.9;
         this.eye.scale.setScalar(1);
       }
     }
   }
-  hasLOS(dist){
-    V1.set(player.pos.x,player.pos.y+1.5,player.pos.z).sub(this.group.position).normalize();
+  hasLOS(px,py,pz,dist){
+    V1.set(px,py,pz).sub(this.group.position).normalize();
     rayLOS.set(this.group.position,V1);rayLOS.far=dist-.8;
     return rayLOS.intersectObjects(losMeshes,false).length===0;
   }
   fire(){
+    if(!this.target)return;
     this.eye.getWorldPosition(V3);
-    V4.set(player.pos.x+player.vel.x*.22+rand(-.55,.55),
-           player.pos.y+1.35+rand(-.3,.3),
-           player.pos.z+player.vel.z*.22+rand(-.55,.55)).sub(V3).normalize();
-    spawnBullet(V3,V4);
+    let ax,ay,az;
+    if(this.target===PT){
+      ax=player.pos.x+player.vel.x*.22+rand(-.55,.55);
+      ay=player.pos.y+1.35+rand(-.3,.3);
+      az=player.pos.z+player.vel.z*.22+rand(-.55,.55);
+    }else{
+      const tp=this.target.group.position;
+      ax=tp.x+this.target.vx*.2+rand(-.5,.5);
+      ay=tp.y+rand(-.3,.3);
+      az=tp.z+this.target.vz*.2+rand(-.5,.5);
+    }
+    V4.set(ax,ay,az).sub(V3).normalize();
+    spawnBullet(V3,V4,this.team);
     sfx.eshoot();
   }
 }
@@ -1270,39 +1390,63 @@ function removeDrone(d){
   const i=drones.indexOf(d);if(i>=0)drones.splice(i,1);
   hitMeshes=hitMeshes.filter(m=>m.userData.drone!==d);
 }
-function killDrone(d){
+function killDrone(d,byPlayer){
   const pos=d.group.position.clone();
+  const wasAlly=d.team==='kawan';
   removeDrone(d);
-  enemiesAlive--;
-  stats.kills++;
-  if(t-lastKill<4)mult=Math.min(5,mult+1);else mult=1;
-  lastKill=t;
-  const gain=100*mult;stats.score+=gain;
-  popup('+'+gain+(mult>1?'  ×'+mult:''),mult>1?'mult':'');
-  hitmark(true);sfx.kill();buzz(40);
-  spawnBurst(pos,1,.5,.15,42,6.5,.85,.16,5);
-  trauma=Math.max(trauma,.12);
-  if(Math.random()<.22)spawnPickup(pos);
-  updateScoreHUD();updateThreatHUD();
+  if(!wasAlly){
+    enemiesAlive--;
+    stats.kills++;
+    if(byPlayer){
+      if(t-lastKill<4)mult=Math.min(5,mult+1);else mult=1;
+      lastKill=t;
+      const gain=100*mult;stats.score+=gain;
+      popup('+'+gain+(mult>1?'  ×'+mult:''),mult>1?'mult':'');
+    }
+    if(byPlayer)hitmark(true);
+    sfx.kill();buzz(byPlayer?40:0);
+    spawnBurst(pos,1,.5,.15,42,6.5,.85,.16,5);
+    trauma=Math.max(trauma,.12);
+    if(mode==='5v5'){
+      teamP++;updateTeamsHUD();
+      if(!byPlayer)popup('ELIMINASI TIM','ally');
+      if(teamP>=TEAM_TARGET){endMatch(true);return;}
+      pending.push({team:'musuh',timer:4.5});
+    }
+    if(Math.random()<.22)spawnPickup(pos);
+    updateScoreHUD();
+  }else{
+    alliesAlive--;
+    spawnBurst(pos,.35,.75,1,36,6,.8,.15,5);
+    sfx.kill();
+    if(mode==='5v5'){
+      teamE++;updateTeamsHUD();
+      popup('SEKUTU JATUH','enemy');
+      if(teamE>=TEAM_TARGET){endMatch(false);return;}
+      pending.push({team:'kawan',timer:4.5});
+    }
+  }
+  updateThreatHUD();
 }
 
-/* ---------- proyektil musuh ---------- */
+/* ---------- proyektil (musuh & sekutu) ---------- */
 const bullets=[];
-{
-  const g=new THREE.SphereGeometry(.13,8,6);
-  const m=new THREE.MeshBasicMaterial({color:0xff5a30});
-  for(let i=0;i<30;i++){
-    const mesh=new THREE.Mesh(g,m);
-    const s=new THREE.Sprite(new THREE.SpriteMaterial({map:softTex,color:0xff4520,transparent:true,blending:THREE.AdditiveBlending,depthWrite:false}));
-    s.scale.set(.6,.6,1);mesh.add(s);
-    mesh.visible=false;scene.add(mesh);
-    bullets.push({mesh,vel:new THREE.Vector3(),active:false,life:0});
-  }
+const bulletGeo=new THREE.SphereGeometry(.13,8,6);
+const enemyBulMat=new THREE.MeshBasicMaterial({color:0xff5a30});
+const allyBulMat=new THREE.MeshBasicMaterial({color:0x45c8ff});
+for(let i=0;i<30;i++){
+  const mesh=new THREE.Mesh(bulletGeo,enemyBulMat);
+  const s=new THREE.Sprite(new THREE.SpriteMaterial({map:softTex,color:0xff4520,transparent:true,blending:THREE.AdditiveBlending,depthWrite:false}));
+  s.scale.set(.6,.6,1);mesh.add(s);
+  mesh.visible=false;scene.add(mesh);
+  bullets.push({mesh,glow:s,vel:new THREE.Vector3(),active:false,life:0,team:'musuh'});
 }
-function spawnBullet(pos,dir){
+function spawnBullet(pos,dir,team){
   const b=bullets.find(x=>!x.active);if(!b)return;
-  b.active=true;b.life=5;b.mesh.visible=true;
-  b.mesh.position.copy(pos);
+  b.active=true;b.life=5;b.team=team;
+  b.mesh.visible=true;b.mesh.position.copy(pos);
+  b.mesh.material=team==='kawan'?allyBulMat:enemyBulMat;
+  b.glow.material.color.setHex(team==='kawan'?0x45c8ff:0xff4520);
   b.vel.copy(dir).multiplyScalar(15.5);
 }
 function updateBullets(dt){
@@ -1322,9 +1466,33 @@ function updateBullets(dt){
       if(!dead)for(const c of covers){
         if(Math.abs(p.x-c.x)<c.hw&&Math.abs(p.z-c.z)<c.hd&&p.y<c.h+.25){dead=true;spark=true;break;}
       }
-      if(!dead){
-        const dx=p.x-player.pos.x,dy=p.y-(player.pos.y+1.1),dz=p.z-player.pos.z;
-        if(dx*dx+dy*dy+dz*dz<.62){damagePlayer(Math.min(16,9+stats.wave));dead=true;}
+      if(!dead&&b.team==='musuh'){
+        /* kena pemain? */
+        if(!playerDead&&playerInvT<=0){
+          const dx=p.x-player.pos.x,dy=p.y-(player.pos.y+1.1),dz=p.z-player.pos.z;
+          if(dx*dx+dy*dy+dz*dz<.62){damagePlayer(Math.min(16,9+stats.wave));dead=true;}
+        }
+        /* kena sekutu? */
+        if(!dead)for(const a of drones){
+          if(a.team!=='kawan'||a.hp<=0)continue;
+          const dx=p.x-a.group.position.x,dy=p.y-a.group.position.y,dz=p.z-a.group.position.z;
+          if(dx*dx+dy*dy+dz*dz<.36){
+            a.hp--;a.flash=1;dead=true;spark=true;
+            if(a.hp<=0)killDrone(a,false);
+            break;
+          }
+        }
+      }
+      if(!dead&&b.team==='kawan'){
+        for(const e of drones){
+          if(e.team!=='musuh'||e.hp<=0)continue;
+          const dx=p.x-e.group.position.x,dy=p.y-e.group.position.y,dz=p.z-e.group.position.z;
+          if(dx*dx+dy*dy+dz*dz<.36){
+            e.hp--;e.flash=1;dead=true;spark=true;
+            if(e.hp<=0)killDrone(e,false);
+            break;
+          }
+        }
       }
     }
     if(dead){
@@ -1354,7 +1522,7 @@ function updatePickups(dt){
     p.g.position.y=1.05+Math.sin(t*2.5+p.phase)*.14;
     p.g.visible=p.life>3||Math.sin(t*12)>-.2;
     const dx=p.g.position.x-player.pos.x,dz=p.g.position.z-player.pos.z;
-    if(dx*dx+dz*dz<1.56&&Math.abs(player.pos.y+1-p.g.position.y)<1.6){
+    if(!playerDead&&dx*dx+dz*dz<1.56&&Math.abs(player.pos.y+1-p.g.position.y)<1.6){
       hp=Math.min(100,hp+25);
       popup('+25 INTEGRITAS','heal');sfx.pick();buzz(20);updateHpHUD();
       scene.remove(p.g);pickups.splice(i,1);
@@ -1362,7 +1530,7 @@ function updatePickups(dt){
   }
 }
 
-/* ---------- gelombangan ---------- */
+/* ---------- gelombangan (mode LATIHAN) ---------- */
 let wavePhase='idle',waveTimer=0,toSpawn=0,spawnedCount=0,enemiesAlive=0,spawnTimer=0,maxAlive=5,spawnInt=1.6;
 let pendingNext=1;
 function startWave(n){
@@ -1379,7 +1547,7 @@ function spawnEnemy(){
   else if(side===1){x=26.5;z=rand(-24,24);}
   else if(side===2){z=-26.5;x=rand(-24,24);}
   else{z=26.5;x=rand(-24,24);}
-  new Drone(x,z);
+  new Drone(x,z,'musuh');
   spawnedCount++;enemiesAlive++;
   sfx.spawn();updateThreatHUD();
 }
@@ -1402,6 +1570,27 @@ function updateWave(dt){
     waveTimer-=dt;
     if(waveTimer<=0)startWave(stats.wave+1);
   }
+}
+
+/* ---------- mode 5 VS 5 ---------- */
+function spawnCombatant(team){
+  const x=rand(-10,10);
+  const z=team==='kawan'?rand(20,25):rand(-25,-20);
+  new Drone(x,z,team);
+  sfx.spawn();
+}
+function updateRespawns(dt){
+  for(let i=pending.length-1;i>=0;i--){
+    pending[i].timer-=dt;
+    if(pending[i].timer<=0){
+      spawnCombatant(pending[i].team);
+      pending.splice(i,1);
+    }
+  }
+}
+function updateTeamsHUD(){
+  tP.textContent='KITA '+String(teamP).padStart(2,'0');
+  tE.textContent=String(teamE).padStart(2,'0')+' MUSUH';
 }
 
 /* ---------- HUD ---------- */
@@ -1459,29 +1648,59 @@ function hurtFlash(){
 
 /* ---------- damage & alur permainan (TANPA JEDA) ---------- */
 function damagePlayer(d){
-  if(state!=='playing')return;
+  if(state!=='playing'||playerDead||playerInvT>0)return;
   hp-=d;lastHurt=t;
   trauma=Math.max(trauma,.45);
   hurtFlash();sfx.hurt();buzz(60);updateHpHUD();
-  if(hp<=0){hp=0;gameOver();}
+  if(hp<=0){
+    hp=0;updateHpHUD();
+    if(mode==='5v5'){
+      /* reset unit — bukan game over */
+      playerDead=true;playerRespawnT=3;
+      stats.deaths++;firing=false;clearKeys();
+      teamE++;updateTeamsHUD();
+      respawnEl.classList.add('on');
+      sfx.lose();
+      if(teamE>=TEAM_TARGET)endMatch(false);
+    }else gameOver();
+  }
 }
 function clearKeys(){
   for(const k in keys)keys[k]=false;
   firing=false;
 }
-function gameOver(){
-  state='over';firing=false;clearKeys();
-  joyOn=false;joyX=joyY=0;joySprint=false;
-  joyEl.classList.remove('on');joyStick.classList.remove('sp');joySpUI=false;
+function fillStats(l2Label,l2Value){
+  $('stScore').textContent=String(stats.score).padStart(6,'0');
+  $('stL2').textContent=l2Label;
+  $('stV2').textContent=l2Value;
+  $('stKills').textContent=String(stats.kills).padStart(3,'0');
+  $('stAcc').textContent=(stats.shots?Math.round(stats.hits/stats.shots*100):0)+'%';
+}
+function closeGameUI(){
   try{document.exitPointerLock&&document.exitPointerLock();}catch(e){}
   hud.classList.remove('on');weapon.visible=false;
   document.body.classList.remove('playing');
-  $('stScore').textContent=String(stats.score).padStart(6,'0');
-  $('stWave').textContent=String(stats.wave).padStart(2,'0');
-  $('stKills').textContent=String(stats.kills).padStart(3,'0');
-  $('stAcc').textContent=(stats.shots?Math.round(stats.hits/stats.shots*100):0)+'%';
+  elTeams.classList.remove('on');
+  respawnEl.classList.remove('on');
+  playerDead=false;clearKeys();
+}
+function gameOver(){       /* khusus mode latihan */
+  state='over';firing=false;closeGameUI();
+  $('stTitle').textContent='UNIT-02 OFFLINE';
+  $('stTitle').style.color='var(--red)';
+  $('stSub').textContent='SINYAL HILANG // LOG OPERASI TERSIMPAN';
+  fillStats('Gelombang',String(stats.wave).padStart(2,'0'));
   ovOver.classList.remove('hidden');
   sfx.over();
+}
+function endMatch(win){    /* akhir pertandingan 5v5 */
+  state='over';firing=false;closeGameUI();
+  $('stTitle').textContent=win?'KEMENANGAN':'KEKALAHAN';
+  $('stTitle').style.color=win?'var(--amber)':'var(--red)';
+  $('stSub').textContent='TIM KITA '+teamP+' — '+teamE+' TIM MUSUH';
+  fillStats('Kematian',String(stats.deaths).padStart(2,'0'));
+  ovOver.classList.remove('hidden');
+  if(win)sfx.win();else sfx.over();
 }
 function removeDeco(){
   for(const d of decoDrones)scene.remove(d.group);
@@ -1492,17 +1711,21 @@ function resetGame(){
   for(const b of bullets){b.active=false;b.mesh.visible=false;}
   for(const p of pickups)scene.remove(p.g);
   pickups.length=0;
+  pending.length=0;
   for(const b of bursts){b.life=0;b.pts.visible=false;}
   for(const tr of tracers){tr.life=0;tr.m.visible=false;}
-  stats.score=0;stats.kills=0;stats.shots=0;stats.hits=0;stats.wave=0;
+  stats.score=0;stats.kills=0;stats.deaths=0;stats.shots=0;stats.hits=0;stats.wave=0;
   hp=100;lastHurt=-10;ammo=24;reloading=false;heat=0;recoilA=0;recoilP=0;trauma=0;
   mult=1;lastKill=-10;
+  teamP=0;teamE=0;alliesAlive=0;enemiesAlive=0;
+  playerDead=false;playerRespawnT=0;playerInvT=0;
   player.pos.set(0,0,22);player.vel.set(0,0,0);
   player.yaw=0;player.pitch=0;player.grounded=true;
-  wavePhase='idle';enemiesAlive=0;spawnedCount=0;toSpawn=0;
+  wavePhase='idle';spawnedCount=0;toSpawn=0;
   shownHp=-1;shownAmmo=-1;
   vig.style.opacity=0;vigLow.classList.remove('on');
-  updateHpHUD();updateAmmoHUD();updateScoreHUD();updateThreatHUD();
+  elTeams.classList.remove('on');respawnEl.classList.remove('on');
+  updateHpHUD();updateAmmoHUD();updateScoreHUD();updateThreatHUD();updateTeamsHUD();
 }
 
 /* ---------- pointer lock: opsional, hanya desktop ---------- */
@@ -1516,8 +1739,9 @@ function tryLock(){
 }
 document.addEventListener('pointerlockerror',()=>{lockDead=true;});
 
-/* ---------- mulai / ulang: ARENA ACAK ---------- */
-function beginGame(){
+/* ---------- mulai / ulang / lobi ---------- */
+function beginGame(m){
+  mode=m;
   initAudio();AC&&AC.resume&&AC.resume();startAmbience();
   removeDeco();resetGame();
   const theme=Math.random()<.5?'kota':'sawah';
@@ -1525,30 +1749,48 @@ function beginGame(){
   state='playing';
   hud.classList.add('on');weapon.visible=true;
   document.body.classList.add('playing');
-  showBanner('AREA: '+(theme==='kota'?'PERKOTAAN':'SAWAH'),
-    theme==='kota'?'KAWASAN GELAP // JAGA PERSIMPANGAN':'SAWAH TERGENANG // AWAS KUNANG-KUNANG');
+  if(m==='latihan'){
+    showBanner('AREA: '+(theme==='kota'?'PERKOTAAN':'SAWAH'),
+      theme==='kota'?'KAWASAN GELAP // JAGA PERSIMPANGAN':'SAWAH TERGENANG // AWAS KUNANG-KUNANG');
+    wavePhase='delay';waveTimer=2.2;pendingNext=1;
+  }else{
+    elTeams.classList.add('on');
+    for(let i=0;i<4;i++)spawnCombatant('kawan');
+    for(let i=0;i<5;i++)spawnCombatant('musuh');
+    showBanner('MODE 5 VS 5','TIM PERTAMA MENCAPAI '+TEAM_TARGET+' ELIMINASI MENANG');
+    updateTeamsHUD();updateThreatHUD();
+  }
   sfx.wave();
-  wavePhase='delay';waveTimer=2.2;pendingNext=1;
   tryLock();
 }
- $('btnStart').addEventListener('click',()=>{ovStart.classList.add('hidden');beginGame();});
- $('btnAgain').addEventListener('click',()=>{ovOver.classList.add('hidden');beginGame();});
+function backToLobby(){
+  state='menu';
+  ovOver.classList.add('hidden');
+  resetGame();
+  setTheme(Math.random()<.5?'kota':'sawah');
+  for(let i=0;i<4;i++)new Drone(Math.cos(i/4*Math.PI*2)*10,Math.sin(i/4*Math.PI*2)*10,'musuh',true);
+  ovStart.classList.remove('hidden');
+}
+ $('btnLatihan').addEventListener('click',()=>{ovStart.classList.add('hidden');beginGame('latihan');});
+ $('btn5v5').addEventListener('click',()=>{ovStart.classList.add('hidden');beginGame('5v5');});
+ $('btnAgain').addEventListener('click',()=>{ovOver.classList.add('hidden');beginGame(mode);});
+ $('btnLobby').addEventListener('click',backToLobby);
 
 /* ---------- input keyboard & mouse (desktop) ---------- */
 document.addEventListener('keydown',e=>{
   keys[e.code]=true;
   if(e.code==='Space'){
     e.preventDefault();
-    if(state==='playing'&&player.grounded){player.vel.y=8.2;player.grounded=false;}
+    if(state==='playing'&&!playerDead&&player.grounded){player.vel.y=8.2;player.grounded=false;}
   }
   if(e.code==='KeyR')startReload();
-  if(e.code==='Enter'&&!ovStart.classList.contains('hidden'))$('btnStart').click();
+  if(e.code==='Enter'&&state==='menu'&&!ovStart.classList.contains('hidden'))$('btnLatihan').click();
 });
 document.addEventListener('keyup',e=>keys[e.code]=false);
 
 let lastCX=null,lastCY=null;
 document.addEventListener('mousemove',e=>{
-  if(state!=='playing')return;
+  if(state!=='playing'||playerDead)return;
   let mx=e.movementX,my=e.movementY;
   if(mx===undefined){
     if(lastCX===null){lastCX=e.clientX;lastCY=e.clientY;return;}
@@ -1562,7 +1804,7 @@ document.addEventListener('mousemove',e=>{
   swayT=clamp(swayT-mx*.00025,-.04,.04);
 });
 document.addEventListener('mousedown',e=>{
-  if(state!=='playing'||e.button!==0)return;
+  if(state!=='playing'||playerDead||e.button!==0)return;
   firing=true;
   if(!IS_TOUCH&&document.pointerLockElement!==canvas)tryLock();
 });
@@ -1591,7 +1833,7 @@ function applyLook(dx,dy,dtms,scale){
 
 canvas.addEventListener('touchstart',e=>{
   e.preventDefault();
-  if(state!=='playing')return;
+  if(state!=='playing'||playerDead)return;
   for(const tc of e.changedTouches){
     if(tc.clientX<innerWidth*.5&&joyId===null){
       joyId=tc.identifier;joyBX=tc.clientX;joyBY=tc.clientY;
@@ -1608,7 +1850,7 @@ canvas.addEventListener('touchstart',e=>{
 
 canvas.addEventListener('touchmove',e=>{
   e.preventDefault();
-  if(state!=='playing')return;
+  if(state!=='playing'||playerDead)return;
   for(const tc of e.changedTouches){
     if(tc.identifier===joyId){
       let dx=tc.clientX-joyBX,dy=tc.clientY-joyBY;
@@ -1656,10 +1898,10 @@ function bindBtn(el,down,up){
   el.addEventListener('touchcancel',end,opts);
 }
 bindBtn($('btnJump'),
-  ()=>{if(state==='playing'&&player.grounded){player.vel.y=8.2;player.grounded=false;}});
+  ()=>{if(state==='playing'&&!playerDead&&player.grounded){player.vel.y=8.2;player.grounded=false;}});
 bindBtn($('btnReload'),()=>startReload());
 
-/* tombol AUTO — persegi kecil di tengah atas (lihat CSS #btnAuto) */
+/* tombol AUTO — persegi kecil di tengah atas */
 const btnAuto=$('btnAuto');
 function setAuto(v){
   autoFire=v;
@@ -1679,11 +1921,11 @@ bf.addEventListener('touchstart',e=>{
   e.preventDefault();e.stopPropagation();
   const tc=e.changedTouches[0];
   bfX=tc.clientX;bfY=tc.clientY;bfMs=performance.now();
-  if(state==='playing')firing=true;
+  if(state==='playing'&&!playerDead)firing=true;
 },{passive:false});
 bf.addEventListener('touchmove',e=>{
   e.preventDefault();
-  if(state!=='playing')return;
+  if(state!=='playing'||playerDead)return;
   for(const tc of e.changedTouches){
     const dx=tc.clientX-bfX,dy=tc.clientY-bfY;
     const nowMs=performance.now();
@@ -1696,9 +1938,9 @@ const bfEnd=e=>{e.preventDefault();firing=false;};
 bf.addEventListener('touchend',bfEnd,{passive:false});
 bf.addEventListener('touchcancel',bfEnd,{passive:false});
 
-/* ---------- latar menu: tema acak pertama ---------- */
+/* ---------- latar lobi: tema acak + drone dekoratif ---------- */
 setTheme(Math.random()<.5?'kota':'sawah');
-for(let i=0;i<4;i++)new Drone(Math.cos(i/4*Math.PI*2)*10,Math.sin(i/4*Math.PI*2)*10,true);
+for(let i=0;i<4;i++)new Drone(Math.cos(i/4*Math.PI*2)*10,Math.sin(i/4*Math.PI*2)*10,'musuh',true);
 
 /* ---------- loop utama ---------- */
 let menuAngle=0,lastTime=performance.now();
@@ -1724,13 +1966,29 @@ function tick(){
     updateFX(dt);
   }else if(state==='playing'){
     t+=dt;
-    updatePlayer(dt);
-    updateWeapon(dt);
-    updateShooting(dt);
+    if(playerDead){
+      /* hitung mundur reset unit (5v5) */
+      playerRespawnT-=dt;
+      rsCount.textContent=String(Math.max(1,Math.ceil(playerRespawnT)));
+      if(playerRespawnT<=0){
+        playerDead=false;
+        respawnEl.classList.remove('on');
+        player.pos.set(rand(-8,8),0,22);player.vel.set(0,0,0);
+        player.yaw=0;player.pitch=0;player.grounded=true;
+        hp=100;lastHurt=t;playerInvT=2;
+        updateHpHUD();
+        sfx.spawn();
+      }
+    }else{
+      updatePlayer(dt);
+      updateWeapon(dt);
+      updateShooting(dt);
+    }
     for(let i=drones.length-1;i>=0;i--)drones[i].update(dt);
     updateBullets(dt);
     updatePickups(dt);
-    updateWave(dt);
+    if(mode==='latihan')updateWave(dt);
+    else updateRespawns(dt);
     updateFX(dt);
     if(themeFX)themeFX.update();
     if(t-lastKill>4&&mult>1){mult=1;updateScoreHUD();}
