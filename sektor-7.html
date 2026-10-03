@@ -2,2029 +2,3027 @@
 <html lang="id">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-<title>SEKTOR-7 — Simulasi Pertahanan</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <style>
-  :root{--amber:#ff8c2e;--amber2:#ffb457;--red:#ff3526;--cyan:#35d0ff;--ink:#ece5d8;--dim:#8a8378;--bg:#0e0c0a}
-  *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-  html,body{height:100%;overflow:hidden;background:var(--bg);font-family:'IBM Plex Mono',monospace;color:var(--ink);
-    user-select:none;-webkit-user-select:none;overscroll-behavior:none}
-  #game{position:fixed;inset:0;display:block;touch-action:none}
-  body.playing,body.playing *{cursor:none}
-
-  /* ---------- HUD ---------- */
-  #hud{position:fixed;inset:0;pointer-events:none;z-index:5;opacity:0;transition:opacity .4s}
-  #hud.on{opacity:1}
-  .lbl{font:600 10px 'IBM Plex Mono';letter-spacing:.38em;text-transform:uppercase;color:var(--dim)}
-
-  #tl{position:absolute;top:22px;left:26px}
-  #tl .brand{font:700 15px 'Chakra Petch';letter-spacing:.22em}
-  #tl .brand b{color:var(--amber)}
-  #tl .lbl{margin-top:6px}
-  #elThreat{color:var(--amber);font:600 13px 'IBM Plex Mono';letter-spacing:.2em;margin-top:2px}
-  #elArea{margin-top:4px;font:600 10px 'IBM Plex Mono';letter-spacing:.3em;color:#b7ad9c}
-
-  #tr{position:absolute;top:22px;right:26px;text-align:right}
-  #elScore{font:700 30px 'Chakra Petch';letter-spacing:.1em}
-  #elMult{display:inline-block;margin-top:4px;color:var(--amber);font:600 13px 'IBM Plex Mono';letter-spacing:.25em;
-    opacity:0;transform:translateY(-4px);transition:all .2s}
-  #elMult.show{opacity:1;transform:none}
-
-  #elTeams{position:fixed;top:40px;left:50%;transform:translateX(-50%);z-index:5;pointer-events:none;display:none;
-    font:600 13px 'IBM Plex Mono';letter-spacing:.22em}
-  #elTeams.on{display:block}
-  #elTeams .tp{color:#7fd8ff}
-  #elTeams .te{color:#ff7a6a}
-  #elTeams .sep{color:var(--dim);margin:0 10px}
-
-  #bl{position:absolute;bottom:26px;left:26px}
-  #bl .row{display:flex;align-items:center;gap:14px;margin-top:6px}
-  #elHp{font:700 30px 'Chakra Petch'}
-  #hpBar{width:230px;height:8px;background:rgba(236,229,216,.09);outline:1px solid rgba(236,229,216,.14)}
-  #hpFill{height:100%;width:100%;background:var(--amber);transition:width .25s}
-  #hpFill.low{background:var(--red)}
-  body.touch #bl{left:50%;transform:translateX(-50%);bottom:10px;text-align:center}
-  body.touch #bl .row{justify-content:center}
-
-  #br{position:absolute;bottom:26px;right:26px;text-align:right}
-  #elAmmo{font:700 52px 'Chakra Petch';letter-spacing:.04em;line-height:1}
-  #elAmmo.low{color:var(--red)}
-  #br .mag{color:var(--dim);font:500 12px 'IBM Plex Mono';letter-spacing:.25em}
-  #elReload{color:var(--amber);font:600 11px 'IBM Plex Mono';letter-spacing:.3em;margin-top:6px;
-    opacity:0;animation:blink 1s infinite}
-  #elReload.on{opacity:1}
-  @keyframes blink{50%{opacity:.25}}
-
-  #hint{position:fixed;bottom:92px;left:0;right:0;text-align:center;pointer-events:none;z-index:5;display:none;
-    font:500 10px 'IBM Plex Mono';letter-spacing:.35em;color:var(--dim)}
-  body.playing #hint{display:block;animation:hintfade 10s forwards}
-  @keyframes hintfade{0%,75%{opacity:.8}100%{opacity:0}}
-
-  #cross{position:fixed;left:50%;top:50%;--g:6px;pointer-events:none}
-  #cross span{position:absolute;background:var(--ink);box-shadow:0 0 3px rgba(0,0,0,.9)}
-  #cross .t{width:2px;height:8px;left:-1px;top:calc(-1*var(--g) - 8px)}
-  #cross .b{width:2px;height:8px;left:-1px;top:var(--g)}
-  #cross .l{width:8px;height:2px;top:-1px;left:calc(-1*var(--g) - 8px)}
-  #cross .r{width:8px;height:2px;top:-1px;left:var(--g)}
-  #cross .c{width:3px;height:3px;top:-1.5px;left:-1.5px;background:var(--amber)}
-
-  #hm{position:fixed;left:50%;top:50%;opacity:0;pointer-events:none;transition:opacity .12s}
-  #hm.show{opacity:1;transition:none}
-  #hm i{position:absolute;width:2px;height:9px;background:var(--ink)}
-  #hm i:nth-child(1){transform:translate(-8px,-14px) rotate(-45deg)}
-  #hm i:nth-child(2){transform:translate(6px,-14px) rotate(45deg)}
-  #hm i:nth-child(3){transform:translate(-8px,5px) rotate(45deg)}
-  #hm i:nth-child(4){transform:translate(6px,5px) rotate(-45deg)}
-  #hm.kill i{background:var(--red);height:13px}
-
-  #pops{position:fixed;inset:0;pointer-events:none;z-index:6}
-  .pop{position:absolute;font:600 15px 'IBM Plex Mono';letter-spacing:.1em;
-    text-shadow:0 1px 3px rgba(0,0,0,.8);animation:popf .85s ease-out forwards}
-  .pop.mult{color:var(--amber)}
-  .pop.heal{color:#45e08a}
-  .pop.ally{color:#7fd8ff}
-  .pop.enemy{color:#ff7a6a}
-  @keyframes popf{0%{opacity:0;transform:translateY(8px) scale(.85)}18%{opacity:1;transform:none}
-    100%{opacity:0;transform:translateY(-44px) scale(1)}}
-
-  #banner{position:fixed;top:15%;left:0;right:0;text-align:center;opacity:0;pointer-events:none;z-index:6}
-  #banner.show{animation:ban 2.6s ease forwards}
-  #bnT{font:700 36px 'Chakra Petch';letter-spacing:.35em;color:var(--amber);text-indent:.35em}
-  #bnS{margin-top:8px;font:600 11px 'IBM Plex Mono';letter-spacing:.5em;color:var(--dim);text-indent:.5em}
-  @keyframes ban{0%{opacity:0;letter-spacing:.1em}12%{opacity:1}78%{opacity:1}100%{opacity:0}}
-
-  #vig{position:fixed;inset:0;pointer-events:none;z-index:4;opacity:0;
-    background:radial-gradient(ellipse at center,transparent 52%,rgba(255,32,20,.55) 100%)}
-  #vigLow{position:fixed;inset:0;pointer-events:none;z-index:4;opacity:0;
-    background:radial-gradient(ellipse at center,transparent 60%,rgba(255,32,20,.4) 100%)}
-  #vigLow.on{animation:lowp 1.5s infinite}
-  @keyframes lowp{0%,100%{opacity:.12}50%{opacity:.4}}
-
-  #respawn{position:fixed;inset:0;z-index:8;display:none;flex-direction:column;align-items:center;justify-content:center;
-    background:rgba(8,6,5,.85);text-align:center;pointer-events:none}
-  #respawn.on{display:flex}
-  #respawn .rsT{font:700 30px 'Chakra Petch';letter-spacing:.3em;color:var(--red)}
-  #respawn .rsN{font:700 72px 'Chakra Petch';color:var(--amber);margin:10px 0 6px}
-  #respawn .rsS{font:500 11px 'IBM Plex Mono';letter-spacing:.4em;color:var(--dim)}
-
-  /* ---------- kontrol sentuh (lebih terlihat) ---------- */
-  #touchUI{position:fixed;inset:0;z-index:7;pointer-events:none;display:none}
-  body.touch #touchUI{display:block}
-  #touchUI .tbtn{pointer-events:auto;touch-action:none;position:absolute;border-radius:50%;
-    border:2px solid rgba(236,229,216,.5);background:rgba(18,15,12,.62);color:var(--ink);
-    font:600 11px 'IBM Plex Mono';letter-spacing:.15em;display:flex;align-items:center;justify-content:center}
-  #touchUI .tbtn:active{background:rgba(255,140,46,.35);border-color:var(--amber)}
-  #touchUI .tbtn.on{background:rgba(255,140,46,.25);border-color:rgba(255,140,46,.9);color:var(--amber)}
-  #btnFire{width:128px;height:128px;right:18px;bottom:150px;border-color:rgba(255,140,46,.85);
-    color:var(--amber);font-size:14px;letter-spacing:.22em}
-  #btnJump{width:70px;height:70px;right:158px;bottom:80px}
-  #btnReload{width:60px;height:60px;right:40px;bottom:300px}
-  #btnAuto{width:92px;height:24px;left:50%;transform:translateX(-50%);top:8px;
-    border-radius:3px;border-width:1px;font-size:9px;letter-spacing:.14em;padding:0}
-
-  #joy{position:fixed;z-index:7;pointer-events:none;display:none}
-  #joy.on{display:block}
-  #joyBase{position:absolute;width:136px;height:136px;border:2px solid rgba(236,229,216,.35);
-    border-radius:50%;transform:translate(-50%,-50%)}
-  #joyBase::after{content:'';position:absolute;inset:46px;border-radius:50%;
-    border:1px solid rgba(236,229,216,.2)}
-  #joyStick{position:absolute;width:60px;height:60px;background:rgba(255,140,46,.4);
-    border:2px solid rgba(255,140,46,.85);border-radius:50%;transform:translate(-50%,-50%)}
-  #joyStick.sp{background:rgba(255,150,60,.66);border-color:#ffca7e}
-
-  #rotate{position:fixed;inset:0;z-index:30;display:none;align-items:center;justify-content:center;
-    background:rgba(10,8,6,.94);text-align:center}
-  #rotate .in{font:600 14px 'IBM Plex Mono';letter-spacing:.3em;color:var(--ink)}
-  #rotate .sub{margin-top:10px;font:500 10px 'IBM Plex Mono';letter-spacing:.3em;color:var(--dim)}
-  #rotate svg{display:block;margin:0 auto 20px;color:var(--amber)}
-  @media (orientation:portrait){body.touch #rotate{display:flex}}
-
-  /* ---------- overlay / lobi (bisa di-scroll) ---------- */
-  .ov{position:fixed;inset:0;z-index:10;background:rgba(10,8,6,.55);transition:opacity .35s}
-  .ov.hidden{opacity:0;pointer-events:none}
-  kbd{display:inline-block;min-width:26px;text-align:center;padding:3px 6px;border:1px solid rgba(236,229,216,.3);
-    border-bottom-width:2px;font:600 11px 'IBM Plex Mono';background:rgba(236,229,216,.05)}
-  .btn{font:600 14px 'IBM Plex Mono';letter-spacing:.22em;background:var(--amber);color:#140b03;
-    border:0;padding:17px 30px;cursor:pointer;transition:all .15s;text-transform:uppercase}
-  .btn:hover,.btn:active{background:var(--amber2);transform:translate(2px,-2px);box-shadow:-3px 3px 0 rgba(0,0,0,.45)}
-  .btn.ghost{background:transparent;color:var(--ink);border:1px solid rgba(236,229,216,.4)}
-  .btn.ghost:hover{background:rgba(236,229,216,.08);box-shadow:none}
-
-  #ovStart{display:block;overflow-y:auto;touch-action:pan-y;-webkit-overflow-scrolling:touch}
-  #ovStart .panel{margin:5vh 6vw 7vh;max-width:560px;padding:34px 38px;background:rgba(14,12,10,.92);
-    border-left:3px solid var(--amber)}
-  .kicker{font:600 11px 'IBM Plex Mono';letter-spacing:.45em;color:var(--amber)}
-  #ovStart h1{font:700 clamp(44px,7vw,68px) 'Chakra Petch';line-height:1;margin:12px 0 4px}
-  #ovStart h1 b{color:var(--amber)}
-  #ovStart p{font:400 13px/1.75 'IBM Plex Mono';color:var(--dim);margin:10px 0 20px;max-width:46ch}
-  .modes{display:flex;flex-direction:column;gap:12px;margin:0 0 14px}
-  .modeBtn{display:block;text-align:left;cursor:pointer;border:0;background:var(--amber);color:#140b03;
-    padding:16px 20px;transition:all .15s}
-  .modeBtn b{display:block;font:700 21px 'Chakra Petch';letter-spacing:.14em}
-  .modeBtn span{display:block;margin-top:5px;font:500 11px/1.5 'IBM Plex Mono';letter-spacing:.04em;opacity:.85}
-  .modeBtn:hover,.modeBtn:active{transform:translate(2px,-2px);box-shadow:-3px 3px 0 rgba(0,0,0,.45);background:var(--amber2)}
-  .modeBtn.cyan{background:#2e8fb8;color:#041014}
-  .modeBtn.cyan:hover,.modeBtn.cyan:active{background:#3ea9d6}
-  /* pilih kontrol manual — jaring pengaman kalau deteksi otomatis gagal */
-  .ctrlToggle{display:block;width:100%;padding:12px;background:transparent;cursor:pointer;
-    border:1px solid rgba(236,229,216,.35);color:var(--dim);
-    font:600 11px 'IBM Plex Mono';letter-spacing:.25em;text-transform:uppercase}
-  .ctrlToggle:hover,.ctrlToggle:active{color:var(--ink);border-color:rgba(236,229,216,.7)}
-  .ctrls{display:grid;grid-template-columns:auto 1fr;gap:9px 18px;align-items:center;margin:16px 0 20px}
-  .ctrls span{font:500 11px 'IBM Plex Mono';letter-spacing:.14em;color:var(--dim)}
-  .foot{font:400 10px 'IBM Plex Mono';letter-spacing:.18em;color:#5c564c}
-
-  #ovOver{display:block;overflow-y:auto;touch-action:pan-y;-webkit-overflow-scrolling:touch}
-  #ovOver .panel{margin:6vh auto 8vh;max-width:560px;padding:40px 52px;background:rgba(14,12,10,.94);
-    border-top:3px solid var(--red);text-align:center}
-  #ovOver h2{font:700 42px 'Chakra Petch';letter-spacing:.18em}
-  #ovOver .sub{margin-top:8px;font:600 11px 'IBM Plex Mono';letter-spacing:.4em;color:var(--dim)}
-  .stats{display:flex;gap:42px;justify-content:center;margin:34px 0;flex-wrap:wrap}
-  .stats .lbl{margin-bottom:8px}
-  .stats .v{font:700 28px 'Chakra Petch'}
-  .stats .v.am{color:var(--amber)}
-  .rowBtns{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
-
-  @media (max-width:820px){
-    #ovStart .panel{margin:3vh 4vw 4vh;padding:24px 24px}
-    #ovStart p{font-size:12px}
-    #elScore{font-size:22px}#elHp{font-size:22px}#elAmmo{font-size:40px}
-    #hpBar{width:150px}
-    #tl{top:14px;left:14px}#tr{top:14px;right:14px}
-    #bnT{font-size:26px}
-    #ovOver .panel{padding:28px 26px}
-    #ovOver h2{font-size:30px}
-    .stats{gap:26px}
+  html { touch-action: manipulation; }
+</style>
+<title>orbitxy.com</title>
+<style>
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  button, input, a {
+    outline: none;
   }
-  @media (max-height:560px){
-    #ovStart h1{font-size:30px}
-    #ovStart p{display:none}
-    .modeBtn{padding:12px 16px}
-    .modeBtn b{font-size:17px}
-    .modeBtn span{font-size:10px}
-    .ctrls{display:none}
+  button:focus, input:focus, a:focus {
+    outline: none;
   }
-  @media (max-height:430px){
-    #btnFire{width:104px;height:104px;bottom:118px}
-    #btnJump{right:132px;bottom:64px;width:60px;height:60px}
-    #btnReload{bottom:244px}
-    #hint{bottom:auto;top:70px}
-    #elTeams{top:38px;font-size:11px}
+  html, body {
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    background: #121212;
+    font-family: 'Segoe UI', Arial, sans-serif;
+    padding-bottom: 16px;
+  }
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #161616;
+    padding: clamp(14px, 3.5vw, 20px) clamp(16px, 4vw, 28px);
+  }
+  .logo {
+    font-size: clamp(20px, 5vw, 26px);
+    font-weight: 800;
+    letter-spacing: 0.5px;
+    background: linear-gradient(90deg, #ffb347 0%, #ff2d78 20%, #8b2fd6 38%, #2f7bff 55%, #14c4b0 75%, #4ade80 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .buttons {
+    display: flex;
+    align-items: center;
+    gap: clamp(8px, 2vw, 14px);
+  }
+  .btn {
+    border: none;
+    border-radius: 8px;
+    padding: clamp(9px, 2.2vw, 13px) clamp(18px, 4.5vw, 28px);
+    font-size: clamp(14px, 3.2vw, 16px);
+    font-weight: 700;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+  .btn-masuk {
+    background: #2c2c2e;
+    color: #ffffff;
+  }
+  .btn-masuk:hover {
+    background: #3a3a3c;
+  }
+  .btn-daftar {
+    background: #23c65b;
+    color: #ffffff;
+  }
+  .btn-daftar:hover {
+    background: #1fae4f;
+  }
+  .btn-theme {
+    background: #2c2c2e;
+    border: none;
+    border-radius: 8px;
+    width: 38px;
+    height: 38px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: #ffffff;
+  }
+  .btn-theme svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  /* ---- Mode Terang ---- */
+  body.light-mode {
+    background: #f2f2f4;
+  }
+  body.light-mode .header,
+  body.light-mode .bottom-nav,
+  body.light-mode .drawer,
+  body.light-mode .login-sheet,
+  body.light-mode .share-sheet,
+  body.light-mode .games-section .game-card-img,
+  body.light-mode .banner-box,
+  body.light-mode .footer-box,
+  body.light-mode .news-card,
+  body.light-mode .profile-section,
+  body.light-mode .settings-section {
+    background: #ffffff !important;
+    border-color: #e2e2e6 !important;
+  }
+  body.light-mode .btn-theme,
+  body.light-mode .btn-bell,
+  body.light-mode .icon-btn,
+  body.light-mode .nav-item,
+  body.light-mode .drawer-social-btn,
+  body.light-mode .games-nav button {
+    background: #eceef1 !important;
+    color: #26262c !important;
+  }
+  body.light-mode .nc-title,
+  body.light-mode .nc-desc,
+  body.light-mode .gs-name,
+  body.light-mode .f-title,
+  body.light-mode .page-title,
+  body.light-mode .news-header h2,
+  body.light-mode .fb-value,
+  body.light-mode .nav-item span {
+    color: #1c1c1e !important;
+  }
+  body.light-mode .nav-item {
+    color: #6a6a6e !important;
+  }
+  body.light-mode .fb-label,
+  body.light-mode .n-sub,
+  body.light-mode .footer-bottom {
+    color: #6a6a6e !important;
+  }
+  .btn-bell {
+    background: #2c2c2e;
+    border: none;
+    border-radius: 8px;
+    width: 38px;
+    height: 38px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+  }
+  .btn-bell svg {
+    width: 20px;
+    height: 20px;
+    color: #ffffff;
+  }
+
+  .bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    background: #161616;
+    border-top: 1px solid #2a2a2a;
+    padding: clamp(8px, 2vw, 12px) 4px calc(clamp(8px, 2vw, 12px) + env(safe-area-inset-bottom));
+  }
+  .nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    background: none;
+    border: none;
+    color: #9a9a9a;
+    font-size: clamp(10px, 2.6vw, 12px);
+    cursor: pointer;
+    flex: 1;
+    text-decoration: none;
+  }
+  .nav-item svg {
+    width: clamp(20px, 5.5vw, 26px);
+    height: clamp(20px, 5.5vw, 26px);
+  }
+  .nav-item.active {
+    color: #2f7bff;
+  }
+
+  .banner-wrap {
+    padding: 14px 16px 12px;
+  }
+  .banner-box {
+    width: 100%;
+    aspect-ratio: 2.2 / 1;
+    max-height: 150px;
+    background: #1a1a1a;
+    border: 1px solid #2a2a2c;
+    border-radius: 14px;
+    position: relative;
+    overflow: hidden;
+  }
+  .banner-dots {
+    position: absolute;
+    left: 16px;
+    bottom: 12px;
+    display: flex;
+    gap: 6px;
+  }
+  .banner-dots span {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #4a4a4c;
+  }
+  .banner-dots span.active {
+    background: #ffffff;
+  }
+
+  .games-section {
+    padding: 20px 16px 8px;
+  }
+  .games-section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+  }
+  .games-section-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .games-section-title .gs-badge {
+    background: #232325;
+    color: #ffffff;
+    font-size: 11px;
+    font-weight: 800;
+    padding: 4px 6px;
+    border-radius: 6px;
+  }
+  .games-section-title span.gs-name {
+    color: #ffffff;
+    font-size: 15px;
+    font-weight: 700;
+  }
+  .games-section-title svg {
+    width: 16px;
+    height: 16px;
+    color: #8a8a8e;
+  }
+  .games-nav {
+    display: flex;
+    gap: 8px;
+  }
+  .games-nav button {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    background: #232325;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #cfcfcf;
+    cursor: pointer;
+  }
+  .games-nav button svg { width: 16px; height: 16px; }
+  .game-card {
+    width: 120px;
+  }
+  .games-row {
+    display: flex;
+    gap: 10px;
+    overflow-x: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  .games-row::-webkit-scrollbar {
+    display: none;
+  }
+  .games-row .game-card {
+    flex: 0 0 auto;
+  }
+  .game-card-img {
+    width: 120px;
+    height: 165px;
+    border-radius: 12px;
+    background: #1a1a1a;
+    border: 1px solid #2a2a2c;
+  }
+  .game-card-status {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 8px;
+    font-size: 13px;
+    color: #cfcfcf;
+  }
+  .game-card-status .dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #23c65b;
+  }
+
+  /* ---- Footer Beranda ---- */
+  .home-footer {
+    margin-top: 40px;
+    padding: 0 16px 24px;
+  }
+  .footer-box {
+    background: #1c1c1e;
+    border: 1px solid #2a2a2c;
+    border-radius: 14px;
+    padding: 16px 18px;
+    margin-bottom: 12px;
+  }
+  .footer-box .fb-label {
+    color: #8a8a8e;
+    font-size: 13px;
+    margin-bottom: 4px;
+  }
+  .footer-box .fb-value {
+    color: #f0f0f0;
+    font-size: 16px;
+    font-weight: 600;
+  }
+  .footer-social-row {
+    display: flex;
+    gap: 10px;
+    margin: 20px 0;
+    flex-wrap: wrap;
+  }
+  .footer-social-row a {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    background: #232325;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #ffffff;
+    text-decoration: none;
+  }
+  .footer-social-row a svg { width: 20px; height: 20px; }
+  .footer-bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: #6a6a6e;
+    font-size: 13px;
+  }
+  .footer-bottom .age-badge {
+    color: #8a8a8e;
+    font-size: 22px;
+    font-weight: 800;
+  }
+
+  /* ---- Promo Row ---- */
+  .promo-row {
+    display: flex;
+    gap: 10px;
+    padding: 0 16px 4px;
+  }
+  .promo-big {
+    flex: 2.2;
+    aspect-ratio: 2.1/1;
+    border-radius: 16px;
+    background: linear-gradient(135deg, #7a6a4f 0%, #cbb188 60%, #8a7654 100%);
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .promo-big .pb-title {
+    color: #ffffff;
+    font-size: 19px;
+    font-weight: 800;
+    line-height: 1.2;
+  }
+  .promo-big .pb-sub {
+    color: rgba(255,255,255,0.85);
+    font-size: 12px;
+    margin-top: 8px;
+    line-height: 1.4;
+  }
+  .promo-small {
+    flex: 1;
+    aspect-ratio: 1/1;
+    border-radius: 16px;
+    background: linear-gradient(160deg, #4a6b8a, #2c3e54);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    overflow: hidden;
+    position: relative;
+  }
+  .promo-small img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: 2;
+  }
+
+  /* ---- View News (Game Guides) ---- */
+  .news-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 16px 16px;
+  }
+  .news-header .nh-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .news-header .nh-bar {
+    width: 4px;
+    height: 22px;
+    background: #2f7bff;
+    border-radius: 2px;
+  }
+  .news-header h2 {
+    color: #ffffff;
+    font-size: 20px;
+    font-weight: 800;
+    margin: 0;
+  }
+  .news-header .nh-more {
+    color: #2f7bff;
+    font-size: 14px;
+    font-weight: 700;
+    text-decoration: none;
+  }
+  .news-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    padding: 0 16px 30px;
+  }
+  .news-card {
+    background: #1c1c1e;
+    border: 1px solid #2a2a2c;
+    border-radius: 14px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+  .news-card .nc-img {
+    width: 100%;
+    aspect-ratio: 16/10;
+    background: #141416;
+  }
+  .news-card .nc-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  .news-card .nc-body {
+    padding: 12px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+  .news-card .nc-title {
+    color: #ffffff;
+    font-size: 15px;
+    font-weight: 800;
+    margin-bottom: 6px;
+    line-height: 1.3;
+  }
+  .news-card .nc-desc {
+    color: #9a9a9a;
+    font-size: 12px;
+    line-height: 1.4;
+    margin-bottom: 10px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .news-card .nc-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: auto;
+  }
+  .news-card .nc-tag {
+    background: rgba(47,123,255,0.12);
+    color: #5b9dff;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 4px 9px;
+    border-radius: 20px;
+    border: 1px solid rgba(47,123,255,0.3);
+  }
+  .news-empty {
+    text-align: center;
+    color: #8a8a8e;
+    font-size: 14px;
+    padding: 60px 30px;
+  }
+
+  /* ---- Drawer Menu ---- */
+  .overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.55);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s ease;
+    z-index: 40;
+  }
+  .overlay.show {
+    opacity: 1;
+    pointer-events: auto;
+  }
+  .drawer {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: min(80vw, 320px);
+    background: #1c1c1e;
+    transform: translateX(-100%);
+    transition: transform 0.25s ease;
+    z-index: 50;
+    overflow-y: auto;
+    padding: 20px 0;
+    display: flex;
+    flex-direction: column;
+  }
+  .drawer-footer {
+    margin-top: auto;
+  }
+  .drawer.show {
+    transform: translateX(0);
+  }
+  .drawer-top {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 4px 18px 18px;
+    cursor: pointer;
+  }
+  .drawer-close {
+    position: fixed;
+    top: 18px;
+    right: 18px;
+    z-index: 60;
+    background: rgba(255,255,255,0.12);
+    border-radius: 50%;
+    width: 34px;
+    height: 34px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease;
+  }
+  .drawer-close.show {
+    opacity: 1;
+    pointer-events: auto;
+  }
+  .drawer-user {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .avatar {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    background: #3a3a3c;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #cfcfcf;
+  }
+  .avatar svg { width: 22px; height: 22px; }
+  .avatar {
+    position: relative;
+  }
+  .avatar-dot {
+    position: absolute;
+    top: -2px;
+    right: -2px;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: #ff5c1a;
+    border: 2px solid #1c1c1e;
+    display: none;
+  }
+  .drawer-user-info {
+    display: flex;
+    flex-direction: column;
+  }
+  .drawer-user-info .uname {
+    color: #ffffff;
+    font-size: 17px;
+    font-weight: 800;
+  }
+  .drawer-user-info .uid {
+    color: #9a9a9a;
+    font-size: 13px;
+    margin-top: 2px;
+  }
+  .drawer-user span {
+    color: #ffffff;
+    font-size: 17px;
+    font-weight: 700;
+  }
+  .drawer-close, .drawer-arrow {
+    background: none;
+    border: none;
+    color: #9a9a9a;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+  }
+  .drawer-close svg { width: 18px; height: 18px; }
+  .drawer-arrow svg { width: 20px; height: 20px; }
+  .drawer-divider {
+    height: 1px;
+    background: #2c2c2e;
+    margin: 8px 0;
+  }
+  .drawer-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 18px;
+    color: #f0f0f0;
+    font-size: 16px;
+    cursor: pointer;
+    background: none;
+    border: none;
+    width: 100%;
+    text-align: left;
+  }
+  .drawer-item:hover {
+    background: #26262a;
+  }
+  .drawer-item.active-item {
+    background: #2c2c30;
+    border-radius: 10px;
+    margin: 0 8px;
+    width: calc(100% - 16px);
+  }
+  .drawer-item-left {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .drawer-item-left svg {
+    width: 22px;
+    height: 22px;
+    color: #cfcfcf;
+  }
+  .drawer-item svg.chevron {
+    width: 18px;
+    height: 18px;
+    color: #8a8a8e;
+  }
+
+  .drawer-social-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 16px 18px;
+    flex-wrap: nowrap;
+  }
+  .drawer-social-btn {
+    width: 36px;
+    height: 36px;
+    border-radius: 9px;
+    background: #2c2c2e;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #ffffff;
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+  .drawer-social-btn svg { width: 17px; height: 17px; }
+  .drawer-lang-btn {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    background: #2c2c2e;
+    border: none;
+    border-radius: 9px;
+    padding: 7px 9px;
+    color: #ffffff;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    flex-shrink: 0;
+    white-space: nowrap;
+  }
+  .drawer-lang-btn .flag {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    overflow: hidden;
+    background: linear-gradient(to bottom, #ff5c5c 50%, #ffffff 50%);
+    flex-shrink: 0;
+  }
+  .drawer-lang-btn svg { width: 12px; height: 12px; color: #9a9a9a; flex-shrink: 0; }
+
+  .drawer-support {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 15px 18px;
+    cursor: pointer;
+  }
+  .drawer-support .p-icon {
+    width: 22px;
+    height: 22px;
+    color: #cfcfcf;
+    flex-shrink: 0;
+  }
+  .drawer-support .s-title {
+    color: #f0f0f0;
+    font-size: 15px;
+    font-weight: 700;
+    flex: 1;
+  }
+  .drawer-support .s-badge {
+    background: #1a73e8;
+    color: #ffffff;
+    font-size: 12px;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 20px;
+  }
+
+  /* ---- Profil Modal ---- */
+  .profile-header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    padding: 4px 0 16px;
+    border-bottom: 1px solid #2c2c2e;
+    margin-bottom: 20px;
+  }
+  .profile-header h2 {
+    color: #ffffff;
+    font-size: 20px;
+    font-weight: 700;
+    margin: 0;
+  }
+  .profile-header .profile-close {
+    position: absolute;
+    right: 0;
+    background: none;
+    border: none;
+    color: #9a9a9a;
+    cursor: pointer;
+    display: flex;
+  }
+  .profile-header .profile-close svg { width: 22px; height: 22px; }
+  .profile-id-block {
+    text-align: center;
+    margin-bottom: 24px;
+  }
+  .profile-id-block .p-uname {
+    color: #ffffff;
+    font-size: 22px;
+    font-weight: 800;
+    display: block;
+    margin-bottom: 6px;
+  }
+  .profile-id-block .p-uid {
+    color: #9a9a9a;
+    font-size: 14px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+  }
+  .profile-id-block .p-uid svg {
+    width: 16px;
+    height: 16px;
+  }
+  .profile-section {
+    background: #1f1f21;
+    border-radius: 14px;
+    margin-bottom: 16px;
+    overflow: hidden;
+  }
+  .profile-item {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 16px;
+    cursor: pointer;
+    border-bottom: 1px solid #2a2a2c;
+  }
+  .profile-item:last-child {
+    border-bottom: none;
+  }
+  .profile-item .p-icon {
+    width: 22px;
+    height: 22px;
+    color: #cfcfcf;
+    flex-shrink: 0;
+    position: relative;
+  }
+  .profile-item .p-icon .dot {
+    position: absolute;
+    top: -2px;
+    right: -2px;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #ff5c1a;
+  }
+  .profile-item .p-text .p-title {
+    color: #f0f0f0;
+    font-size: 15px;
+    font-weight: 700;
+  }
+  .profile-item .p-text .p-sub {
+    color: #9a9a9a;
+    font-size: 13px;
+    margin-top: 2px;
+  }
+
+  /* ---- Settings (Pengaturan) Modal ---- */
+  .settings-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    position: sticky;
+    top: -24px;
+    background: #161616;
+    z-index: 5;
+    padding-top: 4px;
+    padding-bottom: 10px;
+  }
+  .settings-header-title {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%) translateY(6px);
+    color: #ffffff;
+    font-size: 17px;
+    font-weight: 700;
+    opacity: 0;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+    pointer-events: none;
+  }
+  .settings-header-title.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+  .settings-back {
+    background: none;
+    border: none;
+    color: #2f7bff;
+    font-size: 16px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    cursor: pointer;
+    padding: 0;
+  }
+  .settings-back svg { width: 20px; height: 20px; }
+  .settings-close {
+    background: none;
+    border: none;
+    color: #9a9a9a;
+    cursor: pointer;
+    display: flex;
+  }
+  .settings-close svg { width: 22px; height: 22px; }
+  .settings-title {
+    color: #ffffff;
+    font-size: 26px;
+    font-weight: 800;
+    margin: 4px 0 20px;
+  }
+  .settings-group-label {
+    color: #9a9a9a;
+    font-size: 14px;
+    margin: 0 0 8px 2px;
+  }
+  .settings-section {
+    background: #1f1f21;
+    border-radius: 14px;
+    margin-bottom: 22px;
+    overflow: hidden;
+  }
+  .settings-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 15px 16px;
+    cursor: pointer;
+    border-bottom: 1px solid #2a2a2c;
+  }
+  .settings-row:last-child {
+    border-bottom: none;
+  }
+  .settings-row .s-label {
+    color: #f0f0f0;
+    font-size: 15px;
+    font-weight: 700;
+  }
+  .settings-row .s-value {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #9a9a9a;
+    font-size: 14px;
+  }
+  .settings-row .s-value svg.chevron {
+    width: 16px;
+    height: 16px;
+    color: #7a7a7e;
+  }
+  .settings-warn {
+    color: #ff8a00;
+    font-size: 12px;
+    margin: -12px 0 14px 4px;
+  }
+  .badge-warn {
+    width: 18px;
+    height: 18px;
+    color: #ff8a00;
+  }
+  .edit-desc {
+    color: #cfcfcf;
+    font-size: 15px;
+    margin-bottom: 16px;
+  }
+  .edit-field {
+    background: #232325;
+    border-radius: 12px;
+    padding: 12px 16px;
+    margin-bottom: 20px;
+    position: relative;
+  }
+  .edit-field .e-label {
+    color: #9a9a9a;
+    font-size: 13px;
+    display: block;
+    margin-bottom: 2px;
+  }
+  .edit-field input {
+    background: none;
+    border: none;
+    outline: none;
+    color: #ffffff;
+    font-size: 17px;
+    font-weight: 600;
+    width: 100%;
+  }
+  .edit-field input::-webkit-calendar-picker-indicator {
+    filter: invert(1);
+    cursor: pointer;
+  }
+  .btn-edit-submit {
+    width: 100%;
+    border: none;
+    border-radius: 12px;
+    padding: 15px;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+  }
+  .btn-edit-submit:disabled {
+    background: #1d3a63;
+    color: #8199b8;
+    cursor: not-allowed;
+  }
+  .btn-edit-submit.enabled {
+    background: #1a73e8;
+    color: #ffffff;
+  }
+  .settings-hint {
+    color: #9a9a9a;
+    font-size: 13px;
+    margin: -12px 0 22px 4px;
+  }
+  .settings-row .s-action {
+    color: #ff5c1a;
+    font-size: 15px;
+    font-weight: 700;
+    background: none;
+    border: none;
+    cursor: pointer;
+  }
+  .btn-logout {
+    width: 100%;
+    background: #3a1a12;
+    color: #ff5c1a;
+    border: none;
+    border-radius: 12px;
+    padding: 15px;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    margin-top: 4px;
+  }
+  .btn-logout:hover {
+    background: #472016;
+  }
+  .pass-rules {
+    list-style: none;
+    padding: 0;
+    margin: -4px 0 18px 0;
+  }
+  .pass-rules li {
+    color: #9a9a9a;
+    font-size: 14px;
+    padding-left: 18px;
+    position: relative;
+    margin-bottom: 8px;
+  }
+  .pass-rules li::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 7px;
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: #9a9a9a;
+  }
+  .pass-rules li.valid {
+    color: #23c65b;
+  }
+  .pass-rules li.valid::before {
+    background: #23c65b;
+  }
+
+  /* ---- Notifikasi Modal ---- */
+  .notif-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+  }
+  .notif-header h2 {
+    color: #ffffff;
+    font-size: 26px;
+    font-weight: 800;
+    margin: 0;
+  }
+  .notif-tabs {
+    display: flex;
+    align-items: center;
+    background: #232325;
+    border-radius: 12px;
+    padding: 4px;
+    margin-bottom: 30px;
+  }
+  .notif-tab {
+    flex: 1;
+    text-align: center;
+    padding: 10px 8px;
+    color: #cfcfcf;
+    font-size: 14px;
+    font-weight: 700;
+    background: none;
+    border: none;
+    border-radius: 9px;
+    cursor: pointer;
+    position: relative;
+  }
+  .notif-tab.active {
+    background: #1a73e8;
+    color: #ffffff;
+  }
+  .notif-tab:not(:last-child)::after {
+    content: "";
+    position: absolute;
+    right: 0;
+    top: 20%;
+    height: 60%;
+    width: 1px;
+    background: #3a3a3c;
+  }
+  .notif-tab.active::after,
+  .notif-tab.active + .notif-tab::after {
+    display: none;
+  }
+  .notif-empty {
+    text-align: center;
+    padding: 60px 20px 20px;
+  }
+  .notif-empty svg {
+    width: 56px;
+    height: 56px;
+    color: #6a6a6e;
+    margin-bottom: 20px;
+  }
+  .notif-empty .n-title {
+    color: #ffffff;
+    font-size: 19px;
+    font-weight: 800;
+    margin-bottom: 10px;
+  }
+  .notif-empty .n-sub {
+    color: #9a9a9a;
+    font-size: 14px;
+    line-height: 1.5;
+  }
+
+  .notif-intro-card {
+    display: flex;
+    gap: 14px;
+    background: rgba(255, 255, 255, 0.06);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    border-radius: 16px;
+    padding: 16px;
+    margin-bottom: 14px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.08);
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+  }
+  .notif-intro-card::before {
+    content: "";
+    position: absolute;
+    inset: -40%;
+    background: radial-gradient(circle at 20% 20%, rgba(255,179,71,0.5), transparent 45%),
+                radial-gradient(circle at 80% 30%, rgba(139,47,214,0.5), transparent 45%),
+                radial-gradient(circle at 50% 90%, rgba(47,123,255,0.4), transparent 45%);
+    z-index: -1;
+    filter: blur(10px);
+  }
+  .notif-intro-card .ic-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #ffb347, #ff2d78, #8b2fd6, #2f7bff);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .notif-intro-card .ic-icon svg { width: 22px; height: 22px; color: #ffffff; }
+  .notif-intro-card .ic-title {
+    color: #ffffff;
+    font-size: 15px;
+    font-weight: 700;
+    margin-bottom: 4px;
+  }
+  .notif-intro-card .ic-desc {
+    color: #b0b0b0;
+    font-size: 13px;
+    line-height: 1.5;
+  }
+  .notif-intro-card .ic-time {
+    color: #6a6a6e;
+    font-size: 12px;
+    margin-top: 6px;
+  }
+
+  #notifSheet {
+    min-height: 88vh;
+  }
+
+  /* ---- Modal Bagikan ---- */
+  .share-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.6);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s ease;
+    z-index: 90;
+  }
+  .share-overlay.show {
+    opacity: 1;
+    pointer-events: auto;
+  }
+  .share-sheet {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    max-width: 480px;
+    margin: 0 auto;
+    background: #1c1c1e;
+    border-radius: 20px 20px 0 0;
+    transform: translateY(100%);
+    transition: transform 0.3s ease;
+    z-index: 95;
+    padding: 24px 20px calc(24px + env(safe-area-inset-bottom));
+  }
+  .share-sheet.show {
+    transform: translateY(0);
+  }
+  .share-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: 22px;
+  }
+  .share-header h2 {
+    color: #ffffff;
+    font-size: 22px;
+    font-weight: 800;
+    margin: 0;
+    line-height: 1.3;
+  }
+  .share-header .login-close {
+    flex-shrink: 0;
+    margin-left: 12px;
+  }
+  .share-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 18px 10px;
+    margin-bottom: 22px;
+  }
+  .share-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    text-decoration: none;
+  }
+  .share-item .si-icon {
+    width: 52px;
+    height: 52px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .share-item .si-icon svg { width: 26px; height: 26px; }
+  .share-item .si-label {
+    color: #d0d0d0;
+    font-size: 12px;
+    text-align: center;
+  }
+  .btn-copy-link {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    background: #2c2c2e;
+    color: #ffffff;
+    border: none;
+    border-radius: 12px;
+    padding: 15px;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+  }
+  .btn-copy-link svg { width: 18px; height: 18px; }
+
+  /* ---- Media Sosial Modal ---- */
+  .social-list-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+    position: sticky;
+    top: 0;
+    background: #161616;
+    padding-top: 4px;
+    padding-bottom: 8px;
+    z-index: 20;
+  }
+  .social-list-header .login-close {
+    position: relative;
+    z-index: 21;
+  }
+  .social-list-header h2 {
+    color: #ffffff;
+    font-size: 22px;
+    font-weight: 800;
+    margin: 0;
+  }
+  .social-list-item {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 14px 0;
+    border-bottom: 1px solid #2a2a2c;
+    cursor: pointer;
+    text-decoration: none;
+  }
+  .social-list-item:last-child {
+    border-bottom: none;
+  }
+  .social-list-item .sl-icon {
+    width: 42px;
+    height: 42px;
+    border-radius: 12px;
+    background: #2c2c2e;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #ffffff;
+    flex-shrink: 0;
+  }
+  .social-list-item .sl-icon svg { width: 20px; height: 20px; }
+  .social-list-item .sl-name {
+    color: #f0f0f0;
+    font-size: 16px;
+    font-weight: 700;
+  }
+
+  #socialListSheet {
+    left: 10px;
+    right: auto;
+    width: calc(min(80vw, 320px) - 10px);
+    top: 145px;
+    bottom: 160px;
+    max-width: none;
+    max-height: none;
+    border-radius: 20px;
+    border: 1px solid #2c2c2e;
+    box-shadow: 0 12px 32px rgba(0,0,0,0.5);
+    transform: translateY(calc(100% + 200px));
+    opacity: 0;
+    pointer-events: none;
+  }
+  #socialListSheet.show {
+    transform: translateY(0);
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  #socialListOverlay.show {
+    background: transparent;
+  }
+
+  /* ---- Login Modal ---- */
+  .login-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.6);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s ease;
+    z-index: 70;
+  }
+  .login-overlay.show {
+    opacity: 1;
+    pointer-events: auto;
+  }
+  .login-sheet {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    max-width: 480px;
+    margin: 0 auto;
+    background: #161616;
+    border-radius: 20px 20px 0 0;
+    transform: translateY(100%);
+    transition: transform 0.3s ease;
+    z-index: 80;
+    padding: 24px 20px calc(28px + env(safe-area-inset-bottom));
+    max-height: 90vh;
+    overflow-y: auto;
+  }
+  .login-sheet.show {
+    transform: translateY(0);
+  }
+  .login-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+  }
+  .login-header h2 {
+    color: #ffffff;
+    font-size: clamp(22px, 6vw, 28px);
+    margin: 0;
+    font-weight: 800;
+  }
+  .login-close {
+    background: none;
+    border: none;
+    color: #9a9a9a;
+    cursor: pointer;
+    display: flex;
+  }
+  .login-close svg { width: 24px; height: 24px; }
+
+  .login-field {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: #232325;
+    border-radius: 12px;
+    padding: 12px 16px;
+    margin-bottom: 14px;
+    border: 1.5px solid transparent;
+    transition: border-color 0.2s ease, background 0.2s ease;
+    height: 56px;
+  }
+  .login-field:focus-within {
+    background: #1e1e20;
+  }
+  .field-inner {
+    position: relative;
+    flex: 1;
+    min-width: 0;
+    height: 32px;
+  }
+  .field-inner label {
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #9a9a9a;
+    font-size: 15px;
+    pointer-events: none;
+    transition: top 0.15s ease, transform 0.15s ease, font-size 0.15s ease;
+    transform-origin: left top;
+  }
+  .field-inner input {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: none;
+    border: none;
+    outline: none;
+    color: #ffffff;
+    font-size: 15px;
+    width: 100%;
+    height: 20px;
+  }
+  .field-inner input:focus ~ label,
+  .field-inner input:not(:placeholder-shown) ~ label {
+    top: 0;
+    transform: translateY(0);
+    font-size: 12px;
+  }
+  .toggle-eye {
+    background: none;
+    border: none;
+    color: #9a9a9a;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+    padding: 0;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.15s ease;
+  }
+  .toggle-eye.show {
+    opacity: 1;
+    pointer-events: auto;
+  }
+  .toggle-eye svg { width: 20px; height: 20px; }
+  .login-field svg {
+    width: 20px;
+    height: 20px;
+    color: #9a9a9a;
+    flex-shrink: 0;
+  }
+
+  .forgot-pass {
+    text-align: right;
+    margin-bottom: 18px;
+  }
+  .forgot-pass a {
+    color: #2f7bff;
+    font-size: 14px;
+    text-decoration: none;
+    font-weight: 600;
+  }
+
+  .btn-login-submit {
+    width: 100%;
+    background: #23c65b;
+    color: #ffffff;
+    border: none;
+    border-radius: 12px;
+    padding: 15px;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    margin-bottom: 22px;
+  }
+  .btn-login-submit:hover {
+    background: #1fae4f;
+  }
+
+  .or-divider {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: #8a8a8e;
+    font-size: 14px;
+    margin-bottom: 20px;
+  }
+  .or-divider::before,
+  .or-divider::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: #2c2c2e;
+  }
+
+  .social-row {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+  }
+  .social-btn {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    background: #232325;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: #ffffff;
+  }
+  .social-btn svg { width: 22px; height: 22px; }
+
+  .signup-line {
+    text-align: center;
+    color: #b0b0b0;
+    font-size: 14px;
+  }
+  .signup-line a {
+    color: #2f7bff;
+    font-weight: 700;
+    text-decoration: none;
+    display: block;
+    margin-top: 4px;
+  }
+
+  .field-hint {
+    color: #9a9a9a;
+    font-size: 13px;
+    margin: -8px 0 16px 4px;
+  }
+  .promo-link {
+    margin-bottom: 20px;
+  }
+  .promo-link a {
+    color: #2f7bff;
+    font-size: 15px;
+    font-weight: 600;
+    text-decoration: none;
+  }
+  .terms-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    margin-bottom: 22px;
+  }
+  .terms-row input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+    margin-top: 2px;
+    accent-color: #23c65b;
+    flex-shrink: 0;
+  }
+  .terms-row label {
+    color: #d0d0d0;
+    font-size: 14px;
+    line-height: 1.4;
+  }
+  .terms-row a {
+    color: #2f7bff;
+    text-decoration: none;
+    font-weight: 600;
   }
 </style>
 </head>
 <body>
-<canvas id="game"></canvas>
-
-<!-- HUD -->
-<div id="hud">
-  <div id="tl">
-    <div class="brand">SEKTOR<b>-7</b></div>
-    <div class="lbl">Simulasi Aktif</div>
-    <div id="elThreat">ANCAMAN 00</div>
-    <div id="elArea">AREA: —</div>
-  </div>
-  <div id="tr">
-    <div class="lbl">Skor</div>
-    <div id="elScore">000000</div>
-    <div id="elMult">RANTAI ×2</div>
-  </div>
-  <div id="elTeams"><span class="tp" id="tP">KITA 00</span><span class="sep">/</span><span class="te" id="tE">00 MUSUH</span></div>
-  <div id="bl">
-    <div class="lbl">Integritas Unit</div>
-    <div class="row">
-      <div id="elHp">100</div>
-      <div id="hpBar"><div id="hpFill"></div></div>
-    </div>
-  </div>
-  <div id="br">
-    <div id="elAmmo">24</div>
-    <div class="mag">MAG 24 / ∞</div>
-    <div id="elReload">MENGISI ULANG</div>
-  </div>
-</div>
-<div id="hint">R — ISI ULANG</div>
-
-<div id="cross"><span class="t"></span><span class="b"></span><span class="l"></span><span class="r"></span><span class="c"></span></div>
-<div id="hm"><i></i><i></i><i></i><i></i></div>
-<div id="pops"></div>
-<div id="banner"><div id="bnT">GELOMBANG 01</div><div id="bnS">—</div></div>
-<div id="vig"></div><div id="vigLow"></div>
-
-<div id="respawn">
-  <div class="rsT">UNIT-02 DIRESET</div>
-  <div class="rsN" id="rsCount">3</div>
-  <div class="rsS">PENEMPATAN ULANG DI BASIS // PERISAI 2 DETIK</div>
-</div>
-
-<!-- Kontrol sentuh -->
-<div id="touchUI">
-  <div class="tbtn on" id="btnAuto">AUTO AKTIF</div>
-  <div class="tbtn" id="btnFire">TEMBAK</div>
-  <div class="tbtn" id="btnJump">LOMPAT</div>
-  <div class="tbtn" id="btnReload">ISI</div>
-</div>
-<div id="joy"><div id="joyBase"></div><div id="joyStick"></div></div>
-
-<!-- Saran lanskap -->
-<div id="rotate">
-  <div>
-    <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-      <path d="M20 12a8 8 0 1 1-2.34-5.66"/><path d="M20 4v4h-4"/>
-    </svg>
-    <div class="in">PUTAR KE MODE LANSKAP</div>
-    <div class="sub">SEKTOR-7 BUTUH LAYAR LEBAR</div>
-  </div>
-</div>
-
-<!-- LOBI -->
-<div class="ov" id="ovStart">
-  <div class="panel">
-    <div class="kicker">PROTOKOL PERTAHANAN // UNIT-02</div>
-    <h1>SEKTOR<b>-7</b></h1>
-    <p>Pilih protokol simulasi. Arena dipilih acak setiap operasi —
-       kawasan PERKOTAAN gelap atau SAWAH malam yang tergenang.</p>
-    <div class="modes">
-      <button class="modeBtn" id="btnLatihan">
-        <b>LATIHAN</b>
-        <span>Bertahan dari gelombangan drone hostil tanpa henti. Bidik mata merah untuk kerusakan kritis; kapsul hijau memulihkan integritas.</span>
-      </button>
-      <button class="modeBtn cyan" id="btn5v5">
-        <b>5 VS 5</b>
-        <span>Duel tim — Anda + 4 unit sekutu biru melawan 5 drone hostil. Unit yang jatuh di-reset. Tim pertama mencapai 20 eliminasi menang.</span>
+  <div class="login-overlay" id="loginOverlay"></div>
+  <div class="login-sheet" id="loginSheet">
+    <div class="login-header">
+      <h2>Masuk</h2>
+      <button class="login-close" id="loginClose">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="4" y1="4" x2="20" y2="20"/><line x1="20" y1="4" x2="4" y2="20"/></svg>
       </button>
     </div>
-    <button class="ctrlToggle" id="btnCtrl">KONTROL: SENTUH</button>
-    <div class="ctrls" id="ctrlKB">
-      <span><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd></span><span>BERGERAK</span>
-      <span><kbd>MOUSE</kbd></span><span>BIDIK / TAHAN KLIK KIRI UNTUK TEMBAK OTOMATIS</span>
-      <span><kbd>SHIFT</kbd></span><span>SPRINT</span>
-      <span><kbd>SPASI</kbd></span><span>LOMPAT (BISA DI ATAS COVER)</span>
-      <span><kbd>R</kbd></span><span>ISI ULANG</span>
+
+    <div class="login-field">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 6.5 12 13 21 6.5"/></svg>
+      <div class="field-inner">
+        <input type="email" placeholder=" " id="loginEmail">
+        <label for="loginEmail">Email</label>
+      </div>
     </div>
-    <div class="ctrls" id="ctrlTouch" style="display:none">
-      <span>SISI KIRI LAYAR</span><span>JOYSTICK — SENTUH &amp; GESER (DORONG JAUH = SPRINT)</span>
-      <span>SISI KANAN LAYAR</span><span>GESER = BIDIK // GESER CEPAT = PUTAR CEPAT</span>
-      <span><kbd>AUTO</kbd></span><span>AKTIF: ARAHKAN CROSSHAIR KE MUSUH — SENJATA MENEMBAK SENDIRI</span>
-      <span><kbd>TEMBAK</kbd></span><span>BOLEH DIGESER SAAT MENEMBAK UNTUK FINE-TUNE BIDIKAN</span>
-      <span><kbd>LOMPAT</kbd> <kbd>ISI</kbd></span><span>TOMBOL DI LAYAR</span>
+
+    <div class="login-field">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="5" y="10" width="14" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>
+      <div class="field-inner">
+        <input type="password" placeholder=" " id="loginPass">
+        <label for="loginPass">Kata sandi</label>
+      </div>
+      <button type="button" class="toggle-eye" data-target="loginPass">
+        <svg class="eye-open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="display:none;"><path d="M1.5 12s4-7.5 10.5-7.5S22.5 12 22.5 12s-4 7.5-10.5 7.5S1.5 12 1.5 12z"/><circle cx="12" cy="12" r="3"/></svg>
+        <svg class="eye-closed" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3l18 18"/><path d="M10.6 5.1A10.6 10.6 0 0 1 12 5c6.5 0 10.5 7 10.5 7a17.6 17.6 0 0 1-3.2 4.1M6.6 6.6C3.6 8.5 1.5 12 1.5 12s4 7 10.5 7c1.6 0 3-.4 4.2-1"/><path d="M9.9 10a3 3 0 0 0 4.2 4.2"/></svg>
+      </button>
     </div>
-    <div class="foot" id="footNote">MOUSE + KEYBOARD (DESKTOP) // ARENA ACAK: PERKOTAAN / SAWAH</div>
+
+    <div class="forgot-pass">
+      <a href="#">Lupa kata sandi?</a>
+    </div>
+
+    <button class="btn-login-submit" id="loginSubmitBtn">Masuk</button>
+    <div id="loginMsg" style="text-align:center;font-size:13px;margin-bottom:12px;min-height:16px;"></div>
+
+    <div class="or-divider">atau</div>
+
+    <div class="social-row">
+      <button class="social-btn" title="Google" >
+        <svg viewBox="0 0 48 48" width="22" height="22">
+          <path fill="#FFC107" d="M43.611,20.083H42V20H24v8h11.303c-1.649,4.657-6.08,8-11.303,8c-6.627,0-12-5.373-12-12c0-6.627,5.373-12,12-12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C12.955,4,4,12.955,4,24c0,11.045,8.955,20,20,20c11.045,0,20-8.955,20-20C44,22.659,43.862,21.35,43.611,20.083z"/>
+          <path fill="#FF3D00" d="M6.306,14.691l6.571,4.819C14.655,15.108,18.961,12,24,12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C16.318,4,9.656,8.337,6.306,14.691z"/>
+          <path fill="#4CAF50" d="M24,44c5.166,0,9.86-1.977,13.409-5.192l-6.19-5.238C29.211,35.091,26.715,36,24,36c-5.202,0-9.619-3.317-11.283-7.946l-6.522,5.025C9.505,39.556,16.227,44,24,44z"/>
+          <path fill="#1976D2" d="M43.611,20.083H42V20H24v8h11.303c-0.792,2.237-2.231,4.166-4.087,5.571c0.001-0.001,0.002-0.001,0.003-0.002l6.19,5.238C36.971,39.205,44,34,44,24C44,22.659,43.862,21.35,43.611,20.083z"/>
+        </svg>
+      </button>
+    </div>
+
+    <div class="signup-line">
+      Tidak punya akun?
+      <a href="#">Daftar</a>
+    </div>
   </div>
-</div>
 
-<!-- Game over / hasil pertandingan -->
-<div class="ov hidden" id="ovOver">
-  <div class="panel">
-    <h2 id="stTitle">UNIT-02 OFFLINE</h2>
-    <div class="sub" id="stSub">SINYAL HILANG // LOG OPERASI TERSIMPAN</div>
-    <div class="stats">
-      <div><div class="lbl">Skor</div><div class="v am" id="stScore">0</div></div>
-      <div><div class="lbl" id="stL2">Gelombang</div><div class="v" id="stV2">0</div></div>
-      <div><div class="lbl">Eliminasi</div><div class="v" id="stKills">0</div></div>
-      <div><div class="lbl">Akurasi</div><div class="v" id="stAcc">0%</div></div>
+  <div class="login-overlay" id="registerOverlay"></div>
+  <div class="login-sheet" id="registerSheet">
+    <div class="login-header">
+      <h2>Pendaftaran</h2>
+      <button class="login-close" id="registerClose">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="4" y1="4" x2="20" y2="20"/><line x1="20" y1="4" x2="4" y2="20"/></svg>
+      </button>
     </div>
-    <div class="rowBtns">
-      <button class="btn" id="btnAgain">ULANGI</button>
-      <button class="btn ghost" id="btnLobby">KE LOBI</button>
+
+    <div class="login-field">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 6.5 12 13 21 6.5"/></svg>
+      <div class="field-inner">
+        <input type="email" placeholder=" " id="regEmail">
+        <label for="regEmail">Email</label>
+      </div>
+    </div>
+
+    <div class="login-field">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="5" y="10" width="14" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>
+      <div class="field-inner">
+        <input type="password" placeholder=" " id="regPass">
+        <label for="regPass">Kata sandi</label>
+      </div>
+      <button type="button" class="toggle-eye" data-target="regPass">
+        <svg class="eye-open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="display:none;"><path d="M1.5 12s4-7.5 10.5-7.5S22.5 12 22.5 12s-4 7.5-10.5 7.5S1.5 12 1.5 12z"/><circle cx="12" cy="12" r="3"/></svg>
+        <svg class="eye-closed" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3l18 18"/><path d="M10.6 5.1A10.6 10.6 0 0 1 12 5c6.5 0 10.5 7 10.5 7a17.6 17.6 0 0 1-3.2 4.1M6.6 6.6C3.6 8.5 1.5 12 1.5 12s4 7 10.5 7c1.6 0 3-.4 4.2-1"/><path d="M9.9 10a3 3 0 0 0 4.2 4.2"/></svg>
+      </button>
+    </div>
+    <div class="field-hint">Minimal 8 karakter</div>
+
+    <div class="terms-row">
+      <input type="checkbox" id="termsCheck">
+      <label for="termsCheck">Dengan mengeklik "Daftar", saya menyetujui <a href="#">perjanjian pengguna</a></label>
+    </div>
+
+    <button class="btn-login-submit" id="registerSubmitBtn">Daftar</button>
+    <div id="registerMsg" style="text-align:center;font-size:13px;margin-bottom:12px;min-height:16px;"></div>
+
+    <div class="or-divider">atau</div>
+
+    <div class="social-row">
+      <button class="social-btn" title="Google" >
+        <svg viewBox="0 0 48 48" width="22" height="22">
+          <path fill="#FFC107" d="M43.611,20.083H42V20H24v8h11.303c-1.649,4.657-6.08,8-11.303,8c-6.627,0-12-5.373-12-12c0-6.627,5.373-12,12-12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C12.955,4,4,12.955,4,24c0,11.045,8.955,20,20,20c11.045,0,20-8.955,20-20C44,22.659,43.862,21.35,43.611,20.083z"/>
+          <path fill="#FF3D00" d="M6.306,14.691l6.571,4.819C14.655,15.108,18.961,12,24,12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C16.318,4,9.656,8.337,6.306,14.691z"/>
+          <path fill="#4CAF50" d="M24,44c5.166,0,9.86-1.977,13.409-5.192l-6.19-5.238C29.211,35.091,26.715,36,24,36c-5.202,0-9.619-3.317-11.283-7.946l-6.522,5.025C9.505,39.556,16.227,44,24,44z"/>
+          <path fill="#1976D2" d="M43.611,20.083H42V20H24v8h11.303c-0.792,2.237-2.231,4.166-4.087,5.571c0.001-0.001,0.002-0.001,0.003-0.002l6.19,5.238C36.971,39.205,44,34,44,24C44,22.659,43.862,21.35,43.611,20.083z"/>
+        </svg>
+      </button>
+    </div>
+
+    <div class="signup-line">
+      Sudah punya akun?
+      <a href="#" style="display:inline; margin-top:0;">Masuk</a>
     </div>
   </div>
-</div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-<script>window.THREE||document.write('<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"><\/script>');</script>
-<script>window.THREE||document.write('<script src="https://unpkg.com/three@0.128.0/build/three.min.js"><\/script>');</script>
-<script>
-'use strict';
-/* =========================================================
-   SEKTOR-7 — Lobi (LATIHAN / 5 VS 5). Arena acak.
-   Deteksi sentuh berlapis + tombol KONTROL manual di lobi.
-   ========================================================= */
-const $=id=>document.getElementById(id);
-const canvas=$('game'), hud=$('hud');
-const elScore=$('elScore'), elMult=$('elMult'), elThreat=$('elThreat'), elArea=$('elArea'),
-      elHp=$('elHp'), hpFill=$('hpFill'), elAmmo=$('elAmmo'), elReload=$('elReload'),
-      crossEl=$('cross'), hmEl=$('hm'), pops=$('pops'),
-      banner=$('banner'), bnT=$('bnT'), bnS=$('bnS'),
-      vig=$('vig'), vigLow=$('vigLow'),
-      ovStart=$('ovStart'), ovOver=$('ovOver'),
-      elTeams=$('elTeams'), tP=$('tP'), tE=$('tE'),
-      respawnEl=$('respawn'), rsCount=$('rsCount');
+  <div class="login-overlay" id="profileOverlay"></div>
+  <div class="login-sheet" id="profileSheet">
+    <div class="profile-header">
+      <h2>Profil</h2>
+      <button class="profile-close" id="profileClose">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="4" y1="4" x2="20" y2="20"/><line x1="20" y1="4" x2="4" y2="20"/></svg>
+      </button>
+    </div>
 
-const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
-const rand=(a,b)=>a+Math.random()*(b-a);
-function easeOutBack(x){const c=1.70158;return 1+(c+1)*Math.pow(x-1,3)+c*Math.pow(x-1,2);}
+    <div class="profile-id-block">
+      <span class="p-uname" id="profileUname">-</span>
+      <span class="p-uid" id="profileUidCopy">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="7" y="7" width="12" height="12" rx="2"/><path d="M5 15V6a2 2 0 0 1 2-2h9"/></svg>
+        <span id="profileUid">ID -</span>
+      </span>
+    </div>
 
-/* ---------- deteksi sentuh BERLAPIS + pengalihan manual ----------
-   Kalau salah satu cara gagal, tombol sentuh tetap bisa dimunculkan
-   lewat tombol "KONTROL" di lobi, atau otomatis saat sentuhan pertama. */
-let IS_TOUCH=('ontouchstart' in window)||navigator.maxTouchPoints>0;
-if(!IS_TOUCH&&window.matchMedia&&matchMedia('(pointer:coarse)').matches)IS_TOUCH=true;
+    <div class="profile-section">
+      <div class="profile-item" id="settingsRow">
+        <div class="p-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1a2 2 0 1 1-2.9 2.9l-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.6V21a2 2 0 1 1-4 0v-.2a1.7 1.7 0 0 0-1.1-1.6 1.7 1.7 0 0 0-1.9.3l-.1.1a2 2 0 1 1-2.9-2.9l.1-.1a1.7 1.7 0 0 0 .3-1.9 1.7 1.7 0 0 0-1.6-1H3a2 2 0 1 1 0-4h.2a1.7 1.7 0 0 0 1.6-1.1 1.7 1.7 0 0 0-.3-1.9l-.1-.1a2 2 0 1 1 2.9-2.9l.1.1a1.7 1.7 0 0 0 1.9.3H9a1.7 1.7 0 0 0 1-1.6V3a2 2 0 1 1 4 0v.2a1.7 1.7 0 0 0 1 1.6 1.7 1.7 0 0 0 1.9-.3l.1-.1a2 2 0 1 1 2.9 2.9l-.1.1a1.7 1.7 0 0 0-.3 1.9V9a1.7 1.7 0 0 0 1.6 1H21a2 2 0 1 1 0 4h-.2a1.7 1.7 0 0 0-1.6 1z"/></svg>
+          <span class="dot"></span>
+        </div>
+        <div class="p-text">
+          <div class="p-title">Pengaturan</div>
+          <div class="p-sub">Edit data pribadi</div>
+        </div>
+      </div>
+      <div class="profile-item">
+        <div class="p-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 12a9 9 0 0 1 18 0v5a2 2 0 0 1-2 2h-1v-6h3M3 17v-5h3v6H5a2 2 0 0 1-2-2z"/></svg>
+        </div>
+        <div class="p-text">
+          <div class="p-title">Dukungan 24/7</div>
+          <div class="p-sub">Semua metode kontak</div>
+        </div>
+      </div>
+    </div>
+  </div>
 
-function enableTouchUI(on){
-  IS_TOUCH=on;
-  document.body.classList.toggle('touch',on);
-  $('ctrlKB').style.display=on?'none':'grid';
-  $('ctrlTouch').style.display=on?'grid':'none';
-  $('hint').textContent=on?'AUTO AKTIF — ARAHKAN CROSSHAIR, SENJATA MENEMBAK SENDIRI':'R — ISI ULANG';
-  $('footNote').textContent=on?'MODE SENTUH RESPONSIF // LOBI: LATIHAN / 5 VS 5'
-                              :'MOUSE + KEYBOARD (DESKTOP) // ARENA ACAK: PERKOTAAN / SAWAH';
-}
-if(IS_TOUCH)enableTouchUI(true);
-/* jaring pengaman: sentuhan pertama apa pun → paksa UI sentuh menyala */
-window.addEventListener('touchstart',function once(){
-  if(!IS_TOUCH){
-    enableTouchUI(true);
-    autoFire=true;
-    if(typeof setAuto==='function')setAuto(true);
-  }
-},{once:true,passive:true});
+  <div class="login-overlay" id="settingsOverlay"></div>
+  <div class="login-sheet" id="settingsSheet">
+    <div class="settings-header">
+      <button class="settings-back" id="settingsBack">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 6 9 12 15 18"/></svg>
+        Kembali
+      </button>
+      <span class="settings-header-title" id="settingsHeaderTitle">Pengaturan</span>
+      <button class="settings-close" id="settingsClose">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="4" y1="4" x2="20" y2="20"/><line x1="20" y1="4" x2="4" y2="20"/></svg>
+      </button>
+    </div>
 
-function buzz(ms){if(IS_TOUCH&&navigator.vibrate){try{navigator.vibrate(ms);}catch(e){}}}
+    <h2 class="settings-title">Pengaturan</h2>
 
-/* ---------- state global ---------- */
-let state='menu';
-let mode='latihan';
-let t=0;
-const stats={score:0,kills:0,deaths:0,shots:0,hits:0,wave:0};
-let hp=100, lastHurt=-10, ammo=24, reloading=false, reloadT=0;
-let mult=1, lastKill=-10;
-const MAG=24, RELOAD=1.15;
-let autoFire=('ontouchstart' in window)||navigator.maxTouchPoints>0;
+    <div class="settings-group-label">Data utama</div>
+    <div class="settings-section">
+      <div class="settings-row" id="namaRow">
+        <span class="s-label">Nama</span>
+        <span class="s-value">
+          <span id="settingsNama">-</span>
+          <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"/></svg>
+        </span>
+      </div>
+      <div class="settings-row" id="dobRow">
+        <span class="s-label">Tanggal lahir</span>
+        <span class="s-value">
+          <span id="settingsDob">Belum diatur</span>
+          <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"/></svg>
+        </span>
+      </div>
+    </div>
 
-/* khusus 5v5 */
-const TEAM_TARGET=20;
-let teamP=0, teamE=0, alliesAlive=0;
-let playerDead=false, playerRespawnT=0, playerInvT=0;
-const pending=[];
+    <div class="settings-group-label">Data kontak</div>
+    <div class="settings-section">
+      <div class="settings-row">
+        <span class="s-label">Email</span>
+        <span class="s-value">
+          <span id="settingsEmail">-</span>
+          <svg class="badge-warn" id="emailWarnIcon" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2 2 20h20L12 2z"/><rect x="11" y="9" width="2" height="6" fill="#1c1c1e"/><rect x="11" y="16" width="2" height="2" fill="#1c1c1e"/></svg>
+        </span>
+      </div>
+    </div>
+    <div class="settings-warn" id="emailWarnText">Perlu konfirmasi</div>
 
-/* ---------- three.js dasar ---------- */
-const renderer=new THREE.WebGLRenderer({canvas,antialias:true});
-renderer.setPixelRatio(Math.min(devicePixelRatio,IS_TOUCH?1.5:2));
-renderer.setSize(innerWidth,innerHeight);
-renderer.shadowMap.enabled=true;
-renderer.shadowMap.type=THREE.PCFSoftShadowMap;
-renderer.outputEncoding=THREE.sRGBEncoding;
+    <div class="settings-group-label">Keamanan</div>
+    <div class="settings-section">
+      <div class="settings-row" id="passwordRow">
+        <span class="s-label">Kata sandi</span>
+        <span class="s-value">
+          <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"/></svg>
+        </span>
+      </div>
+    </div>
+    <div class="settings-hint">Untuk mengubah, masukkan kata sandi saat ini</div>
 
-const scene=new THREE.Scene();
-scene.background=new THREE.Color(0x0d0f13);
-scene.fog=new THREE.Fog(0x0d0f13,24,100);
+    <div class="settings-group-label">Pengaturan lainnya</div>
+    <div class="settings-section">
+      <div class="settings-row">
+        <div class="p-text">
+          <div class="p-title" style="font-size:15px;">Sesi aktif</div>
+          <div class="p-sub">Mengakhiri sesi di perangkat lain</div>
+        </div>
+        <button class="s-action" id="endSessionsBtn">Akhiri</button>
+      </div>
+    </div>
 
-const camera=new THREE.PerspectiveCamera(75,innerWidth/innerHeight,0.05,200);
-camera.rotation.order='YXZ';
-scene.add(camera);
+    <button class="btn-logout" id="logoutBtn">Keluar dari akun</button>
+  </div>
 
-const hemi=new THREE.HemisphereLight(0x2b2d36,0x0b0a09,.7);scene.add(hemi);
-const dirL=new THREE.DirectionalLight(0xffd9a8,.5);
-dirL.castShadow=true;
-dirL.shadow.mapSize.set(IS_TOUCH?1024:2048,IS_TOUCH?1024:2048);
-dirL.shadow.camera.left=-35;dirL.shadow.camera.right=35;
-dirL.shadow.camera.top=35;dirL.shadow.camera.bottom=-35;
-dirL.shadow.camera.near=1;dirL.shadow.camera.far=90;
-dirL.shadow.bias=-0.0004;
-scene.add(dirL);
-const fill=new THREE.PointLight(0xffd0a0,.25,45);fill.position.set(0,10,0);scene.add(fill);
+  <div class="login-overlay" id="endSessionOverlay"></div>
+  <div class="login-sheet" id="endSessionSheet" style="padding-top:24px;">
+    <div class="settings-header" style="margin-bottom:14px;">
+      <h2 style="color:#fff;font-size:22px;font-weight:800;margin:0;">Mengakhiri sesi aktif</h2>
+      <button class="settings-close" id="endSessionClose">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="4" y1="4" x2="20" y2="20"/><line x1="20" y1="4" x2="4" y2="20"/></svg>
+      </button>
+    </div>
+    <div class="edit-desc" style="margin-bottom:22px;">Anda akan keluar dari akun di perangkat lain, tetapi selalu bisa masuk kembali</div>
+    <button class="btn-edit-submit enabled" id="endSessionConfirm">Akhiri</button>
+  </div>
 
-/* ---------- tekstur kanvas ---------- */
-function makeTex(w,h,draw){
-  const c=document.createElement('canvas');c.width=w;c.height=h;
-  draw(c.getContext('2d'),w,h);
-  return new THREE.CanvasTexture(c);
-}
-const softTex=makeTex(64,64,(g)=>{
-  const r=g.createRadialGradient(32,32,0,32,32,32);
-  r.addColorStop(0,'rgba(255,255,255,1)');r.addColorStop(.4,'rgba(255,255,255,.55)');r.addColorStop(1,'rgba(255,255,255,0)');
-  g.fillStyle=r;g.fillRect(0,0,64,64);
-});
-const flashTex=makeTex(128,128,(g)=>{
-  const r=g.createRadialGradient(64,64,0,64,64,60);
-  r.addColorStop(0,'rgba(255,245,215,1)');r.addColorStop(.28,'rgba(255,160,60,.85)');r.addColorStop(1,'rgba(255,120,30,0)');
-  g.fillStyle=r;g.beginPath();g.arc(64,64,60,0,7);g.fill();
-  g.strokeStyle='rgba(255,230,180,.9)';g.lineWidth=3;
-  for(let i=0;i<6;i++){const a=i/6*Math.PI*2+Math.random()*.5;
-    g.beginPath();g.moveTo(64,64);g.lineTo(64+Math.cos(a)*62,64+Math.sin(a)*62);g.stroke();}
-});
-const signTex=makeTex(1024,256,(g)=>{
-  g.clearRect(0,0,1024,256);
-  g.fillStyle='#e8933c';g.fillRect(40,26,944,4);
-  g.font='700 150px "Chakra Petch", sans-serif';
-  g.fillText('SEKTOR-07',40,172);
-  g.font='600 34px "IBM Plex Mono", monospace';g.fillStyle='rgba(232,147,60,.75)';
-  g.fillText('ZONA UJI TEMBAK // AKSES TERBATAS',44,226);
-});
-if(document.fonts&&document.fonts.ready)document.fonts.ready.then(()=>{
-  const c=signTex.image,g=c.getContext('2d');
-  g.clearRect(0,0,1024,256);
-  g.fillStyle='#e8933c';g.fillRect(40,26,944,4);
-  g.font='700 150px "Chakra Petch", sans-serif';g.fillText('SEKTOR-07',40,172);
-  g.font='600 34px "IBM Plex Mono", monospace';g.fillStyle='rgba(232,147,60,.75)';
-  g.fillText('ZONA UJI TEMBAK // AKSES TERBATAS',44,226);
-  signTex.needsUpdate=true;
-});
-const asphaltTex=makeTex(512,512,(g)=>{
-  g.fillStyle='#15161a';g.fillRect(0,0,512,512);
-  g.fillStyle='#1a1b20';
-  g.fillRect(0,0,226,226);g.fillRect(286,0,226,226);
-  g.fillRect(0,286,226,226);g.fillRect(286,286,226,226);
-  g.strokeStyle='rgba(0,0,0,.4)';g.lineWidth=2;
-  for(let i=0;i<=512;i+=45){
-    g.beginPath();g.moveTo(i,0);g.lineTo(i,512);g.stroke();
-    g.beginPath();g.moveTo(0,i);g.lineTo(512,i);g.stroke();
-  }
-  g.fillStyle='#0f1014';
-  g.fillRect(0,226,512,60);g.fillRect(226,0,60,512);
-  g.fillStyle='rgba(200,150,60,.55)';
-  for(let x=6;x<512;x+=34)g.fillRect(x,254,18,4);
-  for(let y=6;y<512;y+=34)g.fillRect(254,y,4,18);
-  g.strokeStyle='rgba(210,215,220,.14)';g.lineWidth=2;
-  g.beginPath();g.moveTo(0,230);g.lineTo(512,230);g.moveTo(0,282);g.lineTo(512,282);g.stroke();
-  g.beginPath();g.moveTo(230,0);g.lineTo(230,512);g.moveTo(282,0);g.lineTo(282,512);g.stroke();
-  g.fillStyle='rgba(215,220,225,.35)';
-  for(let y=182;y<=214;y+=12){g.fillRect(232,y,52,7);g.fillRect(232,y+108,52,7);}
-  for(let x=182;x<=214;x+=12){g.fillRect(x,232,7,52);g.fillRect(x+108,232,7,52);}
-  g.strokeStyle='rgba(120,125,130,.25)';
-  g.beginPath();g.arc(120,120,6,0,7);g.stroke();
-  g.beginPath();g.arc(400,330,6,0,7);g.stroke();
-  g.fillStyle='rgba(0,0,0,.25)';
-  g.beginPath();g.ellipse(380,120,26,12,.4,0,7);g.fill();
-  g.beginPath();g.ellipse(150,420,20,9,0,0,7);g.fill();
-  for(let i=0;i<700;i++){g.fillStyle=Math.random()<.6?'rgba(0,0,0,.2)':'rgba(255,255,255,.02)';
-    g.fillRect(Math.random()*512,Math.random()*512,2,2);}
-});
-function makeWindowTex(cols,rows){
-  return makeTex(128,256,(g)=>{
-    g.fillStyle='#14161c';g.fillRect(0,0,128,256);
-    const cw=(128-10)/cols,ch=(256-10)/rows;
-    for(let c=0;c<cols;c++)for(let r=0;r<rows;r++){
-      const x=5+c*cw+2,y=5+r*ch+2,w=cw-4,h=ch-5;
-      const p=Math.random();
-      if(p<.55)g.fillStyle='#0d1016';
-      else if(p<.85)g.fillStyle='#ffd9a0';
-      else if(p<.94)g.fillStyle='#ffe9c2';
-      else g.fillStyle='#a8c8e8';
-      g.fillRect(x,y,w,h);
+  <div class="login-overlay" id="editNameOverlay"></div>
+  <div class="login-sheet" id="editNameSheet">
+    <div class="settings-header">
+      <button class="settings-back" id="editNameBack">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 6 9 12 15 18"/></svg>
+        Kembali
+      </button>
+      <button class="settings-close" id="editNameClose">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="4" y1="4" x2="20" y2="20"/><line x1="20" y1="4" x2="4" y2="20"/></svg>
+      </button>
+    </div>
+    <h2 class="settings-title">Ubah nama</h2>
+    <div class="edit-desc">Masukkan nama</div>
+    <div class="edit-field">
+      <span class="e-label">Nama</span>
+      <input type="text" id="editNameInput">
+    </div>
+    <button class="btn-edit-submit" id="editNameSubmit" disabled>Ubah</button>
+  </div>
+
+  <div class="login-overlay" id="editDobOverlay"></div>
+  <div class="login-sheet" id="editDobSheet">
+    <div class="settings-header">
+      <button class="settings-back" id="editDobBack">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 6 9 12 15 18"/></svg>
+        Kembali
+      </button>
+      <button class="settings-close" id="editDobClose">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="4" y1="4" x2="20" y2="20"/><line x1="20" y1="4" x2="4" y2="20"/></svg>
+      </button>
+    </div>
+    <h2 class="settings-title">Ubah tanggal lahir</h2>
+    <div class="edit-desc">Silakan masukkan tanggal lahir Anda</div>
+    <div class="edit-field">
+      <input type="date" id="editDobInput">
+    </div>
+    <button class="btn-edit-submit enabled" id="editDobSubmit">Ubah</button>
+  </div>
+
+  <div class="login-overlay" id="editPassOverlay"></div>
+  <div class="login-sheet" id="editPassSheet">
+    <div class="settings-header">
+      <button class="settings-back" id="editPassBack">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 6 9 12 15 18"/></svg>
+        Kembali
+      </button>
+      <button class="settings-close" id="editPassClose">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="4" y1="4" x2="20" y2="20"/><line x1="20" y1="4" x2="4" y2="20"/></svg>
+      </button>
+    </div>
+    <h2 class="settings-title">Ubah kata sandi</h2>
+    <div class="edit-desc">Masukkan kata sandi saat ini</div>
+
+    <div class="login-field">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="5" y="10" width="14" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>
+      <div class="field-inner">
+        <input type="password" placeholder=" " id="editCurrentPass">
+        <label for="editCurrentPass">Kata sandi saat ini</label>
+      </div>
+    </div>
+
+    <div class="edit-desc" style="margin-top:8px;">Buat kata sandi baru</div>
+
+    <div class="login-field">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="5" y="10" width="14" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>
+      <div class="field-inner">
+        <input type="password" placeholder=" " id="editNewPass">
+        <label for="editNewPass">Kata sandi baru</label>
+      </div>
+    </div>
+
+    <ul class="pass-rules">
+      <li>Minimal 8 karakter</li>
+      <li>Menyertakan 1 angka</li>
+      <li>Menyertakan huruf besar dan kecil</li>
+      <li>Berbeda dari kata sandi lama sebesar 50%</li>
+    </ul>
+
+    <div class="login-field">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="5" y="10" width="14" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>
+      <div class="field-inner">
+        <input type="password" placeholder=" " id="editNewPass2">
+        <label for="editNewPass2">Kata sandi baru lagi</label>
+      </div>
+    </div>
+
+    <button class="btn-edit-submit enabled" id="editPassSubmit">Ubah</button>
+    <div id="editPassMsg" style="text-align:center;font-size:13px;margin-top:12px;"></div>
+  </div>
+
+  <div class="login-overlay" id="notifOverlay"></div>
+  <div class="login-sheet" id="notifSheet">
+    <div class="notif-header">
+      <h2>Notifikasi</h2>
+      <button class="login-close" id="notifClose">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="4" y1="4" x2="20" y2="20"/><line x1="20" y1="4" x2="4" y2="20"/></svg>
+      </button>
+    </div>
+
+    <div class="notif-tabs">
+      <button class="notif-tab" data-tab="semua">Semua</button>
+      <button class="notif-tab" data-tab="pribadi">Pribadi</button>
+      <button class="notif-tab active" data-tab="umum">Umum</button>
+    </div>
+
+    <div id="notifContentSemua" style="display:none;">
+      <div class="notif-intro-card">
+        <div class="ic-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+        </div>
+        <div>
+          <div class="ic-title">Selamat datang di orbitxy! 🎉</div>
+          <div class="ic-desc">Terima kasih sudah bergabung bersama kami. Selamat menikmati pengalaman terbaik di orbitxy!</div>
+          <div class="ic-time">Baru saja</div>
+        </div>
+      </div>
+    </div>
+
+    <div id="notifContentDefault" class="notif-empty">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a6 6 0 0 0-6 6v3.2c0 .6-.2 1.2-.6 1.7L4 15.5c-.6.8 0 2 1 2h14c1 0 1.6-1.2 1-2l-1.4-2.6c-.4-.5-.6-1.1-.6-1.7V8a6 6 0 0 0-6-6z"/><path d="M9.5 20a2.5 2.5 0 0 0 5 0" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>
+      <div class="n-title">Tidak ada apa-apa</div>
+      <div class="n-sub">Saat notifikasi diterima, akan ditampilkan di bagian ini</div>
+    </div>
+  </div>
+
+  <div class="login-overlay" id="socialListOverlay"></div>
+  <div class="login-sheet" id="socialListSheet">
+    <div class="social-list-header">
+      <h2>Media sosial</h2>
+      <button class="login-close" id="socialListClose">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="4" y1="4" x2="20" y2="20"/><line x1="20" y1="4" x2="4" y2="20"/></svg>
+      </button>
+    </div>
+
+    <a href="#" class="social-list-item">
+      <div class="sl-icon">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.5 15.2L2 22l4.9-1.5A10 10 0 1 0 12 2zm0 18a8 8 0 0 1-4.1-1.1l-.3-.2-2.9.9.9-2.8-.2-.3A8 8 0 1 1 12 20z"/><path d="M16.9 14.1c-.2-.1-1.4-.7-1.6-.8-.2-.1-.4-.1-.5.1-.2.2-.6.8-.8 1-.1.2-.3.2-.5.1-.7-.3-1.4-.7-2-1.3-.5-.5-1-1.1-1.4-1.8-.1-.2 0-.4.1-.5.1-.1.2-.3.4-.4.1-.1.2-.3.2-.4.1-.1 0-.3 0-.4-.1-.1-.5-1.3-.7-1.7-.2-.5-.4-.4-.5-.4h-.4c-.2 0-.4.1-.6.3-.6.6-.9 1.3-.9 2.1.1.9.4 1.8 1 2.6 1.1 1.5 2.4 2.7 4.1 3.4.5.2.9.4 1.4.5.6.2 1.1.1 1.6-.1.5-.2 1.4-.9 1.6-1.4.2-.5.2-.9.1-1z"/></svg>
+      </div>
+      <span class="sl-name">Whatsapp</span>
+    </a>
+    <a href="#" class="social-list-item">
+      <div class="sl-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r="1"/></svg>
+      </div>
+      <span class="sl-name">Instagram</span>
+    </a>
+    <a href="#" class="social-list-item">
+      <div class="sl-icon">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M16.6 5.8a4.3 4.3 0 0 1-3-3.8h-3.1v13.7a2.6 2.6 0 1 1-1.8-2.5V9.9a5.7 5.7 0 1 0 4.9 5.6v-6a7.3 7.3 0 0 0 4.3 1.4V7.7a4.3 4.3 0 0 1-1.3-1.9z"/></svg>
+      </div>
+      <span class="sl-name">TikTok</span>
+    </a>
+  </div>
+
+  <div class="header">
+    <div class="logo">orbitxy</div>
+    <div class="buttons">
+      <button class="btn-theme" id="themeToggleBtn" title="Ganti tema" style="display:none;">
+        <svg id="themeIconMoon" viewBox="0 0 24 24" fill="currentColor"><path d="M21 12.8A9 9 0 1 1 11.2 3 7 7 0 0 0 21 12.8z"/></svg>
+        <svg id="themeIconSun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" style="display:none;"><circle cx="12" cy="12" r="4.5"/><line x1="12" y1="2" x2="12" y2="4.5"/><line x1="12" y1="19.5" x2="12" y2="22"/><line x1="2" y1="12" x2="4.5" y2="12"/><line x1="19.5" y1="12" x2="22" y2="12"/><line x1="4.9" y1="4.9" x2="6.6" y2="6.6"/><line x1="17.4" y1="17.4" x2="19.1" y2="19.1"/><line x1="4.9" y1="19.1" x2="6.6" y2="17.4"/><line x1="17.4" y1="6.6" x2="19.1" y2="4.9"/></svg>
+      </button>
+      <button class="btn btn-masuk" id="masukBtn">Masuk</button>
+      <button class="btn btn-daftar" id="daftarBtn">Pendaftaran</button>
+    </div>
+  </div>
+
+  <div id="viewHome">
+    <div class="banner-wrap">
+      <div class="banner-box">
+        <img src="https://orbitxycom.github.io/orbitxy.png" alt="Banner promo" style="width:100%;height:100%;object-fit:cover;display:block;">
+        <div class="banner-dots">
+          <span class="active"></span><span></span><span></span><span></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="promo-row">
+      <div class="promo-big">
+        <div class="pb-title">Free money</div>
+        <div class="pb-sub">Pengundian hadiah & bonus lainnya</div>
+      </div>
+      <div class="promo-small">
+        <img src="https://orbitxy.com/levelup.png" alt="Bonus">
+      </div>
+    </div>
+
+    <div class="games-section">
+      <div class="games-section-header">
+        <div class="games-section-title">
+          <span class="gs-badge">OBX</span>
+          <span class="gs-name">OBX games</span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"/></svg>
+        </div>
+        <div class="games-nav">
+          <button id="gamesPrev"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 6 9 12 15 18"/></svg></button>
+          <button id="gamesNext"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"/></svg></button>
+        </div>
+      </div>
+      <div class="games-row" id="gamesRow">
+        <!-- Kartu game diisi otomatis lewat JS dari Supabase -->
+      </div>
+    </div>
+
+    <div class="home-footer">
+      <div class="footer-box">
+        <div class="fb-label">Apa itu orbitxy?</div>
+        <div class="fb-value" style="font-size:13px; font-weight:400; line-height:1.6; color:#cfcfcf;">orbitxy adalah platform game daring dan pusat game gratis yang didedikasikan untuk menghadirkan game mini berkualitas tinggi bagi para pemain di seluruh dunia. Misi kami adalah membangun wadah bermain daring yang terbuka bagi siapa saja—tempat Anda bisa langsung memainkan game mini gratis favorit Anda berikutnya tanpa hambatan. orbitxy menghadirkan pengalaman bermain yang lancar dan bebas lag di perangkat seluler, tablet, maupun desktop. Kami terus mengoptimalkan platform kami agar Anda dapat menikmati game mini yang bisa langsung dimainkan tanpa kendala apa pun. Tanpa perlu daftar, tanpa biaya—hanya keseruan murni. Jika Anda mencari game mini paling seru, koleksi game mini, atau platform game yang memiliki segalanya, orbitxy adalah tujuan yang tepat bagi Anda.</div>
+      </div>
+      <div class="footer-box">
+        <div class="fb-label">Penawaran komersial</div>
+        <div class="fb-value">orbitxy.com@gmail.com</div>
+      </div>
+      <div class="footer-box">
+        <div class="fb-label">Program Afiliasi</div>
+        <div class="fb-value">orbitxy.com@gmail.com</div>
+      </div>
+
+      <div class="footer-social-row">
+        <a href="#" title="WhatsApp">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.5 15.2L2 22l4.9-1.5A10 10 0 1 0 12 2zm0 18a8 8 0 0 1-4.1-1.1l-.3-.2-2.9.9.9-2.8-.2-.3A8 8 0 1 1 12 20z"/><path d="M16.9 14.1c-.2-.1-1.4-.7-1.6-.8-.2-.1-.4-.1-.5.1-.2.2-.6.8-.8 1-.1.2-.3.2-.5.1-.7-.3-1.4-.7-2-1.3-.5-.5-1-1.1-1.4-1.8-.1-.2 0-.4.1-.5.1-.1.2-.3.4-.4.1-.1.2-.3.2-.4.1-.1 0-.3 0-.4-.1-.1-.5-1.3-.7-1.7-.2-.5-.4-.4-.5-.4h-.4c-.2 0-.4.1-.6.3-.6.6-.9 1.3-.9 2.1.1.9.4 1.8 1 2.6 1.1 1.5 2.4 2.7 4.1 3.4.5.2.9.4 1.4.5.6.2 1.1.1 1.6-.1.5-.2 1.4-.9 1.6-1.4.2-.5.2-.9.1-1z"/></svg>
+        </a>
+        <a href="#" title="TikTok">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M16.6 5.8a4.3 4.3 0 0 1-3-3.8h-3.1v13.7a2.6 2.6 0 1 1-1.8-2.5V9.9a5.7 5.7 0 1 0 4.9 5.6v-6a7.3 7.3 0 0 0 4.3 1.4V7.7a4.3 4.3 0 0 1-1.3-1.9z"/></svg>
+        </a>
+        <a href="#" title="Instagram">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r="1"/></svg>
+        </a>
+      </div>
+
+      <div class="footer-bottom">
+        <span>© 2026 orbitxy.</span>
+        <span class="age-badge">15+</span>
+      </div>
+    </div>
+  </div>
+
+  <div id="viewFavorit" style="display:none;">
+    <div class="page-title" style="color:#ffffff;font-size:20px;font-weight:800;padding:18px 20px 4px;">Favorit</div>
+    <div id="favoritEmpty" style="display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:90px 30px 40px;">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#0f3d47" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:64px;height:64px;margin-bottom:24px;"><path d="M6 3h12v18l-6-4-6 4V3z"/></svg>
+      <div style="color:#ffffff;font-size:20px;font-weight:800;margin-bottom:10px;">Belum ada favorit</div>
+      <div style="color:#8a8a8e;font-size:14px;">Ketuk ikon favorit pada game manapun untuk menyimpannya di sini</div>
+    </div>
+    <div id="favoritGrid" style="display:none;flex-wrap:wrap;gap:12px;padding:16px 20px 30px;"></div>
+  </div>
+
+  <div id="viewNews" style="display:none;">
+    <div class="news-header">
+      <div class="nh-title">
+        <span class="nh-bar"></span>
+        <h2>Game Guides</h2>
+      </div>
+      <a href="#" class="nh-more" id="newsViewMoreBtn">View more</a>
+    </div>
+    <div class="news-grid" id="newsGrid"></div>
+  </div>
+
+  <div class="overlay" id="overlay"></div>
+
+  <button class="drawer-close" id="drawerClose">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="4" y1="4" x2="20" y2="20"/><line x1="20" y1="4" x2="4" y2="20"/></svg>
+  </button>
+
+  <div class="drawer" id="drawer">
+    <div class="drawer-top" id="masukRow">
+      <div class="drawer-user">
+        <div class="avatar">
+          <svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-6 8-6s8 2 8 6"/></svg>
+          <span class="avatar-dot" id="avatarDot"></span>
+        </div>
+        <span id="drawerUserLabel">Masuk</span>
+      </div>
+      <span class="drawer-arrow">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"/></svg>
+      </span>
+    </div>
+
+    <div class="drawer-divider"></div>
+
+    <button class="drawer-item">
+      <div class="drawer-item-left">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="1.6" fill="currentColor" stroke="none"/><line x1="12" y1="4" x2="12" y2="6.5"/><line x1="12" y1="17.5" x2="12" y2="20"/><line x1="4" y1="12" x2="6.5" y2="12"/><line x1="17.5" y1="12" x2="20" y2="12"/></svg>
+        <span>Kasino</span>
+      </div>
+      <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg>
+    </button>
+
+    <button class="drawer-item">
+      <div class="drawer-item-left">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><polygon points="12,8 14.3,9.7 13.4,12.4 10.6,12.4 9.7,9.7" fill="currentColor" stroke="none"/></svg>
+        <span>Olahraga</span>
+      </div>
+      <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg>
+    </button>
+
+    <button class="drawer-item">
+      <div class="drawer-item-left">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M9.5 15.2c.4.9 1.3 1.4 2.5 1.4 1.6 0 2.7-.8 2.7-2 0-1.3-1.1-1.8-2.7-2.2-1.6-.4-2.6-.9-2.6-2.1 0-1.1 1-1.9 2.5-1.9 1.1 0 2 .4 2.4 1.2" stroke-linecap="round"/><line x1="12" y1="6.5" x2="12" y2="17.8"/></svg>
+        <span>Markets</span>
+      </div>
+    </button>
+
+    <button class="drawer-item active-item">
+      <div class="drawer-item-left">
+        <svg viewBox="0 0 24 24" fill="currentColor"><rect x="4" y="4" width="16" height="16" rx="4"/></svg>
+        <span>Betwave</span>
+      </div>
+      <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg>
+    </button>
+
+    <div class="drawer-footer">
+      <div class="drawer-social-row">
+        <button class="drawer-social-btn" title="WhatsApp">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.5 15.2L2 22l4.9-1.5A10 10 0 1 0 12 2zm0 18a8 8 0 0 1-4.1-1.1l-.3-.2-2.9.9.9-2.8-.2-.3A8 8 0 1 1 12 20z"/><path d="M16.9 14.1c-.2-.1-1.4-.7-1.6-.8-.2-.1-.4-.1-.5.1-.2.2-.6.8-.8 1-.1.2-.3.2-.5.1-.7-.3-1.4-.7-2-1.3-.5-.5-1-1.1-1.4-1.8-.1-.2 0-.4.1-.5.1-.1.2-.3.4-.4.1-.1.2-.3.2-.4.1-.1 0-.3 0-.4-.1-.1-.5-1.3-.7-1.7-.2-.5-.4-.4-.5-.4h-.4c-.2 0-.4.1-.6.3-.6.6-.9 1.3-.9 2.1.1.9.4 1.8 1 2.6 1.1 1.5 2.4 2.7 4.1 3.4.5.2.9.4 1.4.5.6.2 1.1.1 1.6-.1.5-.2 1.4-.9 1.6-1.4.2-.5.2-.9.1-1z"/></svg>
+        </button>
+        <button class="drawer-social-btn" title="TikTok">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M16.6 5.8a4.3 4.3 0 0 1-3-3.8h-3.1v13.7a2.6 2.6 0 1 1-1.8-2.5V9.9a5.7 5.7 0 1 0 4.9 5.6v-6a7.3 7.3 0 0 0 4.3 1.4V7.7a4.3 4.3 0 0 1-1.3-1.9z"/></svg>
+        </button>
+        <button class="drawer-social-btn" title="Instagram">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r="1"/></svg>
+        </button>
+        <button class="drawer-social-btn" title="Lainnya" id="moreSocialBtn">
+          <svg viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="19" cy="12" r="1.8"/></svg>
+        </button>
+        <button class="drawer-lang-btn">
+          <span class="flag"></span>
+          ID
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+      </div>
+
+      <div class="drawer-divider"></div>
+
+      <div class="drawer-support">
+        <svg class="p-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M21 11.5a8.4 8.4 0 0 1-1 4 8.5 8.5 0 0 1-7.5 4.5 8.4 8.4 0 0 1-4-1L3 20l1-4.5a8.4 8.4 0 0 1-1-4 8.5 8.5 0 0 1 4.5-7.5 8.4 8.4 0 0 1 4-1h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+        <span class="s-title">Dukungan</span>
+        <span class="s-badge">24/7</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="bottom-nav">
+    <button class="nav-item" id="menuBtn">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      <span>Menu</span>
+    </button>
+    <button class="nav-item active" id="navHome" onclick="showView('home')">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 3 2 12h3v8h6v-6h2v6h6v-8h3z"/></svg>
+      <span>Beranda</span>
+    </button>
+    <button class="nav-item">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.2" y2="16.2"/></svg>
+      <span>Search</span>
+    </button>
+    <button class="nav-item" id="navNews" onclick="showView('news')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><line x1="7" y1="8" x2="17" y2="8"/><line x1="7" y1="12" x2="17" y2="12"/><line x1="7" y1="16" x2="13" y2="16"/></svg>
+      <span>News</span>
+    </button>
+    <button class="nav-item" id="navFavorit" onclick="showView('favorit')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12v18l-6-4-6 4V3z"/></svg>
+      <span>Favorit</span>
+    </button>
+  </div>
+
+  <script>
+    window.addEventListener('error', function(e) {
+      const bar = document.createElement('div');
+      bar.style.cssText = 'position:fixed;top:0;left:0;right:0;background:#c0392b;color:#fff;font-size:12px;padding:10px;z-index:99999;word-break:break-all;font-family:monospace;';
+      bar.textContent = 'JS ERROR: ' + (e.message || e) + ' (baris ' + e.lineno + ')';
+      document.body.prepend(bar);
+    });
+    window.addEventListener('unhandledrejection', function(e) {
+      const bar = document.createElement('div');
+      bar.style.cssText = 'position:fixed;top:0;left:0;right:0;background:#c0392b;color:#fff;font-size:12px;padding:10px;z-index:99999;word-break:break-all;font-family:monospace;';
+      bar.textContent = 'PROMISE ERROR: ' + (e.reason && e.reason.message ? e.reason.message : e.reason);
+      document.body.prepend(bar);
+    });
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
+    const menuBtn = document.getElementById('menuBtn');
+    const drawer = document.getElementById('drawer');
+    const overlay = document.getElementById('overlay');
+    const drawerClose = document.getElementById('drawerClose');
+
+    function openDrawer() {
+      drawer.classList.add('show');
+      overlay.classList.add('show');
+      drawerClose.classList.add('show');
     }
-    g.fillStyle='rgba(0,0,0,.5)';g.fillRect(0,244,128,12);
-  });
-}
-const streakTex=makeTex(64,256,(g)=>{
-  const lg=g.createLinearGradient(0,0,0,256);
-  lg.addColorStop(0,'rgba(255,255,255,0)');lg.addColorStop(.5,'rgba(255,255,255,.8)');lg.addColorStop(1,'rgba(255,255,255,0)');
-  g.fillStyle=lg;g.fillRect(0,0,64,256);
-  const hg=g.createLinearGradient(0,0,64,0);
-  hg.addColorStop(0,'rgba(255,255,255,0)');hg.addColorStop(.5,'rgba(255,255,255,1)');hg.addColorStop(1,'rgba(255,255,255,0)');
-  g.globalCompositeOperation='destination-in';
-  g.fillStyle=hg;g.fillRect(0,0,64,256);
-});
-
-/* ---------- geometri bersama ---------- */
-const boxG=new THREE.BoxGeometry(1,1,1);
-const cylG=new THREE.CylinderGeometry(1,1,1,10);
-const coneG=new THREE.ConeGeometry(1,1,7);
-const cone4G=new THREE.ConeGeometry(1,1,4);
-const ballG=new THREE.IcosahedronGeometry(1,1);
-const planeG=new THREE.PlaneGeometry(60,60);
-const signG=new THREE.PlaneGeometry(14,3.5);
-const signSmallG=new THREE.PlaneGeometry(5.2,1.3);
-const moonG=new THREE.CircleGeometry(6,40);
-const carBodyG=new THREE.BoxGeometry(4.4,.7,1.9);
-const carCabG=new THREE.BoxGeometry(2.1,.55,1.7);
-const wheelG=new THREE.CylinderGeometry(.26,.26,.16,10);
-const riceGeo=new THREE.ConeGeometry(.17,.62,5);
-const streakG=new THREE.PlaneGeometry(3.6,30);
-
-/* ---------- material bersama ---------- */
-const amberBasic=new THREE.MeshBasicMaterial({color:0xd97a2e});
-const signMat=new THREE.MeshBasicMaterial({map:signTex,transparent:true,opacity:.9});
-const asphaltMat=new THREE.MeshStandardMaterial({map:asphaltTex,roughness:.85,metalness:.05});
-const buildingMats=[makeWindowTex(6,10),makeWindowTex(8,16),makeWindowTex(5,8)].map(tx=>
-  new THREE.MeshStandardMaterial({map:tx,emissiveMap:tx,emissive:0xffffff,emissiveIntensity:.55,roughness:.85,metalness:.1}));
-const backMat=new THREE.MeshBasicMaterial({color:0x080a0d});
-const outerCityMat=new THREE.MeshStandardMaterial({color:0x0b0c10,roughness:1});
-const carMats=[0x3a4048,0x4a2e22,0x2e3b2e,0x39424e].map(c=>new THREE.MeshStandardMaterial({color:c,roughness:.45,metalness:.55}));
-const wheelMat=new THREE.MeshStandardMaterial({color:0x0c0d0f,roughness:.9});
-const lightMat=new THREE.MeshBasicMaterial({color:0xfff2cc});
-const tailMat=new THREE.MeshBasicMaterial({color:0xff3526});
-const lampPoleMat=new THREE.MeshStandardMaterial({color:0x1e2126,roughness:.5,metalness:.7});
-const lampHeadMat=new THREE.MeshBasicMaterial({color:0xffc890});
-const waterMat=new THREE.MeshStandardMaterial({color:0x0b1712,roughness:.25,metalness:.5});
-const pathMat=new THREE.MeshStandardMaterial({color:0x4a3a24,roughness:1});
-const bundMat=new THREE.MeshStandardMaterial({color:0x33261a,roughness:1});
-const bundTopMat=new THREE.MeshBasicMaterial({color:0x51713a});
-const trunkMat=new THREE.MeshStandardMaterial({color:0x3a2a1c,roughness:.9});
-const crownMatA=new THREE.MeshStandardMaterial({color:0x0e2414,roughness:.95,flatShading:true});
-const crownMatB=new THREE.MeshStandardMaterial({color:0x123020,roughness:.95,flatShading:true});
-const hutMat=new THREE.MeshStandardMaterial({color:0x4a3527,roughness:.95});
-const roofMat=new THREE.MeshStandardMaterial({color:0x5a451f,roughness:1,flatShading:true});
-const doorMat=new THREE.MeshBasicMaterial({color:0x120c08});
-const hillMat=new THREE.MeshBasicMaterial({color:0x0b140e});
-const moonMat=new THREE.MeshBasicMaterial({color:0xdceafc,fog:false});
-const outerPaddyMat=new THREE.MeshStandardMaterial({color:0x0d130e,roughness:1});
-const streakMat=new THREE.MeshBasicMaterial({map:streakTex,color:0x9fc0e8,transparent:true,opacity:.4,blending:THREE.AdditiveBlending,depthWrite:false});
-const riceMat=new THREE.MeshStandardMaterial({color:0xffffff,roughness:.9});
-const fireflyMat=new THREE.PointsMaterial({color:0xd7ff9a,size:.17,transparent:true,opacity:.9,blending:THREE.AdditiveBlending,depthWrite:false});
-const sparkleMat=new THREE.PointsMaterial({color:0xaee8cf,size:.08,transparent:true,opacity:.5,blending:THREE.AdditiveBlending,depthWrite:false});
-
-/* ---------- objek tema persisten ---------- */
-const riceMesh=new THREE.InstancedMesh(riceGeo,riceMat,540);
-riceMesh.visible=false;riceMesh.frustumCulled=false;riceMesh.castShadow=false;
-scene.add(riceMesh);
-const FFN=80;
-const ffPos=new Float32Array(FFN*3),ffBase=new Float32Array(FFN*3),ffPhase=new Float32Array(FFN);
-const ffGeo=new THREE.BufferGeometry();
-ffGeo.setAttribute('position',new THREE.BufferAttribute(ffPos,3));
-const ffPts=new THREE.Points(ffGeo,fireflyMat);
-ffPts.visible=false;ffPts.frustumCulled=false;
-scene.add(ffPts);
-const SPN=220;
-const spkPos=new Float32Array(SPN*3);
-const spkGeo=new THREE.BufferGeometry();
-spkGeo.setAttribute('position',new THREE.BufferAttribute(spkPos,3));
-const spkPts=new THREE.Points(spkGeo,sparkleMat);
-spkPts.visible=false;spkPts.frustumCulled=false;
-scene.add(spkPts);
-
-/* bintang */
-{
-  const N=340,pos=new Float32Array(N*3);
-  for(let i=0;i<N;i++){
-    const a=Math.random()*Math.PI*2,r=rand(40,140),y=rand(22,90);
-    pos[i*3]=Math.cos(a)*r;pos[i*3+1]=y;pos[i*3+2]=Math.sin(a)*r;
-  }
-  const g=new THREE.BufferGeometry();
-  g.setAttribute('position',new THREE.BufferAttribute(pos,3));
-  scene.add(new THREE.Points(g,new THREE.PointsMaterial({color:0x9db4c9,size:.6,transparent:true,opacity:.7,depthWrite:false,fog:false})));
-}
-
-/* ---------- arena acak ---------- */
-const envGroup=new THREE.Group();scene.add(envGroup);
-const worldMeshes=[],losMeshes=[],circleCols=[],covers=[];
-let themeFX=null,currentTheme=null;
-
-function applyLighting(name){
-  if(name==='kota'){
-    scene.background.set(0x0c0e12);scene.fog.color.set(0x0c0e12);
-    scene.fog.near=24;scene.fog.far=100;
-    hemi.color.set(0x2b2d36);hemi.groundColor.set(0x0b0a09);hemi.intensity=.7;
-    dirL.color.set(0xffd9a8);dirL.intensity=.5;dirL.position.set(20,34,12);
-    fill.color.set(0xffd0a0);fill.intensity=.25;
-  }else{
-    scene.background.set(0x0a100c);scene.fog.color.set(0x0a100c);
-    scene.fog.near=22;scene.fog.far=88;
-    hemi.color.set(0x27392c);hemi.groundColor.set(0x05080a);hemi.intensity=.6;
-    dirL.color.set(0xbcd2ff);dirL.intensity=.8;dirL.position.set(40,48,-60);
-    fill.color.set(0x9fb8d8);fill.intensity=.2;
-  }
-}
-function clearEnv(){
-  worldMeshes.length=0;losMeshes.length=0;circleCols.length=0;covers.length=0;
-  while(envGroup.children.length)envGroup.remove(envGroup.children[0]);
-  riceMesh.visible=false;ffPts.visible=false;spkPts.visible=false;
-  themeFX=null;
-}
-function setTheme(name){
-  clearEnv();
-  applyLighting(name);
-  if(name==='kota')buildCity();else buildPaddy();
-  currentTheme=name;
-  elArea.textContent='AREA: '+(name==='kota'?'PERKOTAAN':'SAWAH');
-}
-
-/* ===== TEMA: PERKOTAAN ===== */
-function buildCity(){
-  const fl=new THREE.Mesh(planeG,asphaltMat);
-  fl.rotation.x=-Math.PI/2;fl.receiveShadow=true;
-  envGroup.add(fl);worldMeshes.push(fl);
-  const outer=new THREE.Mesh(planeG,outerCityMat);
-  outer.rotation.x=-Math.PI/2;outer.position.y=-.04;outer.scale.set(6,6,1);
-  envGroup.add(outer);
-  [[0,8,37,76,1],[0,8,-37,76,1],[37,8,0,1,76],[-37,8,0,1,76]].forEach(([x,y,z,sx,sz])=>{
-    const m=new THREE.Mesh(boxG,backMat);
-    m.scale.set(sx,16,sz);m.position.set(x,y,z);
-    envGroup.add(m);
-  });
-  for(let i=-3;i<=3;i++){
-    const z=i*8.6;
-    addCityBuilding(33.5,z,true);addCityBuilding(-33.5,z,true);
-    addCityBuilding(z,33.5,false);addCityBuilding(z,-33.5,false);
-  }
-  addCityBlock(14,14);addCityBlock(-14,14);addCityBlock(14,-14);addCityBlock(-14,-14);
-  addCar(0,-10,true);addCar(-9,4,false);addCar(9,4,false);
-  addCar(-16,-14,true);addCar(16,-14,true);addCar(0,14,true);
-  addCar(-6,-18,false);addCar(6,-18,false);
-  addLamp(5,10);addLamp(-5,-10);addLamp(12,-5);addLamp(-12,5);
-  const s1=new THREE.Mesh(signG,signMat);s1.position.set(0,5.2,-29.7);envGroup.add(s1);
-  const s2=new THREE.Mesh(signG,signMat);s2.position.set(29.7,5,-10);s2.rotation.y=-Math.PI/2;envGroup.add(s2);
-}
-function addCityBuilding(x,z,depthX){
-  const h=rand(8,15),mat=buildingMats[Math.floor(Math.random()*3)];
-  const m=new THREE.Mesh(boxG,mat);
-  if(depthX)m.scale.set(6.5,h,7.4);else m.scale.set(7.4,h,6.5);
-  m.position.set(x,h/2,z);
-  m.castShadow=m.receiveShadow=true;
-  envGroup.add(m);
-}
-function addCityBlock(x,z){
-  const m=new THREE.Mesh(boxG,buildingMats[1]);
-  m.scale.set(3.4,7,3.4);m.position.set(x,3.5,z);
-  m.castShadow=m.receiveShadow=true;envGroup.add(m);
-  const st=new THREE.Mesh(boxG,amberBasic);
-  st.scale.set(3.4,.07,.07);st.position.set(x,7.02,z+(z>0?-1.68:1.68));
-  envGroup.add(st);
-  worldMeshes.push(m);losMeshes.push(m);
-  covers.push({x,z,hw:1.7,hd:1.7,h:7});
-}
-function addCar(x,z,horiz){
-  const g=new THREE.Group();
-  const mat=carMats[Math.floor(Math.random()*carMats.length)];
-  const body=new THREE.Mesh(carBodyG,mat);body.position.y=.35;
-  body.castShadow=body.receiveShadow=true;
-  const cab=new THREE.Mesh(carCabG,mat);cab.position.set(-.3,.97,0);cab.castShadow=true;
-  g.add(body,cab);
-  for(const sx of[-1.45,1.45])for(const sz of[-.8,.8]){
-    const w=new THREE.Mesh(wheelG,wheelMat);
-    w.rotation.x=Math.PI/2;w.position.set(sx,.26,sz);
-    g.add(w);
-  }
-  for(const s of[-.55,.55]){
-    const hl=new THREE.Mesh(boxG,lightMat);hl.scale.set(.08,.09,.16);hl.position.set(2.22,.42,s);g.add(hl);
-    const tl=new THREE.Mesh(boxG,tailMat);tl.scale.set(.08,.07,.16);tl.position.set(-2.22,.42,s);g.add(tl);
-  }
-  if(!horiz)g.rotation.y=Math.PI/2;
-  g.position.set(x,0,z);
-  envGroup.add(g);
-  worldMeshes.push(body,cab);
-  covers.push(horiz?{x,z,hw:2.2,hd:.95,h:1.15}:{x,z,hw:.95,hd:2.2,h:1.15});
-}
-function addLamp(x,z){
-  const pole=new THREE.Mesh(cylG,lampPoleMat);
-  pole.scale.set(.09,5,.09);pole.position.set(x,2.5,z);pole.castShadow=true;
-  const head=new THREE.Mesh(boxG,lampHeadMat);
-  head.scale.set(.55,.14,.24);head.position.set(x,5.02,z);
-  envGroup.add(pole,head);
-  const pl=new THREE.PointLight(0xffb066,.95,19,2);pl.position.set(x,4.7,z);envGroup.add(pl);
-  circleCols.push({x,z,r:.14});
-  worldMeshes.push(pole);
-}
-
-/* ===== TEMA: SAWAH ===== */
-function buildPaddy(){
-  const fl=new THREE.Mesh(planeG,waterMat);
-  fl.rotation.x=-Math.PI/2;fl.receiveShadow=true;
-  envGroup.add(fl);worldMeshes.push(fl);
-  const outer=new THREE.Mesh(planeG,outerPaddyMat);
-  outer.rotation.x=-Math.PI/2;outer.position.y=-.04;outer.scale.set(6,6,1);
-  envGroup.add(outer);
-  const p1=new THREE.Mesh(boxG,pathMat);p1.scale.set(4.6,.05,56);p1.position.set(0,.025,0);p1.receiveShadow=true;envGroup.add(p1);
-  const p2=new THREE.Mesh(boxG,pathMat);p2.scale.set(56,.05,4.6);p2.position.set(0,.045,0);p2.receiveShadow=true;envGroup.add(p2);
-  const slots=[[0,-10,5.2,1.2],[-9,4,1.2,5.2],[9,4,1.2,5.2],[-16,-14,3.6,1.2],
-               [16,-14,3.6,1.2],[0,14,6,1.2],[-6,-18,1.2,3.2],[6,-18,1.2,3.2]];
-  for(const[bx,bz,w,d]of slots){
-    const b=new THREE.Mesh(boxG,bundMat);b.scale.set(w,1,d);b.position.set(bx,.5,bz);
-    b.castShadow=b.receiveShadow=true;envGroup.add(b);
-    const gr=new THREE.Mesh(boxG,bundTopMat);gr.scale.set(w*.92,.06,.14);gr.position.set(bx,1.02,bz+d/2-.08);
-    envGroup.add(gr);
-    worldMeshes.push(b);
-    covers.push({x:bx,z:bz,hw:w/2,hd:d/2,h:1});
-  }
-  addHut(14,14);addHut(-14,-14);
-  {
-    const trunk=new THREE.Mesh(cylG,trunkMat);trunk.scale.set(.5,4.4,.5);trunk.position.set(0,2.2,0);trunk.castShadow=true;
-    const cr1=new THREE.Mesh(ballG,crownMatA);cr1.scale.setScalar(2.7);cr1.position.set(0,5.4,0);cr1.castShadow=true;
-    const cr2=new THREE.Mesh(ballG,crownMatB);cr2.scale.setScalar(1.8);cr2.position.set(1.8,4.3,1.1);cr2.castShadow=true;
-    envGroup.add(trunk,cr1,cr2);
-    circleCols.push({x:0,z:0,r:.62});
-    worldMeshes.push(trunk,cr1);
-    losMeshes.push(trunk);
-  }
-  for(let i=0;i<20;i++){
-    const a=i/20*Math.PI*2+rand(-.1,.1),R=rand(31.5,36);
-    const x=Math.cos(a)*R,z=Math.sin(a)*R;
-    const th=rand(2.2,3.2),cr=rand(1.8,2.8),chh=rand(3,4.5);
-    const tr=new THREE.Mesh(cylG,trunkMat);tr.scale.set(.2,th,.2);tr.position.set(x,th/2,z);tr.castShadow=true;
-    const cw=new THREE.Mesh(coneG,Math.random()<.5?crownMatA:crownMatB);
-    cw.scale.set(cr,chh,cr);cw.position.set(x,th+chh/2-.3,z);cw.castShadow=true;
-    envGroup.add(tr,cw);
-  }
-  for(let i=0;i<7;i++){
-    const a=i/7*Math.PI*2+.4;
-    const m=new THREE.Mesh(coneG,hillMat);
-    const r=rand(30,55),h=rand(9,18);
-    m.scale.set(r,h,r);
-    m.position.set(Math.cos(a)*85,h/2-1,Math.sin(a)*85);
-    envGroup.add(m);
-  }
-  {
-    const moon=new THREE.Mesh(moonG,moonMat);
-    moon.position.set(48,52,-70);moon.lookAt(0,8,0);
-    const glow=new THREE.Sprite(new THREE.SpriteMaterial({map:softTex,color:0x9fc4ff,transparent:true,blending:THREE.AdditiveBlending,depthWrite:false,fog:false}));
-    glow.scale.set(26,26,1);glow.position.copy(moon.position);
-    envGroup.add(moon,glow);
-    const dx=.566,dz=-.825;
-    const sg=new THREE.Group();
-    const sp=new THREE.Mesh(streakG,streakMat);sp.rotation.x=-Math.PI/2;
-    sg.add(sp);
-    sg.rotation.y=Math.atan2(-dx,-dz);
-    sg.position.set(dx*13,.022,dz*13);
-    envGroup.add(sg);
-  }
-  {
-    const board=new THREE.Mesh(signSmallG,signMat);board.position.set(-7,1.8,20);envGroup.add(board);
-    for(const sx of[-2.2,2.2]){
-      const post=new THREE.Mesh(cylG,trunkMat);
-      post.scale.set(.06,1.8,.06);post.position.set(-7+sx,.9,20);
-      envGroup.add(post);
+    function closeDrawer() {
+      drawer.classList.remove('show');
+      overlay.classList.remove('show');
+      drawerClose.classList.remove('show');
     }
-  }
-  refreshPaddyFX();
-  themeFX={update(){
-    for(let i=0;i<FFN;i++){
-      const i3=i*3,p=ffPhase[i];
-      ffPos[i3]=ffBase[i3]+Math.sin(t*.6+p)*1.3;
-      ffPos[i3+1]=ffBase[i3+1]+Math.sin(t*1.3+p*1.7)*.5;
-      ffPos[i3+2]=ffBase[i3+2]+Math.cos(t*.45+p)*1.3;
-    }
-    ffGeo.attributes.position.needsUpdate=true;
-    sparkleMat.opacity=.28+.22*Math.sin(t*1.6)+.1*Math.sin(t*4.7);
-  }};
-}
-function addHut(x,z){
-  const base=new THREE.Mesh(boxG,hutMat);base.scale.set(3.2,2.9,3.2);base.position.set(x,1.45,z);
-  base.castShadow=base.receiveShadow=true;envGroup.add(base);
-  const roof=new THREE.Mesh(cone4G,roofMat);
-  roof.scale.set(2.9,1.8,2.9);roof.rotation.y=Math.PI/4;roof.position.set(x,3.8,z);
-  roof.castShadow=true;envGroup.add(roof);
-  const door=new THREE.Mesh(boxG,doorMat);
-  door.scale.set(.9,1.7,.08);door.position.set(x,.85,z+(z>0?-1.66:1.66));
-  envGroup.add(door);
-  worldMeshes.push(base);losMeshes.push(base,roof);
-  covers.push({x,z,hw:1.7,hd:1.7,h:3.3});
-}
-function refreshPaddyFX(){
-  const dummy=new THREE.Object3D(),col=new THREE.Color();
-  let n=0,guard=0;
-  while(n<540&&guard<5000){
-    guard++;
-    const x=rand(-27,27),z=rand(-27,27);
-    if(Math.abs(x)<3.4||Math.abs(z)<3.4)continue;
-    if(x*x+z*z<1.6*1.6)continue;
-    let bad=false;
-    for(const c of covers)
-      if(Math.abs(x-c.x)<c.hw+.5&&Math.abs(z-c.z)<c.hd+.5){bad=true;break;}
-    if(bad)continue;
-    dummy.position.set(x,.28,z);
-    dummy.rotation.y=Math.random()*6.28;
-    dummy.scale.setScalar(rand(.7,1.35));
-    dummy.updateMatrix();
-    riceMesh.setMatrixAt(n,dummy.matrix);
-    col.setHSL(.26+Math.random()*.07,.5,.16+Math.random()*.14);
-    riceMesh.setColorAt(n,col);
-    n++;
-  }
-  riceMesh.count=n;
-  riceMesh.instanceMatrix.needsUpdate=true;
-  if(riceMesh.instanceColor)riceMesh.instanceColor.needsUpdate=true;
-  riceMesh.visible=true;
-  for(let i=0;i<FFN;i++){
-    const i3=i*3;
-    ffBase[i3]=rand(-26,26);
-    ffBase[i3+1]=rand(.5,2.6);
-    ffBase[i3+2]=rand(-26,26);
-    ffPhase[i]=rand(0,6.28);
-    ffPos[i3]=ffBase[i3];ffPos[i3+1]=ffBase[i3+1];ffPos[i3+2]=ffBase[i3+2];
-  }
-  ffGeo.attributes.position.needsUpdate=true;
-  ffPts.visible=true;
-  for(let i=0;i<SPN;i++){
-    const i3=i*3;
-    spkPos[i3]=rand(-27,27);spkPos[i3+1]=.03;spkPos[i3+2]=rand(-27,27);
-  }
-  spkGeo.attributes.position.needsUpdate=true;
-  spkPts.visible=true;
-}
 
-/* ---------- viewmodel senjata ---------- */
-const weapon=new THREE.Group();
-{
-  const m1=new THREE.MeshStandardMaterial({color:0x1f2126,roughness:.35,metalness:.75});
-  const m2=new THREE.MeshStandardMaterial({color:0x2c2f36,roughness:.5,metalness:.6});
-  const am=new THREE.MeshBasicMaterial({color:0xff8c2e});
-  const add=(geo,mat,x,y,z,rx=0)=>{const m=new THREE.Mesh(geo,mat);m.position.set(x,y,z);m.rotation.x=rx;weapon.add(m);};
-  add(new THREE.BoxGeometry(.13,.15,.46),m1,0,0,-.05);
-  add(new THREE.BoxGeometry(.06,.03,.3),m2,0,.09,-.02);
-  add(new THREE.CylinderGeometry(.03,.037,.36,10),m1,0,.02,-.42,Math.PI/2);
-  add(new THREE.CylinderGeometry(.045,.045,.07,10),m2,0,.02,-.58,Math.PI/2);
-  add(new THREE.BoxGeometry(.09,.16,.1),m2,0,-.12,.12,.4);
-  add(new THREE.BoxGeometry(.07,.13,.09),m1,0,-.12,-.06,-.15);
-  add(new THREE.BoxGeometry(.02,.05,.02),m2,0,.125,.05);
-  add(new THREE.BoxGeometry(.012,.012,.012),am,0,.135,-.18);
-  add(new THREE.BoxGeometry(.135,.015,.22),am,0,.045,-.12);
-}
-const muzzle=new THREE.Object3D();muzzle.position.set(0,.02,-.63);weapon.add(muzzle);
-const flashMesh=new THREE.Mesh(new THREE.PlaneGeometry(.34,.34),
-  new THREE.MeshBasicMaterial({map:flashTex,transparent:true,blending:THREE.AdditiveBlending,depthWrite:false,side:THREE.DoubleSide}));
-flashMesh.position.set(0,.02,-.66);flashMesh.visible=false;weapon.add(flashMesh);
-const muzzleLight=new THREE.PointLight(0xffa540,0,7);muzzle.add(muzzleLight);
-weapon.position.set(.28,-.26,-.5);weapon.visible=false;camera.add(weapon);
+    menuBtn.addEventListener('click', openDrawer);
+    drawerClose.addEventListener('click', closeDrawer);
+    overlay.addEventListener('click', closeDrawer);
 
-/* ---------- tracer ---------- */
-const tracers=[];
-{
-  const g=new THREE.BoxGeometry(.03,.03,1);
-  for(let i=0;i<14;i++){
-    const m=new THREE.Mesh(g,new THREE.MeshBasicMaterial({color:0xffc070,transparent:true,blending:THREE.AdditiveBlending,depthWrite:false}));
-    m.visible=false;scene.add(m);tracers.push({m,life:0});
-  }
-}
-const TV=new THREE.Vector3();
-function spawnTracer(a,b){
-  const tr=tracers.find(x=>x.life<=0)||tracers[0];
-  tr.m.position.copy(a).add(b).multiplyScalar(.5);
-  tr.m.lookAt(TV.copy(b));
-  tr.m.scale.set(1,1,a.distanceTo(b));
-  tr.m.visible=true;tr.life=1;
-}
+    // ---- Geser kanan dari tepi kiri layar untuk buka menu (kayak ChatGPT) ----
+    let edgeSwipeStartX = null;
+    let edgeSwipeStartY = null;
+    const EDGE_ZONE = 24; // lebar area tepi kiri yang bisa dipakai mulai geser (px)
+    const SWIPE_THRESHOLD = 60; // jarak minimal geser biar dianggap sah (px)
 
-/* ---------- ledakan partikel ---------- */
-const bursts=[];
-class Burst{
-  constructor(){
-    const N=this.N=48;
-    this.pos=new Float32Array(N*3);this.col=new Float32Array(N*3);this.vel=new Float32Array(N*3);
-    this.geo=new THREE.BufferGeometry();
-    this.geo.setAttribute('position',new THREE.BufferAttribute(this.pos,3));
-    this.geo.setAttribute('color',new THREE.BufferAttribute(this.col,3));
-    this.mat=new THREE.PointsMaterial({size:.16,map:softTex,transparent:true,depthWrite:false,blending:THREE.AdditiveBlending,vertexColors:true});
-    this.pts=new THREE.Points(this.geo,this.mat);
-    this.pts.visible=false;this.pts.frustumCulled=false;
-    scene.add(this.pts);
-    this.life=0;this.count=0;
-  }
-  spawn(p,r,g,b,count,speed,dur,size,grav){
-    this.count=Math.min(count,this.N);
-    this.mat.size=size;this.life=dur;this.dur=dur;this.grav=grav;
-    for(let i=0;i<this.count;i++){
-      this.pos[i*3]=p.x;this.pos[i*3+1]=p.y;this.pos[i*3+2]=p.z;
-      const th=Math.random()*Math.PI*2,ph=Math.acos(rand(-1,1)),sp=speed*rand(.3,1.15);
-      this.vel[i*3]=Math.sin(ph)*Math.cos(th)*sp;
-      this.vel[i*3+1]=Math.cos(ph)*sp;
-      this.vel[i*3+2]=Math.sin(ph)*Math.sin(th)*sp;
-      const k=rand(.55,1.15);
-      this.col[i*3]=Math.min(1,r*k);this.col[i*3+1]=Math.min(1,g*k);this.col[i*3+2]=Math.min(1,b*k);
-    }
-    this.geo.setDrawRange(0,this.count);
-    this.geo.attributes.position.needsUpdate=true;
-    this.geo.attributes.color.needsUpdate=true;
-    this.pts.visible=true;
-  }
-  update(dt){
-    if(this.life<=0){this.pts.visible=false;return;}
-    this.life-=dt;
-    for(let i=0;i<this.count;i++){
-      this.pos[i*3]+=this.vel[i*3]*dt;
-      this.pos[i*3+1]+=this.vel[i*3+1]*dt-this.grav*dt*dt*8;
-      this.vel[i*3+1]-=this.grav*dt*4;
-      this.pos[i*3+2]+=this.vel[i*3+2]*dt;
-    }
-    this.mat.opacity=Math.max(0,this.life/this.dur);
-    this.geo.attributes.position.needsUpdate=true;
-  }
-}
-for(let i=0;i<10;i++)bursts.push(new Burst());
-function spawnBurst(p,r,g,b,count,speed,dur,size,grav){
-  (bursts.find(x=>x.life<=0)||bursts[0]).spawn(p,r,g,b,count,speed,dur,size,grav);
-}
-
-/* ---------- audio prosedural ---------- */
-let AC=null,master=null,noiseBuf=null,ambOn=false;
-function initAudio(){
-  if(AC)return;
-  try{AC=new (window.AudioContext||window.webkitAudioContext)();}catch(e){return;}
-  master=AC.createGain();master.gain.value=.5;master.connect(AC.destination);
-  const len=AC.sampleRate;
-  noiseBuf=AC.createBuffer(1,len,AC.sampleRate);
-  const d=noiseBuf.getChannelData(0);
-  for(let i=0;i<len;i++)d[i]=Math.random()*2-1;
-}
-function envOsc(type,f0,f1,dur,gain,when=0){
-  if(!AC)return;
-  const s=AC.currentTime+when,o=AC.createOscillator(),g=AC.createGain();
-  o.type=type;o.frequency.setValueAtTime(f0,s);
-  if(f1)o.frequency.exponentialRampToValueAtTime(Math.max(f1,1),s+dur);
-  g.gain.setValueAtTime(gain,s);g.gain.exponentialRampToValueAtTime(.0001,s+dur);
-  o.connect(g);g.connect(master);o.start(s);o.stop(s+dur+.05);
-}
-function noiseBurst(dur,gain,ft,f0,f1,when=0){
-  if(!AC)return;
-  const s=AC.currentTime+when,src=AC.createBufferSource(),f=AC.createBiquadFilter(),g=AC.createGain();
-  src.buffer=noiseBuf;src.loop=true;
-  f.type=ft;f.frequency.setValueAtTime(f0,s);
-  if(f1)f.frequency.exponentialRampToValueAtTime(f1,s+dur);
-  g.gain.setValueAtTime(gain,s);g.gain.exponentialRampToValueAtTime(.0001,s+dur);
-  src.connect(f);f.connect(g);g.connect(master);src.start(s);src.stop(s+dur+.05);
-}
-const sfx={
-  shoot(){envOsc('square',150,45,.1,.32);noiseBurst(.05,.2,'highpass',1400,null);},
-  hit(c){envOsc('triangle',c?1500:1250,c?800:650,.05,.2);},
-  kill(){noiseBurst(.35,.5,'lowpass',1000,90);envOsc('sine',150,38,.35,.5);},
-  hurt(){envOsc('sine',120,50,.22,.5);noiseBurst(.12,.25,'lowpass',420,120);},
-  eshoot(){envOsc('sawtooth',920,230,.13,.07);},
-  dry(){envOsc('square',240,200,.04,.16);},
-  relA(){envOsc('square',380,300,.05,.16);noiseBurst(.04,.1,'highpass',2000,null,.02);},
-  relB(){envOsc('square',560,440,.05,.2);noiseBurst(.05,.12,'highpass',1600,null);},
-  pick(){envOsc('triangle',540,540,.09,.2);envOsc('triangle',812,812,.14,.2,.1);},
-  spawn(){envOsc('sawtooth',70,300,.28,.07);},
-  wave(){envOsc('triangle',330,330,.16,.18);envOsc('triangle',495,495,.22,.18,.14);},
-  land(){noiseBurst(.07,.12,'lowpass',300,150);},
-  over(){envOsc('sawtooth',220,55,1.1,.3);noiseBurst(.9,.3,'lowpass',800,80);},
-  win(){envOsc('triangle',440,440,.18,.25);envOsc('triangle',660,660,.32,.25,.16);},
-  lose(){envOsc('sawtooth',300,80,.9,.25);},
-};
-function startAmbience(){
-  if(ambOn||!AC)return;ambOn=true;
-  const o1=AC.createOscillator(),o2=AC.createOscillator(),g=AC.createGain();
-  o1.frequency.value=52;o2.frequency.value=52.7;g.gain.value=.02;
-  o1.connect(g);o2.connect(g);g.connect(master);o1.start();o2.start();
-}
-
-/* ---------- pemain ---------- */
-const player={pos:new THREE.Vector3(0,0,22),vel:new THREE.Vector3(),yaw:0,pitch:0,grounded:true,bobPhase:0,bobAmt:0};
-const keys={};
-let trauma=0,recoilP=0,recoilA=0,heat=0,fireCd=0,firing=false,dryPlayed=false,flashT=0;
-let swayT=0,swayCur=0,lastFov=75;
-let joyOn=false,joyX=0,joyY=0,joySprint=false;
-let joySpUI=false;
-const joyStick=$('joyStick');
-
-function groundHeightAt(x,z){
-  let g=0;
-  for(const c of covers)
-    if(Math.abs(x-c.x)<c.hw+.3&&Math.abs(z-c.z)<c.hd+.3)g=Math.max(g,c.h);
-  return g;
-}
-function resolveCollision(pos){
-  const R=.45;
-  pos.x=clamp(pos.x,-27.5,27.5);
-  pos.z=clamp(pos.z,-27.5,27.5);
-  for(const c of circleCols){
-    const dx=pos.x-c.x,dz=pos.z-c.z,rr=c.r+R,d2=dx*dx+dz*dz;
-    if(d2<rr*rr&&d2>1e-6){const d=Math.sqrt(d2),push=rr-d;pos.x+=dx/d*push;pos.z+=dz/d*push;}
-  }
-  for(const c of covers){
-    if(pos.y<c.h-.25){
-      const ex=c.hw+R,ez=c.hd+R,dx=pos.x-c.x,dz=pos.z-c.z;
-      if(Math.abs(dx)<ex&&Math.abs(dz)<ez){
-        const px=ex-Math.abs(dx),pz=ez-Math.abs(dz);
-        if(px<pz)pos.x=c.x+Math.sign(dx)*ex;else pos.z=c.z+Math.sign(dz)*ez;
+    document.addEventListener('touchstart', function(e) {
+      if (drawer.classList.contains('show')) return; // drawer udah kebuka, skip
+      const t = e.touches[0];
+      const navEl = document.querySelector('.bottom-nav');
+      const navTop = navEl ? navEl.getBoundingClientRect().top : window.innerHeight;
+      if (t.clientX <= EDGE_ZONE && t.clientY < navTop) {
+        edgeSwipeStartX = t.clientX;
+        edgeSwipeStartY = t.clientY;
+      } else {
+        edgeSwipeStartX = null;
+        edgeSwipeStartY = null;
       }
-    }
-  }
-}
-function updatePlayer(dt){
-  playerInvT=Math.max(0,playerInvT-dt);
-  let jf=0,js=0;
-  if(joyOn){
-    const mag=Math.hypot(joyX,joyY);
-    if(mag>0.10){
-      const norm=(mag-0.10)/0.90;
-      const eff=Math.min(1,norm*1.5);
-      js=joyX/mag*eff;
-      jf=-joyY/mag*eff;
-      joySprint=norm>0.78;
-    }else joySprint=false;
-  }
-  let f=(keys.KeyW?1:0)-(keys.KeyS?1:0)+jf;
-  let s=(keys.KeyD?1:0)-(keys.KeyA?1:0)+js;
-  let mag=Math.hypot(s,f),dirX=0,dirZ=0;
-  if(mag>1e-4){dirX=s/mag;dirZ=-f/mag;}
-  if(mag>1)mag=1;
-  const sprint=(keys.ShiftLeft||keys.ShiftRight)||(joyOn&&joySprint);
-  const target=(sprint?12:8)*mag;
+    }, { passive: true });
 
-  if((joyOn&&joySprint)!==joySpUI){
-    joySpUI=joyOn&&joySprint;
-    joyStick.classList.toggle('sp',joySpUI);
-  }
-
-  const cs=Math.cos(player.yaw),sn=Math.sin(player.yaw);
-  const dwx=dirX*cs+dirZ*sn,dwz=-dirX*sn+dirZ*cs;
-  if(player.grounded){
-    const k=Math.min(1,(mag>0.05?22:30)*dt);
-    player.vel.x+=(dwx*target-player.vel.x)*k;
-    player.vel.z+=(dwz*target-player.vel.z)*k;
-  }else{
-    player.vel.x+=dwx*16*dt;player.vel.z+=dwz*16*dt;
-  }
-  player.vel.y-=24*dt;
-  const wasAir=!player.grounded,fallV=player.vel.y;
-  player.pos.x+=player.vel.x*dt;
-  player.pos.y+=player.vel.y*dt;
-  player.pos.z+=player.vel.z*dt;
-  const gh=groundHeightAt(player.pos.x,player.pos.z);
-  if(player.pos.y<=gh){
-    if(wasAir&&fallV<-8){trauma=Math.max(trauma,.15);sfx.land();buzz(15);}
-    player.pos.y=gh;player.vel.y=0;player.grounded=true;
-  }else player.grounded=false;
-  resolveCollision(player.pos);
-  if(player.pos.y<gh)player.pos.y=gh;
-
-  const sp=Math.hypot(player.vel.x,player.vel.z);
-  if(player.grounded&&sp>1){player.bobPhase+=dt*(4+sp*.9);player.bobAmt+=((Math.min(sp/8,1))-player.bobAmt)*Math.min(1,6*dt);}
-  else player.bobAmt+=(0-player.bobAmt)*Math.min(1,6*dt);
-
-  trauma=Math.max(0,trauma-2.2*dt);
-  recoilP*=Math.exp(-9*dt);
-  heat=Math.max(0,heat-5*dt);
-
-  /* bantuan bidik magnetis (sentuh) */
-  if(IS_TOUCH&&drones.length){
-    camera.getWorldDirection(V1);
-    let bx=0,by=0,bz=0,bestAng=0.07;
-    for(const d of drones){
-      if(d.team!=='musuh'||d.hp<=0)continue;
-      V2.copy(d.group.position).sub(camera.position);
-      const dd=V2.length();
-      if(dd<1||dd>40)continue;
-      V2.normalize();
-      const ang=V2.angleTo(V1);
-      if(ang<bestAng){bestAng=ang;bx=V2.x;by=V2.y;bz=V2.z;}
-    }
-    if(bestAng<0.07){
-      const wantYaw=Math.atan2(-bx,-bz);
-      const wantPitch=Math.asin(clamp(by,-1,1));
-      let dYaw=wantYaw-player.yaw;
-      dYaw=((dYaw%(Math.PI*2))+Math.PI*3)%(Math.PI*2)-Math.PI;
-      const pull=Math.min(1,5*dt)*(1-bestAng/0.07);
-      player.yaw+=dYaw*pull;
-      player.pitch+=(wantPitch-player.pitch)*pull;
-    }
-  }
-
-  const bobY=Math.sin(player.bobPhase*2)*.03*player.bobAmt;
-  camera.position.set(player.pos.x,player.pos.y+1.7+bobY,player.pos.z);
-  const shX=(Math.random()*2-1)*trauma*trauma*.03,shY=(Math.random()*2-1)*trauma*trauma*.03;
-  camera.rotation.set(player.pitch+recoilP+shX,player.yaw+shY,0);
-
-  const tf=75+((sprint&&sp>6)?7:0);
-  camera.fov+=(tf-camera.fov)*Math.min(1,8*dt);
-  if(Math.abs(camera.fov-lastFov)>.05){camera.updateProjectionMatrix();lastFov=camera.fov;}
-
-  if(t-lastHurt>4&&hp<100&&hp>0){hp=Math.min(100,hp+7*dt);updateHpHUD();}
-}
-
-/* ---------- senjata & menembak ---------- */
-function updateWeapon(dt){
-  recoilA*=Math.exp(-9*dt);
-  swayT*=Math.exp(-8*dt);
-  swayCur+=(swayT-swayCur)*Math.min(1,10*dt);
-  const bx=Math.sin(player.bobPhase)*.013*player.bobAmt;
-  const by=Math.sin(player.bobPhase*2)*.009*player.bobAmt;
-  let dip=0;
-  if(reloading)dip=Math.sin(Math.PI*Math.min(1,reloadT/RELOAD));
-  weapon.position.set(
-    .28+bx+swayCur*.35,
-    -.26+by-dip*.3+Math.sin(t*1.4)*.003,
-    -.5+recoilA*.09+dip*.05);
-  weapon.rotation.set(recoilA*.32-dip*.85,swayCur*.5,dip*.4+swayCur*.3);
-  flashT-=dt;
-  flashMesh.visible=flashT>0;
-  muzzleLight.intensity=flashT>0?2.6:0;
-}
-const rayShot=new THREE.Raycaster(),rayLOS=new THREE.Raycaster();
-const V1=new THREE.Vector3(),V2=new THREE.Vector3(),V3=new THREE.Vector3(),V4=new THREE.Vector3();
-const M1=new THREE.Matrix4(),Q1=new THREE.Quaternion(),UP=new THREE.Vector3(0,1,0);
-let hitMeshes=[];
-
-function startReload(){
-  if(reloading||ammo===MAG||state!=='playing')return;
-  reloading=true;reloadT=0;sfx.relA();updateAmmoHUD();
-}
-function updateShooting(dt){
-  fireCd-=dt;
-  if(reloading){
-    reloadT+=dt;
-    if(reloadT>=RELOAD){reloading=false;ammo=MAG;sfx.relB();updateAmmoHUD();}
-  }
-  if(firing&&!reloading&&state==='playing'&&fireCd<=0){
-    if(ammo>0)fireShot();
-    else{if(!dryPlayed){sfx.dry();dryPlayed=true;}startReload();}
-  }
-  /* AUTO-AKTIF */
-  if(!firing&&autoFire&&state==='playing'&&!playerDead&&!reloading&&fireCd<=0&&drones.length){
-    if(ammo===0)startReload();
-    else{
-      camera.getWorldDirection(V1);
-      camera.getWorldPosition(V3);
-      let best=null,bestAng=0.10;
-      for(const d of drones){
-        if(d.team!=='musuh'||d.hp<=0)continue;
-        V2.copy(d.group.position).sub(V3);
-        const dd=V2.length();
-        if(dd>70||dd<1)continue;
-        V2.normalize();
-        const ang=V2.angleTo(V1);
-        if(ang<bestAng){bestAng=ang;best=d;}
+    document.addEventListener('touchend', function(e) {
+      if (edgeSwipeStartX === null) return;
+      const t = e.changedTouches[0];
+      const dx = t.clientX - edgeSwipeStartX;
+      const dy = Math.abs(t.clientY - edgeSwipeStartY);
+      if (dx > SWIPE_THRESHOLD && dy < 80) {
+        openDrawer();
       }
-      if(best){
-        const bd=best.group.position.distanceTo(V3);
-        V2.copy(best.group.position).sub(V3).normalize();
-        rayLOS.set(V3,V2);rayLOS.far=bd-.6;
-        if(rayLOS.intersectObjects(losMeshes,false).length===0)fireShot();
-      }
-    }
-  }
-  if(!firing&&!autoFire)dryPlayed=false;
-  crossEl.style.setProperty('--g',(6+heat*3.5).toFixed(1)+'px');
-}
-function fireShot(){
-  stats.shots++;ammo--;fireCd=.105;heat=Math.min(7,heat+1);
-  recoilA=Math.min(1,recoilA+.55);
-  recoilP=Math.min(.09,recoilP+.018);
-  player.yaw+=(Math.random()-.5)*.004;
-  flashT=.05;flashMesh.rotation.z=Math.random()*6.28;
-  flashMesh.scale.setScalar(.8+Math.random()*.5);
-  sfx.shoot();
+      edgeSwipeStartX = null;
+      edgeSwipeStartY = null;
+    }, { passive: true });
 
-  camera.getWorldDirection(V1);
-  const sp=Math.hypot(player.vel.x,player.vel.z);
-  const spread=.004+heat*.011+(player.grounded?0:.02)+Math.min(.02,sp*.001);
-  V2.set(Math.random()-.5,Math.random()-.5,Math.random()-.5).normalize().multiplyScalar(spread*Math.random());
-  V1.add(V2).normalize();
-  camera.getWorldPosition(V3);
-  rayShot.set(V3,V1);rayShot.far=120;
-  const eh=rayShot.intersectObjects(hitMeshes,false);
-  const wh=rayShot.intersectObjects(worldMeshes,false);
-  let dist=120,point=null,drone=null,part=null;
-  if(eh.length&&eh[0].distance<dist){dist=eh[0].distance;point=eh[0].point;drone=eh[0].object.userData.drone;part=eh[0].object.userData.part;}
-  if(wh.length&&wh[0].distance<dist){dist=wh[0].distance;point=wh[0].point;drone=null;}
+    const masukBtn = document.getElementById('masukBtn');
+    const loginSheet = document.getElementById('loginSheet');
+    const loginOverlay = document.getElementById('loginOverlay');
+    const loginClose = document.getElementById('loginClose');
 
-  if(!drone&&IS_TOUCH){    /* hit-assist layar sentuh */
-    let best=null,bestAng=0.085;
-    const maxD=wh.length?wh[0].distance:120;
-    for(const d of drones){
-      if(d.team!=='musuh'||d.hp<=0)continue;
-      V2.copy(d.group.position).sub(V3);
-      const dd=V2.length();
-      if(dd>=maxD)continue;
-      V2.normalize();
-      const ang=V2.angleTo(V1);
-      if(ang<bestAng){bestAng=ang;best=d;}
+    function openLogin() {
+      loginSheet.classList.add('show');
+      loginOverlay.classList.add('show');
     }
-    if(best){drone=best;part='body';point=best.group.position.clone();}
-  }
+    function closeLogin() {
+      loginSheet.classList.remove('show');
+      loginOverlay.classList.remove('show');
+    }
 
-  if(!point)point=V3.clone().addScaledVector(V1,90);
-  if(drone){stats.hits++;damageDrone(drone,part,true);}
-  else if(wh.length&&dist<120)spawnBurst(point,1,.75,.4,7,3,.3,.06,7);
-  muzzle.getWorldPosition(V4);
-  spawnTracer(V4,point);
-  updateAmmoHUD();
-}
-function damageDrone(d,part,byPlayer){
-  const crit=part==='eye';
-  d.hp-=crit?2:1;
-  d.flash=1;
-  if(d.hp<=0)killDrone(d,byPlayer);
-  else{if(byPlayer){hitmark(false);sfx.hit(crit);buzz(10);}}
-}
+    masukBtn.addEventListener('click', openLogin);
+    loginClose.addEventListener('click', closeLogin);
+    loginOverlay.addEventListener('click', closeLogin);
 
-/* ---------- drone: musuh (merah) & sekutu (biru) ---------- */
-const drones=[],decoDrones=[];
-const droneBodyGeo=new THREE.OctahedronGeometry(.55);
-const droneEyeGeo=new THREE.SphereGeometry(.2,10,8);
-const droneRingGeo=new THREE.TorusGeometry(.85,.045,8,26);
-const droneRingMat=new THREE.MeshStandardMaterial({color:0x1c1c22,roughness:.4,metalness:.7});
-const podGeo=new THREE.BoxGeometry(.16,.1,.12);
-const PT={isPlayer:true};
+    let isLoggedIn = false;
+    let currentUname = '-';
+    let currentUid = '-';
+    let currentEmail = '-';
+    let currentEmailConfirmed = false;
+    let currentDob = '';
 
-class Drone{
-  constructor(x,z,team='musuh',dec=false){
-    this.team=team;this.dec=dec;this.hp=3;this.flash=0;this.spawnT=0;
-    this.phase=Math.random()*7;this.hoverY=rand(1.7,3);
-    this.shootCd=rand(1.5,3.5);this.orbitDir=Math.random()<.5?1:-1;
-    this.speed=3.1+Math.min(2.4,stats.wave*.15);
-    this.vx=0;this.vz=0;
-    this.target=null;this.retargetT=0;
-    const isAlly=team==='kawan';
-    const eyeCol=isAlly?0x35d0ff:0xff3526;
-    const g=this.group=new THREE.Group();
-    this.bodyMat=new THREE.MeshStandardMaterial({color:isAlly?0x25303a:0x2a2a30,roughness:.35,metalness:.55,flatShading:true});
-    const body=this.body=new THREE.Mesh(droneBodyGeo,this.bodyMat);
-    body.castShadow=true;body.userData={drone:this,part:'body'};
-    const eye=this.eye=new THREE.Mesh(droneEyeGeo,new THREE.MeshBasicMaterial({color:eyeCol}));
-    eye.position.set(0,.05,.42);eye.userData={drone:this,part:'eye'};
-    const glow=new THREE.Sprite(new THREE.SpriteMaterial({map:softTex,color:eyeCol,transparent:true,blending:THREE.AdditiveBlending,depthWrite:false}));
-    glow.scale.set(.55,.55,1);eye.add(glow);
-    const rg=this.ringG=new THREE.Group();
-    const ring=new THREE.Mesh(droneRingGeo,droneRingMat);
-    ring.rotation.x=Math.PI/2;ring.userData={drone:this,part:'body'};rg.add(ring);
-    for(let i=0;i<3;i++){
-      const p=new THREE.Mesh(podGeo,droneRingMat);
-      const a=i/3*Math.PI*2;
-      p.position.set(Math.cos(a)*.85,0,Math.sin(a)*.85);
-      p.userData={drone:this,part:'body'};rg.add(p);
-    }
-    const thr=new THREE.Sprite(new THREE.SpriteMaterial({map:softTex,color:isAlly?0x45c8ff:0xff8c2e,transparent:true,blending:THREE.AdditiveBlending,depthWrite:false}));
-    thr.scale.set(.5,.5,1);thr.position.set(0,-.55,0);
-    this.hpBg=new THREE.Sprite(new THREE.SpriteMaterial({color:0x000000,opacity:.55,transparent:true}));
-    this.hpBg.center.set(0,.5);this.hpBg.scale.set(.9,.07,1);this.hpBg.position.set(-.45,1.12,0);
-    this.hpFg=new THREE.Sprite(new THREE.SpriteMaterial({color:isAlly?0x35b0ff:0xff4030}));
-    this.hpFg.center.set(0,.5);this.hpFg.scale.set(.9,.045,1);this.hpFg.position.set(-.45,1.12,0);
-    g.add(body,eye,rg,thr,this.hpBg,this.hpFg);
-    g.position.set(x,this.hoverY,z);
-    scene.add(g);
-    if(!dec){
-      drones.push(this);
-      if(isAlly)alliesAlive++;else enemiesAlive++;
-      if(!isAlly)hitMeshes.push(body,eye,...rg.children);
-    }else decoDrones.push(this);
-  }
-  pickTarget(){
-    let best=null,bd=1e9;
-    if(this.team==='musuh'){
-      if(!playerDead&&state==='playing'){
-        const d=this.group.position.distanceToSquared(player.pos);
-        if(d<bd){bd=d;best=PT;}
+    const masukRow = document.getElementById('masukRow');
+    masukRow.addEventListener('click', function() {
+      closeDrawer();
+      if (isLoggedIn) {
+        document.getElementById('profileUname').textContent = currentUname;
+        document.getElementById('profileUid').textContent = 'ID ' + currentUid;
+        openProfile();
+      } else {
+        openLogin();
       }
-      for(const o of drones){
-        if(o.team!=='kawan'||o.hp<=0)continue;
-        const d=this.group.position.distanceToSquared(o.group.position);
-        if(d<bd){bd=d;best=o;}
-      }
-    }else{
-      for(const o of drones){
-        if(o.team!=='musuh'||o.hp<=0)continue;
-        const d=this.group.position.distanceToSquared(o.group.position);
-        if(d<bd){bd=d;best=o;}
-      }
-    }
-    return best;
-  }
-  update(dt){
-    const g=this.group;
-    this.spawnT+=dt;
-    g.scale.setScalar(Math.max(.01,easeOutBack(Math.min(1,this.spawnT/.5))));
-    if(this.flash>0){this.flash=Math.max(0,this.flash-6*dt);this.bodyMat.emissive.setRGB(this.flash,this.flash*.55,this.flash*.4);}
-    const fr=Math.max(0,this.hp/3);
-    this.hpFg.scale.x=.9*fr;this.hpFg.visible=fr>.02;
-    this.ringG.rotation.y+=dt*1.4;
-    if(this.dec){
-      const a=this.phase+t*.1*this.orbitDir;
-      const tx=Math.cos(a)*11,tz=Math.sin(a)*11,ty=2.3+Math.sin(t*1.3+this.phase)*.5;
-      g.position.x+=(tx-g.position.x)*Math.min(1,dt);
-      g.position.z+=(tz-g.position.z)*Math.min(1,dt);
-      g.position.y+=(ty-g.position.y)*Math.min(1,2*dt);
-      M1.lookAt(V1.set(0,2,0),g.position,UP);Q1.setFromRotationMatrix(M1);
-      g.quaternion.slerp(Q1,Math.min(1,3*dt));
-      return;
-    }
-    this.retargetT-=dt;
-    if(this.retargetT<=0||!this.target||(this.target!==PT&&this.target.hp<=0)){
-      this.target=this.pickTarget();
-      this.retargetT=.8+Math.random()*.7;
-    }
-    let px=0,pz=0,py=2.2,hasT=false;
-    if(this.target){
-      if(this.target===PT){px=player.pos.x;pz=player.pos.z;py=player.pos.y+1.5;hasT=true;}
-      else{px=this.target.group.position.x;pz=this.target.group.position.z;py=this.target.group.position.y;hasT=true;}
-    }
-    const dx=px-g.position.x,dz=pz-g.position.z;
-    const dist=Math.hypot(dx,dz)||.001;
-    let mx=0,mz=0;
-    if(!hasT){
-      const a=this.phase+t*.3;
-      mx=Math.cos(a)*.35;mz=Math.sin(a)*.35;
-    }else if(dist>15){mx=dx/dist;mz=dz/dist;}
-    else if(dist<8){mx=-dx/dist*.8;mz=-dz/dist*.8;}
-    else{mx=-dz/dist*.85*this.orbitDir;mz=dx/dist*.85*this.orbitDir;}
-    for(const c of circleCols){
-      const ox=g.position.x-c.x,oz=g.position.z-c.z,d=Math.hypot(ox,oz),rr=c.r+1.5;
-      if(d<rr&&d>.01){const f=(rr-d)/rr*2.2;mx+=ox/d*f;mz+=oz/d*f;}
-    }
-    for(const c of covers){
-      if(c.h<g.position.y-.4)continue;
-      const cx=clamp(g.position.x,c.x-c.hw,c.x+c.hw);
-      const cz=clamp(g.position.z,c.z-c.hd,c.z+c.hd);
-      let ox=g.position.x-cx,oz=g.position.z-cz;
-      let d=Math.hypot(ox,oz);
-      if(d<1.7){
-        if(d<.01){ox=g.position.x-c.x;oz=g.position.z-c.z;d=Math.hypot(ox,oz)||.01;}
-        const f=(1.7-d)/1.7*2.6;
-        mx+=ox/d*f;mz+=oz/d*f;
-      }
-    }
-    for(const o of drones){
-      if(o===this)continue;
-      const ox=g.position.x-o.group.position.x,oz=g.position.z-o.group.position.z,d=Math.hypot(ox,oz);
-      if(d<2.2&&d>.01){mx+=ox/d*(2.2-d)*1.2;mz+=oz/d*(2.2-d)*1.2;}
-    }
-    const ml=Math.hypot(mx,mz);
-    if(ml>1){mx/=ml;mz/=ml;}
-    this.vx+=(mx*this.speed-this.vx)*Math.min(1,2.5*dt);
-    this.vz+=(mz*this.speed-this.vz)*Math.min(1,2.5*dt);
-    g.position.x=clamp(g.position.x+this.vx*dt,-26.5,26.5);
-    g.position.z=clamp(g.position.z+this.vz*dt,-26.5,26.5);
-    const ty=this.hoverY+Math.sin(t*1.6+this.phase)*.25;
-    g.position.y+=(ty-g.position.y)*Math.min(1,3*dt);
-    M1.lookAt(V1.set(px,py,pz),g.position,UP);
-    Q1.setFromRotationMatrix(M1);
-    g.quaternion.slerp(Q1,Math.min(1,6*dt));
-    if(this.spawnT>1.2&&hasT){
-      this.shootCd-=dt;
-      const chg=this.shootCd<.5?Math.max(0,(.5-this.shootCd)/.5):0;
-      this.eye.scale.setScalar(1+chg*.8);
-      if(this.shootCd<=0){
-        if(dist<26&&this.hasLOS(px,py,pz,dist))this.fire();
-        this.shootCd=Math.max(1.1,2.4-stats.wave*.07)+Math.random()*.9;
-        this.eye.scale.setScalar(1);
-      }
-    }
-  }
-  hasLOS(px,py,pz,dist){
-    V1.set(px,py,pz).sub(this.group.position).normalize();
-    rayLOS.set(this.group.position,V1);rayLOS.far=dist-.8;
-    return rayLOS.intersectObjects(losMeshes,false).length===0;
-  }
-  fire(){
-    if(!this.target)return;
-    this.eye.getWorldPosition(V3);
-    let ax,ay,az;
-    if(this.target===PT){
-      ax=player.pos.x+player.vel.x*.22+rand(-.55,.55);
-      ay=player.pos.y+1.35+rand(-.3,.3);
-      az=player.pos.z+player.vel.z*.22+rand(-.55,.55);
-    }else{
-      const tp=this.target.group.position;
-      ax=tp.x+this.target.vx*.2+rand(-.5,.5);
-      ay=tp.y+rand(-.3,.3);
-      az=tp.z+this.target.vz*.2+rand(-.5,.5);
-    }
-    V4.set(ax,ay,az).sub(V3).normalize();
-    spawnBullet(V3,V4,this.team);
-    sfx.eshoot();
-  }
-}
-function removeDrone(d){
-  scene.remove(d.group);
-  const i=drones.indexOf(d);if(i>=0)drones.splice(i,1);
-  hitMeshes=hitMeshes.filter(m=>m.userData.drone!==d);
-}
-function killDrone(d,byPlayer){
-  const pos=d.group.position.clone();
-  const wasAlly=d.team==='kawan';
-  removeDrone(d);
-  if(!wasAlly){
-    enemiesAlive--;
-    stats.kills++;
-    if(byPlayer){
-      if(t-lastKill<4)mult=Math.min(5,mult+1);else mult=1;
-      lastKill=t;
-      const gain=100*mult;stats.score+=gain;
-      popup('+'+gain+(mult>1?'  ×'+mult:''),mult>1?'mult':'');
-    }
-    if(byPlayer)hitmark(true);
-    sfx.kill();buzz(byPlayer?40:0);
-    spawnBurst(pos,1,.5,.15,42,6.5,.85,.16,5);
-    trauma=Math.max(trauma,.12);
-    if(mode==='5v5'){
-      teamP++;updateTeamsHUD();
-      if(!byPlayer)popup('ELIMINASI TIM','ally');
-      if(teamP>=TEAM_TARGET){endMatch(true);return;}
-      pending.push({team:'musuh',timer:4.5});
-    }
-    if(Math.random()<.22)spawnPickup(pos);
-    updateScoreHUD();
-  }else{
-    alliesAlive--;
-    spawnBurst(pos,.35,.75,1,36,6,.8,.15,5);
-    sfx.kill();
-    if(mode==='5v5'){
-      teamE++;updateTeamsHUD();
-      popup('SEKUTU JATUH','enemy');
-      if(teamE>=TEAM_TARGET){endMatch(false);return;}
-      pending.push({team:'kawan',timer:4.5});
-    }
-  }
-  updateThreatHUD();
-}
+    });
 
-/* ---------- proyektil ---------- */
-const bullets=[];
-const bulletGeo=new THREE.SphereGeometry(.13,8,6);
-const enemyBulMat=new THREE.MeshBasicMaterial({color:0xff5a30});
-const allyBulMat=new THREE.MeshBasicMaterial({color:0x45c8ff});
-for(let i=0;i<30;i++){
-  const mesh=new THREE.Mesh(bulletGeo,enemyBulMat);
-  const s=new THREE.Sprite(new THREE.SpriteMaterial({map:softTex,color:0xff4520,transparent:true,blending:THREE.AdditiveBlending,depthWrite:false}));
-  s.scale.set(.6,.6,1);mesh.add(s);
-  mesh.visible=false;scene.add(mesh);
-  bullets.push({mesh,glow:s,vel:new THREE.Vector3(),active:false,life:0,team:'musuh'});
-}
-function spawnBullet(pos,dir,team){
-  const b=bullets.find(x=>!x.active);if(!b)return;
-  b.active=true;b.life=5;b.team=team;
-  b.mesh.visible=true;b.mesh.position.copy(pos);
-  b.mesh.material=team==='kawan'?allyBulMat:enemyBulMat;
-  b.glow.material.color.setHex(team==='kawan'?0x45c8ff:0xff4520);
-  b.vel.copy(dir).multiplyScalar(15.5);
-}
-function updateBullets(dt){
-  for(const b of bullets){
-    if(!b.active)continue;
-    b.life-=dt;
-    const p=b.mesh.position;
-    p.addScaledVector(b.vel,dt);
-    let dead=false,spark=false;
-    if(b.life<=0)dead=true;
-    else if(Math.abs(p.x)>27.4||Math.abs(p.z)>27.4||p.y<.05||p.y>14){dead=true;spark=true;}
-    else{
-      for(const c of circleCols){
-        const dx=p.x-c.x,dz=p.z-c.z;
-        if(dx*dx+dz*dz<(c.r+.13)*(c.r+.13)){dead=true;spark=true;break;}
-      }
-      if(!dead)for(const c of covers){
-        if(Math.abs(p.x-c.x)<c.hw&&Math.abs(p.z-c.z)<c.hd&&p.y<c.h+.25){dead=true;spark=true;break;}
-      }
-      if(!dead&&b.team==='musuh'){
-        if(!playerDead&&playerInvT<=0){
-          const dx=p.x-player.pos.x,dy=p.y-(player.pos.y+1.1),dz=p.z-player.pos.z;
-          if(dx*dx+dy*dy+dz*dz<.62){damagePlayer(Math.min(16,9+stats.wave));dead=true;}
+    const daftarBtn = document.getElementById('daftarBtn');
+    const registerSheet = document.getElementById('registerSheet');
+    const registerOverlay = document.getElementById('registerOverlay');
+    const registerClose = document.getElementById('registerClose');
+
+    function openRegister() {
+      registerSheet.classList.add('show');
+      registerOverlay.classList.add('show');
+    }
+    function closeRegister() {
+      registerSheet.classList.remove('show');
+      registerOverlay.classList.remove('show');
+    }
+
+    daftarBtn.addEventListener('click', openRegister);
+    registerClose.addEventListener('click', closeRegister);
+    registerOverlay.addEventListener('click', closeRegister);
+
+    // Toggle mata (show/hide password)
+    document.querySelectorAll('.toggle-eye').forEach(function(btn) {
+      const input = document.getElementById(btn.dataset.target);
+      input.addEventListener('input', function() {
+        if (input.value.length > 0) {
+          btn.classList.add('show');
+        } else {
+          btn.classList.remove('show');
         }
-        if(!dead)for(const a of drones){
-          if(a.team!=='kawan'||a.hp<=0)continue;
-          const dx=p.x-a.group.position.x,dy=p.y-a.group.position.y,dz=p.z-a.group.position.z;
-          if(dx*dx+dy*dy+dz*dz<.36){
-            a.hp--;a.flash=1;dead=true;spark=true;
-            if(a.hp<=0)killDrone(a,false);
-            break;
+      });
+      btn.addEventListener('click', function() {
+        const eyeOpen = btn.querySelector('.eye-open');
+        const eyeClosed = btn.querySelector('.eye-closed');
+        if (input.type === 'password') {
+          input.type = 'text';
+          eyeOpen.style.display = 'block';
+          eyeClosed.style.display = 'none';
+        } else {
+          input.type = 'password';
+          eyeOpen.style.display = 'none';
+          eyeClosed.style.display = 'block';
+        }
+      });
+    });
+
+    // ---- Supabase Auth ----
+    const SUPABASE_URL = "https://xvvnnqpjiyervgnyffqs.supabase.co";
+    const SUPABASE_ANON_KEY = "sb_publishable_Qp9izsQ77Ym9vzSBxwd--A_AZxfy4vs";
+    const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    // ---- Muat daftar game dari Supabase (tabel "games") ----
+    async function loadGames() {
+      const gamesRow = document.getElementById('gamesRow');
+      const { data, error } = await sb
+        .from('games')
+        .select('id, title, image_url')
+        .order('sort_order', { ascending: true });
+
+      if (error || !data || data.length === 0) {
+        gamesRow.innerHTML = '<div style="color:#8a8a8e;font-size:13px;padding:8px 0;">Belum ada game.</div>';
+        return;
+      }
+
+      gamesRow.innerHTML = data.map(function(game) {
+        const imgHtml = game.image_url
+          ? '<img src="' + game.image_url + '" alt="' + game.title + '" style="width:100%;height:100%;object-fit:cover;border-radius:12px;display:block;">'
+          : '';
+        return '<div class="game-card">' +
+          '<a href="game-detail/?id=' + game.id + '" style="text-decoration:none;">' +
+          '<div class="game-card-img">' + imgHtml + '</div>' +
+          '</a></div>';
+      }).join('');
+    }
+    loadGames();
+
+    // Tombol panah kiri/kanan buat geser daftar game
+    document.getElementById('gamesPrev').addEventListener('click', function() {
+      document.getElementById('gamesRow').scrollBy({ left: -260, behavior: 'smooth' });
+    });
+    document.getElementById('gamesNext').addEventListener('click', function() {
+      document.getElementById('gamesRow').scrollBy({ left: 260, behavior: 'smooth' });
+    });
+
+    function setMsg(el, text, isError) {
+      el.textContent = text;
+      el.style.color = isError ? "#ff5c5c" : "#23c65b";
+    }
+
+    // Daftar (Sign Up)
+    const registerSubmitBtn = document.getElementById('registerSubmitBtn');
+    const registerMsg = document.getElementById('registerMsg');
+    registerSubmitBtn.addEventListener('click', async function() {
+      const email = document.getElementById('regEmail').value.trim();
+      const password = document.getElementById('regPass').value;
+      const agreed = document.getElementById('termsCheck').checked;
+
+      if (!email || !password) {
+        setMsg(registerMsg, "Isi email dan kata sandi dulu.", true);
+        return;
+      }
+      if (password.length < 8) {
+        setMsg(registerMsg, "Kata sandi minimal 8 karakter.", true);
+        return;
+      }
+      if (!agreed) {
+        setMsg(registerMsg, "Setujui perjanjian pengguna dulu.", true);
+        return;
+      }
+
+      registerSubmitBtn.disabled = true;
+      setMsg(registerMsg, "Memproses...", false);
+
+      const { data, error } = await sb.auth.signUp({ email, password });
+
+      registerSubmitBtn.disabled = false;
+
+      if (error) {
+        setMsg(registerMsg, error.message, true);
+      } else {
+        setMsg(registerMsg, "Berhasil daftar! Cek email untuk verifikasi.", false);
+      }
+    });
+
+    // Masuk (Sign In)
+    const loginSubmitBtn = document.getElementById('loginSubmitBtn');
+    const loginMsg = document.getElementById('loginMsg');
+    loginSubmitBtn.addEventListener('click', async function() {
+      const email = document.getElementById('loginEmail').value.trim();
+      const password = document.getElementById('loginPass').value;
+
+      if (!email || !password) {
+        setMsg(loginMsg, "Isi email dan kata sandi dulu.", true);
+        return;
+      }
+
+      loginSubmitBtn.disabled = true;
+      setMsg(loginMsg, "Memproses...", false);
+
+      const { data, error } = await sb.auth.signInWithPassword({ email, password });
+
+      loginSubmitBtn.disabled = false;
+
+      if (error) {
+        setMsg(loginMsg, error.message, true);
+      } else {
+        setMsg(loginMsg, "Berhasil masuk!", false);
+        setTimeout(closeLogin, 800);
+      }
+    });
+
+    // Pantau status login, ubah tombol header jika sudah login
+    function refreshUnameDisplays() {
+      const unameSpan = document.querySelector('#masukRow .uname');
+      if (unameSpan) unameSpan.textContent = currentUname;
+      const profileUnameEl = document.getElementById('profileUname');
+      if (profileUnameEl) profileUnameEl.textContent = currentUname;
+    }
+    sb.auth.onAuthStateChange((event, session) => {
+      if (session) {
+        if (document.getElementById('masukBtn')) {
+          masukBtn.outerHTML = '<button class="btn-bell" id="bellBtn"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a6 6 0 0 0-6 6v3.2c0 .6-.2 1.2-.6 1.7L4 15.5c-.6.8 0 2 1 2h14c1 0 1.6-1.2 1-2l-1.4-2.6c-.4-.5-.6-1.1-.6-1.7V8a6 6 0 0 0-6-6z"/><path d="M9.5 20a2.5 2.5 0 0 0 5 0" fill="none" stroke="currentColor" stroke-width="1.6"/></svg></button>';
+        }
+        daftarBtn.style.display = "none";
+
+        const themeBtnEl = document.getElementById('themeToggleBtn');
+        if (themeBtnEl) themeBtnEl.style.display = "flex";
+
+        // Nama: pakai yang sudah disimpan user (kalau ada), atau generate acak dari user id
+        const uid = session.user.id.replace(/-/g, '');
+        let uname = session.user.user_metadata && session.user.user_metadata.display_name;
+        if (!uname) {
+          const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+          uname = '';
+          for (let i = 0; i < 10; i++) {
+            const idx = parseInt(uid.substr((i * 2) % uid.length, 2), 16) % chars.length;
+            uname += chars[idx];
           }
         }
-      }
-      if(!dead&&b.team==='kawan'){
-        for(const e of drones){
-          if(e.team!=='musuh'||e.hp<=0)continue;
-          const dx=p.x-e.group.position.x,dy=p.y-e.group.position.y,dz=p.z-e.group.position.z;
-          if(dx*dx+dy*dy+dz*dz<.36){
-            e.hp--;e.flash=1;dead=true;spark=true;
-            if(e.hp<=0)killDrone(e,false);
-            break;
-          }
+        const idNum = (parseInt(uid.substr(0, 8), 16) % 900000000 + 100000000).toString();
+
+        const labelEl = document.getElementById('drawerUserLabel');
+        if (labelEl) {
+          labelEl.outerHTML =
+            '<div class="drawer-user-info"><span class="uname">' + uname + '</span><span class="uid">ID ' + idNum + '</span></div>';
+        } else {
+          document.querySelector('#masukRow .uname').textContent = uname;
         }
+        document.getElementById('avatarDot').style.display = 'block';
+
+        isLoggedIn = true;
+        currentUname = uname;
+        currentUid = idNum;
+        currentEmail = session.user.email || '-';
+        currentEmailConfirmed = !!session.user.email_confirmed_at;
+        currentDob = (session.user.user_metadata && session.user.user_metadata.birthdate) || '';
+        refreshUnameDisplays();
+      }
+    });
+
+    // Modal Profil
+    const profileSheet = document.getElementById('profileSheet');
+    const profileOverlay = document.getElementById('profileOverlay');
+    const profileClose = document.getElementById('profileClose');
+
+    function openProfile() {
+      profileSheet.classList.add('show');
+      profileOverlay.classList.add('show');
+    }
+    function closeProfile() {
+      profileSheet.classList.remove('show');
+      profileOverlay.classList.remove('show');
+    }
+    profileClose.addEventListener('click', closeProfile);
+    profileOverlay.addEventListener('click', closeProfile);
+
+    document.getElementById('profileUidCopy').addEventListener('click', function() {
+      navigator.clipboard.writeText(currentUid);
+    });
+
+    // Modal Pengaturan
+    const settingsRow = document.getElementById('settingsRow');
+    const settingsSheet = document.getElementById('settingsSheet');
+    const settingsOverlay = document.getElementById('settingsOverlay');
+    const settingsClose = document.getElementById('settingsClose');
+    const settingsBack = document.getElementById('settingsBack');
+
+    function openSettings() {
+      document.getElementById('settingsNama').textContent = currentUname;
+      document.getElementById('settingsEmail').textContent = currentEmail || '-';
+      document.getElementById('settingsDob').textContent = currentDob ? formatDob(currentDob) : 'Belum diatur';
+      const warnIcon = document.getElementById('emailWarnIcon');
+      const warnText = document.getElementById('emailWarnText');
+      if (currentEmailConfirmed) {
+        warnIcon.style.display = 'none';
+        warnText.style.display = 'none';
+      } else {
+        warnIcon.style.display = 'block';
+        warnText.style.display = 'block';
+      }
+      settingsSheet.classList.add('show');
+      settingsOverlay.classList.add('show');
+      settingsSheet.scrollTop = 0;
+      document.getElementById('settingsHeaderTitle').classList.remove('show');
+    }
+    function closeSettings() {
+      settingsSheet.classList.remove('show');
+      settingsOverlay.classList.remove('show');
+    }
+    function formatDob(iso) {
+      const [y, m, d] = iso.split('-');
+      return d + '/' + m + '/' + y;
+    }
+
+    settingsRow.addEventListener('click', function() {
+      closeProfile();
+      openSettings();
+    });
+    settingsClose.addEventListener('click', closeSettings);
+    settingsOverlay.addEventListener('click', closeSettings);
+    settingsBack.addEventListener('click', function() {
+      closeSettings();
+      openProfile();
+    });
+
+    // Animasi judul collapse saat scroll di halaman Pengaturan
+    const settingsHeaderTitle = document.getElementById('settingsHeaderTitle');
+    settingsSheet.addEventListener('scroll', function() {
+      if (settingsSheet.scrollTop > 40) {
+        settingsHeaderTitle.classList.add('show');
+      } else {
+        settingsHeaderTitle.classList.remove('show');
+      }
+    });
+
+    // ---- Ubah Nama ----
+    const namaRow = document.getElementById('namaRow');
+    const editNameSheet = document.getElementById('editNameSheet');
+    const editNameOverlay = document.getElementById('editNameOverlay');
+    const editNameClose = document.getElementById('editNameClose');
+    const editNameBack = document.getElementById('editNameBack');
+    const editNameInput = document.getElementById('editNameInput');
+    const editNameSubmit = document.getElementById('editNameSubmit');
+
+    function openEditName() {
+      editNameInput.value = currentUname;
+      editNameSubmit.disabled = true;
+      editNameSubmit.classList.remove('enabled');
+      editNameSheet.classList.add('show');
+      editNameOverlay.classList.add('show');
+    }
+    function closeEditName() {
+      editNameSheet.classList.remove('show');
+      editNameOverlay.classList.remove('show');
+    }
+    namaRow.addEventListener('click', function() {
+      closeSettings();
+      openEditName();
+    });
+    editNameClose.addEventListener('click', closeEditName);
+    editNameOverlay.addEventListener('click', closeEditName);
+    editNameBack.addEventListener('click', function() {
+      closeEditName();
+      openSettings();
+    });
+    editNameInput.addEventListener('input', function() {
+      const changed = editNameInput.value.trim() !== '' && editNameInput.value.trim() !== currentUname;
+      editNameSubmit.disabled = !changed;
+      editNameSubmit.classList.toggle('enabled', changed);
+    });
+    editNameSubmit.addEventListener('click', async function() {
+      const newName = editNameInput.value.trim();
+      if (!newName) return;
+      editNameSubmit.disabled = true;
+      await sb.auth.updateUser({ data: { display_name: newName } });
+      currentUname = newName;
+      refreshUnameDisplays();
+      closeEditName();
+      openSettings();
+    });
+
+    // ---- Ubah Tanggal Lahir ----
+    const dobRow = document.getElementById('dobRow');
+    const editDobSheet = document.getElementById('editDobSheet');
+    const editDobOverlay = document.getElementById('editDobOverlay');
+    const editDobClose = document.getElementById('editDobClose');
+    const editDobBack = document.getElementById('editDobBack');
+    const editDobInput = document.getElementById('editDobInput');
+    const editDobSubmit = document.getElementById('editDobSubmit');
+
+    function openEditDob() {
+      editDobInput.value = currentDob || '';
+      editDobSheet.classList.add('show');
+      editDobOverlay.classList.add('show');
+    }
+    function closeEditDob() {
+      editDobSheet.classList.remove('show');
+      editDobOverlay.classList.remove('show');
+    }
+    dobRow.addEventListener('click', function() {
+      closeSettings();
+      openEditDob();
+    });
+    editDobClose.addEventListener('click', closeEditDob);
+    editDobOverlay.addEventListener('click', closeEditDob);
+    editDobBack.addEventListener('click', function() {
+      closeEditDob();
+      openSettings();
+    });
+    editDobSubmit.addEventListener('click', async function() {
+      const val = editDobInput.value;
+      if (!val) return;
+      await sb.auth.updateUser({ data: { birthdate: val } });
+      currentDob = val;
+      closeEditDob();
+      openSettings();
+    });
+
+    // ---- Ubah Kata Sandi ----
+    const passwordRow = document.getElementById('passwordRow');
+    const editPassSheet = document.getElementById('editPassSheet');
+    const editPassOverlay = document.getElementById('editPassOverlay');
+    const editPassClose = document.getElementById('editPassClose');
+    const editPassBack = document.getElementById('editPassBack');
+    const editCurrentPass = document.getElementById('editCurrentPass');
+    const editNewPass = document.getElementById('editNewPass');
+    const editPassSubmit = document.getElementById('editPassSubmit');
+    const editPassMsg = document.getElementById('editPassMsg');
+
+    function openEditPass() {
+      editCurrentPass.value = '';
+      editNewPass.value = '';
+      document.getElementById('editNewPass2').value = '';
+      editPassMsg.textContent = '';
+      editPassSheet.classList.add('show');
+      editPassOverlay.classList.add('show');
+    }
+    function closeEditPass() {
+      editPassSheet.classList.remove('show');
+      editPassOverlay.classList.remove('show');
+    }
+    passwordRow.addEventListener('click', function() {
+      closeSettings();
+      openEditPass();
+    });
+    editPassClose.addEventListener('click', closeEditPass);
+    editPassOverlay.addEventListener('click', closeEditPass);
+    editPassBack.addEventListener('click', function() {
+      closeEditPass();
+      openSettings();
+    });
+
+    function diffPercent(a, b) {
+      if (!a) return 100;
+      const maxLen = Math.max(a.length, b.length);
+      let same = 0;
+      for (let i = 0; i < Math.min(a.length, b.length); i++) {
+        if (a[i] === b[i]) same++;
+      }
+      return ((maxLen - same) / maxLen) * 100;
+    }
+
+    editPassSubmit.addEventListener('click', async function() {
+      const curPass = editCurrentPass.value;
+      const newPass = editNewPass.value;
+      const newPass2 = document.getElementById('editNewPass2').value;
+
+      if (!curPass || !newPass || !newPass2) {
+        editPassMsg.style.color = '#ff5c5c';
+        editPassMsg.textContent = 'Lengkapi semua kolom.';
+        return;
+      }
+      if (newPass.length < 8) {
+        editPassMsg.style.color = '#ff5c5c';
+        editPassMsg.textContent = 'Kata sandi baru minimal 8 karakter.';
+        return;
+      }
+      if (!/[0-9]/.test(newPass)) {
+        editPassMsg.style.color = '#ff5c5c';
+        editPassMsg.textContent = 'Kata sandi baru harus menyertakan 1 angka.';
+        return;
+      }
+      if (!/[a-z]/.test(newPass) || !/[A-Z]/.test(newPass)) {
+        editPassMsg.style.color = '#ff5c5c';
+        editPassMsg.textContent = 'Kata sandi baru harus ada huruf besar dan kecil.';
+        return;
+      }
+      if (diffPercent(curPass, newPass) < 50) {
+        editPassMsg.style.color = '#ff5c5c';
+        editPassMsg.textContent = 'Kata sandi baru harus cukup berbeda dari yang lama.';
+        return;
+      }
+      if (newPass !== newPass2) {
+        editPassMsg.style.color = '#ff5c5c';
+        editPassMsg.textContent = 'Kata sandi baru tidak cocok.';
+        return;
+      }
+
+      editPassSubmit.disabled = true;
+      editPassMsg.style.color = '#9a9a9a';
+      editPassMsg.textContent = 'Memproses...';
+
+      const { error: verifyError } = await sb.auth.signInWithPassword({ email: currentEmail, password: curPass });
+      if (verifyError) {
+        editPassSubmit.disabled = false;
+        editPassMsg.style.color = '#ff5c5c';
+        editPassMsg.textContent = 'Kata sandi saat ini salah.';
+        return;
+      }
+
+      const { error } = await sb.auth.updateUser({ password: newPass });
+      editPassSubmit.disabled = false;
+      if (error) {
+        editPassMsg.style.color = '#ff5c5c';
+        editPassMsg.textContent = error.message;
+      } else {
+        editPassMsg.style.color = '#23c65b';
+        editPassMsg.textContent = 'Kata sandi berhasil diubah!';
+        setTimeout(function() {
+          closeEditPass();
+          openSettings();
+        }, 900);
+      }
+    });
+
+    // ---- Sesi aktif: akhiri sesi di perangkat lain ----
+    const endSessionsBtn = document.getElementById('endSessionsBtn');
+    const endSessionSheet = document.getElementById('endSessionSheet');
+    const endSessionOverlay = document.getElementById('endSessionOverlay');
+    const endSessionClose = document.getElementById('endSessionClose');
+    const endSessionConfirm = document.getElementById('endSessionConfirm');
+
+    function openEndSession() {
+      endSessionSheet.classList.add('show');
+      endSessionOverlay.classList.add('show');
+    }
+    function closeEndSession() {
+      endSessionSheet.classList.remove('show');
+      endSessionOverlay.classList.remove('show');
+    }
+    endSessionsBtn.addEventListener('click', openEndSession);
+    endSessionClose.addEventListener('click', closeEndSession);
+    endSessionOverlay.addEventListener('click', closeEndSession);
+    endSessionConfirm.addEventListener('click', async function() {
+      endSessionConfirm.disabled = true;
+      endSessionConfirm.textContent = 'Memproses...';
+      await sb.auth.signOut({ scope: 'others' });
+      endSessionConfirm.textContent = 'Berhasil!';
+      setTimeout(function() {
+        endSessionConfirm.disabled = false;
+        endSessionConfirm.textContent = 'Akhiri';
+        closeEndSession();
+      }, 900);
+    });
+
+    // ---- Keluar dari akun ----
+    const logoutBtn = document.getElementById('logoutBtn');
+    logoutBtn.addEventListener('click', async function() {
+      await sb.auth.signOut();
+      location.reload();
+    });
+
+    // ---- Notifikasi ----
+    const notifSheet = document.getElementById('notifSheet');
+    const notifOverlay = document.getElementById('notifOverlay');
+    const notifClose = document.getElementById('notifClose');
+
+    function openNotif() {
+      notifSheet.classList.add('show');
+      notifOverlay.classList.add('show');
+    }
+    function closeNotif() {
+      notifSheet.classList.remove('show');
+      notifOverlay.classList.remove('show');
+    }
+    notifClose.addEventListener('click', closeNotif);
+    notifOverlay.addEventListener('click', closeNotif);
+
+    // Delegasi klik lonceng (elemen dibuat dinamis saat login)
+    document.body.addEventListener('click', function(e) {
+      if (e.target.closest('#bellBtn')) {
+        openNotif();
+      }
+    });
+
+    // Switch tab notifikasi
+    const notifContentSemua = document.getElementById('notifContentSemua');
+    const notifContentDefault = document.getElementById('notifContentDefault');
+    document.querySelectorAll('.notif-tab').forEach(function(tab) {
+      tab.addEventListener('click', function() {
+        document.querySelectorAll('.notif-tab').forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+        if (tab.dataset.tab === 'pribadi') {
+          notifContentSemua.style.display = 'block';
+          notifContentDefault.style.display = 'none';
+        } else {
+          notifContentSemua.style.display = 'none';
+          notifContentDefault.style.display = 'block';
+        }
+      });
+    });
+
+    // ---- Media Sosial ----
+    const moreSocialBtn = document.getElementById('moreSocialBtn');
+    const socialListSheet = document.getElementById('socialListSheet');
+    const socialListOverlay = document.getElementById('socialListOverlay');
+    const socialListClose = document.getElementById('socialListClose');
+
+    function openSocialList() {
+      socialListSheet.classList.add('show');
+      socialListOverlay.classList.add('show');
+    }
+    function closeSocialList() {
+      socialListSheet.classList.remove('show');
+      socialListOverlay.classList.remove('show');
+    }
+    moreSocialBtn.addEventListener('click', openSocialList);
+    socialListClose.addEventListener('click', closeSocialList);
+    socialListOverlay.addEventListener('click', closeSocialList);
+
+    // ================= ROUTING (ganti tampilan tanpa pindah file) =================
+    function showView(name) {
+      document.getElementById('viewHome').style.display = (name === 'home') ? '' : 'none';
+      document.getElementById('viewFavorit').style.display = (name === 'favorit') ? '' : 'none';
+      document.getElementById('viewNews').style.display = (name === 'news') ? '' : 'none';
+
+      document.getElementById('navHome').classList.toggle('active', name === 'home');
+      document.getElementById('navFavorit').classList.toggle('active', name === 'favorit');
+      document.getElementById('navNews').classList.toggle('active', name === 'news');
+
+      window.scrollTo(0, 0);
+
+      if (name === 'favorit') {
+        renderFavorites();
+      }
+      if (name === 'news') {
+        renderNews();
       }
     }
-    if(dead){
-      b.active=false;b.mesh.visible=false;
-      if(spark)spawnBurst(p,1,.5,.25,6,2.5,.25,.05,4);
+
+    // ---- Baca hash URL saat halaman dibuka langsung ke #favorit / #gameDetail ----
+    // ================= FAVORIT =================
+    function getFavorites() {
+      try {
+        return JSON.parse(localStorage.getItem('orbitxy_favorites') || '[]');
+      } catch(e) { return []; }
     }
-  }
-}
-
-/* ---------- kapsul medis ---------- */
-const pickups=[];
-const pickupMat=new THREE.MeshStandardMaterial({color:0x0f2f1e,emissive:0x2fd475,emissiveIntensity:.9,roughness:.3,metalness:.2});
-const pickupGeo=new THREE.OctahedronGeometry(.3);
-function spawnPickup(pos){
-  const g=new THREE.Group();
-  const m=new THREE.Mesh(pickupGeo,pickupMat);m.castShadow=true;
-  const s=new THREE.Sprite(new THREE.SpriteMaterial({map:softTex,color:0x45e08a,transparent:true,blending:THREE.AdditiveBlending,depthWrite:false}));
-  s.scale.set(.9,.9,1);
-  g.add(m,s);g.position.set(pos.x,1.05,pos.z);
-  scene.add(g);
-  pickups.push({g,life:16,phase:Math.random()*6});
-}
-function updatePickups(dt){
-  for(let i=pickups.length-1;i>=0;i--){
-    const p=pickups[i];
-    p.life-=dt;p.g.rotation.y+=dt*2.2;
-    p.g.position.y=1.05+Math.sin(t*2.5+p.phase)*.14;
-    p.g.visible=p.life>3||Math.sin(t*12)>-.2;
-    const dx=p.g.position.x-player.pos.x,dz=p.g.position.z-player.pos.z;
-    if(!playerDead&&dx*dx+dz*dz<1.56&&Math.abs(player.pos.y+1-p.g.position.y)<1.6){
-      hp=Math.min(100,hp+25);
-      popup('+25 INTEGRITAS','heal');sfx.pick();buzz(20);updateHpHUD();
-      scene.remove(p.g);pickups.splice(i,1);
-    }else if(p.life<=0){scene.remove(p.g);pickups.splice(i,1);}
-  }
-}
-
-/* ---------- gelombangan (LATIHAN) ---------- */
-let wavePhase='idle',waveTimer=0,toSpawn=0,spawnedCount=0,enemiesAlive=0,spawnTimer=0,maxAlive=5,spawnInt=1.6;
-let pendingNext=1;
-function startWave(n){
-  stats.wave=n;
-  toSpawn=Math.min(17,3+n*2);spawnedCount=0;spawnTimer=1.2;
-  maxAlive=Math.min(9,4+n);spawnInt=Math.max(.9,1.7-n*.08);
-  wavePhase='active';
-  showBanner('GELOMBANG '+String(n).padStart(2,'0'),toSpawn+' UNIT HOSTIL TERDETEKSI');
-  sfx.wave();updateThreatHUD();
-}
-function spawnEnemy(){
-  const side=Math.floor(Math.random()*4);let x,z;
-  if(side===0){x=-26.5;z=rand(-24,24);}
-  else if(side===1){x=26.5;z=rand(-24,24);}
-  else if(side===2){z=-26.5;x=rand(-24,24);}
-  else{z=26.5;x=rand(-24,24);}
-  new Drone(x,z,'musuh');
-  spawnedCount++;enemiesAlive++;
-  sfx.spawn();updateThreatHUD();
-}
-function updateWave(dt){
-  if(wavePhase==='delay'){
-    waveTimer-=dt;
-    if(waveTimer<=0)startWave(pendingNext);
-  }else if(wavePhase==='active'){
-    if(spawnedCount<toSpawn&&enemiesAlive<maxAlive){
-      spawnTimer-=dt;
-      if(spawnTimer<=0){spawnEnemy();spawnTimer=spawnInt;}
+    function setFavorites(arr) {
+      localStorage.setItem('orbitxy_favorites', JSON.stringify(arr));
     }
-    if(spawnedCount>=toSpawn&&enemiesAlive===0){
-      wavePhase='break';waveTimer=4;
-      stats.score+=250;hp=Math.min(100,hp+15);
-      showBanner('GELOMBANG DIBERSIHKAN','+250 BONUS // INTEGRITAS +15');
-      sfx.pick();updateScoreHUD();updateHpHUD();
+    function isFavorite(id) {
+      return getFavorites().includes(String(id));
     }
-  }else if(wavePhase==='break'){
-    waveTimer-=dt;
-    if(waveTimer<=0)startWave(stats.wave+1);
-  }
-}
-
-/* ---------- mode 5 VS 5 ---------- */
-function spawnCombatant(team){
-  const x=rand(-10,10);
-  const z=team==='kawan'?rand(20,25):rand(-25,-20);
-  new Drone(x,z,team);
-  sfx.spawn();
-}
-function updateRespawns(dt){
-  for(let i=pending.length-1;i>=0;i--){
-    pending[i].timer-=dt;
-    if(pending[i].timer<=0){
-      spawnCombatant(pending[i].team);
-      pending.splice(i,1);
-    }
-  }
-}
-function updateTeamsHUD(){
-  tP.textContent='KITA '+String(teamP).padStart(2,'0');
-  tE.textContent=String(teamE).padStart(2,'0')+' MUSUH';
-}
-
-/* ---------- HUD ---------- */
-let shownHp=-1,shownAmmo=-1,hmT=0;
-function updateHpHUD(){
-  const v=Math.max(0,Math.round(hp));
-  if(v!==shownHp){
-    shownHp=v;elHp.textContent=String(v).padStart(3,'0');
-    hpFill.style.width=v+'%';
-    hpFill.classList.toggle('low',v<35);
-    vigLow.classList.toggle('on',v<30&&v>0);
-  }
-}
-function updateAmmoHUD(){
-  if(ammo!==shownAmmo){
-    shownAmmo=ammo;elAmmo.textContent=String(ammo).padStart(2,'0');
-    elAmmo.classList.toggle('low',ammo<=6);
-  }
-  elReload.classList.toggle('on',reloading);
-}
-function updateScoreHUD(){
-  elScore.textContent=String(stats.score).padStart(6,'0');
-  elMult.textContent='RANTAI ×'+mult;
-  elMult.classList.toggle('show',mult>1);
-}
-function updateThreatHUD(){
-  elThreat.textContent='ANCAMAN '+String(Math.max(0,enemiesAlive)).padStart(2,'0');
-}
-function hitmark(kill){
-  hmEl.classList.toggle('kill',kill);
-  hmEl.classList.add('show');
-  clearTimeout(hmT);
-  hmT=setTimeout(()=>hmEl.classList.remove('show'),kill?200:110);
-}
-function popup(txt,cls){
-  const d=document.createElement('div');
-  d.className='pop '+(cls||'');d.textContent=txt;
-  d.style.left='calc(50% + '+Math.round(rand(20,55))+'px)';
-  d.style.top='calc(50% - '+Math.round(rand(24,40))+'px)';
-  pops.appendChild(d);
-  setTimeout(()=>d.remove(),900);
-}
-function showBanner(title,sub){
-  bnT.textContent=title;bnS.textContent=sub;
-  banner.classList.remove('show');
-  void banner.offsetWidth;
-  banner.classList.add('show');
-}
-function hurtFlash(){
-  vig.style.transition='none';vig.style.opacity=.9;
-  requestAnimationFrame(()=>requestAnimationFrame(()=>{
-    vig.style.transition='opacity .5s';vig.style.opacity=0;
-  }));
-}
-
-/* ---------- damage & alur permainan ---------- */
-function damagePlayer(d){
-  if(state!=='playing'||playerDead||playerInvT>0)return;
-  hp-=d;lastHurt=t;
-  trauma=Math.max(trauma,.45);
-  hurtFlash();sfx.hurt();buzz(60);updateHpHUD();
-  if(hp<=0){
-    hp=0;updateHpHUD();
-    if(mode==='5v5'){
-      playerDead=true;playerRespawnT=3;
-      stats.deaths++;firing=false;clearKeys();
-      teamE++;updateTeamsHUD();
-      respawnEl.classList.add('on');
-      sfx.lose();
-      if(teamE>=TEAM_TARGET)endMatch(false);
-    }else gameOver();
-  }
-}
-function clearKeys(){
-  for(const k in keys)keys[k]=false;
-  firing=false;
-}
-function fillStats(l2Label,l2Value){
-  $('stScore').textContent=String(stats.score).padStart(6,'0');
-  $('stL2').textContent=l2Label;
-  $('stV2').textContent=l2Value;
-  $('stKills').textContent=String(stats.kills).padStart(3,'0');
-  $('stAcc').textContent=(stats.shots?Math.round(stats.hits/stats.shots*100):0)+'%';
-}
-function closeGameUI(){
-  try{document.exitPointerLock&&document.exitPointerLock();}catch(e){}
-  hud.classList.remove('on');weapon.visible=false;
-  document.body.classList.remove('playing');
-  elTeams.classList.remove('on');
-  respawnEl.classList.remove('on');
-  playerDead=false;clearKeys();
-}
-function gameOver(){
-  state='over';firing=false;closeGameUI();
-  $('stTitle').textContent='UNIT-02 OFFLINE';
-  $('stTitle').style.color='var(--red)';
-  $('stSub').textContent='SINYAL HILANG // LOG OPERASI TERSIMPAN';
-  fillStats('Gelombang',String(stats.wave).padStart(2,'0'));
-  ovOver.classList.remove('hidden');
-  sfx.over();
-}
-function endMatch(win){
-  state='over';firing=false;closeGameUI();
-  $('stTitle').textContent=win?'KEMENANGAN':'KEKALAHAN';
-  $('stTitle').style.color=win?'var(--amber)':'var(--red)';
-  $('stSub').textContent='TIM KITA '+teamP+' — '+teamE+' TIM MUSUH';
-  fillStats('Kematian',String(stats.deaths).padStart(2,'0'));
-  ovOver.classList.remove('hidden');
-  if(win)sfx.win();else sfx.over();
-}
-function removeDeco(){
-  for(const d of decoDrones)scene.remove(d.group);
-  decoDrones.length=0;
-}
-function resetGame(){
-  for(const d of drones.slice())removeDrone(d);
-  for(const b of bullets){b.active=false;b.mesh.visible=false;}
-  for(const p of pickups)scene.remove(p.g);
-  pickups.length=0;
-  pending.length=0;
-  for(const b of bursts){b.life=0;b.pts.visible=false;}
-  for(const tr of tracers){tr.life=0;tr.m.visible=false;}
-  stats.score=0;stats.kills=0;stats.deaths=0;stats.shots=0;stats.hits=0;stats.wave=0;
-  hp=100;lastHurt=-10;ammo=24;reloading=false;heat=0;recoilA=0;recoilP=0;trauma=0;
-  mult=1;lastKill=-10;
-  teamP=0;teamE=0;alliesAlive=0;enemiesAlive=0;
-  playerDead=false;playerRespawnT=0;playerInvT=0;
-  player.pos.set(0,0,22);player.vel.set(0,0,0);
-  player.yaw=0;player.pitch=0;player.grounded=true;
-  wavePhase='idle';spawnedCount=0;toSpawn=0;
-  shownHp=-1;shownAmmo=-1;
-  vig.style.opacity=0;vigLow.classList.remove('on');
-  elTeams.classList.remove('on');respawnEl.classList.remove('on');
-  updateHpHUD();updateAmmoHUD();updateScoreHUD();updateThreatHUD();updateTeamsHUD();
-}
-
-/* ---------- pointer lock ---------- */
-let lockDead=false;
-function tryLock(){
-  if(IS_TOUCH||lockDead||!canvas.requestPointerLock)return;
-  try{
-    const p=canvas.requestPointerLock();
-    if(p&&p.catch)p.catch(()=>{});
-  }catch(e){lockDead=true;}
-}
-document.addEventListener('pointerlockerror',()=>{lockDead=true;});
-
-/* ---------- mulai / ulang / lobi ---------- */
-function beginGame(m){
-  mode=m;
-  initAudio();AC&&AC.resume&&AC.resume();startAmbience();
-  removeDeco();resetGame();
-  const theme=Math.random()<.5?'kota':'sawah';
-  setTheme(theme);
-  state='playing';
-  hud.classList.add('on');weapon.visible=true;
-  document.body.classList.add('playing');
-  if(m==='latihan'){
-    showBanner('AREA: '+(theme==='kota'?'PERKOTAAN':'SAWAH'),
-      theme==='kota'?'KAWASAN GELAP // JAGA PERSIMPANGAN':'SAWAH TERGENANG // AWAS KUNANG-KUNANG');
-    wavePhase='delay';waveTimer=2.2;pendingNext=1;
-  }else{
-    elTeams.classList.add('on');
-    for(let i=0;i<4;i++)spawnCombatant('kawan');
-    for(let i=0;i<5;i++)spawnCombatant('musuh');
-    showBanner('MODE 5 VS 5','TIM PERTAMA MENCAPAI '+TEAM_TARGET+' ELIMINASI MENANG');
-    updateTeamsHUD();updateThreatHUD();
-  }
-  sfx.wave();
-  tryLock();
-}
-function backToLobby(){
-  state='menu';
-  ovOver.classList.add('hidden');
-  resetGame();
-  setTheme(Math.random()<.5?'kota':'sawah');
-  for(let i=0;i<4;i++)new Drone(Math.cos(i/4*Math.PI*2)*10,Math.sin(i/4*Math.PI*2)*10,'musuh',true);
-  ovStart.classList.remove('hidden');
-}
- $('btnLatihan').addEventListener('click',()=>{ovStart.classList.add('hidden');beginGame('latihan');});
- $('btn5v5').addEventListener('click',()=>{ovStart.classList.add('hidden');beginGame('5v5');});
- $('btnAgain').addEventListener('click',()=>{ovOver.classList.add('hidden');beginGame(mode);});
- $('btnLobby').addEventListener('click',backToLobby);
-
-/* tombol pilih kontrol manual di lobi */
-const btnCtrl=$('btnCtrl');
-function refreshCtrlLabel(){btnCtrl.textContent='KONTROL: '+(IS_TOUCH?'SENTUH':'KEYBOARD')+' — KETUK UNTUK GANTI';}
-refreshCtrlLabel();
-btnCtrl.addEventListener('click',()=>{
-  enableTouchUI(!IS_TOUCH);
-  if(IS_TOUCH&&!autoFire)autoFire=true;
-  refreshCtrlLabel();
-});
-
-/* ---------- input keyboard & mouse ---------- */
-document.addEventListener('keydown',e=>{
-  keys[e.code]=true;
-  if(e.code==='Space'){
-    e.preventDefault();
-    if(state==='playing'&&!playerDead&&player.grounded){player.vel.y=8.2;player.grounded=false;}
-  }
-  if(e.code==='KeyR')startReload();
-  if(e.code==='Enter'&&state==='menu'&&!ovStart.classList.contains('hidden'))$('btnLatihan').click();
-});
-document.addEventListener('keyup',e=>keys[e.code]=false);
-
-let lastCX=null,lastCY=null;
-document.addEventListener('mousemove',e=>{
-  if(state!=='playing'||playerDead)return;
-  let mx=e.movementX,my=e.movementY;
-  if(mx===undefined){
-    if(lastCX===null){lastCX=e.clientX;lastCY=e.clientY;return;}
-    mx=e.clientX-lastCX;my=e.clientY-lastCY;
-    lastCX=e.clientX;lastCY=e.clientY;
-  }
-  mx=clamp(mx,-120,120);my=clamp(my,-120,120);
-  const s=.0021;
-  player.yaw-=mx*s;
-  player.pitch=clamp(player.pitch-my*s,-1.53,1.53);
-  swayT=clamp(swayT-mx*.00025,-.04,.04);
-});
-document.addEventListener('mousedown',e=>{
-  if(state!=='playing'||playerDead||e.button!==0)return;
-  firing=true;
-  if(!IS_TOUCH&&document.pointerLockElement!==canvas)tryLock();
-});
-document.addEventListener('mouseup',e=>{if(e.button===0)firing=false;});
-document.addEventListener('contextmenu',e=>{if(state!=='menu')e.preventDefault();});
-addEventListener('blur',clearKeys);
-document.addEventListener('visibilitychange',()=>{if(document.hidden)clearKeys();});
-addEventListener('resize',()=>{
-  camera.aspect=innerWidth/innerHeight;
-  camera.updateProjectionMatrix();
-  renderer.setSize(innerWidth,innerHeight);
-});
-
-/* ---------- input sentuh ---------- */
-const joyEl=$('joy');
-let joyId=null,joyBX=0,joyBY=0,lookId=null,lookLX=0,lookLY=0,lastLookMs=0;
-const LOOK_SENS=.0058,JOY_R=66;
-
-function applyLook(dx,dy,dtms,scale){
-  const speed=Math.hypot(dx,dy)/Math.max(4,dtms);
-  const sens=LOOK_SENS*(1+Math.min(1.6,speed*.65))*scale;
-  player.yaw-=dx*sens;
-  player.pitch=clamp(player.pitch-dy*sens,-1.53,1.53);
-  swayT=clamp(swayT-dx*.00025,-.04,.04);
-}
-
-canvas.addEventListener('touchstart',e=>{
-  e.preventDefault();
-  if(state!=='playing'||playerDead)return;
-  for(const tc of e.changedTouches){
-    if(tc.clientX<innerWidth*.5&&joyId===null){
-      joyId=tc.identifier;joyBX=tc.clientX;joyBY=tc.clientY;
-      joyOn=true;joyX=joyY=0;joySprint=false;
-      joyEl.classList.add('on');
-      joyEl.style.left=joyBX+'px';joyEl.style.top=joyBY+'px';
-      joyStick.style.left='0px';joyStick.style.top='0px';
-    }else if(lookId===null){
-      lookId=tc.identifier;lookLX=tc.clientX;lookLY=tc.clientY;
-      lastLookMs=performance.now();
-    }
-  }
-},{passive:false});
-
-canvas.addEventListener('touchmove',e=>{
-  e.preventDefault();
-  if(state!=='playing'||playerDead)return;
-  for(const tc of e.changedTouches){
-    if(tc.identifier===joyId){
-      let dx=tc.clientX-joyBX,dy=tc.clientY-joyBY;
-      let d=Math.hypot(dx,dy);
-      if(d>JOY_R){
-        const ux=dx/d,uy=dy/d,excess=d-JOY_R;
-        joyBX+=ux*excess;joyBY+=uy*excess;
-        dx=ux*JOY_R;dy=uy*JOY_R;d=JOY_R;
-        joyEl.style.left=joyBX+'px';joyEl.style.top=joyBY+'px';
+    function toggleFavorite(id) {
+      id = String(id);
+      let favs = getFavorites();
+      if (favs.includes(id)) {
+        favs = favs.filter(f => f !== id);
+      } else {
+        favs.push(id);
       }
-      joyX=dx/JOY_R;joyY=dy/JOY_R;
-      joyStick.style.left=dx+'px';joyStick.style.top=dy+'px';
-    }else if(tc.identifier===lookId){
-      const dx=tc.clientX-lookLX,dy=tc.clientY-lookLY;
-      const nowMs=performance.now();
-      const dtms=nowMs-lastLookMs;lastLookMs=nowMs;
-      applyLook(dx,dy,dtms,1);
-      lookLX=tc.clientX;lookLY=tc.clientY;
+      setFavorites(favs);
+      return favs.includes(id);
     }
-  }
-},{passive:false});
 
-function endTouch(e){
-  e.preventDefault();
-  for(const tc of e.changedTouches){
-    if(tc.identifier===joyId){
-      joyId=null;joyOn=false;joyX=joyY=0;joySprint=false;
-      joyEl.classList.remove('on');
-      joyStick.classList.remove('sp');joySpUI=false;
-    }
-    if(tc.identifier===lookId)lookId=null;
-  }
-}
-canvas.addEventListener('touchend',endTouch,{passive:false});
-canvas.addEventListener('touchcancel',endTouch,{passive:false});
-document.addEventListener('touchmove',e=>{
-  if(state==='playing')e.preventDefault();
-},{passive:false});
+    async function renderFavorites() {
+      const favEmpty = document.getElementById('favoritEmpty');
+      const favGrid = document.getElementById('favoritGrid');
+      const favs = getFavorites();
 
-function bindBtn(el,down,up){
-  const opts={passive:false};
-  el.addEventListener('touchstart',e=>{e.preventDefault();e.stopPropagation();down();},opts);
-  const end=e=>{e.preventDefault();up&&up();};
-  el.addEventListener('touchend',end,opts);
-  el.addEventListener('touchcancel',end,opts);
-}
-bindBtn($('btnJump'),
-  ()=>{if(state==='playing'&&!playerDead&&player.grounded){player.vel.y=8.2;player.grounded=false;}});
-bindBtn($('btnReload'),()=>startReload());
-
-/* tombol AUTO */
-const btnAuto=$('btnAuto');
-function setAuto(v){
-  autoFire=v;
-  btnAuto.textContent='AUTO '+(v?'AKTIF':'MATI');
-  btnAuto.classList.toggle('on',v);
-}
-setAuto(autoFire);
-btnAuto.addEventListener('touchstart',e=>{
-  e.preventDefault();e.stopPropagation();
-  setAuto(!autoFire);buzz(15);
-},{passive:false});
-
-/* tombol TEMBAK: tahan + geser untuk membidik */
-const bf=$('btnFire');
-let bfX=0,bfY=0,bfMs=0;
-bf.addEventListener('touchstart',e=>{
-  e.preventDefault();e.stopPropagation();
-  const tc=e.changedTouches[0];
-  bfX=tc.clientX;bfY=tc.clientY;bfMs=performance.now();
-  if(state==='playing'&&!playerDead)firing=true;
-},{passive:false});
-bf.addEventListener('touchmove',e=>{
-  e.preventDefault();
-  if(state!=='playing'||playerDead)return;
-  for(const tc of e.changedTouches){
-    const dx=tc.clientX-bfX,dy=tc.clientY-bfY;
-    const nowMs=performance.now();
-    const dtms=nowMs-bfMs;bfMs=nowMs;
-    applyLook(dx,dy,dtms,.9);
-    bfX=tc.clientX;bfY=tc.clientY;
-  }
-},{passive:false});
-const bfEnd=e=>{e.preventDefault();firing=false;};
-bf.addEventListener('touchend',bfEnd,{passive:false});
-bf.addEventListener('touchcancel',bfEnd,{passive:false});
-
-/* ---------- latar lobi ---------- */
-setTheme(Math.random()<.5?'kota':'sawah');
-for(let i=0;i<4;i++)new Drone(Math.cos(i/4*Math.PI*2)*10,Math.sin(i/4*Math.PI*2)*10,'musuh',true);
-
-/* ---------- loop utama ---------- */
-let menuAngle=0,lastTime=performance.now();
-function updateFX(dt){
-  for(const tr of tracers){
-    if(tr.life>0){tr.life-=dt*12;tr.m.material.opacity=Math.max(0,tr.life)*.8;
-      if(tr.life<=0)tr.m.visible=false;}
-  }
-  for(const b of bursts)b.update(dt);
-}
-function tick(){
-  requestAnimationFrame(tick);
-  const now=performance.now();
-  const dt=Math.min((now-lastTime)/1000,.05);
-  lastTime=now;
-  if(state==='menu'){
-    t+=dt;
-    menuAngle+=dt*.07;
-    camera.position.set(Math.sin(menuAngle)*21,8.5,Math.cos(menuAngle)*21);
-    camera.lookAt(0,1.6,0);
-    for(const d of decoDrones)d.update(dt);
-    if(themeFX)themeFX.update();
-    updateFX(dt);
-  }else if(state==='playing'){
-    t+=dt;
-    if(playerDead){
-      playerRespawnT-=dt;
-      rsCount.textContent=String(Math.max(1,Math.ceil(playerRespawnT)));
-      if(playerRespawnT<=0){
-        playerDead=false;
-        respawnEl.classList.remove('on');
-        player.pos.set(rand(-8,8),0,22);player.vel.set(0,0,0);
-        player.yaw=0;player.pitch=0;player.grounded=true;
-        hp=100;lastHurt=t;playerInvT=2;
-        updateHpHUD();
-        sfx.spawn();
+      if (favs.length === 0) {
+        favEmpty.style.display = 'flex';
+        favGrid.style.display = 'none';
+        favGrid.innerHTML = '';
+        return;
       }
-    }else{
-      updatePlayer(dt);
-      updateWeapon(dt);
-      updateShooting(dt);
+
+      const { data, error } = await sb
+        .from('games')
+        .select('id, title, image_url')
+        .in('id', favs);
+
+      if (error || !data || data.length === 0) {
+        favEmpty.style.display = 'flex';
+        favGrid.style.display = 'none';
+        favGrid.innerHTML = '';
+        return;
+      }
+
+      favEmpty.style.display = 'none';
+      favGrid.style.display = 'flex';
+      favGrid.innerHTML = data.map(function(game) {
+        const imgHtml = game.image_url
+          ? '<img src="' + game.image_url + '" alt="' + game.title + '" style="width:100%;height:100%;object-fit:cover;border-radius:12px;display:block;">'
+          : '';
+        return '<div class="game-card">' +
+          '<a href="game-detail/?id=' + game.id + '" style="text-decoration:none;">' +
+          '<div class="game-card-img">' + imgHtml + '</div>' +
+          '</a></div>';
+      }).join('');
     }
-    for(let i=drones.length-1;i>=0;i--)drones[i].update(dt);
-    updateBullets(dt);
-    updatePickups(dt);
-    if(mode==='latihan')updateWave(dt);
-    else updateRespawns(dt);
-    updateFX(dt);
-    if(themeFX)themeFX.update();
-    if(t-lastKill>4&&mult>1){mult=1;updateScoreHUD();}
-  }else{
-    updateFX(dt);
-  }
-  renderer.render(scene,camera);
-}
-tick();
-</script>
+
+    // ================= NEWS (Game Guides) =================
+    let newsData = [];
+    let newsExpanded = false;
+    const NEWS_PREVIEW_COUNT = 4;
+
+    function buildNewsCardHtml(item) {
+      const imgHtml = item.image_url
+        ? '<img src="' + item.image_url + '" alt="' + item.title + '">'
+        : '';
+      const href = item.url ? item.url : '#';
+      const target = item.url ? ' target="_blank" rel="noopener"' : '';
+
+      let tagsHtml = '';
+      if (item.tags) {
+        const tagsArr = Array.isArray(item.tags) ? item.tags : String(item.tags).split(/[,\s]+/).filter(Boolean);
+        tagsHtml = '<div class="nc-tags">' + tagsArr.map(function(t) {
+          return '<span class="nc-tag">' + t.trim().toUpperCase() + '</span>';
+        }).join('') + '</div>';
+      }
+
+      return '<a class="news-card" href="' + href + '"' + target + ' style="text-decoration:none;">' +
+        '<div class="nc-img">' + imgHtml + '</div>' +
+        '<div class="nc-body">' +
+          '<div class="nc-title">' + item.title + '</div>' +
+          '<div class="nc-desc">' + (item.description || '') + '</div>' +
+          tagsHtml +
+        '</div>' +
+      '</a>';
+    }
+
+    function renderNewsGrid() {
+      const newsGrid = document.getElementById('newsGrid');
+      const viewMoreBtn = document.getElementById('newsViewMoreBtn');
+      const itemsToShow = newsExpanded ? newsData : newsData.slice(0, NEWS_PREVIEW_COUNT);
+      newsGrid.innerHTML = itemsToShow.map(buildNewsCardHtml).join('');
+
+      if (newsData.length > NEWS_PREVIEW_COUNT && !newsExpanded) {
+        viewMoreBtn.style.display = 'inline';
+      } else {
+        viewMoreBtn.style.display = 'none';
+      }
+    }
+
+    document.getElementById('newsViewMoreBtn').addEventListener('click', function(e) {
+      e.preventDefault();
+      newsExpanded = true;
+      renderNewsGrid();
+    });
+
+    function withTimeout(promise, ms) {
+      return Promise.race([
+        promise,
+        new Promise((_, reject) => setTimeout(() => reject(new Error('Waktu tunggu habis (server tidak merespons)')), ms))
+      ]);
+    }
+
+    async function renderNews() {
+      const newsGrid = document.getElementById('newsGrid');
+      newsGrid.innerHTML = '<div class="news-empty">Memuat...</div>';
+      newsExpanded = false;
+
+      try {
+        const { data, error } = await withTimeout(
+          sb.from('news').select('*').order('id', { ascending: true }),
+          8000
+        );
+
+        if (error) {
+          newsGrid.innerHTML = '<div class="news-empty">Gagal memuat data: ' + error.message + '</div>';
+          document.getElementById('newsViewMoreBtn').style.display = 'none';
+          return;
+        }
+        if (!data || data.length === 0) {
+          newsGrid.innerHTML = '<div class="news-empty">Belum ada artikel/panduan.</div>';
+          document.getElementById('newsViewMoreBtn').style.display = 'none';
+          return;
+        }
+
+        newsData = data;
+        renderNewsGrid();
+      } catch (err) {
+        newsGrid.innerHTML = '<div class="news-empty">Terjadi kesalahan: ' + (err && err.message ? err.message : String(err)) + '</div>';
+        document.getElementById('newsViewMoreBtn').style.display = 'none';
+      }
+    }
+
+    // Selalu mulai dari Beranda saat halaman dibuka
+    showView('home');
+  </script>
 </body>
 </html>
