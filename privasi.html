@@ -45,7 +45,7 @@
     background: var(--surface);
     border-bottom: 1px solid var(--border);
   }
-  .topbar img { height: 28px; width: auto; display: block; }
+  .topbar img { height: 28px; width: auto; display: block; pointer-events: none; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; -webkit-user-drag: none; }
   .topbar a.back {
     color: var(--link);
     text-decoration: none;
@@ -113,7 +113,7 @@
 </head>
 <body>
   <div class="topbar">
-    <img src="https://orbitxy.com/judulorbitxy.png" alt="orbitxy">
+    <img src="https://orbitxy.com/judulorbitxy.png" alt="orbitxy" draggable="false" oncontextmenu="return false;">
     <a class="back" href="/">Kembali ke beranda</a>
   </div>
 
@@ -196,7 +196,7 @@
       <a href="mailto:orbitxy.com@gmail.com">orbitxy.com@gmail.com</a>
     </div>
 
-    <footer>&copy; 2026 orbitxy.</footer>
+    <footer>&copy; 2026 orbitxy. &nbsp;|&nbsp; <a href="/syarat">Syarat dan Ketentuan</a></footer>
   </main>
 
   <script>
