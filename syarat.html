@@ -45,7 +45,7 @@
     background: var(--surface);
     border-bottom: 1px solid var(--border);
   }
-  .topbar img { height: 28px; width: auto; display: block; }
+  .topbar img { height: 28px; width: auto; display: block; pointer-events: none; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; -webkit-user-drag: none; }
   .topbar a.back {
     color: var(--link);
     text-decoration: none;
@@ -95,7 +95,7 @@
 </head>
 <body>
   <div class="topbar">
-    <img src="https://orbitxy.com/judulorbitxy.png" alt="orbitxy">
+    <img src="https://orbitxy.com/judulorbitxy.png" alt="orbitxy" draggable="false" oncontextmenu="return false;">
     <a class="back" href="/">Kembali ke beranda</a>
   </div>
 
@@ -156,7 +156,7 @@
     <p>Sejauh diizinkan oleh hukum, kami tidak bertanggung jawab atas kerugian tidak langsung, kerugian yang timbul karena Anda tidak bisa memakai situs, kehilangan data, atau kerugian akibat tindakan pihak ketiga. Ketentuan ini tidak membatasi hak Anda yang tidak boleh dikesampingkan menurut hukum yang berlaku, termasuk hak sebagai konsumen.</p>
 
     <h2>11. Privasi</h2>
-    <p>Cara kami mengumpulkan dan memakai data pribadi Anda dijelaskan di <a href="privasi.html">Kebijakan Privasi</a>, yang merupakan bagian dari Syarat dan Ketentuan ini.</p>
+    <p>Cara kami mengumpulkan dan memakai data pribadi Anda dijelaskan di <a href="/privasi">Kebijakan Privasi</a>, yang merupakan bagian dari Syarat dan Ketentuan ini.</p>
 
     <h2>12. Perubahan layanan dan ketentuan</h2>
     <p>Kami bisa mengubah, menambah, atau menghentikan bagian mana pun dari situs kapan saja. Kami juga bisa memperbarui Syarat dan Ketentuan ini. Tanggal pembaruan terakhir tercantum di bagian atas halaman. Jika Anda terus memakai situs setelah perubahan berlaku, Anda dianggap menyetujui ketentuan yang baru.</p>
@@ -170,7 +170,7 @@
       <a href="mailto:orbitxy.com@gmail.com">orbitxy.com@gmail.com</a>
     </div>
 
-    <footer>&copy; 2026 orbitxy. &nbsp;|&nbsp; <a href="privasi.html">Kebijakan Privasi</a></footer>
+    <footer>&copy; 2026 orbitxy. &nbsp;|&nbsp; <a href="/privasi">Kebijakan Privasi</a></footer>
   </main>
 
   <script>
