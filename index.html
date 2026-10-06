@@ -2953,6 +2953,7 @@
       }
       if (name === 'news') {
         renderNews();
+        renderLatestNews();
       }
     }
 
@@ -3101,6 +3102,59 @@
       } catch (err) {
         newsGrid.innerHTML = '<div class="news-empty">Terjadi kesalahan: ' + (err && err.message ? err.message : String(err)) + '</div>';
         document.getElementById('newsViewMoreBtn').style.display = 'none';
+      }
+    }
+
+    // ================= BERITA TERKINI =================
+    let latestNewsData = [];
+    let latestNewsExpanded = false;
+
+    function renderLatestNewsGrid() {
+      const grid = document.getElementById('latestNewsGrid');
+      const viewMoreBtn = document.getElementById('latestNewsViewMoreBtn');
+      const itemsToShow = latestNewsExpanded ? latestNewsData : latestNewsData.slice(0, NEWS_PREVIEW_COUNT);
+      grid.innerHTML = itemsToShow.map(buildNewsCardHtml).join('');
+
+      if (latestNewsData.length > NEWS_PREVIEW_COUNT && !latestNewsExpanded) {
+        viewMoreBtn.style.display = 'inline';
+      } else {
+        viewMoreBtn.style.display = 'none';
+      }
+    }
+
+    document.getElementById('latestNewsViewMoreBtn').addEventListener('click', function(e) {
+      e.preventDefault();
+      latestNewsExpanded = true;
+      renderLatestNewsGrid();
+    });
+
+    async function renderLatestNews() {
+      const grid = document.getElementById('latestNewsGrid');
+      grid.innerHTML = '<div class="news-empty">Memuat...</div>';
+      latestNewsExpanded = false;
+
+      try {
+        const { data, error } = await withTimeout(
+          sb.from('latest_news').select('*').order('id', { ascending: true }),
+          8000
+        );
+
+        if (error) {
+          grid.innerHTML = '<div class="news-empty">Gagal memuat data: ' + error.message + '</div>';
+          document.getElementById('latestNewsViewMoreBtn').style.display = 'none';
+          return;
+        }
+        if (!data || data.length === 0) {
+          grid.innerHTML = '<div class="news-empty">Belum ada berita.</div>';
+          document.getElementById('latestNewsViewMoreBtn').style.display = 'none';
+          return;
+        }
+
+        latestNewsData = data;
+        renderLatestNewsGrid();
+      } catch (err) {
+        grid.innerHTML = '<div class="news-empty">Terjadi kesalahan: ' + (err && err.message ? err.message : String(err)) + '</div>';
+        document.getElementById('latestNewsViewMoreBtn').style.display = 'none';
       }
     }
 
