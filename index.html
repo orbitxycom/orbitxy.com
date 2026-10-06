@@ -391,6 +391,65 @@
     gap: 12px;
     padding: 0 16px 30px;
   }
+  .latest-news-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 0 16px 30px;
+  }
+  .latest-news-item {
+    display: flex;
+    gap: 14px;
+    background: #1c1c1e;
+    border: 1px solid #2a2a2c;
+    border-radius: 16px;
+    padding: 14px;
+    text-decoration: none;
+    align-items: flex-start;
+  }
+  .latest-news-item .ln-img {
+    width: 72px;
+    height: 72px;
+    border-radius: 12px;
+    background: #141416;
+    flex-shrink: 0;
+    overflow: hidden;
+  }
+  .latest-news-item .ln-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  .latest-news-item .ln-body {
+    flex: 1;
+    min-width: 0;
+  }
+  .latest-news-item .ln-title {
+    color: #ffffff;
+    font-size: 15px;
+    font-weight: 800;
+    line-height: 1.3;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    margin-bottom: 6px;
+  }
+  .latest-news-item .ln-desc {
+    color: #9a9a9a;
+    font-size: 13px;
+    line-height: 1.4;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    margin-bottom: 8px;
+  }
+  .latest-news-item .ln-meta {
+    color: #7a7a7e;
+    font-size: 12px;
+  }
   .news-card {
     background: #1c1c1e;
     border: 1px solid #2a2a2c;
@@ -2144,7 +2203,7 @@
       </div>
       <a href="#" class="nh-more" id="latestNewsViewMoreBtn">View more</a>
     </div>
-    <div class="news-grid" id="latestNewsGrid"></div>
+    <div class="latest-news-list" id="latestNewsGrid"></div>
   </div>
 
   <div class="overlay" id="overlay"></div>
