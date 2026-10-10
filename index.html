@@ -3168,11 +3168,46 @@
     let latestNewsData = [];
     let latestNewsExpanded = false;
 
+    function escapeHtml(str) {
+      return String(str == null ? '' : str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+    function safeUrl(u) {
+      return /^https?:\/\//i.test(u || '') ? escapeHtml(u) : '';
+    }
+
+    function buildLatestNewsCardHtml(item) {
+      const imgUrl = safeUrl(item.image_url);
+      const imgHtml = imgUrl
+        ? '<img src="' + imgUrl + '" alt="' + escapeHtml(item.title) + '">'
+        : '';
+      const linkUrl = safeUrl(item.url);
+      const href = linkUrl || '#';
+      const target = linkUrl ? ' target="_blank" rel="noopener noreferrer"' : '';
+      const sourceName = escapeHtml(item.source || 'orbitxy');
+      const dateStr = item.published_at
+        ? new Date(item.published_at).toLocaleDateString('id-ID', { year: 'numeric', month: 'short', day: 'numeric' })
+        : '';
+
+      return '<a class="latest-news-item" href="' + href + '"' + target + '>' +
+        '<div class="ln-img">' + imgHtml + '</div>' +
+        '<div class="ln-body">' +
+          '<div class="ln-title">' + escapeHtml(item.title) + '</div>' +
+          (item.description ? '<div class="ln-desc">' + escapeHtml(item.description) + '</div>' : '') +
+          '<div class="ln-meta">' + sourceName + (dateStr ? ' &middot; ' + dateStr : '') + '</div>' +
+        '</div>' +
+      '</a>';
+    }
+
     function renderLatestNewsGrid() {
       const grid = document.getElementById('latestNewsGrid');
       const viewMoreBtn = document.getElementById('latestNewsViewMoreBtn');
       const itemsToShow = latestNewsExpanded ? latestNewsData : latestNewsData.slice(0, NEWS_PREVIEW_COUNT);
-      grid.innerHTML = itemsToShow.map(buildNewsCardHtml).join('');
+      grid.innerHTML = itemsToShow.map(buildLatestNewsCardHtml).join('');
 
       if (latestNewsData.length > NEWS_PREVIEW_COUNT && !latestNewsExpanded) {
         viewMoreBtn.style.display = 'inline';
@@ -3187,29 +3222,60 @@
       renderLatestNewsGrid();
     });
 
+    // Ambil berita otomatis dari GNews lewat Supabase Edge Function.
+    // API key GNews ada di Secrets Supabase, bukan di HTML ini.
+    // Hasil di-cache 15 menit biar kuota API GNews hemat.
+    async function fetchAutoNews() {
+      const CACHE_KEY = 'orbitxy_gnews_cache';
+      const CACHE_MS = 15 * 60 * 1000;
+      try {
+        const cached = JSON.parse(localStorage.getItem(CACHE_KEY) || 'null');
+        if (cached && Date.now() - cached.time < CACHE_MS) return cached.items;
+      } catch (e) {}
+
+      const { data, error } = await withTimeout(sb.functions.invoke('gnews-proxy'), 8000);
+      if (error || !data || !Array.isArray(data.articles)) return [];
+
+      try {
+        localStorage.setItem(CACHE_KEY, JSON.stringify({ time: Date.now(), items: data.articles }));
+      } catch (e) {}
+      return data.articles;
+    }
+
+    async function fetchManualNews() {
+      const { data, error } = await withTimeout(
+        sb.from('latest_news').select('*').order('id', { ascending: false }),
+        8000
+      );
+      if (error || !data) return [];
+      return data.map(function(row) {
+        return Object.assign({}, row, {
+          source: row.source || 'orbitxy',
+          published_at: row.created_at
+        });
+      });
+    }
+
     async function renderLatestNews() {
       const grid = document.getElementById('latestNewsGrid');
       grid.innerHTML = '<div class="news-empty">Memuat...</div>';
       latestNewsExpanded = false;
 
       try {
-        const { data, error } = await withTimeout(
-          sb.from('latest_news').select('*').order('id', { ascending: true }),
-          8000
-        );
+        // Ambil dua sumber sekaligus; kalau salah satu gagal, yang lain tetap tampil
+        const results = await Promise.allSettled([fetchManualNews(), fetchAutoNews()]);
+        const manual = results[0].status === 'fulfilled' ? results[0].value : [];
+        const auto = results[1].status === 'fulfilled' ? results[1].value : [];
 
-        if (error) {
-          grid.innerHTML = '<div class="news-empty">Gagal memuat data: ' + error.message + '</div>';
-          document.getElementById('latestNewsViewMoreBtn').style.display = 'none';
-          return;
-        }
-        if (!data || data.length === 0) {
+        const merged = manual.concat(auto);
+
+        if (merged.length === 0) {
           grid.innerHTML = '<div class="news-empty">Belum ada berita.</div>';
           document.getElementById('latestNewsViewMoreBtn').style.display = 'none';
           return;
         }
 
-        latestNewsData = data;
+        latestNewsData = merged;
         renderLatestNewsGrid();
       } catch (err) {
         grid.innerHTML = '<div class="news-empty">Terjadi kesalahan: ' + (err && err.message ? err.message : String(err)) + '</div>';
