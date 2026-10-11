@@ -3249,23 +3249,60 @@
       '</a>';
     }
 
-    function renderLatestNewsGrid() {
-      const grid = document.getElementById('latestNewsGrid');
-      const viewMoreBtn = document.getElementById('latestNewsViewMoreBtn');
-      const itemsToShow = latestNewsExpanded ? latestNewsData : latestNewsData.slice(0, NEWS_PREVIEW_COUNT);
-      grid.innerHTML = itemsToShow.map(buildLatestNewsCardHtml).join('');
+    // ---- Paginasi Berita Terkini: 5 berita per halaman ----
+    const LATEST_PAGE_SIZE = 5;
+    let latestNewsPage = 1;
 
-      if (latestNewsData.length > NEWS_PREVIEW_COUNT && !latestNewsExpanded) {
-        viewMoreBtn.style.display = 'inline';
-      } else {
-        viewMoreBtn.style.display = 'none';
+    function buildPageList(current, total) {
+      if (total <= 7) {
+        return Array.from({ length: total }, function(_, i) { return i + 1; });
       }
+      if (current <= 4) return [1, 2, 3, 4, 5, '...', total];
+      if (current >= total - 3) return [1, '...', total - 4, total - 3, total - 2, total - 1, total];
+      return [1, '...', current - 1, current, current + 1, '...', total];
     }
 
-    document.getElementById('latestNewsViewMoreBtn').addEventListener('click', function(e) {
-      e.preventDefault();
-      latestNewsExpanded = true;
+    function renderLatestPagination(totalPages) {
+      const el = document.getElementById('latestNewsPagination');
+      if (totalPages <= 1) { el.innerHTML = ''; return; }
+
+      let html = '<button class="pg-btn" data-page="' + (latestNewsPage - 1) + '"' +
+        (latestNewsPage === 1 ? ' disabled' : '') + '>Sebelumnya</button>';
+
+      buildPageList(latestNewsPage, totalPages).forEach(function(p) {
+        if (p === '...') {
+          html += '<span class="pg-dots">...</span>';
+        } else {
+          html += '<button class="pg-btn' + (p === latestNewsPage ? ' active' : '') +
+            '" data-page="' + p + '">' + p + '</button>';
+        }
+      });
+
+      html += '<button class="pg-btn" data-page="' + (latestNewsPage + 1) + '"' +
+        (latestNewsPage === totalPages ? ' disabled' : '') + '>Berikutnya</button>';
+      html += '<div class="pg-info">Halaman ' + latestNewsPage + ' dari ' + totalPages + '</div>';
+      el.innerHTML = html;
+    }
+
+    function renderLatestNewsGrid() {
+      const grid = document.getElementById('latestNewsGrid');
+      const totalPages = Math.max(1, Math.ceil(latestNewsData.length / LATEST_PAGE_SIZE));
+      if (latestNewsPage > totalPages) latestNewsPage = totalPages;
+
+      const start = (latestNewsPage - 1) * LATEST_PAGE_SIZE;
+      const itemsToShow = latestNewsData.slice(start, start + LATEST_PAGE_SIZE);
+      grid.innerHTML = itemsToShow.map(buildLatestNewsCardHtml).join('');
+
+      document.getElementById('latestNewsViewMoreBtn').style.display = 'none';
+      renderLatestPagination(totalPages);
+    }
+
+    document.getElementById('latestNewsPagination').addEventListener('click', function(e) {
+      const btn = e.target.closest('[data-page]');
+      if (!btn || btn.disabled) return;
+      latestNewsPage = Number(btn.dataset.page);
       renderLatestNewsGrid();
+      document.getElementById('latestNewsHeader').scrollIntoView({ behavior: 'smooth', block: 'start' });
     });
 
     // Ambil berita otomatis dari GNews lewat Supabase Edge Function.
@@ -3305,7 +3342,9 @@
     async function renderLatestNews() {
       const grid = document.getElementById('latestNewsGrid');
       grid.innerHTML = '<div class="news-empty">Memuat...</div>';
+      document.getElementById('latestNewsPagination').innerHTML = '';
       latestNewsExpanded = false;
+      latestNewsPage = 1;
 
       try {
         // Ambil dua sumber sekaligus; kalau salah satu gagal, yang lain tetap tampil
