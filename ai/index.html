@@ -81,6 +81,16 @@ body{background:var(--frame)}
 .a pre{background:var(--field);border:1px solid #454545;border-radius:12px;padding:12px;overflow-x:auto;margin:0 0 10px;font-size:14px;line-height:1.45}
 .a code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.92em}
 .a :not(pre)>code{background:var(--field);padding:2px 6px;border-radius:6px}
+.imgbox{position:relative;width:min(100%,320px);aspect-ratio:1/1;border-radius:18px;background:var(--field);border:1px solid #454545;overflow:hidden;display:grid;place-items:center}
+.imgbox img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity .3s}
+.imgbox.ok img{opacity:1}
+.imgbox .pct{font-size:36px;font-weight:650;color:var(--mut)}
+.imgbox .bar2{position:absolute;left:0;bottom:0;height:5px;width:0;background:var(--blue);transition:width .3s}
+.imgbox.ok .pct,.imgbox.ok .bar2,.imgbox.bad .pct,.imgbox.bad .bar2{display:none}
+.imgbox .err{display:none;padding:16px;text-align:center;color:var(--mut);font-size:15px}
+.imgbox.bad .err{display:block}
+.imgbox .err button{display:block;margin:12px auto 0;background:var(--btn);color:var(--text);border-radius:18px;padding:8px 18px;font-size:15px}
+.imgcap{font-size:13px;color:var(--mut);margin-top:6px}
 </style>
 </head>
 <body>
@@ -143,9 +153,33 @@ fl();para.push(ln)}
 if(code!==null)out+='<pre><code>'+esc(code.join('\n'))+'</code></pre>';
 fp();fl();return out}
 function add(txt,c){const d=document.createElement('div');d.className=c;if(c==='a'&&txt)d.innerHTML=md(txt);else d.textContent=txt;log.appendChild(d);log.scrollTop=log.scrollHeight;return d}
+const IMG_BASE='https://image.pollinations.ai/prompt/';
+const IMG1=/^\s*(tolong\s+)?(buat(kan)?|bikin(kan)?|generate|lukis(kan)?)\s+(\S+\s+){0,2}?(gambar|foto|logo|ilustrasi|lukisan|poster|wallpaper)\b/i,IMG2=/^\s*gambar(kan)?\s+\S/i;
+const isImg=v=>IMG1.test(v)||IMG2.test(v);
+const imgPrompt=v=>v.replace(/^\s*(tolong\s+)?(buat(kan)?|bikin(kan)?|generate|lukis(kan)?|gambar(kan)?)\s+(saya\s+|aku\s+)?/i,'').trim()||v;
+const imgUrl=p=>IMG_BASE+encodeURIComponent(p)+'?width=768&height=768&nologo=true&model=flux&seed='+Math.floor(Math.random()*1e9);
+function addImg(url,p){
+const d=document.createElement('div');d.className='a';
+const box=document.createElement('div');box.className='imgbox';
+const pc=document.createElement('div');pc.className='pct';pc.textContent='0%';
+const bar=document.createElement('div');bar.className='bar2';
+const err=document.createElement('div');err.className='err';err.textContent='Gambar gagal dibuat.';
+const rb=document.createElement('button');rb.textContent='Coba lagi';err.appendChild(rb);
+const im=new Image();im.alt=p;
+box.append(pc,bar,im,err);
+const cap=document.createElement('div');cap.className='imgcap';cap.textContent=p;
+d.append(box,cap);log.appendChild(d);log.scrollTop=log.scrollHeight;
+let v=0,tm=0,tt=0,n=0;
+const stop=()=>{clearInterval(tm);clearTimeout(tt)};
+const fail=()=>{stop();box.classList.add('bad')};
+const start=()=>{stop();box.classList.remove('ok','bad');v=0;pc.textContent='0%';bar.style.width='0';
+tm=setInterval(()=>{v+=(92-v)*0.05+0.2;if(v>92)v=92;const k=Math.floor(v);pc.textContent=k+'%';bar.style.width=k+'%'},300);
+tt=setTimeout(fail,90000);im.src=url+(n++?'&r='+Date.now():'')};
+im.onload=()=>{stop();pc.textContent='100%';bar.style.width='100%';box.classList.add('ok')};
+im.onerror=fail;rb.onclick=start;start();return d}
 function mk(c){const b=document.createElement('button');b.dataset.id=c.id;if(c.pin)b.classList.add('pin');b.innerHTML='<svg class="pi" viewBox="0 0 24 24"><path d="M9 4h6l-1 6 3 3v2H7v-2l3-3zM12 15v6"/></svg><span class="tx"></span>';b.querySelector('.tx').textContent=c.title;return b}
 function renderHist(){H.innerHTML='';[...chats.filter(c=>c.pin),...chats.filter(c=>!c.pin)].forEach(c=>H.appendChild(mk(c)))}
-function renderLog(){log.innerHTML='';const c=get(cur);if(!c){cur=null;return}c.msgs.forEach(m=>add(m.content,m.role==='user'?'u':'a'))}
+function renderLog(){log.innerHTML='';const c=get(cur);if(!c){cur=null;return}c.msgs.forEach(m=>m.img?addImg(m.img,m.prompt):add(m.content,m.role==='user'?'u':'a'))}
 async function ask(d,c){
 try{
 const r=await fetch(SUPABASE_URL+'/functions/v1/chat',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+SUPABASE_ANON_KEY,'apikey':SUPABASE_ANON_KEY},body:JSON.stringify({messages:c.msgs.slice(-20)})});
@@ -158,6 +192,7 @@ busy=false;log.scrollTop=log.scrollHeight}
 function send(){if(busy)return;const v=t.value.trim();if(!v)return;$('sug').classList.add('hide');
 let c=get(cur);if(!c){c={id:Date.now().toString(36),title:v.slice(0,60),pin:false,msgs:[]};chats.unshift(c);cur=c.id;renderHist();renderLog()}
 c.msgs.push({role:'user',content:v});save();add(v,'u');t.value='';sync();
+if(isImg(v)){const pr=imgPrompt(v),u=imgUrl(pr);c.msgs.push({role:'assistant',content:'[Gambar dibuat: '+pr+']',img:u,prompt:pr});save();addImg(u,pr);return}
 const d=add('','a');d.innerHTML='<div class="dots"><i></i><i></i><i></i></div>';busy=true;ask(d,c)}
 go.onclick=()=>{if(t.value.trim())send()};
 t.addEventListener('input',sync);t.addEventListener('keydown',e=>{if(e.key==='Enter')send()});
