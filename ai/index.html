@@ -1,162 +1,152 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="robots" content="noindex, nofollow" />
-  <meta name="theme-color" content="#08090c" />
-  <title>Website Sedang Diperbaiki — OrbitXY</title>
-  <meta name="description" content="OrbitXY sedang melakukan pemeliharaan dan pembaruan website. Silakan kembali lagi nanti." />
-  <style>
-    :root {
-      color-scheme: dark;
-      --bg: #08090c;
-      --panel: rgba(18, 21, 29, .78);
-      --text: #f4f7fb;
-      --muted: #a0a9b8;
-      --line: rgba(255,255,255,.11);
-      --accent: #79f2c0;
-      --accent2: #8da7ff;
-    }
-    * { box-sizing: border-box; }
-    html { min-height: 100%; }
-    body {
-      margin: 0;
-      min-height: 100vh;
-      display: grid;
-      place-items: center;
-      padding: 24px;
-      overflow-x: hidden;
-      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      color: var(--text);
-      background:
-        radial-gradient(ellipse at 15% 15%, rgba(72, 110, 255, .13), transparent 38%),
-        radial-gradient(ellipse at 85% 80%, rgba(53, 231, 170, .10), transparent 35%),
-        var(--bg);
-    }
-    body::before {
-      content: "";
-      position: fixed;
-      inset: 0;
-      pointer-events: none;
-      opacity: .22;
-      background-image: linear-gradient(rgba(255,255,255,.035) 1px, transparent 1px),
-                        linear-gradient(90deg, rgba(255,255,255,.035) 1px, transparent 1px);
-      background-size: 42px 42px;
-      mask-image: linear-gradient(to bottom, black, transparent 88%);
-    }
-    .wrap { width: min(100%, 720px); position: relative; z-index: 1; }
-    .topbar {
-      display: flex; align-items: center; justify-content: center; gap: 10px;
-      margin-bottom: 20px; letter-spacing: .12em; text-transform: uppercase;
-      font-size: 13px; font-weight: 800;
-    }
-    .logo-mark {
-      width: 31px; height: 31px; display: grid; place-items: center;
-      border: 1px solid rgba(121,242,192,.45); border-radius: 10px;
-      color: var(--accent); box-shadow: 0 0 22px rgba(121,242,192,.10);
-      font-size: 15px;
-    }
-    .logo-name { letter-spacing: .08em; }
-    .card {
-      position: relative; padding: clamp(28px, 6vw, 56px);
-      text-align: center; border: 1px solid var(--line); border-radius: 28px;
-      background: linear-gradient(145deg, rgba(22,25,34,.92), var(--panel));
-      box-shadow: 0 28px 100px rgba(0,0,0,.38), inset 0 1px rgba(255,255,255,.04);
-      backdrop-filter: blur(16px);
-    }
-    .status {
-      display: inline-flex; align-items: center; gap: 9px;
-      padding: 8px 12px; border: 1px solid rgba(121,242,192,.24);
-      border-radius: 999px; background: rgba(121,242,192,.07);
-      color: #b8ffdf; font-size: 11px; font-weight: 750;
-      letter-spacing: .12em; text-transform: uppercase;
-    }
-    .dot {
-      width: 7px; height: 7px; border-radius: 50%; background: var(--accent);
-      box-shadow: 0 0 12px var(--accent); animation: pulse 1.7s infinite;
-    }
-    .illustration { width: 170px; height: 145px; margin: 26px auto 18px; position: relative; }
-    .orbit {
-      position: absolute; inset: 18px 12px; border: 1px solid rgba(141,167,255,.4);
-      border-radius: 50%; transform: rotate(-25deg);
-    }
-    .orbit.two { inset: 7px 26px; transform: rotate(55deg); border-color: rgba(121,242,192,.35); }
-    .core {
-      position: absolute; width: 68px; height: 68px; left: 50%; top: 50%;
-      transform: translate(-50%,-50%); display: grid; place-items: center;
-      border: 1px solid rgba(255,255,255,.16); border-radius: 21px;
-      background: linear-gradient(145deg, #202a3b, #10151e);
-      box-shadow: 0 0 38px rgba(141,167,255,.16), inset 0 1px rgba(255,255,255,.12);
-      color: var(--accent); font-size: 27px;
-      animation: float 4s ease-in-out infinite;
-    }
-    .spark { position: absolute; width: 8px; height: 8px; border-radius: 50%; background: var(--accent2); box-shadow: 0 0 15px var(--accent2); }
-    .spark.s1 { top: 14px; left: 28px; }
-    .spark.s2 { bottom: 15px; right: 23px; width: 6px; height: 6px; background: var(--accent; }
-    h1 { margin: 0; font-size: clamp(30px, 6vw, 48px); line-height: 1.12; letter-spacing: -.045em; }
-    h1 span { color: var(--accent); }
-    .desc { max-width: 470px; margin: 17px auto 0; color: var(--muted); font-size: 15px; line-height: 1.8; }
-    .progress-wrap { max-width: 370px; margin: 30px auto 0; text-align: left; }
-    .progress-label { display: flex; justify-content: space-between; gap: 12px; margin-bottom: 10px; font-size: 11px; color: var(--muted); letter-spacing: .08em; text-transform: uppercase; }
-    .progress { height: 5px; overflow: hidden; border-radius: 99px; background: rgba(255,255,255,.09); }
-    .progress::before {
-      content: ""; display: block; height: 100%; width: 38%; border-radius: inherit;
-      background: linear-gradient(90deg, var(--accent2), var(--accent));
-      animation: loading 2.4s ease-in-out infinite alternate;
-    }
-    .note { margin-top: 27px; color: #8993a3; font-size: 12px; line-height: 1.7; }
-    .footer { margin-top: 20px; color: #717b8b; font-size: 11px; text-align: center; letter-spacing: .04em; }
-    @keyframes pulse { 50% { opacity: .45; transform: scale(.8); } }
-    @keyframes float { 50% { transform: translate(-50%, calc(-50% - 7px)); } }
-    @keyframes loading { from { width: 24%; } to { width: 72%; } }
-    @media (max-width: 480px) {
-      body { padding: 16px; }
-      .card { border-radius: 22px; padding: 28px 21px 30px; }
-      .illustration { transform: scale(.9); margin-top: 20px; margin-bottom: 12px; }
-      .desc { font-size: 14px; }
-    }
-    @media (prefers-reduced-motion: reduce) {
-      *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; scroll-behavior: auto !important; }
-    }
-  </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Tampilan Chat</title>
+<style>
+:root{--bg:#000;--btn:#2b2b2b;--pill:#3a4650;--blue:#4da3ff;--field:#2f2f2f;--text:#e6e6e6;--mut:#9a9a9a;--call:#2f5bea;--bub:#2f2f2f;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:light){:root:not([data-theme="dark"]){--bg:#fff;--btn:#ececec;--pill:#dde8f3;--blue:#1d6fe0;--field:#f0f0f0;--text:#1a1a1a;--mut:#707070;--bub:#ececec}}
+:root[data-theme="light"]{--bg:#fff;--btn:#ececec;--pill:#dde8f3;--blue:#1d6fe0;--field:#f0f0f0;--text:#1a1a1a;--mut:#707070;--bub:#ececec}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,Roboto,sans-serif;display:flex;justify-content:center}
+.app{width:100%;max-width:480px;height:100%;display:flex;flex-direction:column;padding:0 14px}
+svg{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex:none}
+button{font:inherit;color:inherit;border:0;cursor:pointer}
+button:focus-visible,input:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+.top{display:flex;align-items:center;gap:10px;padding:14px 0}
+.circ{width:46px;height:46px;border-radius:50%;background:var(--btn);display:grid;place-items:center}
+.up{height:46px;border-radius:23px;background:var(--pill);color:var(--blue);padding:0 18px;display:flex;align-items:center;gap:8px;font-weight:600;font-size:18px}
+.up svg{width:20px;height:20px;fill:currentColor;stroke:none}
+.sp{flex:1}
+#log{flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:14px;padding:8px 0}
+.u{align-self:flex-end;max-width:80%;background:var(--bub);padding:10px 16px;border-radius:20px;font-size:16px;line-height:1.4}
+.a{align-self:flex-start;max-width:92%;font-size:16px;line-height:1.5}
+.dots{display:flex;gap:5px;padding:8px 0}
+.dots i{width:8px;height:8px;border-radius:50%;background:var(--mut);animation:p 1s infinite}
+.dots i:nth-child(2){animation-delay:.15s}.dots i:nth-child(3){animation-delay:.3s}
+@keyframes p{0%,60%,100%{opacity:.3}30%{opacity:1}}
+@media (prefers-reduced-motion:reduce){.dots i{animation:none}}
+.sug{display:flex;flex-direction:column;padding:0 6px 16px}
+.sug button{background:none;display:flex;align-items:center;gap:20px;padding:14px 0;font-size:20px;color:var(--text);text-align:left}
+.sug svg{width:26px;height:26px}
+.bar{display:flex;align-items:center;gap:10px;background:var(--field);border-radius:34px;padding:10px 10px 10px 18px;margin-bottom:10px}
+.bar input{flex:1;min-width:0;background:none;border:0;color:var(--text);font:inherit;font-size:19px;outline:none}
+.bar input::placeholder{color:var(--mut)}
+.bar>button.pl{background:none;display:grid;place-items:center;padding:0}
+.go{width:48px;height:48px;border-radius:50%;background:var(--call);color:#fff;display:grid;place-items:center}
+.go.snd{background:var(--text);color:var(--bg)}
+.hide{display:none!important}
+.scrim{position:fixed;inset:0;background:rgba(0,0,0,.55);opacity:0;visibility:hidden;transition:opacity .2s,visibility .2s}
+.side{position:fixed;top:0;bottom:0;left:0;width:min(82%,320px);background:var(--bg);border-right:1px solid var(--btn);padding:env(safe-area-inset-top,0px) 16px env(safe-area-inset-bottom,0px);transform:translateX(-100%);visibility:hidden;transition:transform .25s,visibility .25s}
+.open .scrim{opacity:1;visibility:visible}
+.open .side{transform:none;visibility:visible}
+@media (prefers-reduced-motion:reduce){.scrim,.side{transition:none}}
+.side{display:flex;flex-direction:column}
+.garis{width:44px;height:4px;border-radius:2px;background:var(--mut);opacity:.6;margin:0 auto 12px;flex:none}
+.kosong{flex:1}
+.hist{flex:1;min-height:0;overflow-y:auto;display:flex;flex-direction:column;padding-bottom:16px}
+.hist button{background:none;text-align:left;padding:12px 8px;font-size:16px;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;border-radius:10px}
+.hist button:hover{background:var(--btn)}
+.hist button{display:block;width:100%;-webkit-touch-callout:none;user-select:none;-webkit-user-select:none}
+.hist .pi{display:none;width:16px;height:16px;margin-right:8px;vertical-align:-2px}
+.hist .pin .pi{display:inline-block}
+.ren{width:100%;background:var(--field);border:1px solid var(--blue);border-radius:10px;color:var(--text);font:inherit;font-size:16px;padding:10px 8px;outline:none;margin:2px 0}
+.mscrim{position:fixed;inset:0}
+.ctx{position:fixed;width:min(86vw,300px);background:var(--field);border:1px solid var(--btn);border-radius:24px;padding:8px 6px;box-shadow:0 8px 28px rgba(0,0,0,.45)}
+.ctx button{background:none;display:flex;align-items:center;gap:18px;width:100%;padding:15px 16px;font-size:19px;color:var(--text);text-align:left;border-radius:16px}
+.ctx button:hover{background:var(--btn)}
+.ctx .red{color:#ff6b6b}
+*{-webkit-tap-highlight-color:transparent}
+button,.side,.ctx{-webkit-touch-callout:none;user-select:none;-webkit-user-select:none}
+button::selection,.side ::selection,.ctx ::selection{background:transparent}
+.hist button:focus,.hist button:focus-visible,.ctx button:focus,.ctx button:focus-visible{outline:none}
+.hist button:active,.hist button:focus-visible{background:var(--btn)}
+:root{--frame:#2b2b2b}
+@media (prefers-color-scheme:light){:root:not([data-theme="dark"]){--frame:#e6e6e6}}
+:root[data-theme="light"]{--frame:#e6e6e6}
+body{background:var(--frame)}
+.app{background:var(--bg)}
+.circ,.bar,.ctx{border:1px solid #454545}
+.u{border:1px solid #454545}
+</style>
 </head>
 <body>
-  <main class="wrap">
-    <div class="topbar" aria-label="OrbitXY">
-      <span class="logo-mark">O</span>
-      <span class="logo-name">OrbitXY</span>
-    </div>
-
-    <section class="card" aria-labelledby="title">
-      <div class="status"><span class="dot"></span> Maintenance mode</div>
-
-      <div class="illustration" aria-hidden="true">
-        <div class="orbit"></div>
-        <div class="orbit two"></div>
-        <div class="spark s1"></div>
-        <div class="spark s2"></div>
-        <div class="core">✦</div>
-      </div>
-
-      <h1 id="title">Website sedang<br><span>diperbaiki.</span></h1>
-      <p class="desc">
-        Kami sedang melakukan pemeliharaan dan pembaruan agar pengalamanmu di OrbitXY menjadi lebih baik.
-        Silakan kunjungi kembali beberapa saat lagi.
-      </p>
-
-      <div class="progress-wrap" aria-label="Pembaruan sedang berlangsung">
-        <div class="progress-label"><span>Menyiapkan pembaruan</span><span>In progress</span></div>
-        <div class="progress"></div>
-      </div>
-
-      <p class="note">Terima kasih atas kesabaranmu.<br>— Tim OrbitXY</p>
-    </section>
-
-    <footer class="footer">© <span id="year"></span> ORBITXY · ALL RIGHTS RESERVED</footer>
-  </main>
-  <script>
-    document.getElementById("year").textContent = new Date().getFullYear();
-  </script>
+<div class="app">
+  <div class="top">
+    <button class="circ" id="menu" aria-label="Buka menu"><svg viewBox="0 0 24 24"><path d="M4 8h16M4 16h10"/></svg></button>
+    <div class="sp"></div>
+    <button class="circ" id="new" aria-label="Obrolan baru"><svg viewBox="0 0 24 24"><path d="M12 3.5c-5 0-9 3.4-9 7.6 0 1.8.7 3.4 2 4.7L4 20l4.3-1.8c1.1.4 2.4.6 3.7.6 5 0 9-3.4 9-7.6s-4-7.7-9-7.7z"/></svg></button>
+  </div>
+  <div id="log"></div>
+  <div class="sug hide" id="sug">
+    <button data-q="Buatkan gambar "><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="4"/><circle cx="16" cy="8.5" r="1.6"/><path d="M3.5 16l5-4.5 4.5 4 3-2.5 4.5 4"/></svg>Buat gambar</button>
+    <button data-q="Tolong tulis atau edit "><svg viewBox="0 0 24 24"><path d="M16.5 3.5l4 4L8 20l-5 1 1-5z"/></svg>Tulis atau edit</button>
+    <button data-q="Cari di web: "><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18"/></svg>Cari di web</button>
+  </div>
+  <div class="bar">
+    <button class="pl" id="plus" aria-label="Tambah" aria-expanded="false"><svg viewBox="0 0 24 24" style="width:30px;height:30px"><path d="M12 4v16M4 12h16"/></svg></button>
+    <input id="t" placeholder="Tanya apa saja" autocomplete="off" aria-label="Tulis pesan">
+    <button class="pl" id="mic" aria-label="Mikrofon"><svg viewBox="0 0 24 24" style="width:28px;height:28px"><rect x="9" y="3" width="6" height="12" rx="3"/><path d="M5 11a7 7 0 0014 0M12 18v3"/></svg></button>
+    <button class="go" id="go" aria-label="Panggilan suara"><svg viewBox="0 0 24 24" id="ic"><path d="M5 3h4l2 5-2.5 1.5a11 11 0 006 6L16 13l5 2v4a2 2 0 01-2 2A16 16 0 013 5a2 2 0 012-2z"/></svg></button>
+  </div>
+</div>
+<div class="scrim" id="scrim"></div>
+<nav class="side" id="side" aria-label="Menu samping">
+  <div class="kosong"></div>
+  <div class="garis" role="separator"></div>
+  <div class="hist" id="hist" aria-label="Riwayat chat">
+  </div>
+</nav>
+<div class="mscrim hide" id="mscrim"></div>
+<div class="ctx hide" id="ctx" role="menu">
+  <button id="m-pin" role="menuitem"><svg viewBox="0 0 24 24"><path d="M9 4h6l-1 6 3 3v2H7v-2l3-3zM12 15v6"/></svg><span id="m-pin-t">Sematkan</span></button>
+  <button id="m-ren" role="menuitem"><svg viewBox="0 0 24 24"><path d="M16.5 3.5l4 4L8 20l-5 1 1-5z"/></svg><span>Ganti nama</span></button>
+  <button id="m-del" class="red" role="menuitem"><svg viewBox="0 0 24 24"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/></svg><span>Hapus</span></button>
+</div>
+<script>
+const $=id=>document.getElementById(id),log=$('log'),t=$('t'),go=$('go'),ic=$('ic');
+const PHONE='<path d="M5 3h4l2 5-2.5 1.5a11 11 0 006 6L16 13l5 2v4a2 2 0 01-2 2A16 16 0 013 5a2 2 0 012-2z"/>',ARROW='<path d="M12 19V5M5 12l7-7 7 7"/>';
+/* ISI DUA BARIS INI: Project URL dan anon (public) key dari Supabase > Project Settings > API */
+const SUPABASE_URL='https://GANTI-INI.supabase.co',SUPABASE_ANON_KEY='GANTI-DENGAN-ANON-KEY';
+const msgs=[];let busy=false;
+function sync(){const has=t.value.trim()!=='';go.classList.toggle('snd',has);ic.innerHTML=has?ARROW:PHONE;$('mic').classList.toggle('hide',has);go.setAttribute('aria-label',has?'Kirim pesan':'Panggilan suara')}
+function add(txt,c){const d=document.createElement('div');d.className=c;d.textContent=txt;log.appendChild(d);log.scrollTop=log.scrollHeight;return d}
+async function ask(d){
+try{
+const r=await fetch(SUPABASE_URL+'/functions/v1/chat',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+SUPABASE_ANON_KEY,'apikey':SUPABASE_ANON_KEY},body:JSON.stringify({messages:msgs.slice(-20)})});
+const j=await r.json().catch(()=>({}));
+if(!r.ok||!j.reply)throw new Error(j.error||('Kode '+r.status));
+msgs.push({role:'assistant',content:j.reply});d.textContent=j.reply;
+}catch(e){msgs.pop();d.textContent='Maaf, gagal menghubungi server: '+e.message}
+busy=false;log.scrollTop=log.scrollHeight}
+function send(){if(busy)return;const v=t.value.trim();if(!v)return;$('sug').classList.add('hide');if(!log.children.length){addH(mk(v))}add(v,'u');msgs.push({role:'user',content:v});t.value='';sync();
+const d=add('','a');d.innerHTML='<div class="dots"><i></i><i></i><i></i></div>';busy=true;ask(d)}
+go.onclick=()=>{if(t.value.trim())send()};
+t.addEventListener('input',sync);t.addEventListener('keydown',e=>{if(e.key==='Enter')send()});
+document.querySelectorAll('.sug button').forEach(b=>b.onclick=()=>{t.value=b.dataset.q;$('sug').classList.add('hide');$('plus').setAttribute('aria-expanded','false');t.focus();sync()});
+$('new').onclick=()=>{log.innerHTML='';msgs.length=0;$('sug').classList.add('hide');$('plus').setAttribute('aria-expanded','false');t.value='';sync()};
+const body=document.body,tog=o=>{body.classList.toggle('open',o);$('menu').setAttribute('aria-expanded',String(o))};
+$('menu').onclick=()=>tog(true);function mk(t){const b=document.createElement('button');b.innerHTML='<svg class="pi" viewBox="0 0 24 24"><path d="M9 4h6l-1 6 3 3v2H7v-2l3-3zM12 15v6"/></svg><span class="tx"></span>';b.querySelector('.tx').textContent=t;return b}
+function addH(b){const p=[...$('hist').querySelectorAll('.pin')].pop();p?p.after(b):$('hist').prepend(b)}
+const ctx=$('ctx'),ms=$('mscrim'),H=$('hist');let cur=null,lp=false,tm=0,sx=0,sy=0;
+function closeCtx(){ctx.classList.add('hide');ms.classList.add('hide');cur=null}
+function openCtx(b){cur=b;$('m-pin-t').textContent=b.classList.contains('pin')?'Lepas sematan':'Sematkan';ms.classList.remove('hide');ctx.classList.remove('hide');const r=b.getBoundingClientRect(),h=ctx.offsetHeight,w=ctx.offsetWidth;let top=r.bottom+6;if(top+h>innerHeight-12)top=r.top-h-6;ctx.style.top=Math.max(8,top)+'px';ctx.style.left=Math.max(12,Math.min(r.left+8,innerWidth-w-12))+'px'}
+H.addEventListener('pointerdown',e=>{const b=e.target.closest('button');if(!b)return;lp=false;sx=e.clientX;sy=e.clientY;clearTimeout(tm);tm=setTimeout(()=>{lp=true;openCtx(b)},500)});
+['pointerup','pointercancel','pointerleave'].forEach(n=>H.addEventListener(n,()=>clearTimeout(tm)));
+H.addEventListener('pointermove',e=>{if(Math.abs(e.clientX-sx)>10||Math.abs(e.clientY-sy)>10)clearTimeout(tm)});
+H.addEventListener('contextmenu',e=>{const b=e.target.closest('button');if(!b)return;e.preventDefault();if(cur!==b)openCtx(b)});
+H.addEventListener('click',e=>{if(lp){lp=false;return}if(e.target.closest('button'))tog(false)});
+ms.onclick=closeCtx;
+addEventListener('keydown',e=>{if(e.key==='Escape')closeCtx()});
+$('m-pin').onclick=()=>{const b=cur;closeCtx();if(b.classList.toggle('pin'))H.prepend(b);else addH(b)};
+$('m-del').onclick=()=>{cur.remove();closeCtx()};
+$('m-ren').onclick=()=>{const b=cur;closeCtx();const tx=b.querySelector('.tx'),i=document.createElement('input');i.className='ren';i.value=tx.textContent;i.setAttribute('aria-label','Nama baru');b.replaceWith(i);i.focus();i.select();let d=0;const end=ok=>{if(d)return;d=1;const v=i.value.trim();if(ok&&v)tx.textContent=v;i.replaceWith(b)};i.onkeydown=e=>{if(e.key==='Enter')end(1);if(e.key==='Escape'){e.stopPropagation();end(0)}};i.onblur=()=>end(1)};$('scrim').onclick=()=>tog(false);
+addEventListener('keydown',e=>{if(e.key==='Escape')tog(false)});
+$('plus').onclick=()=>{const h=$('sug').classList.toggle('hide');$('plus').setAttribute('aria-expanded',String(!h))};
+</script>
 </body>
 </html>
