@@ -108,45 +108,54 @@ body{background:var(--frame)}
   <button id="m-del" class="red" role="menuitem"><svg viewBox="0 0 24 24"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/></svg><span>Hapus</span></button>
 </div>
 <script>
-const $=id=>document.getElementById(id),log=$('log'),t=$('t'),go=$('go'),ic=$('ic');
+const $=id=>document.getElementById(id),log=$('log'),t=$('t'),go=$('go'),ic=$('ic'),H=$('hist');
 const PHONE='<path d="M5 3h4l2 5-2.5 1.5a11 11 0 006 6L16 13l5 2v4a2 2 0 01-2 2A16 16 0 013 5a2 2 0 012-2z"/>',ARROW='<path d="M12 19V5M5 12l7-7 7 7"/>';
-/* ISI DUA BARIS INI: Project URL dan anon (public) key dari Supabase > Project Settings > API */
 const SUPABASE_URL='https://adxyijyerblmosdzsbyp.supabase.co',SUPABASE_ANON_KEY='sb_publishable_bCG2DJjBfLAMp2ME9Pe3cQ_jbPmlnnX';
-const msgs=[];let busy=false;
+const KEY='chat_state_v1';let chats=[],cur=null,busy=false;
+function load(){try{const s=JSON.parse(localStorage.getItem(KEY)||'null');if(s&&Array.isArray(s.chats)){chats=s.chats.filter(c=>c&&c.id&&Array.isArray(c.msgs));cur=s.cur}}catch(e){}}
+function save(){try{localStorage.setItem(KEY,JSON.stringify({chats,cur}))}catch(e){}}
+const get=id=>chats.find(c=>c.id===id);
 function sync(){const has=t.value.trim()!=='';go.classList.toggle('snd',has);ic.innerHTML=has?ARROW:PHONE;$('mic').classList.toggle('hide',has);go.setAttribute('aria-label',has?'Kirim pesan':'Panggilan suara')}
 function add(txt,c){const d=document.createElement('div');d.className=c;d.textContent=txt;log.appendChild(d);log.scrollTop=log.scrollHeight;return d}
-async function ask(d){
+function mk(c){const b=document.createElement('button');b.dataset.id=c.id;if(c.pin)b.classList.add('pin');b.innerHTML='<svg class="pi" viewBox="0 0 24 24"><path d="M9 4h6l-1 6 3 3v2H7v-2l3-3zM12 15v6"/></svg><span class="tx"></span>';b.querySelector('.tx').textContent=c.title;return b}
+function renderHist(){H.innerHTML='';[...chats.filter(c=>c.pin),...chats.filter(c=>!c.pin)].forEach(c=>H.appendChild(mk(c)))}
+function renderLog(){log.innerHTML='';const c=get(cur);if(!c){cur=null;return}c.msgs.forEach(m=>add(m.content,m.role==='user'?'u':'a'))}
+async function ask(d,c){
 try{
-const r=await fetch(SUPABASE_URL+'/functions/v1/chat',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+SUPABASE_ANON_KEY,'apikey':SUPABASE_ANON_KEY},body:JSON.stringify({messages:msgs.slice(-20)})});
+const r=await fetch(SUPABASE_URL+'/functions/v1/chat',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+SUPABASE_ANON_KEY,'apikey':SUPABASE_ANON_KEY},body:JSON.stringify({messages:c.msgs.slice(-20)})});
 const j=await r.json().catch(()=>({}));
 if(!r.ok||!j.reply)throw new Error(j.error||('Kode '+r.status));
-msgs.push({role:'assistant',content:j.reply});d.textContent=j.reply;
-}catch(e){msgs.pop();d.textContent='Maaf, gagal menghubungi server: '+e.message}
+c.msgs.push({role:'assistant',content:j.reply});save();
+if(cur===c.id)d.textContent=j.reply;
+}catch(e){if(cur===c.id)d.textContent='Maaf, gagal menghubungi server: '+e.message}
 busy=false;log.scrollTop=log.scrollHeight}
-function send(){if(busy)return;const v=t.value.trim();if(!v)return;$('sug').classList.add('hide');if(!log.children.length){addH(mk(v))}add(v,'u');msgs.push({role:'user',content:v});t.value='';sync();
-const d=add('','a');d.innerHTML='<div class="dots"><i></i><i></i><i></i></div>';busy=true;ask(d)}
+function send(){if(busy)return;const v=t.value.trim();if(!v)return;$('sug').classList.add('hide');
+let c=get(cur);if(!c){c={id:Date.now().toString(36),title:v.slice(0,60),pin:false,msgs:[]};chats.unshift(c);cur=c.id;renderHist();renderLog()}
+c.msgs.push({role:'user',content:v});save();add(v,'u');t.value='';sync();
+const d=add('','a');d.innerHTML='<div class="dots"><i></i><i></i><i></i></div>';busy=true;ask(d,c)}
 go.onclick=()=>{if(t.value.trim())send()};
 t.addEventListener('input',sync);t.addEventListener('keydown',e=>{if(e.key==='Enter')send()});
 document.querySelectorAll('.sug button').forEach(b=>b.onclick=()=>{t.value=b.dataset.q;$('sug').classList.add('hide');$('plus').setAttribute('aria-expanded','false');t.focus();sync()});
-$('new').onclick=()=>{log.innerHTML='';msgs.length=0;$('sug').classList.add('hide');$('plus').setAttribute('aria-expanded','false');t.value='';sync()};
+$('new').onclick=()=>{cur=null;save();renderLog();$('sug').classList.add('hide');$('plus').setAttribute('aria-expanded','false');t.value='';sync()};
 const body=document.body,tog=o=>{body.classList.toggle('open',o);$('menu').setAttribute('aria-expanded',String(o))};
-$('menu').onclick=()=>tog(true);function mk(t){const b=document.createElement('button');b.innerHTML='<svg class="pi" viewBox="0 0 24 24"><path d="M9 4h6l-1 6 3 3v2H7v-2l3-3zM12 15v6"/></svg><span class="tx"></span>';b.querySelector('.tx').textContent=t;return b}
-function addH(b){const p=[...$('hist').querySelectorAll('.pin')].pop();p?p.after(b):$('hist').prepend(b)}
-const ctx=$('ctx'),ms=$('mscrim'),H=$('hist');let cur=null,lp=false,tm=0,sx=0,sy=0;
-function closeCtx(){ctx.classList.add('hide');ms.classList.add('hide');cur=null}
-function openCtx(b){cur=b;$('m-pin-t').textContent=b.classList.contains('pin')?'Lepas sematan':'Sematkan';ms.classList.remove('hide');ctx.classList.remove('hide');const r=b.getBoundingClientRect(),h=ctx.offsetHeight,w=ctx.offsetWidth;let top=r.bottom+6;if(top+h>innerHeight-12)top=r.top-h-6;ctx.style.top=Math.max(8,top)+'px';ctx.style.left=Math.max(12,Math.min(r.left+8,innerWidth-w-12))+'px'}
+$('menu').onclick=()=>tog(true);
+const ctx=$('ctx'),ms=$('mscrim');let tgt=null,lp=false,tm=0,sx=0,sy=0;
+function closeCtx(){ctx.classList.add('hide');ms.classList.add('hide');tgt=null}
+function openCtx(b){tgt=b;$('m-pin-t').textContent=b.classList.contains('pin')?'Lepas sematan':'Sematkan';ms.classList.remove('hide');ctx.classList.remove('hide');const r=b.getBoundingClientRect(),h=ctx.offsetHeight,w=ctx.offsetWidth;let top=r.bottom+6;if(top+h>innerHeight-12)top=r.top-h-6;ctx.style.top=Math.max(8,top)+'px';ctx.style.left=Math.max(12,Math.min(r.left+8,innerWidth-w-12))+'px'}
 H.addEventListener('pointerdown',e=>{const b=e.target.closest('button');if(!b)return;lp=false;sx=e.clientX;sy=e.clientY;clearTimeout(tm);tm=setTimeout(()=>{lp=true;openCtx(b)},500)});
 ['pointerup','pointercancel','pointerleave'].forEach(n=>H.addEventListener(n,()=>clearTimeout(tm)));
 H.addEventListener('pointermove',e=>{if(Math.abs(e.clientX-sx)>10||Math.abs(e.clientY-sy)>10)clearTimeout(tm)});
-H.addEventListener('contextmenu',e=>{const b=e.target.closest('button');if(!b)return;e.preventDefault();if(cur!==b)openCtx(b)});
-H.addEventListener('click',e=>{if(lp){lp=false;return}if(e.target.closest('button'))tog(false)});
+H.addEventListener('contextmenu',e=>{const b=e.target.closest('button');if(!b)return;e.preventDefault();if(tgt!==b)openCtx(b)});
+H.addEventListener('click',e=>{if(lp){lp=false;return}const b=e.target.closest('button');if(!b)return;if(get(b.dataset.id)){cur=b.dataset.id;save();renderLog();$('sug').classList.add('hide')}tog(false)});
 ms.onclick=closeCtx;
 addEventListener('keydown',e=>{if(e.key==='Escape')closeCtx()});
-$('m-pin').onclick=()=>{const b=cur;closeCtx();if(b.classList.toggle('pin'))H.prepend(b);else addH(b)};
-$('m-del').onclick=()=>{cur.remove();closeCtx()};
-$('m-ren').onclick=()=>{const b=cur;closeCtx();const tx=b.querySelector('.tx'),i=document.createElement('input');i.className='ren';i.value=tx.textContent;i.setAttribute('aria-label','Nama baru');b.replaceWith(i);i.focus();i.select();let d=0;const end=ok=>{if(d)return;d=1;const v=i.value.trim();if(ok&&v)tx.textContent=v;i.replaceWith(b)};i.onkeydown=e=>{if(e.key==='Enter')end(1);if(e.key==='Escape'){e.stopPropagation();end(0)}};i.onblur=()=>end(1)};$('scrim').onclick=()=>tog(false);
+$('m-pin').onclick=()=>{const c=get(tgt.dataset.id);closeCtx();if(!c)return;c.pin=!c.pin;chats=chats.filter(x=>x!==c);chats.unshift(c);save();renderHist()};
+$('m-del').onclick=()=>{const id=tgt.dataset.id;closeCtx();chats=chats.filter(c=>c.id!==id);if(cur===id){cur=null;renderLog()}save();renderHist()};
+$('m-ren').onclick=()=>{const b=tgt,c=get(b.dataset.id);closeCtx();if(!c)return;const i=document.createElement('input');i.className='ren';i.value=c.title;i.setAttribute('aria-label','Nama baru');b.replaceWith(i);i.focus();i.select();let d=0;const end=ok=>{if(d)return;d=1;const v=i.value.trim();if(ok&&v){c.title=v;save()}renderHist()};i.onkeydown=e=>{if(e.key==='Enter')end(1);if(e.key==='Escape'){e.stopPropagation();end(0)}};i.onblur=()=>end(1)};
+$('scrim').onclick=()=>tog(false);
 addEventListener('keydown',e=>{if(e.key==='Escape')tog(false)});
 $('plus').onclick=()=>{const h=$('sug').classList.toggle('hide');$('plus').setAttribute('aria-expanded',String(!h))};
+load();renderHist();renderLog();sync();
 </script>
 </body>
 </html>
