@@ -72,6 +72,15 @@ body{background:var(--frame)}
 .app{background:var(--bg)}
 .circ,.bar,.ctx{border:1px solid #454545}
 .u{border:1px solid #454545}
+.a{overflow-wrap:anywhere}
+.a p{margin:0 0 10px}
+.a>*:last-child{margin-bottom:0}
+.a ol,.a ul{margin:0 0 10px;padding-left:22px}
+.a li{margin:5px 0}
+.a strong{font-weight:650}
+.a pre{background:var(--field);border:1px solid #454545;border-radius:12px;padding:12px;overflow-x:auto;margin:0 0 10px;font-size:14px;line-height:1.45}
+.a code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.92em}
+.a :not(pre)>code{background:var(--field);padding:2px 6px;border-radius:6px}
 </style>
 </head>
 <body>
@@ -116,7 +125,24 @@ function load(){try{const s=JSON.parse(localStorage.getItem(KEY)||'null');if(s&&
 function save(){try{localStorage.setItem(KEY,JSON.stringify({chats,cur}))}catch(e){}}
 const get=id=>chats.find(c=>c.id===id);
 function sync(){const has=t.value.trim()!=='';go.classList.toggle('snd',has);ic.innerHTML=has?ARROW:PHONE;$('mic').classList.toggle('hide',has);go.setAttribute('aria-label',has?'Kirim pesan':'Panggilan suara')}
-function add(txt,c){const d=document.createElement('div');d.className=c;d.textContent=txt;log.appendChild(d);log.scrollTop=log.scrollHeight;return d}
+function esc(x){return x.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
+function inl(x){return esc(x).replace(/`([^`]+)`/g,'<code>$1</code>').replace(/\*\*([^*]+)\*\*/g,'<strong>$1</strong>').replace(/(^|[^*])\*([^*\s][^*]*)\*/g,'$1<em>$2</em>')}
+function md(src){
+if(src.indexOf('\n')<0)src=src.replace(/\s+(\d{1,2}\.\s+\*\*)/g,'\n$1');
+const lines=src.replace(/\r/g,'').split('\n');let out='',list=null,para=[],code=null,m;
+const fp=()=>{if(para.length){out+='<p>'+para.map(inl).join('<br>')+'</p>';para=[]}};
+const fl=()=>{if(list){out+='</'+list+'>';list=null}};
+for(const ln of lines){
+if(ln.trim().startsWith('```')){if(code===null){fp();fl();code=[]}else{out+='<pre><code>'+esc(code.join('\n'))+'</code></pre>';code=null}continue}
+if(code!==null){code.push(ln);continue}
+if(!ln.trim()){fp();fl();continue}
+if(m=ln.match(/^\s*(\d+)[.)]\s+(.*)/)){fp();if(list!=='ol'){fl();list='ol';out+='<ol start="'+m[1]+'">'}out+='<li>'+inl(m[2])+'</li>';continue}
+if(m=ln.match(/^\s*[-*\u2022]\s+(.*)/)){fp();if(list!=='ul'){fl();list='ul';out+='<ul>'}out+='<li>'+inl(m[1])+'</li>';continue}
+if(m=ln.match(/^#{1,6}\s+(.*)/)){fp();fl();out+='<p><strong>'+inl(m[1])+'</strong></p>';continue}
+fl();para.push(ln)}
+if(code!==null)out+='<pre><code>'+esc(code.join('\n'))+'</code></pre>';
+fp();fl();return out}
+function add(txt,c){const d=document.createElement('div');d.className=c;if(c==='a'&&txt)d.innerHTML=md(txt);else d.textContent=txt;log.appendChild(d);log.scrollTop=log.scrollHeight;return d}
 function mk(c){const b=document.createElement('button');b.dataset.id=c.id;if(c.pin)b.classList.add('pin');b.innerHTML='<svg class="pi" viewBox="0 0 24 24"><path d="M9 4h6l-1 6 3 3v2H7v-2l3-3zM12 15v6"/></svg><span class="tx"></span>';b.querySelector('.tx').textContent=c.title;return b}
 function renderHist(){H.innerHTML='';[...chats.filter(c=>c.pin),...chats.filter(c=>!c.pin)].forEach(c=>H.appendChild(mk(c)))}
 function renderLog(){log.innerHTML='';const c=get(cur);if(!c){cur=null;return}c.msgs.forEach(m=>add(m.content,m.role==='user'?'u':'a'))}
@@ -126,7 +152,7 @@ const r=await fetch(SUPABASE_URL+'/functions/v1/chat',{method:'POST',headers:{'C
 const j=await r.json().catch(()=>({}));
 if(!r.ok||!j.reply)throw new Error(j.error||('Kode '+r.status));
 c.msgs.push({role:'assistant',content:j.reply});save();
-if(cur===c.id)d.textContent=j.reply;
+if(cur===c.id)d.innerHTML=md(j.reply);
 }catch(e){if(cur===c.id)d.textContent='Maaf, gagal menghubungi server: '+e.message}
 busy=false;log.scrollTop=log.scrollHeight}
 function send(){if(busy)return;const v=t.value.trim();if(!v)return;$('sug').classList.add('hide');
