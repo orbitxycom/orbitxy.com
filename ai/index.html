@@ -111,7 +111,7 @@ body{background:var(--frame)}
 const $=id=>document.getElementById(id),log=$('log'),t=$('t'),go=$('go'),ic=$('ic');
 const PHONE='<path d="M5 3h4l2 5-2.5 1.5a11 11 0 006 6L16 13l5 2v4a2 2 0 01-2 2A16 16 0 013 5a2 2 0 012-2z"/>',ARROW='<path d="M12 19V5M5 12l7-7 7 7"/>';
 /* ISI DUA BARIS INI: Project URL dan anon (public) key dari Supabase > Project Settings > API */
-const SUPABASE_URL='https://GANTI-INI.supabase.co',SUPABASE_ANON_KEY='GANTI-DENGAN-ANON-KEY';
+const SUPABASE_URL='https://adxyijyerblmosdzsbyp.supabase.co',SUPABASE_ANON_KEY='GANTI-DENGAN-KEY-PUBLIK';
 const msgs=[];let busy=false;
 function sync(){const has=t.value.trim()!=='';go.classList.toggle('snd',has);ic.innerHTML=has?ARROW:PHONE;$('mic').classList.toggle('hide',has);go.setAttribute('aria-label',has?'Kirim pesan':'Panggilan suara')}
 function add(txt,c){const d=document.createElement('div');d.className=c;d.textContent=txt;log.appendChild(d);log.scrollTop=log.scrollHeight;return d}
