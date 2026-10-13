@@ -109,6 +109,9 @@ body{background:var(--frame)}
 .u .phl{color:var(--mut);font-size:14px;margin-bottom:4px}
 .a a{color:var(--blue);text-decoration:underline;text-underline-offset:2px;word-break:break-all}
 .a a:hover{opacity:.8}
+.nmenu{width:auto;min-width:190px;padding:6px}
+.nmenu button{font-size:17px;padding:12px 16px}
+.nmenu button svg{width:22px;height:22px}
 </style>
 </head>
 <body>
@@ -116,7 +119,7 @@ body{background:var(--frame)}
   <div class="top">
     <button class="circ" id="menu" aria-label="Buka menu"><svg viewBox="0 0 24 24"><path d="M4 8h16M4 16h10"/></svg></button>
     <div class="sp"></div>
-    <button class="circ" id="new" aria-label="Obrolan baru"><svg viewBox="0 0 24 24"><path d="M12 3.5c-5 0-9 3.4-9 7.6 0 1.8.7 3.4 2 4.7L4 20l4.3-1.8c1.1.4 2.4.6 3.7.6 5 0 9-3.4 9-7.6s-4-7.7-9-7.7z"/></svg></button>
+    <button class="circ" id="new" aria-label="Obrolan baru" aria-haspopup="menu"><svg viewBox="0 0 24 24"><path d="M12 3.5c-5 0-9 3.4-9 7.6 0 1.8.7 3.4 2 4.7L4 20l4.3-1.8c1.1.4 2.4.6 3.7.6 5 0 9-3.4 9-7.6s-4-7.7-9-7.7z"/></svg></button>
   </div>
   <div id="log"></div>
   <div class="sug hide" id="sug">
@@ -146,6 +149,10 @@ body{background:var(--frame)}
 </div>
 <input type="file" id="f-cam" accept="image/*" capture="environment" class="hide" aria-label="Ambil foto">
 <input type="file" id="f-pic" accept="image/*" class="hide" aria-label="Pilih foto">
+<div class="mscrim hide" id="nscrim"></div>
+<div class="ctx nmenu hide" id="nmenu" role="menu">
+  <button id="n-new" role="menuitem"><svg viewBox="0 0 24 24"><path d="M12 3.5c-5 0-9 3.4-9 7.6 0 1.8.7 3.4 2 4.7L4 20l4.3-1.8c1.1.4 2.4.6 3.7.6 5 0 9-3.4 9-7.6s-4-7.7-9-7.7z"/></svg><span>Chat baru</span></button>
+</div>
 <div class="mscrim hide" id="mscrim"></div>
 <div class="ctx hide" id="ctx" role="menu">
   <button id="m-pin" role="menuitem"><svg viewBox="0 0 24 24"><path d="M9 4h6l-1 6 3 3v2H7v-2l3-3zM12 15v6"/></svg><span id="m-pin-t">Sematkan</span></button>
@@ -250,7 +257,11 @@ const d=add('','a');d.innerHTML='<div class="dots"><i></i><i></i><i></i></div>';
 go.onclick=()=>{if(t.value.trim()||photo)send()};
 t.addEventListener('input',sync);t.addEventListener('keydown',e=>{if(e.key==='Enter')send()});
 document.querySelectorAll('.sug button').forEach(b=>b.onclick=()=>{t.value=b.dataset.q;t.focus();sync()});
-$('new').onclick=()=>{cur=null;save();renderLog();closeAM();t.value='';sync()};
+const nm=$('nmenu'),ns=$('nscrim');
+function closeNM(){nm.classList.add('hide');ns.classList.add('hide')}
+$('new').onclick=()=>{if(!nm.classList.contains('hide')){closeNM();return}const r=$('new').getBoundingClientRect();nm.style.top=(r.bottom+8)+'px';nm.style.right=Math.max(8,innerWidth-r.right)+'px';nm.style.left='auto';nm.classList.remove('hide');ns.classList.remove('hide')};
+ns.onclick=closeNM;
+$('n-new').onclick=()=>{closeNM();cur=null;save();renderLog();closeAM();t.value='';sync()};
 const body=document.body,tog=o=>{body.classList.toggle('open',o);$('menu').setAttribute('aria-expanded',String(o))};
 $('menu').onclick=()=>tog(true);
 const ctx=$('ctx'),ms=$('mscrim');let tgt=null,lp=false,tm=0,sx=0,sy=0;
@@ -262,7 +273,7 @@ H.addEventListener('pointermove',e=>{if(Math.abs(e.clientX-sx)>10||Math.abs(e.cl
 H.addEventListener('contextmenu',e=>{const b=e.target.closest('button');if(!b)return;e.preventDefault();if(tgt!==b)openCtx(b)});
 H.addEventListener('click',e=>{if(lp){lp=false;return}const b=e.target.closest('button');if(!b)return;if(get(b.dataset.id)){cur=b.dataset.id;save();renderLog();$('sug').classList.add('hide')}tog(false)});
 ms.onclick=closeCtx;
-addEventListener('keydown',e=>{if(e.key==='Escape'){closeCtx();closeAM()}});
+addEventListener('keydown',e=>{if(e.key==='Escape'){closeCtx();closeAM();closeNM()}});
 $('m-pin').onclick=()=>{const c=get(tgt.dataset.id);closeCtx();if(!c)return;c.pin=!c.pin;chats=chats.filter(x=>x!==c);chats.unshift(c);save();renderHist()};
 $('m-del').onclick=()=>{const id=tgt.dataset.id;closeCtx();chats=chats.filter(c=>c.id!==id);if(cur===id){cur=null;renderLog()}save();renderHist()};
 $('m-ren').onclick=()=>{const b=tgt,c=get(b.dataset.id);closeCtx();if(!c)return;const i=document.createElement('input');i.className='ren';i.value=c.title;i.setAttribute('aria-label','Nama baru');b.replaceWith(i);i.focus();i.select();let d=0;const end=ok=>{if(d)return;d=1;const v=i.value.trim();if(ok&&v){c.title=v;save()}renderHist()};i.onkeydown=e=>{if(e.key==='Enter')end(1);if(e.key==='Escape'){e.stopPropagation();end(0)}};i.onblur=()=>end(1)};
