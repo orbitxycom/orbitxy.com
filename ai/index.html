@@ -96,11 +96,11 @@ body{background:var(--frame)}
 .cp{background:none;color:var(--mut);padding:4px;border-radius:8px;display:grid;place-items:center}
 .cp:hover{color:var(--text)}
 .cp svg{width:22px;height:22px}
-.amenu{position:fixed;background:var(--field);border:1px solid #454545;border-radius:26px;padding:10px 12px;box-shadow:0 8px 28px rgba(0,0,0,.45)}
-.amenu button{background:none;display:flex;align-items:center;gap:16px;width:100%;padding:9px 6px;font-size:20px;font-weight:600;color:var(--text);text-align:left;border-radius:16px}
+.amenu{position:fixed;background:var(--field);border:1px solid #454545;border-radius:20px;padding:5px 6px;box-shadow:0 8px 28px rgba(0,0,0,.45)}
+.amenu button{background:none;display:flex;align-items:center;gap:10px;width:100%;padding:5px 14px 5px 5px;font-size:15px;font-weight:600;color:var(--text);text-align:left;border-radius:14px;white-space:nowrap}
 .amenu button:hover{background:var(--btn)}
-.amenu .ico{width:56px;height:56px;border-radius:50%;background:var(--btn);display:grid;place-items:center;flex:none}
-.amenu .ico svg{width:28px;height:28px}
+.amenu .ico{width:34px;height:34px;border-radius:50%;background:var(--btn);display:grid;place-items:center;flex:none}
+.amenu .ico svg{width:18px;height:18px}
 .pv{position:relative;width:76px;height:76px;margin:0 0 8px 6px;border-radius:14px;overflow:hidden;border:1px solid #454545;flex:none}
 .pv img{width:100%;height:100%;object-fit:cover;display:block}
 .pv button{position:absolute;top:4px;right:4px;width:24px;height:24px;border-radius:50%;background:rgba(0,0,0,.65);color:#fff;display:grid;place-items:center}
@@ -263,7 +263,7 @@ $('scrim').onclick=()=>tog(false);
 addEventListener('keydown',e=>{if(e.key==='Escape')tog(false)});
 const am=$('amenu'),as=$('ascrim');
 function closeAM(){am.classList.add('hide');as.classList.add('hide');$('plus').setAttribute('aria-expanded','false')}
-function openAM(){const r=document.querySelector('.bar').getBoundingClientRect();am.classList.remove('hide');as.classList.remove('hide');am.style.left=r.left+'px';am.style.width=r.width+'px';am.style.bottom=(innerHeight-r.top+10)+'px';$('plus').setAttribute('aria-expanded','true')}
+function openAM(){const r=document.querySelector('.bar').getBoundingClientRect();am.classList.remove('hide');as.classList.remove('hide');am.style.left=r.left+'px';am.style.bottom=(innerHeight-r.top+10)+'px';$('plus').setAttribute('aria-expanded','true')}
 $('plus').onclick=()=>{am.classList.contains('hide')?openAM():closeAM()};
 as.onclick=closeAM;
 $('a-cam').onclick=()=>{closeAM();$('f-cam').click()};
