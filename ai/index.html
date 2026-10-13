@@ -92,6 +92,10 @@ body{background:var(--frame)}
 .imgbox.bad .err{display:block}
 .imgbox .err button{display:block;margin:12px auto 0;background:var(--btn);color:var(--text);border-radius:18px;padding:8px 18px;font-size:15px}
 .imgcap{font-size:13px;color:var(--mut);margin-top:6px}
+.acts{display:flex;margin-top:8px}
+.cp{background:none;color:var(--mut);padding:4px;border-radius:8px;display:grid;place-items:center}
+.cp:hover{color:var(--text)}
+.cp svg{width:22px;height:22px}
 </style>
 </head>
 <body>
@@ -136,6 +140,9 @@ function load(){try{const s=JSON.parse(localStorage.getItem(KEY)||'null');if(s&&
 function save(){try{localStorage.setItem(KEY,JSON.stringify({chats,cur}))}catch(e){}}
 const get=id=>chats.find(c=>c.id===id);
 function sync(){const has=t.value.trim()!=='';go.classList.toggle('snd',has);ic.innerHTML=has?ARROW:PHONE;$('mic').classList.toggle('hide',has);go.setAttribute('aria-label',has?'Kirim pesan':'Panggilan suara')}
+const CP='<svg viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="3"/><path d="M5 15V7a3 3 0 013-3h8"/></svg>',OKI='<svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7"/></svg>';
+function copyTxt(x){if(navigator.clipboard&&window.isSecureContext)return navigator.clipboard.writeText(x);return new Promise((ok,no)=>{const a=document.createElement('textarea');a.value=x;a.style.cssText='position:fixed;opacity:0';document.body.appendChild(a);a.select();try{document.execCommand('copy')?ok():no()}catch(e){no()}a.remove()})}
+function addCopy(d,x){const w=document.createElement('div');w.className='acts';const b=document.createElement('button');b.className='cp';b.setAttribute('aria-label','Salin');b.innerHTML=CP;b.onclick=()=>{copyTxt(x.replace(/\*\*/g,'')).then(()=>{b.innerHTML=OKI;setTimeout(()=>{b.innerHTML=CP},1500)},()=>{})};w.appendChild(b);d.appendChild(w)}
 function esc(x){return x.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
 function inl(x){return esc(x).replace(/`([^`]+)`/g,'<code>$1</code>').replace(/\*\*([^*]+)\*\*/g,'<strong>$1</strong>').replace(/(^|[^*])\*([^*\s][^*]*)\*/g,'$1<em>$2</em>')}
 function md(src){
@@ -153,7 +160,7 @@ if(m=ln.match(/^#{1,6}\s+(.*)/)){fp();fl();out+='<p><strong>'+inl(m[1])+'</stron
 fl();para.push(ln)}
 if(code!==null)out+='<pre><code>'+esc(code.join('\n'))+'</code></pre>';
 fp();fl();return out}
-function add(txt,c){const d=document.createElement('div');d.className=c;if(c==='a'&&txt)d.innerHTML=md(txt);else d.textContent=txt;log.appendChild(d);log.scrollTop=log.scrollHeight;return d}
+function add(txt,c){const d=document.createElement('div');d.className=c;if(c==='a'&&txt)d.innerHTML=md(txt);else d.textContent=txt;if(c==='a'&&txt)addCopy(d,txt);log.appendChild(d);log.scrollTop=log.scrollHeight;return d}
 const IMG_BASE='https://image.pollinations.ai/prompt/';
 const IMG_ALT='https://gen.pollinations.ai/image/';
 const IMG1=/^\s*(\S+\s+){0,4}?(buat\w*|bikin\w*|gambar(in|kan)?|lukis\w*|generate|create|draw|make|minta|mau|pengen|ingin|bisa)\s+(\S+\s+){0,3}?(gambar|foto|logo|ilustrasi|lukisan|poster|wallpaper|ikon|icon|banner|image|picture)\b/i,IMG2=/^\s*gambar(in|kan)?\s+\S/i,NOIMG=/\b(kode|code|script|html|css|program|fungsi|cara|rumus|artinya|apa itu)\b/i;
@@ -198,7 +205,7 @@ const r=await fetch(SUPABASE_URL+'/functions/v1/chat',{method:'POST',headers:{'C
 const j=await r.json().catch(()=>({}));
 if(!r.ok||!j.reply)throw new Error(j.error||('Kode '+r.status));
 c.msgs.push({role:'assistant',content:j.reply});save();
-if(cur===c.id)d.innerHTML=md(j.reply);
+if(cur===c.id){d.innerHTML=md(j.reply);addCopy(d,j.reply)}
 }catch(e){if(cur===c.id)d.textContent='Maaf, gagal menghubungi server: '+e.message}
 busy=false;log.scrollTop=log.scrollHeight}
 function send(){if(busy)return;const v=t.value.trim();if(!v)return;$('sug').classList.add('hide');
