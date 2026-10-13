@@ -96,6 +96,17 @@ body{background:var(--frame)}
 .cp{background:none;color:var(--mut);padding:4px;border-radius:8px;display:grid;place-items:center}
 .cp:hover{color:var(--text)}
 .cp svg{width:22px;height:22px}
+.amenu{position:fixed;background:var(--field);border:1px solid #454545;border-radius:26px;padding:10px 12px;box-shadow:0 8px 28px rgba(0,0,0,.45)}
+.amenu button{background:none;display:flex;align-items:center;gap:16px;width:100%;padding:9px 6px;font-size:20px;font-weight:600;color:var(--text);text-align:left;border-radius:16px}
+.amenu button:hover{background:var(--btn)}
+.amenu .ico{width:56px;height:56px;border-radius:50%;background:var(--btn);display:grid;place-items:center;flex:none}
+.amenu .ico svg{width:28px;height:28px}
+.pv{position:relative;width:76px;height:76px;margin:0 0 8px 6px;border-radius:14px;overflow:hidden;border:1px solid #454545;flex:none}
+.pv img{width:100%;height:100%;object-fit:cover;display:block}
+.pv button{position:absolute;top:4px;right:4px;width:24px;height:24px;border-radius:50%;background:rgba(0,0,0,.65);color:#fff;display:grid;place-items:center}
+.pv button svg{width:14px;height:14px;stroke-width:2.4}
+.u .ph{display:block;width:180px;max-width:100%;border-radius:12px;margin-bottom:6px}
+.u .phl{color:var(--mut);font-size:14px;margin-bottom:4px}
 </style>
 </head>
 <body>
@@ -111,6 +122,7 @@ body{background:var(--frame)}
     <button data-q="Tolong tulis atau edit "><svg viewBox="0 0 24 24"><path d="M16.5 3.5l4 4L8 20l-5 1 1-5z"/></svg>Tulis atau edit</button>
     <button data-q="Cari di web: "><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18"/></svg>Cari di web</button>
   </div>
+  <div class="pv hide" id="pv"><img id="pvi" alt="Foto terpilih"><button id="pvx" aria-label="Hapus foto"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
   <div class="bar">
     <button class="pl" id="plus" aria-label="Tambah" aria-expanded="false"><svg viewBox="0 0 24 24" style="width:30px;height:30px"><path d="M12 4v16M4 12h16"/></svg></button>
     <input id="t" placeholder="Tanya apa saja" autocomplete="off" aria-label="Tulis pesan">
@@ -125,6 +137,13 @@ body{background:var(--frame)}
   <div class="hist" id="hist" aria-label="Riwayat chat">
   </div>
 </nav>
+<div class="mscrim hide" id="ascrim"></div>
+<div class="amenu hide" id="amenu" role="menu">
+  <button id="a-cam" role="menuitem"><span class="ico"><svg viewBox="0 0 24 24"><path d="M4 8h3l1.5-2.5h7L17 8h3a1 1 0 011 1v9a1 1 0 01-1 1H4a1 1 0 01-1-1V9a1 1 0 011-1z"/><circle cx="12" cy="13" r="3.5"/></svg></span><span>Kamera</span></button>
+  <button id="a-pic" role="menuitem"><span class="ico"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="4"/><circle cx="16" cy="8.5" r="1.6"/><path d="M3.5 16l5-4.5 4.5 4 3-2.5 4.5 4"/></svg></span><span>Foto</span></button>
+</div>
+<input type="file" id="f-cam" accept="image/*" capture="environment" class="hide" aria-label="Ambil foto">
+<input type="file" id="f-pic" accept="image/*" class="hide" aria-label="Pilih foto">
 <div class="mscrim hide" id="mscrim"></div>
 <div class="ctx hide" id="ctx" role="menu">
   <button id="m-pin" role="menuitem"><svg viewBox="0 0 24 24"><path d="M9 4h6l-1 6 3 3v2H7v-2l3-3zM12 15v6"/></svg><span id="m-pin-t">Sematkan</span></button>
@@ -135,11 +154,12 @@ body{background:var(--frame)}
 const $=id=>document.getElementById(id),log=$('log'),t=$('t'),go=$('go'),ic=$('ic'),H=$('hist');
 const PHONE='<path d="M5 3h4l2 5-2.5 1.5a11 11 0 006 6L16 13l5 2v4a2 2 0 01-2 2A16 16 0 013 5a2 2 0 012-2z"/>',ARROW='<path d="M12 19V5M5 12l7-7 7 7"/>';
 const SUPABASE_URL='https://adxyijyerblmosdzsbyp.supabase.co',SUPABASE_ANON_KEY='sb_publishable_bCG2DJjBfLAMp2ME9Pe3cQ_jbPmlnnX';
-const KEY='chat_state_v1';let chats=[],cur=null,busy=false;
+const KEY='chat_state_v1';let chats=[],cur=null,busy=false,photo=null;
+const NOTE='[Pengguna melampirkan sebuah foto. Kamu belum bisa melihat foto, jadi katakan dengan jujur bahwa kamu belum bisa membaca fotonya, lalu bantu dari teks yang ada.]';
 function load(){try{const s=JSON.parse(localStorage.getItem(KEY)||'null');if(s&&Array.isArray(s.chats)){chats=s.chats.filter(c=>c&&c.id&&Array.isArray(c.msgs));cur=s.cur}}catch(e){}}
 function save(){try{localStorage.setItem(KEY,JSON.stringify({chats,cur}))}catch(e){}}
 const get=id=>chats.find(c=>c.id===id);
-function sync(){const has=t.value.trim()!=='';go.classList.toggle('snd',has);ic.innerHTML=has?ARROW:PHONE;$('mic').classList.toggle('hide',has);go.setAttribute('aria-label',has?'Kirim pesan':'Panggilan suara')}
+function sync(){const has=t.value.trim()!==''||!!photo;go.classList.toggle('snd',has);ic.innerHTML=has?ARROW:PHONE;$('mic').classList.toggle('hide',has);go.setAttribute('aria-label',has?'Kirim pesan':'Panggilan suara')}
 const SH='<svg viewBox="0 0 24 24"><circle cx="18" cy="5.5" r="2.7"/><circle cx="6" cy="12" r="2.7"/><circle cx="18" cy="18.5" r="2.7"/><path d="M8.4 10.7l7.2-3.9M8.4 13.3l7.2 3.9"/></svg>';
 const CP='<svg viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="3"/><path d="M5 15V7a3 3 0 013-3h8"/></svg>',OKI='<svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7"/></svg>';
 function copyTxt(x){if(navigator.clipboard&&window.isSecureContext)return navigator.clipboard.writeText(x);return new Promise((ok,no)=>{const a=document.createElement('textarea');a.value=x;a.style.cssText='position:fixed;opacity:0';document.body.appendChild(a);a.select();try{document.execCommand('copy')?ok():no()}catch(e){no()}a.remove()})}
@@ -164,6 +184,10 @@ if(m=ln.match(/^#{1,6}\s+(.*)/)){fp();fl();out+='<p><strong>'+inl(m[1])+'</stron
 fl();para.push(ln)}
 if(code!==null)out+='<pre><code>'+esc(code.join('\n'))+'</code></pre>';
 fp();fl();return out}
+function addUser(v,ph,flag){const d=document.createElement('div');d.className='u';
+if(ph){const i=new Image();i.src=ph;i.alt='Foto';i.className='ph';d.appendChild(i)}else if(flag){const l=document.createElement('div');l.className='phl';l.textContent='Foto terlampir';d.appendChild(l)}
+if(v){const x=document.createElement('div');x.textContent=v;d.appendChild(x)}
+log.appendChild(d);log.scrollTop=log.scrollHeight;return d}
 function add(txt,c){const d=document.createElement('div');d.className=c;if(c==='a'&&txt)d.innerHTML=md(txt);else d.textContent=txt;if(c==='a'&&txt)addCopy(d,txt);log.appendChild(d);log.scrollTop=log.scrollHeight;return d}
 const IMG_BASE='https://image.pollinations.ai/prompt/';
 const IMG_ALT='https://gen.pollinations.ai/image/';
@@ -202,25 +226,25 @@ im.onload=()=>{stop();pc.textContent='100%';box.classList.add('ok')};
 im.onerror=fb;rb.onclick=start;start();return d}
 function mk(c){const b=document.createElement('button');b.dataset.id=c.id;if(c.pin)b.classList.add('pin');b.innerHTML='<svg class="pi" viewBox="0 0 24 24"><path d="M9 4h6l-1 6 3 3v2H7v-2l3-3zM12 15v6"/></svg><span class="tx"></span>';b.querySelector('.tx').textContent=c.title;return b}
 function renderHist(){H.innerHTML='';[...chats.filter(c=>c.pin),...chats.filter(c=>!c.pin)].forEach(c=>H.appendChild(mk(c)))}
-function renderLog(){log.innerHTML='';const c=get(cur);if(!c){cur=null;return}c.msgs.forEach(m=>m.img?addImg(m.img,m.prompt):add(m.content,m.role==='user'?'u':'a'))}
+function renderLog(){log.innerHTML='';const c=get(cur);if(!c)cur=null;else c.msgs.forEach(m=>m.img?addImg(m.img,m.prompt):m.role==='user'?addUser(m.content,null,!!m.photo):add(m.content,'a'));$('sug').classList.toggle('hide',!!c)}
 async function ask(d,c){
 try{
-const r=await fetch(SUPABASE_URL+'/functions/v1/chat',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+SUPABASE_ANON_KEY,'apikey':SUPABASE_ANON_KEY},body:JSON.stringify({messages:c.msgs.slice(-20)})});
+const r=await fetch(SUPABASE_URL+'/functions/v1/chat',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+SUPABASE_ANON_KEY,'apikey':SUPABASE_ANON_KEY},body:JSON.stringify({messages:c.msgs.slice(-20).map(m=>({role:m.role,content:m.api||m.content}))})});
 const j=await r.json().catch(()=>({}));
 if(!r.ok||!j.reply)throw new Error(j.error||('Kode '+r.status));
 c.msgs.push({role:'assistant',content:j.reply});save();
 if(cur===c.id){d.innerHTML=md(j.reply);addCopy(d,j.reply)}
 }catch(e){if(cur===c.id)d.textContent='Maaf, gagal menghubungi server: '+e.message}
 busy=false;log.scrollTop=log.scrollHeight}
-function send(){if(busy)return;const v=t.value.trim();if(!v)return;$('sug').classList.add('hide');
-let c=get(cur);if(!c){c={id:Date.now().toString(36),title:v.slice(0,60),pin:false,msgs:[]};chats.unshift(c);cur=c.id;renderHist();renderLog()}
-c.msgs.push({role:'user',content:v});save();add(v,'u');t.value='';sync();
-if(isImg(v)){const pr=imgPrompt(v),u=imgUrl(pr);c.msgs.push({role:'assistant',content:'[Gambar dibuat: '+pr+']',img:u,prompt:pr});save();addImg(u,pr);return}
+function send(){if(busy)return;const v=t.value.trim();const ph=photo;if(!v&&!ph)return;$('sug').classList.add('hide');
+let c=get(cur);if(!c){c={id:Date.now().toString(36),title:(v||'Foto').slice(0,60),pin:false,msgs:[]};chats.unshift(c);cur=c.id;renderHist();renderLog()}
+c.msgs.push(ph?{role:'user',content:v,photo:true,api:(v?v+'\n':'')+NOTE}:{role:'user',content:v});save();addUser(v,ph,false);t.value='';photo=null;$('pv').classList.add('hide');sync();
+if(!ph&&isImg(v)){const pr=imgPrompt(v),u=imgUrl(pr);c.msgs.push({role:'assistant',content:'[Gambar dibuat: '+pr+']',img:u,prompt:pr});save();addImg(u,pr);return}
 const d=add('','a');d.innerHTML='<div class="dots"><i></i><i></i><i></i></div>';busy=true;ask(d,c)}
-go.onclick=()=>{if(t.value.trim())send()};
+go.onclick=()=>{if(t.value.trim()||photo)send()};
 t.addEventListener('input',sync);t.addEventListener('keydown',e=>{if(e.key==='Enter')send()});
-document.querySelectorAll('.sug button').forEach(b=>b.onclick=()=>{t.value=b.dataset.q;$('sug').classList.add('hide');$('plus').setAttribute('aria-expanded','false');t.focus();sync()});
-$('new').onclick=()=>{cur=null;save();renderLog();$('sug').classList.add('hide');$('plus').setAttribute('aria-expanded','false');t.value='';sync()};
+document.querySelectorAll('.sug button').forEach(b=>b.onclick=()=>{t.value=b.dataset.q;t.focus();sync()});
+$('new').onclick=()=>{cur=null;save();renderLog();closeAM();t.value='';sync()};
 const body=document.body,tog=o=>{body.classList.toggle('open',o);$('menu').setAttribute('aria-expanded',String(o))};
 $('menu').onclick=()=>tog(true);
 const ctx=$('ctx'),ms=$('mscrim');let tgt=null,lp=false,tm=0,sx=0,sy=0;
@@ -232,13 +256,25 @@ H.addEventListener('pointermove',e=>{if(Math.abs(e.clientX-sx)>10||Math.abs(e.cl
 H.addEventListener('contextmenu',e=>{const b=e.target.closest('button');if(!b)return;e.preventDefault();if(tgt!==b)openCtx(b)});
 H.addEventListener('click',e=>{if(lp){lp=false;return}const b=e.target.closest('button');if(!b)return;if(get(b.dataset.id)){cur=b.dataset.id;save();renderLog();$('sug').classList.add('hide')}tog(false)});
 ms.onclick=closeCtx;
-addEventListener('keydown',e=>{if(e.key==='Escape')closeCtx()});
+addEventListener('keydown',e=>{if(e.key==='Escape'){closeCtx();closeAM()}});
 $('m-pin').onclick=()=>{const c=get(tgt.dataset.id);closeCtx();if(!c)return;c.pin=!c.pin;chats=chats.filter(x=>x!==c);chats.unshift(c);save();renderHist()};
 $('m-del').onclick=()=>{const id=tgt.dataset.id;closeCtx();chats=chats.filter(c=>c.id!==id);if(cur===id){cur=null;renderLog()}save();renderHist()};
 $('m-ren').onclick=()=>{const b=tgt,c=get(b.dataset.id);closeCtx();if(!c)return;const i=document.createElement('input');i.className='ren';i.value=c.title;i.setAttribute('aria-label','Nama baru');b.replaceWith(i);i.focus();i.select();let d=0;const end=ok=>{if(d)return;d=1;const v=i.value.trim();if(ok&&v){c.title=v;save()}renderHist()};i.onkeydown=e=>{if(e.key==='Enter')end(1);if(e.key==='Escape'){e.stopPropagation();end(0)}};i.onblur=()=>end(1)};
 $('scrim').onclick=()=>tog(false);
 addEventListener('keydown',e=>{if(e.key==='Escape')tog(false)});
-$('plus').onclick=()=>{const h=$('sug').classList.toggle('hide');$('plus').setAttribute('aria-expanded',String(!h))};
+const am=$('amenu'),as=$('ascrim');
+function closeAM(){am.classList.add('hide');as.classList.add('hide');$('plus').setAttribute('aria-expanded','false')}
+function openAM(){const r=document.querySelector('.bar').getBoundingClientRect();am.classList.remove('hide');as.classList.remove('hide');am.style.left=r.left+'px';am.style.width=r.width+'px';am.style.bottom=(innerHeight-r.top+10)+'px';$('plus').setAttribute('aria-expanded','true')}
+$('plus').onclick=()=>{am.classList.contains('hide')?openAM():closeAM()};
+as.onclick=closeAM;
+$('a-cam').onclick=()=>{closeAM();$('f-cam').click()};
+$('a-pic').onclick=()=>{closeAM();$('f-pic').click()};
+function pick(e){const f=e.target.files&&e.target.files[0];e.target.value='';if(!f||!/^image\//.test(f.type))return;
+const u=URL.createObjectURL(f),im=new Image();
+im.onload=()=>{const k=Math.min(1,640/Math.max(im.width,im.height)),cv=document.createElement('canvas');cv.width=Math.round(im.width*k);cv.height=Math.round(im.height*k);cv.getContext('2d').drawImage(im,0,0,cv.width,cv.height);photo=cv.toDataURL('image/jpeg',.8);URL.revokeObjectURL(u);$('pvi').src=photo;$('pv').classList.remove('hide');sync()};
+im.onerror=()=>URL.revokeObjectURL(u);im.src=u}
+$('f-cam').onchange=pick;$('f-pic').onchange=pick;
+$('pvx').onclick=()=>{photo=null;$('pv').classList.add('hide');sync()};
 load();renderHist();renderLog();sync();
 </script>
 </body>
