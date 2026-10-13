@@ -107,6 +107,8 @@ body{background:var(--frame)}
 .pv button svg{width:14px;height:14px;stroke-width:2.4}
 .u .ph{display:block;width:180px;max-width:100%;border-radius:12px;margin-bottom:6px}
 .u .phl{color:var(--mut);font-size:14px;margin-bottom:4px}
+.a a{color:var(--blue);text-decoration:underline;text-underline-offset:2px;word-break:break-all}
+.a a:hover{opacity:.8}
 </style>
 </head>
 <body>
@@ -167,7 +169,12 @@ const b=document.createElement('button');b.className='cp';b.setAttribute('aria-l
 const h=document.createElement('button');h.className='cp';h.setAttribute('aria-label','Bagikan');h.innerHTML=SH;h.onclick=()=>{if(navigator.share){navigator.share({text:tx()}).catch(()=>{})}else{copyTxt(tx()).then(()=>{h.innerHTML=OKI;setTimeout(()=>{h.innerHTML=SH},1500)},()=>{})}};
 w.append(b,h);d.appendChild(w)}
 function esc(x){return x.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
-function inl(x){return esc(x).replace(/`([^`]+)`/g,'<code>$1</code>').replace(/\*\*([^*]+)\*\*/g,'<strong>$1</strong>').replace(/(^|[^*])\*([^*\s][^*]*)\*/g,'$1<em>$2</em>')}
+function lnk(h,t){return '<a href="'+h+'" target="_blank" rel="noopener noreferrer">'+t+'</a>'}
+function inl(x){let r=esc(x).replace(/`([^`]+)`/g,'<code>$1</code>').replace(/\*\*([^*]+)\*\*/g,'<strong>$1</strong>').replace(/(^|[^*])\*([^*\s][^*]*)\*/g,'$1<em>$2</em>');
+r=r.replace(/\[([^\]]+)\]\((https?:\/\/[^\s)"']+)\)/g,(m,t,u)=>lnk(u,t));
+return r.split(/(<a [^>]*>.*?<\/a>)/).map((seg,i)=>i%2?seg:seg.replace(/(^|[\s(]|&lt;)(https?:\/\/[^\s<"']+)/g,(m,pre,u)=>{u=u.replace(/(&gt;|&lt;).*$/,'');let tail='';
+for(;;){const c=u.slice(-1);if(/[.,;:!?]/.test(c)||(c===')'&&(u.match(/\)/g)||[]).length>(u.match(/\(/g)||[]).length)){tail=c+tail;u=u.slice(0,-1)}else break}
+const rest=m.slice(pre.length+u.length+tail.length);return pre+lnk(u,u)+tail+rest})).join('')}
 function md(src){
 if(src.indexOf('\n')<0)src=src.replace(/\s+(\d{1,2}\.\s+\*\*)/g,'\n$1');
 const lines=src.replace(/\r/g,'').split('\n');let out='',list=null,para=[],code=null,m;
