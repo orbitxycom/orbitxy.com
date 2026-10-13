@@ -92,7 +92,7 @@ body{background:var(--frame)}
 .imgbox.bad .err{display:block}
 .imgbox .err button{display:block;margin:12px auto 0;background:var(--btn);color:var(--text);border-radius:18px;padding:8px 18px;font-size:15px}
 .imgcap{font-size:13px;color:var(--mut);margin-top:6px}
-.acts{display:flex;margin-top:8px}
+.acts{display:flex;gap:6px;margin-top:8px}
 .cp{background:none;color:var(--mut);padding:4px;border-radius:8px;display:grid;place-items:center}
 .cp:hover{color:var(--text)}
 .cp svg{width:22px;height:22px}
@@ -140,9 +140,13 @@ function load(){try{const s=JSON.parse(localStorage.getItem(KEY)||'null');if(s&&
 function save(){try{localStorage.setItem(KEY,JSON.stringify({chats,cur}))}catch(e){}}
 const get=id=>chats.find(c=>c.id===id);
 function sync(){const has=t.value.trim()!=='';go.classList.toggle('snd',has);ic.innerHTML=has?ARROW:PHONE;$('mic').classList.toggle('hide',has);go.setAttribute('aria-label',has?'Kirim pesan':'Panggilan suara')}
+const SH='<svg viewBox="0 0 24 24"><circle cx="18" cy="5.5" r="2.7"/><circle cx="6" cy="12" r="2.7"/><circle cx="18" cy="18.5" r="2.7"/><path d="M8.4 10.7l7.2-3.9M8.4 13.3l7.2 3.9"/></svg>';
 const CP='<svg viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="3"/><path d="M5 15V7a3 3 0 013-3h8"/></svg>',OKI='<svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7"/></svg>';
 function copyTxt(x){if(navigator.clipboard&&window.isSecureContext)return navigator.clipboard.writeText(x);return new Promise((ok,no)=>{const a=document.createElement('textarea');a.value=x;a.style.cssText='position:fixed;opacity:0';document.body.appendChild(a);a.select();try{document.execCommand('copy')?ok():no()}catch(e){no()}a.remove()})}
-function addCopy(d,x){const w=document.createElement('div');w.className='acts';const b=document.createElement('button');b.className='cp';b.setAttribute('aria-label','Salin');b.innerHTML=CP;b.onclick=()=>{copyTxt(x.replace(/\*\*/g,'')).then(()=>{b.innerHTML=OKI;setTimeout(()=>{b.innerHTML=CP},1500)},()=>{})};w.appendChild(b);d.appendChild(w)}
+function addCopy(d,x){const w=document.createElement('div');w.className='acts';const tx=()=>x.replace(/\*\*/g,'');
+const b=document.createElement('button');b.className='cp';b.setAttribute('aria-label','Salin');b.innerHTML=CP;b.onclick=()=>{copyTxt(tx()).then(()=>{b.innerHTML=OKI;setTimeout(()=>{b.innerHTML=CP},1500)},()=>{})};
+const h=document.createElement('button');h.className='cp';h.setAttribute('aria-label','Bagikan');h.innerHTML=SH;h.onclick=()=>{if(navigator.share){navigator.share({text:tx()}).catch(()=>{})}else{copyTxt(tx()).then(()=>{h.innerHTML=OKI;setTimeout(()=>{h.innerHTML=SH},1500)},()=>{})}};
+w.append(b,h);d.appendChild(w)}
 function esc(x){return x.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
 function inl(x){return esc(x).replace(/`([^`]+)`/g,'<code>$1</code>').replace(/\*\*([^*]+)\*\*/g,'<strong>$1</strong>').replace(/(^|[^*])\*([^*\s][^*]*)\*/g,'$1<em>$2</em>')}
 function md(src){
