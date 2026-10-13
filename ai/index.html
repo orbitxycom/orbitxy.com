@@ -81,7 +81,8 @@ body{background:var(--frame)}
 .a pre{background:var(--field);border:1px solid #454545;border-radius:12px;padding:12px;overflow-x:auto;margin:0 0 10px;font-size:14px;line-height:1.45}
 .a code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.92em}
 .a :not(pre)>code{background:var(--field);padding:2px 6px;border-radius:6px}
-.imgbox{position:relative;width:min(100%,320px);aspect-ratio:1/1;border-radius:18px;background:#05070d;border:1px solid #454545;overflow:hidden;display:grid;place-items:center}
+.a.ia{width:min(300px,92%)}
+.imgbox{position:relative;width:100%;aspect-ratio:1/1;border-radius:18px;background:#05070d;border:1px solid #454545;overflow:hidden;display:grid;place-items:center}
 .imgbox img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity .3s}
 .imgbox.ok img{opacity:1}
 .imgbox canvas{position:absolute;inset:0;width:100%;height:100%}
@@ -159,7 +160,7 @@ const isImg=v=>IMG1.test(v)||IMG2.test(v);
 const imgPrompt=v=>v.replace(/^\s*(tolong\s+)?(buat(kan)?|bikin(kan)?|generate|lukis(kan)?|gambar(kan)?)\s+(saya\s+|aku\s+)?/i,'').trim()||v;
 const imgUrl=p=>IMG_BASE+encodeURIComponent(p)+'?width=768&height=768&nologo=true&model=flux&seed='+Math.floor(Math.random()*1e9);
 function addImg(url,p){
-const d=document.createElement('div');d.className='a';
+const d=document.createElement('div');d.className='a ia';
 const box=document.createElement('div');box.className='imgbox';
 const cv=document.createElement('canvas');
 const pc=document.createElement('div');pc.className='pct';pc.textContent='0%';
