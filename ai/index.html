@@ -155,7 +155,6 @@ const $=id=>document.getElementById(id),log=$('log'),t=$('t'),go=$('go'),ic=$('i
 const PHONE='<path d="M5 3h4l2 5-2.5 1.5a11 11 0 006 6L16 13l5 2v4a2 2 0 01-2 2A16 16 0 013 5a2 2 0 012-2z"/>',ARROW='<path d="M12 19V5M5 12l7-7 7 7"/>';
 const SUPABASE_URL='https://adxyijyerblmosdzsbyp.supabase.co',SUPABASE_ANON_KEY='sb_publishable_bCG2DJjBfLAMp2ME9Pe3cQ_jbPmlnnX';
 const KEY='chat_state_v1';let chats=[],cur=null,busy=false,photo=null;
-const NOTE='[Pengguna melampirkan sebuah foto. Kamu belum bisa melihat foto, jadi katakan dengan jujur bahwa kamu belum bisa membaca fotonya, lalu bantu dari teks yang ada.]';
 function load(){try{const s=JSON.parse(localStorage.getItem(KEY)||'null');if(s&&Array.isArray(s.chats)){chats=s.chats.filter(c=>c&&c.id&&Array.isArray(c.msgs));cur=s.cur}}catch(e){}}
 function save(){try{localStorage.setItem(KEY,JSON.stringify({chats,cur}))}catch(e){}}
 const get=id=>chats.find(c=>c.id===id);
@@ -227,9 +226,9 @@ im.onerror=fb;rb.onclick=start;start();return d}
 function mk(c){const b=document.createElement('button');b.dataset.id=c.id;if(c.pin)b.classList.add('pin');b.innerHTML='<svg class="pi" viewBox="0 0 24 24"><path d="M9 4h6l-1 6 3 3v2H7v-2l3-3zM12 15v6"/></svg><span class="tx"></span>';b.querySelector('.tx').textContent=c.title;return b}
 function renderHist(){H.innerHTML='';[...chats.filter(c=>c.pin),...chats.filter(c=>!c.pin)].forEach(c=>H.appendChild(mk(c)))}
 function renderLog(){log.innerHTML='';const c=get(cur);if(!c)cur=null;else c.msgs.forEach(m=>m.img?addImg(m.img,m.prompt):m.role==='user'?addUser(m.content,null,!!m.photo):add(m.content,'a'));$('sug').classList.toggle('hide',!!c)}
-async function ask(d,c){
+async function ask(d,c,ph){
 try{
-const r=await fetch(SUPABASE_URL+'/functions/v1/chat',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+SUPABASE_ANON_KEY,'apikey':SUPABASE_ANON_KEY},body:JSON.stringify({messages:c.msgs.slice(-20).map(m=>({role:m.role,content:m.api||m.content}))})});
+const r=await fetch(SUPABASE_URL+'/functions/v1/chat',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+SUPABASE_ANON_KEY,'apikey':SUPABASE_ANON_KEY},body:JSON.stringify({messages:c.msgs.slice(-20).map(m=>({role:m.role,content:m.api||m.content})),image:ph||undefined})});
 const j=await r.json().catch(()=>({}));
 if(!r.ok||!j.reply)throw new Error(j.error||('Kode '+r.status));
 c.msgs.push({role:'assistant',content:j.reply});save();
@@ -238,9 +237,9 @@ if(cur===c.id){d.innerHTML=md(j.reply);addCopy(d,j.reply)}
 busy=false;log.scrollTop=log.scrollHeight}
 function send(){if(busy)return;const v=t.value.trim();const ph=photo;if(!v&&!ph)return;$('sug').classList.add('hide');
 let c=get(cur);if(!c){c={id:Date.now().toString(36),title:(v||'Foto').slice(0,60),pin:false,msgs:[]};chats.unshift(c);cur=c.id;renderHist();renderLog()}
-c.msgs.push(ph?{role:'user',content:v,photo:true,api:(v?v+'\n':'')+NOTE}:{role:'user',content:v});save();addUser(v,ph,false);t.value='';photo=null;$('pv').classList.add('hide');sync();
+c.msgs.push(ph?{role:'user',content:v,photo:true,api:v||'Tolong lihat foto ini dan jelaskan isinya.'}:{role:'user',content:v});save();addUser(v,ph,false);t.value='';photo=null;$('pv').classList.add('hide');sync();
 if(!ph&&isImg(v)){const pr=imgPrompt(v),u=imgUrl(pr);c.msgs.push({role:'assistant',content:'[Gambar dibuat: '+pr+']',img:u,prompt:pr});save();addImg(u,pr);return}
-const d=add('','a');d.innerHTML='<div class="dots"><i></i><i></i><i></i></div>';busy=true;ask(d,c)}
+const d=add('','a');d.innerHTML='<div class="dots"><i></i><i></i><i></i></div>';busy=true;ask(d,c,ph)}
 go.onclick=()=>{if(t.value.trim()||photo)send()};
 t.addEventListener('input',sync);t.addEventListener('keydown',e=>{if(e.key==='Enter')send()});
 document.querySelectorAll('.sug button').forEach(b=>b.onclick=()=>{t.value=b.dataset.q;t.focus();sync()});
