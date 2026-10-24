@@ -18,11 +18,6 @@
   --border: oklch(0.9 0 0);
   --input: oklch(0.9 0 0);
   --ring: oklch(0.5 0 0);
-  --chart-1: oklch(0.646 0.222 41.116);
-  --chart-2: oklch(0.6 0.118 184.704);
-  --chart-3: oklch(0.398 0.07 227.392);
-  --chart-4: oklch(0.828 0.189 84.429);
-  --chart-5: oklch(0.769 0.188 70.08);
   --sidebar: oklch(0.97 0 0);
   --sidebar-foreground: oklch(0.38 0 0);
   --sidebar-primary: oklch(0.12 0 0);
@@ -65,11 +60,6 @@
   --border: oklch(0.27 0 0);
   --input: oklch(0.27 0 0);
   --ring: oklch(0.45 0 0);
-  --chart-1: oklch(0.488 0.243 264.376);
-  --chart-2: oklch(0.696 0.17 162.48);
-  --chart-3: oklch(0.769 0.188 70.08);
-  --chart-4: oklch(0.627 0.265 303.9);
-  --chart-5: oklch(0.645 0.246 16.439);
   --sidebar: oklch(0.175 0 0);
   --sidebar-foreground: oklch(0.78 0 0);
   --sidebar-primary: oklch(0.94 0 0);
@@ -92,91 +82,20 @@
     inset 0 1px 0 oklch(1 0 0 / 0.04);
 }
 
-@keyframes fade-up {
-  from {
-    opacity: 0;
-    transform: translateY(6px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes fade-in {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
-
-@keyframes shimmer {
-  0% {
-    background-position: -200% 0;
-  }
-  100% {
-    background-position: 200% 0;
-  }
-}
-
-@keyframes dot-pulse {
-  0%,
-  60%,
-  100% {
-    opacity: 0.3;
-    transform: translateY(0);
-  }
-  30% {
-    opacity: 1;
-    transform: translateY(-3px);
-  }
-}
-
-@keyframes message-in {
-  from {
-    opacity: 0;
-    transform: translateY(8px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes thinking-dot {
-  0%,
-  60%,
-  100% {
-    opacity: 0.3;
-    transform: translateY(0);
-  }
-  30% {
-    opacity: 1;
-    transform: translateY(-3px);
-  }
-}
-
+/* ===== Animasi (dari globals.css asli) ===== */
+@keyframes fade-up { from{opacity:0;transform:translateY(6px)} to{opacity:1;transform:translateY(0)} }
+@keyframes fade-in { from{opacity:0} to{opacity:1} }
+@keyframes shimmer { 0%{background-position:-200% 0} 100%{background-position:200% 0} }
+@keyframes dot-pulse { 0%,60%,100%{opacity:.3;transform:translateY(0)} 30%{opacity:1;transform:translateY(-3px)} }
+@keyframes message-in { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
+@keyframes thinking-dot { 0%,60%,100%{opacity:.3;transform:translateY(0)} 30%{opacity:1;transform:translateY(-3px)} }
 @keyframes glow-pulse {
-  0%,
-  100% {
-    box-shadow: 0 0 0 0 oklch(0.55 0.12 250 / 0%);
-  }
-  50% {
-    box-shadow: 0 0 0 3px oklch(0.55 0.12 250 / 8%);
-  }
+  0%,100%{box-shadow:0 0 0 0 oklch(0.55 0.12 250 / 0%)}
+  50%{box-shadow:0 0 0 3px oklch(0.55 0.12 250 / 8%)}
 }
-
 @keyframes subtle-lift {
-  from {
-    transform: translateY(0);
-    box-shadow: var(--shadow-card);
-  }
-  to {
-    transform: translateY(-1px);
-    box-shadow: var(--shadow-float);
-  }
+  from{transform:translateY(0);box-shadow:var(--shadow-card)}
+  to{transform:translateY(-1px);box-shadow:var(--shadow-float)}
 }
 
 /* ===== Base ===== */
@@ -188,38 +107,23 @@ textarea{font:inherit;color:inherit;background:none;border:0;outline:none;resize
 svg{width:1em;height:1em;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex:none}
 .app{display:flex;height:100dvh}
 
-/* ===== Sidebar (bisa menciut jadi strip ikon 3rem seperti aslinya) ===== */
-.sidebar{--w:16rem;width:var(--w);background:var(--sidebar);color:var(--sidebar-foreground);display:flex;flex-direction:column;padding:12px 8px 0;flex:none;overflow:hidden;transition:width .25s var(--ease-spring)}
-.sidebar.collapsed{width:3rem}
-.sb-head{display:flex;justify-content:space-between;align-items:center;padding-bottom:4px}
-.logo{position:relative;width:32px;height:32px}
-.sb-btn{width:32px;height:32px;display:grid;place-items:center;border-radius:8px;font-size:16px;color:color-mix(in oklab,var(--sidebar-foreground) 60%,transparent);transition:.15s;position:relative}
-.sb-btn:hover{background:var(--sidebar-accent);color:var(--sidebar-foreground)}
-.logo-toggle{position:absolute;inset:0;opacity:0;pointer-events:none;color:var(--sidebar-foreground)}
-.sidebar.collapsed .logo:hover .logo-toggle{opacity:1;pointer-events:auto}
-.sidebar.collapsed .logo:hover .logo-icon{opacity:0}
-.sidebar.collapsed .trigger{display:none}
-.sb-menu{display:flex;flex-direction:column;gap:4px;padding-top:4px}
-.sb-item{display:flex;align-items:center;gap:8px;height:32px;padding:0 8px;border-radius:8px;font-size:13px;white-space:nowrap;overflow:hidden;width:100%;text-align:left;color:color-mix(in oklab,var(--sidebar-foreground) 70%,transparent);transition:.15s;position:relative}
-.sb-item svg{font-size:16px}
-.sb-item:hover{background:var(--sidebar-accent);color:var(--sidebar-foreground)}
-.new-chat{border:1px solid var(--sidebar-border);font-weight:500;color:var(--foreground)}
-.del{color:color-mix(in oklab,var(--sidebar-foreground) 40%,transparent)}
-.del:hover{background:color-mix(in oklab,var(--destructive) 10%,transparent);color:var(--destructive)}
-.sidebar.collapsed .new-chat{border-color:transparent}
-.sidebar.collapsed .sb-item span,.sidebar.collapsed .hist{display:none}
-.hist{flex:1;overflow:auto;margin-top:16px;padding:0 8px}
-.hist-label{font-size:11px;font-weight:500;letter-spacing:.06em;text-transform:uppercase;padding:4px 0;color:color-mix(in oklab,var(--sidebar-foreground) 50%,transparent)}
-.hist-empty{font-size:13px;line-height:1.5;padding:8px 0;color:color-mix(in oklab,var(--sidebar-foreground) 60%,transparent)}
-.hist-item{display:block;width:100%;text-align:left;padding:7px 8px;margin-top:2px;border-radius:8px;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;transition:.15s;animation:fade-up .25s var(--ease-spring) both}
+/* ===== Sidebar ===== */
+.sidebar{width:260px;background:var(--sidebar);color:var(--sidebar-foreground);display:flex;flex-direction:column;padding:12px 8px;transition:margin .3s var(--ease-spring);flex:none}
+.sidebar.closed{margin-left:-260px}
+.sb-head{display:flex;justify-content:space-between;align-items:center;padding:0 4px 8px}
+.icon-btn{width:32px;height:32px;display:grid;place-items:center;border-radius:8px;color:color-mix(in oklab,var(--sidebar-foreground) 60%,transparent);transition:.15s}
+.icon-btn:hover{background:var(--sidebar-accent);color:var(--sidebar-foreground)}
+.new-chat{display:flex;align-items:center;gap:8px;height:32px;padding:0 10px;border:1px solid var(--sidebar-border);border-radius:8px;font-size:13px;font-weight:500;color:color-mix(in oklab,var(--sidebar-foreground) 70%,transparent);transition:.15s;width:100%}
+.new-chat:hover{background:var(--sidebar-accent)}
+.hist{flex:1;overflow:auto;margin-top:12px}
+.hist-label{font-size:11px;padding:4px 10px;color:color-mix(in oklab,var(--sidebar-foreground) 40%,transparent)}
+.hist-item{display:block;width:100%;text-align:left;padding:7px 10px;border-radius:8px;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;transition:.15s;animation:fade-up .25s var(--ease-spring) both}
 .hist-item:hover,.hist-item.active{background:var(--sidebar-accent);color:var(--sidebar-accent-foreground)}
-.sb-foot{border-top:1px solid var(--sidebar-border);padding:8px 0 12px}
-/* tooltip hitam (muncul saat sidebar menciut) */
-.sidebar.collapsed [data-tip]:hover::after{content:attr(data-tip);position:fixed;left:3.4rem;margin-top:0;background:#000;color:#fff;font-size:12px;padding:6px 12px;border-radius:999px;white-space:nowrap;z-index:50;animation:fade-in .15s ease both;transform:translateY(-1px)}
-.sidebar.collapsed{overflow:visible}
+.sb-foot{border-top:1px solid var(--sidebar-border);padding-top:8px}
 
 /* ===== Main ===== */
 .main{flex:1;min-width:0;display:flex;flex-direction:column;background:var(--background);border-radius:16px 0 0 16px;border-left:1px solid color-mix(in oklab,var(--border) 40%,transparent);transition:.3s var(--ease-spring)}
+.sidebar.closed + .main{border-radius:0}
 header{height:56px;display:flex;align-items:center;gap:8px;padding:0 12px;background:var(--sidebar)}
 .chip{display:flex;align-items:center;gap:6px;height:32px;padding:0 10px;border-radius:8px;border:1px solid var(--border);font-size:13px;color:var(--muted-foreground);transition:.15s}
 .chip:hover{color:var(--foreground);background:var(--accent)}
@@ -263,30 +167,27 @@ header{height:56px;display:flex;align-items:center;gap:8px;padding:0 12px;backgr
 .send:disabled{background:var(--muted);color:color-mix(in oklab,var(--muted-foreground) 25%,transparent);cursor:not-allowed}
 .model{font-size:12px;color:var(--muted-foreground)}
 
-/* ===== Dropdown, dialog, saran ===== */
-.mob{display:none;color:var(--foreground)}
-.vis{position:relative}
-.menu{position:absolute;top:40px;left:0;min-width:250px;background:var(--popover);border:1px solid var(--border);border-radius:12px;box-shadow:var(--shadow-float);padding:4px;opacity:0;transform:translateY(-4px);pointer-events:none;transition:.15s;z-index:30}
-.menu.open{opacity:1;transform:none;pointer-events:auto}
-.menu button{display:flex;flex-direction:column;align-items:flex-start;gap:2px;width:100%;padding:8px 10px;border-radius:8px;text-align:left;font-size:13px}
-.menu button:hover{background:var(--accent)}
-.menu small{font-size:12px;color:var(--muted-foreground)}
-.sugs-wrap{margin-bottom:12px}
-.sugs{margin-top:0}
-.dialog-bg{position:fixed;inset:0;background:oklch(0 0 0 / .5);display:grid;place-items:center;opacity:0;pointer-events:none;transition:.2s;z-index:60}
-.dialog-bg.open{opacity:1;pointer-events:auto}
-.dialog{background:var(--popover);border:1px solid var(--border);border-radius:14px;padding:24px;max-width:440px;width:calc(100% - 32px);box-shadow:var(--shadow-float);transform:scale(.96);transition:.2s var(--ease-spring)}
-.dialog-bg.open .dialog{transform:none}
-.dialog h3{font-size:18px;font-weight:600}.dialog p{margin-top:8px;font-size:14px;color:var(--muted-foreground);line-height:1.5}
-.dlg-btns{display:flex;justify-content:flex-end;gap:8px;margin-top:20px}
-.dlg-btns button{padding:7px 14px;border-radius:8px;border:1px solid var(--border);font-size:13px}
-.dlg-btns .primary{background:var(--primary);color:var(--primary-foreground);border-color:transparent}
+@media(max-width:768px){.sidebar{position:fixed;z-index:20;height:100%}.main{border-radius:0}.sugs{display:flex;overflow-x:auto}.sug{min-width:200px;white-space:nowrap}}
 
-@media(max-width:768px){
-  .sidebar,.sidebar.collapsed{position:fixed;z-index:20;height:100%;width:16rem;transition:transform .25s var(--ease-spring);box-shadow:var(--shadow-float)}
-  .sidebar.collapsed{transform:translateX(-100%)}
-  .sidebar.collapsed .sb-item span,.sidebar.collapsed .hist{display:block}
-  .sidebar.collapsed .trigger{display:grid}
-  .mob{display:grid}.main{border-radius:0}
-  .sugs{display:flex;overflow-x:auto}.sug{min-width:200px;white-space:nowrap}
-}
+/* ===== Tambahan untuk fungsi (tidak mengubah desain di atas) ===== */
+html,body{touch-action:pan-x pan-y}
+header{padding-top:env(safe-area-inset-top);height:calc(56px + env(safe-area-inset-top))}
+.composer-wrap{padding-bottom:calc(16px + env(safe-area-inset-bottom))}
+@media(max-width:768px){.sidebar{box-shadow:var(--shadow-float)}.sidebar.closed{box-shadow:none}}
+.hist-row{position:relative}
+.hist-row .hist-item{padding-right:34px}
+.hist-del{position:absolute;right:4px;top:50%;transform:translateY(-50%);width:26px;height:26px;display:grid;place-items:center;border-radius:6px;opacity:0;color:var(--muted-foreground);transition:.15s;font-size:14px}
+.hist-row:hover .hist-del,.hist-del:focus-visible{opacity:1}
+.hist-del:hover{background:var(--sidebar-accent);color:var(--foreground)}
+@media(hover:none){.hist-del{opacity:.55}}
+.empty-logo{width:52px;height:auto;margin-bottom:16px;opacity:0;animation:greet .5s var(--ease-spring) .2s forwards}
+.avatar img{width:16px;height:auto;display:block}
+.dark .empty-logo,.dark .avatar img{filter:invert(1)}
+.bot .bubble{white-space:normal}
+.bubble p{margin:0 0 .6em}.bubble p:last-child{margin:0}
+.bubble ul,.bubble ol{padding-left:1.4em;margin:0 0 .6em}.bubble li{margin:.2em 0}
+.bubble a{text-decoration:underline;text-underline-offset:2px}
+.bubble code{font:12px ui-monospace,"SF Mono",monospace;background:var(--muted);padding:1px 5px;border-radius:5px}
+.bot pre code{background:none;padding:0}
+.bubble.err{color:var(--destructive)}
+.bubble .note{font-size:12px;color:var(--muted-foreground);margin-top:4px}
