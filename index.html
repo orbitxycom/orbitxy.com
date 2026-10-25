@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bekki — Asisten AI dari Orbitxy</title>
+<meta name="description" content="Bekki adalah asisten AI pribadi dari Orbitxy. Ngobrol, bertanya, dan selesaikan pekerjaan dengan lebih cepat.">
+<style>
+  :root{
+    --primary:#6366f1;
+    --primary-dark:#4f46e5;
+    --dark:#0f172a;
+    --gray:#64748b;
+    --light:#f8fafc;
+    --border:#e2e8f0;
+    --radius:16px;
+    --shadow:0 10px 40px -10px rgba(15,23,42,.15);
+  }
+  :root{--bg:#fff;--card:#fff;--header-bg:rgba(255,255,255,.85);--chip:#eef2ff;--chip2:#f5f3ff;--accent:#4f46e5}
+  [data-theme="dark"]{
+    --dark:#f1f5f9;--gray:#94a3b8;--light:#111827;--border:#1f2937;
+    --bg:#020617;--card:#0b1222;--header-bg:rgba(2,6,23,.85);
+    --chip:#1e1b4b;--chip2:#1e1b4b;--accent:#a5b4fc;
+    --shadow:0 10px 40px -10px rgba(0,0,0,.6);
+    color-scheme:dark;
+  }
+  body,header,.feature,.mockup{transition:background-color .3s,color .3s,border-color .3s}
+  .theme-toggle{width:40px;height:40px;border-radius:10px;border:1.5px solid var(--border);background:transparent;cursor:pointer;font-size:1.1rem;display:grid;place-items:center;transition:border-color .2s}
+  .theme-toggle:hover{border-color:var(--primary)}
+  .nav-right{display:flex;align-items:center;gap:12px}
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    color:var(--dark);line-height:1.6;background:var(--bg);-webkit-font-smoothing:antialiased;
+  }
+  .container{max-width:1140px;margin:0 auto;padding:0 24px}
+  a{text-decoration:none;color:inherit}
+
+  header{position:sticky;top:0;z-index:100;background:var(--header-bg);backdrop-filter:blur(12px);border-bottom:1px solid var(--border)}
+  .nav{display:flex;align-items:center;justify-content:space-between;height:72px}
+  .logo{font-size:1.35rem;font-weight:800;letter-spacing:-.5px;display:flex;align-items:center;gap:8px}
+  .logo span{width:32px;height:32px;border-radius:9px;background:linear-gradient(135deg,var(--primary),#a855f7);display:grid;place-items:center;color:#fff;font-size:1rem}
+  .logo .logo-mark{background:#000;border:1px solid var(--border)}
+  .nav-links{display:flex;gap:32px;list-style:none}
+  .nav-links a{font-size:.94rem;font-weight:500;color:var(--gray);transition:color .2s}
+  .nav-links a:hover{color:var(--primary)}
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:12px 24px;border-radius:10px;font-weight:600;font-size:.94rem;border:none;cursor:pointer;transition:all .25s;font-family:inherit}
+  .btn-primary{background:linear-gradient(135deg,var(--primary),var(--primary-dark));color:#fff;box-shadow:0 6px 20px -6px rgba(99,102,241,.6)}
+  .btn-primary:hover{transform:translateY(-2px);box-shadow:0 12px 28px -8px rgba(99,102,241,.7)}
+  .btn-outline{background:transparent;color:var(--dark);border:1.5px solid var(--border)}
+  .btn-outline:hover{border-color:var(--primary);color:var(--primary)}
+  .btn-lg{padding:16px 32px;font-size:1rem}
+  .menu-toggle{display:none;background:none;border:none;font-size:1.5rem;cursor:pointer}
+
+  .hero{padding:90px 0 100px;position:relative;overflow:hidden}
+  .hero::before{content:"";position:absolute;top:-200px;right:-150px;width:600px;height:600px;background:radial-gradient(circle,rgba(99,102,241,.18),transparent 70%);border-radius:50%;pointer-events:none}
+  .hero::after{content:"";position:absolute;bottom:-250px;left:-200px;width:500px;height:500px;background:radial-gradient(circle,rgba(168,85,247,.14),transparent 70%);border-radius:50%;pointer-events:none}
+  .hero-grid{display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:center;position:relative;z-index:1}
+  .badge{display:inline-flex;align-items:center;gap:8px;background:var(--chip);color:var(--accent);padding:7px 16px;border-radius:100px;font-size:.82rem;font-weight:600;margin-bottom:24px}
+  .badge-dot{width:7px;height:7px;border-radius:50%;background:var(--primary);animation:pulse 2s infinite}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+  h1{font-size:clamp(2.2rem,5vw,3.4rem);line-height:1.12;font-weight:800;letter-spacing:-1.5px;margin-bottom:20px}
+  .gradient-text{background:linear-gradient(135deg,var(--primary),#a855f7);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .hero p{font-size:1.1rem;color:var(--gray);margin-bottom:32px;max-width:520px}
+  .hero-actions{display:flex;gap:14px;flex-wrap:wrap}
+
+  /* Chat mockup */
+  .mockup{background:var(--card);border:1px solid var(--border);border-radius:20px;box-shadow:var(--shadow);overflow:hidden;transform:perspective(1200px) rotateY(-6deg) rotateX(3deg);transition:transform .5s}
+  .mockup:hover{transform:perspective(1200px) rotateY(0) rotateX(0)}
+  .mockup-bar{display:flex;align-items:center;gap:6px;padding:14px 16px;border-bottom:1px solid var(--border);background:var(--light)}
+  .mockup-bar i{width:11px;height:11px;border-radius:50%}
+  .mockup-bar i:nth-child(1){background:#ff5f57}
+  .mockup-bar i:nth-child(2){background:#febc2e}
+  .mockup-bar i:nth-child(3){background:#28c840}
+  .mockup-bar b{margin-left:10px;font-size:.82rem;color:var(--gray);font-weight:600}
+  .chat{padding:24px;display:flex;flex-direction:column;gap:12px}
+  .msg{max-width:82%;padding:12px 16px;border-radius:16px;font-size:.92rem;line-height:1.5}
+  .msg.user{align-self:flex-end;background:linear-gradient(135deg,var(--primary),var(--primary-dark));color:#fff;border-bottom-right-radius:4px}
+  .msg.bot{align-self:flex-start;background:var(--light);border:1px solid var(--border);border-bottom-left-radius:4px}
+  .typing{display:flex;gap:5px;padding:14px 16px}
+  .typing i{width:7px;height:7px;border-radius:50%;background:#cbd5e1;animation:blink 1.2s infinite}
+  .typing i:nth-child(2){animation-delay:.2s}
+  .typing i:nth-child(3){animation-delay:.4s}
+  @keyframes blink{0%,100%{opacity:.3}50%{opacity:1}}
+
+  section{padding:96px 0}
+  .section-head{text-align:center;max-width:640px;margin:0 auto 60px}
+  .section-head h2{font-size:clamp(1.8rem,3.5vw,2.5rem);font-weight:800;letter-spacing:-1px;margin-bottom:16px;line-height:1.2}
+  .section-head p{color:var(--gray);font-size:1.05rem}
+
+  .features-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
+  .feature{padding:32px;border:1px solid var(--border);border-radius:var(--radius);transition:all .3s;background:var(--card)}
+  .feature:hover{transform:translateY(-6px);border-color:transparent;box-shadow:var(--shadow)}
+  .feature-icon{width:52px;height:52px;border-radius:14px;display:grid;place-items:center;background:linear-gradient(135deg,var(--chip),var(--chip2));margin-bottom:20px;font-size:1.5rem}
+  .feature h3{font-size:1.12rem;font-weight:700;margin-bottom:10px;letter-spacing:-.3px}
+  .feature p{color:var(--gray);font-size:.94rem}
+
+  .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;counter-reset:s}
+  .step{text-align:center;padding:12px}
+  .step::before{counter-increment:s;content:counter(s);display:grid;place-items:center;width:44px;height:44px;margin:0 auto 16px;border-radius:50%;background:var(--chip);color:var(--accent);font-weight:800}
+  .step h3{font-size:1.05rem;margin-bottom:8px}
+  .step p{color:var(--gray);font-size:.94rem}
+
+  .cta-box{background:linear-gradient(135deg,#4f46e5,#7c3aed 50%,#a855f7);border-radius:24px;padding:72px 48px;text-align:center;color:#fff;position:relative;overflow:hidden}
+  .cta-box::before{content:"";position:absolute;top:-100px;right:-100px;width:350px;height:350px;background:rgba(255,255,255,.1);border-radius:50%}
+  .cta-box::after{content:"";position:absolute;bottom:-130px;left:-80px;width:300px;height:300px;background:rgba(255,255,255,.08);border-radius:50%}
+  .cta-box h2{font-size:clamp(1.7rem,3.5vw,2.4rem);font-weight:800;letter-spacing:-1px;margin-bottom:16px;position:relative}
+  .cta-box p{opacity:.9;margin-bottom:32px;font-size:1.05rem;position:relative}
+  .cta-box .btn{position:relative;background:#fff;color:var(--primary-dark)}
+  .cta-box .btn:hover{transform:translateY(-2px);box-shadow:0 14px 30px -10px rgba(0,0,0,.3)}
+
+  footer{background:#0f172a;color:#94a3b8;padding:48px 0 28px}
+  .footer-top{display:flex;justify-content:space-between;align-items:center;gap:24px;flex-wrap:wrap;margin-bottom:32px}
+  .footer-top .logo{color:#fff}
+  .footer-links{display:flex;gap:24px;list-style:none;font-size:.9rem}
+  .footer-links a:hover{color:#fff}
+  .footer-bottom{border-top:1px solid #1e293b;padding-top:24px;text-align:center;font-size:.85rem;color:#64748b}
+
+  .reveal{opacity:0;transform:translateY(28px);transition:opacity .7s ease,transform .7s ease}
+  .reveal.visible{opacity:1;transform:none}
+
+  @media(max-width:900px){
+    .hero-grid{grid-template-columns:1fr;gap:48px}
+    .mockup{transform:none}
+    .features-grid{grid-template-columns:1fr 1fr}
+  }
+  @media(max-width:640px){
+    .nav-links{display:none;position:absolute;top:72px;left:0;right:0;background:var(--bg);flex-direction:column;padding:20px 24px;gap:18px;border-bottom:1px solid var(--border)}
+    .nav-links.open{display:flex}
+    .menu-toggle{display:block}
+    .nav .btn{display:none}
+    section{padding:64px 0}
+    .features-grid,.steps{grid-template-columns:1fr}
+    .cta-box{padding:48px 24px}
+  }
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <linearGradient id="bkg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#ffffff"/>
+      <stop offset="1" stop-color="#9ca3af"/>
+    </linearGradient>
+    <symbol id="bk" viewBox="0 0 100 100">
+      <g fill="none" stroke-linejoin="round" stroke-linecap="round">
+        <polygon points="50,20 73.5,31.3 79.2,56.7 63,77 37,77 20.8,56.7 26.5,31.3" stroke="url(#bkg)" stroke-width="9" opacity=".55" transform="rotate(26 50 50)"/>
+        <polygon points="50,20 73.5,31.3 79.2,56.7 63,77 37,77 20.8,56.7 26.5,31.3" stroke="#f1f5f9" stroke-width="9"/>
+      </g>
+    </symbol>
+  </defs>
+</svg>
+
+<header>
+  <div class="container nav">
+    <a href="#" class="logo"><span class="logo-mark"><svg width="22" height="22" viewBox="0 0 100 100" aria-hidden="true"><use href="#bk"/></svg></span>Bekki</a>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="#fitur">Fitur</a></li>
+      <li><a href="#contoh">Contoh</a></li>
+      <li><a href="#cara">Cara Pakai</a></li>
+      <li><a href="#tentang">Tentang Orbitxy</a></li>
+    </ul>
+    <div class="nav-right">
+      <button class="theme-toggle" id="themeToggle" aria-label="Ganti tema" title="Ganti tema">🌙</button>
+      <a href="https://orbitxy.com/ai/" class="btn btn-primary">Coba Bekki</a>
+      <button class="menu-toggle" id="menuToggle" aria-label="Buka menu">☰</button>
+    </div>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="container hero-grid">
+    <div>
+      <div class="badge"><span class="badge-dot"></span> Asisten AI dari Orbitxy</div>
+      <h1>Kenalan dengan <span class="gradient-text">Bekki</span>, teman ngobrol pintarmu</h1>
+      <p>Bekki membantu kamu bertanya, menulis, dan menyelesaikan pekerjaan lewat percakapan sederhana — langsung dari browser, tanpa ribet.</p>
+      <div class="hero-actions">
+        <a href="https://orbitxy.com/ai/" class="btn btn-primary btn-lg">Mulai Ngobrol →</a>
+        <a href="#fitur" class="btn btn-outline btn-lg">Lihat Fitur</a>
+      </div>
+    </div>
+
+    <div class="mockup">
+      <div class="mockup-bar"><i></i><i></i><i></i><b>Bekki</b></div>
+      <div class="chat">
+        <div class="msg user">Halo Bekki, bantu aku buat ide caption produk baru dong.</div>
+        <div class="msg bot">Halo! Tentu. Produknya apa, dan mau gaya santai atau profesional?</div>
+        <div class="msg user">Kopi susu botolan, gaya santai.</div>
+        <div class="msg bot typing"><i></i><i></i><i></i></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="fitur">
+  <div class="container">
+    <div class="section-head reveal">
+      <h2>Simpel dipakai, nyaman digunakan</h2>
+      <p>Semua yang kamu perlukan untuk ngobrol dengan AI, dalam satu tampilan yang bersih.</p>
+    </div>
+    <div class="features-grid">
+      <div class="feature reveal">
+        <div class="feature-icon">💬</div>
+        <h3>Chat Natural</h3>
+        <p>Tanya apa saja dalam bahasa sehari-hari. Bekki paham dan menjawab dengan santai.</p>
+      </div>
+      <div class="feature reveal">
+        <div class="feature-icon">🔒</div>
+        <h3>Mode Private</h3>
+        <p>Percakapanmu bersifat pribadi, jadi kamu bisa bertanya dengan tenang.</p>
+      </div>
+      <div class="feature reveal">
+        <div class="feature-icon">🕘</div>
+        <h3>Riwayat Percakapan</h3>
+        <p>Obrolan dikelompokkan per hari, mudah dicari dan dilanjutkan kapan saja.</p>
+      </div>
+      <div class="feature reveal">
+        <div class="feature-icon">🎨</div>
+        <h3>Ganti Tema</h3>
+        <p>Pilih tampilan terang atau gelap sesuai kenyamanan matamu.</p>
+      </div>
+      <div class="feature reveal">
+        <div class="feature-icon">📱</div>
+        <h3>Ramah Ponsel</h3>
+        <p>Tampilan menyesuaikan layar, nyaman di HP, tablet, maupun laptop.</p>
+      </div>
+      <div class="feature reveal">
+        <div class="feature-icon">⚡</div>
+        <h3>Langsung Pakai</h3>
+        <p>Buka di browser, klik New chat, dan mulai bertanya. Tanpa instalasi.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="contoh">
+  <div class="container">
+    <div class="section-head reveal">
+      <h2>Bekki bisa bantu apa?</h2>
+      <p>Beberapa contoh yang bisa kamu coba langsung.</p>
+    </div>
+    <div class="features-grid" style="grid-template-columns:repeat(auto-fit,minmax(230px,1fr))">
+      <div class="feature reveal">
+        <div class="feature-icon">✍️</div>
+        <h3>Menulis</h3>
+        <p>Buat caption, email, atau rangkum teks panjang jadi lebih singkat dan rapi.</p>
+      </div>
+      <div class="feature reveal">
+        <div class="feature-icon">📚</div>
+        <h3>Belajar</h3>
+        <p>Minta penjelasan materi dengan bahasa sederhana, lengkap dengan contoh.</p>
+      </div>
+      <div class="feature reveal">
+        <div class="feature-icon">💡</div>
+        <h3>Brainstorming</h3>
+        <p>Cari ide nama, konten, atau solusi saat kamu buntu dan butuh sudut pandang baru.</p>
+      </div>
+      <div class="feature reveal">
+        <div class="feature-icon">🌍</div>
+        <h3>Menerjemahkan</h3>
+        <p>Terjemahkan teks antar bahasa dengan gaya yang tetap natural.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="cara" style="background:var(--light)">
+  <div class="container">
+    <div class="section-head reveal">
+      <h2>Mulai dalam 3 langkah</h2>
+      <p>Tidak perlu belajar apa-apa dulu.</p>
+    </div>
+    <div class="steps">
+      <div class="step reveal"><h3>Buka Bekki</h3><p>Kunjungi orbitxy.com/ai di browser kamu.</p></div>
+      <div class="step reveal"><h3>Mulai chat baru</h3><p>Klik New chat lalu ketik pertanyaan atau permintaanmu.</p></div>
+      <div class="step reveal"><h3>Lanjutkan kapan saja</h3><p>Riwayat tersimpan, jadi kamu bisa kembali ke obrolan sebelumnya.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="tentang">
+  <div class="container">
+    <div class="section-head reveal">
+      <h2>Tentang Orbitxy</h2>
+      <p>Orbitxy adalah pengembang yang membuat dan mengelola Bekki, asisten AI yang kamu kenal di halaman ini.</p>
+    </div>
+    <div class="features-grid" style="grid-template-columns:repeat(auto-fit,minmax(260px,1fr));max-width:760px;margin:0 auto">
+      <div class="feature reveal">
+        <div class="feature-icon">🏢</div>
+        <h3>Di Balik Bekki</h3>
+        <p>Orbitxy yang merancang, mengembangkan, dan menjalankan Bekki, dari tampilan sampai pengalaman ngobrolnya.</p>
+      </div>
+      <div class="feature reveal">
+        <div class="feature-icon">🤖</div>
+        <h3>Bekki, Produk Orbitxy</h3>
+        <p>Bekki adalah wajah Orbitxy untuk pengguna: asisten AI yang bisa kamu ajak ngobrol langsung.</p>
+      </div>
+    </div>
+    <div class="reveal" style="max-width:760px;margin:32px auto 0;padding:28px 32px;border-radius:var(--radius);background:linear-gradient(135deg,var(--chip),var(--chip2));text-align:center">
+      <div style="font-size:.8rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--accent);margin-bottom:10px">Visi Orbitxy</div>
+      <p style="font-size:1.1rem;font-weight:600;line-height:1.6">Kami membuat Bekki agar siapa pun bisa memanfaatkan AI dengan mudah, tanpa perlu paham teknologi yang rumit. Teknologi seharusnya terasa seperti ngobrol dengan teman yang membantu.</p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="container">
+    <div class="cta-box reveal">
+      <h2>Siap kenalan dengan Bekki?</h2>
+      <p>Coba sekarang dan rasakan ngobrol dengan AI yang simpel.</p>
+      <a href="https://orbitxy.com/ai/" class="btn btn-lg">Coba Bekki Sekarang →</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    <div class="footer-top">
+      <a href="#" class="logo"><span class="logo-mark"><svg width="22" height="22" viewBox="0 0 100 100" aria-hidden="true"><use href="#bk"/></svg></span>Bekki</a>
+      <ul class="footer-links">
+        <li><a href="https://orbitxy.com">orbitxy.com</a></li>
+        <li><a href="https://orbitxy.com/ai/">orbitxy.com/ai</a></li>
+      </ul>
+    </div>
+    <div class="footer-bottom">© 2026 Orbitxy, pembuat Bekki. Bekki saat ini masih versi demo.</div>
+  </div>
+</footer>
+
+<script>
+  const themeToggle=document.getElementById('themeToggle');
+  function applyTheme(t){
+    document.documentElement.setAttribute('data-theme',t);
+    themeToggle.textContent=t==='dark'?'☀️':'🌙';
+  }
+  let savedTheme=null;
+  try{savedTheme=localStorage.getItem('theme')}catch(e){}
+  applyTheme(savedTheme||(window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'));
+  themeToggle.addEventListener('click',()=>{
+    const next=document.documentElement.getAttribute('data-theme')==='dark'?'light':'dark';
+    applyTheme(next);
+    try{localStorage.setItem('theme',next)}catch(e){}
+  });
+
+  const menuToggle=document.getElementById('menuToggle');
+  const navLinks=document.getElementById('navLinks');
+  menuToggle.addEventListener('click',()=>navLinks.classList.toggle('open'));
+  navLinks.querySelectorAll('a').forEach(l=>l.addEventListener('click',()=>navLinks.classList.remove('open')));
+  const observer=new IntersectionObserver(entries=>{
+    entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');observer.unobserve(e.target)}});
+  },{threshold:.15});
+  document.querySelectorAll('.reveal').forEach(el=>observer.observe(el));
+</script>
+</body>
+</html>
