@@ -120,6 +120,13 @@
   .reveal{opacity:0;transform:translateY(28px);transition:opacity .7s ease,transform .7s ease}
   .reveal.visible{opacity:1;transform:none}
 
+  /* Kartu contoh: miring 3D, lurus saat disorot */
+  @media(min-width:901px){
+    #contoh .feature,#fitur .feature{transition:transform .5s ease,box-shadow .3s,border-color .3s,opacity .7s,background-color .3s}
+    #contoh .feature.reveal.visible,#fitur .feature.reveal.visible{transform:perspective(900px) rotateY(-6deg) rotateX(3deg)}
+    #contoh .feature.reveal.visible:hover,#fitur .feature.reveal.visible:hover{transform:perspective(900px) rotateY(0) rotateX(0) translateY(-6px)}
+  }
+
   @media(max-width:900px){
     .hero-grid{grid-template-columns:1fr;gap:48px}
     .mockup{transform:none}
