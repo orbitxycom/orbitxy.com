@@ -7,3 +7,21 @@ button,.hist-item,.sug,.avatar,.icon-btn{-webkit-user-select:none;user-select:no
 
 /* Desktop/laptop: hilangkan tombol tutup sidebar yang ada di dalam sidebar */
 @media(min-width:769px){#toggle{display:none}}
+
+/* Dialog laporan bug */
+.fb{position:relative;max-width:520px}
+.fb h3{padding-right:36px}
+.fb-x{position:absolute;top:16px;right:16px;width:32px;height:32px;display:grid;place-items:center;border-radius:8px;color:var(--muted-foreground);transition:.15s;font-size:16px}
+.fb-x:hover{background:var(--accent);color:var(--foreground)}
+.fb-chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}
+.fb-chip{padding:8px 14px;border-radius:999px;border:1px solid color-mix(in oklab,var(--foreground) 18%,transparent);font-size:13px;transition:.15s}
+.fb-chip:hover{background:var(--accent)}
+.fb-chip.on{background:var(--accent);border-color:color-mix(in oklab,var(--foreground) 55%,transparent)}
+.fb-text{display:block;width:100%;min-height:104px;margin-top:16px;padding:12px 14px;border:1px solid color-mix(in oklab,var(--foreground) 18%,transparent);border-radius:12px;font-size:14px;line-height:1.5;resize:vertical}
+.fb-text::placeholder{color:var(--muted-foreground)}
+.fb-text:focus{border-color:var(--ring)}
+.fb-msg{margin-top:12px;font-size:13px}
+.fb-msg:empty{display:none}
+.fb-msg.bad{color:var(--destructive)}
+.fb .btn-dark:disabled{opacity:.4;cursor:not-allowed}
+.sb-foot .new-chat{margin-bottom:2px}
