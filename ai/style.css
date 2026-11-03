@@ -31,7 +31,13 @@ button,.hist-item,.sug,.avatar,.icon-btn{-webkit-user-select:none;user-select:no
 .avatar svg{display:none}
 
 /* Thought / Analysis / Reasoning (bisa dibuka-tutup dengan panah >) */
-.tks{margin:0 0 10px;display:flex;flex-direction:column;gap:2px}
+.tko{margin:0 0 10px}
+.tko summary{display:flex;align-items:center;gap:6px;cursor:pointer;list-style:none;font-size:12px;color:var(--muted-foreground);padding:3px 0;-webkit-user-select:none;user-select:none}
+.tko summary::-webkit-details-marker{display:none}
+.tko>summary svg{font-size:13px;transition:transform .15s}
+.tko[open]>summary svg{transform:rotate(90deg)}
+.tko>summary b{font-weight:500;color:var(--foreground)}
+.tks{margin:2px 0 0 19px;display:flex;flex-direction:column;gap:2px}
 .tk summary{display:flex;align-items:center;gap:6px;cursor:pointer;list-style:none;font-size:12px;color:var(--muted-foreground);padding:3px 0;-webkit-user-select:none;user-select:none}
 .tk summary::-webkit-details-marker{display:none}
 .tk summary svg{font-size:13px;transition:transform .15s}
