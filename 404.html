@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -7,94 +6,275 @@
   <title>Halaman Belum Tersedia | ORBITXY.COM</title>
 
   <style>
-    * {
-      box-sizing: border-box;
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --blue: #60a5fa;
+      --purple: #a78bfa;
+      --cyan: #22d3ee;
+      --dark: #060d1f;
     }
 
     body {
-      margin: 0;
       min-height: 100vh;
       display: flex;
       justify-content: center;
       align-items: center;
       padding: 20px;
-      font-family: Arial, sans-serif;
-      background: linear-gradient(135deg, #071426, #142d4e);
-      color: white;
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      color: #e2e8f0;
+      overflow: hidden;
+      position: relative;
+      background: radial-gradient(ellipse at top, #0f2044 0%, #060d1f 60%, #03060f 100%);
     }
 
+    /* === BACKGROUND ORBS === */
+    .orb {
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(80px);
+      opacity: 0.55;
+      pointer-events: none;
+      animation: float 14s ease-in-out infinite;
+    }
+    .orb-1 {
+      width: 380px; height: 380px;
+      background: radial-gradient(circle, #3b82f6, transparent 70%);
+      top: -100px; left: -100px;
+    }
+    .orb-2 {
+      width: 420px; height: 420px;
+      background: radial-gradient(circle, #a855f7, transparent 70%);
+      bottom: -150px; right: -120px;
+      animation-delay: -5s;
+    }
+    .orb-3 {
+      width: 280px; height: 280px;
+      background: radial-gradient(circle, #06b6d4, transparent 70%);
+      top: 40%; right: 8%;
+      animation-delay: -9s;
+      opacity: 0.35;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translate(0, 0) scale(1); }
+      33%      { transform: translate(40px, -40px) scale(1.08); }
+      66%      { transform: translate(-30px, 30px) scale(0.95); }
+    }
+
+    /* === CARD === */
     .container {
+      position: relative;
+      z-index: 2;
       width: 100%;
       max-width: 480px;
       text-align: center;
-      padding: 35px 25px;
-      border: 1px solid #294563;
-      border-radius: 20px;
-      background: #10243b;
-      box-shadow: 0 15px 40px #0005;
+      padding: 45px 30px 35px;
+      border-radius: 24px;
+      background: linear-gradient(145deg, rgba(23, 39, 68, 0.85), rgba(12, 22, 42, 0.9));
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      border: 1px solid rgba(96, 165, 250, 0.18);
+      box-shadow:
+        0 25px 60px rgba(0, 0, 0, 0.6),
+        inset 0 1px 0 rgba(255, 255, 255, 0.08),
+        0 0 0 1px rgba(96, 165, 250, 0.05);
+      animation: cardIn 0.9s cubic-bezier(0.2, 0.9, 0.3, 1.2);
     }
 
+    @keyframes cardIn {
+      from { opacity: 0; transform: translateY(30px) scale(0.96); }
+      to   { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    /* === LOGO === */
     .logo {
-      font-size: 27px;
-      font-weight: bold;
-      letter-spacing: 2px;
-      color: #60a5fa;
+      display: inline-block;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 3px;
+      padding: 8px 18px;
+      border-radius: 30px;
+      color: #bfdbfe;
+      background: rgba(59, 130, 246, 0.15);
+      border: 1px solid rgba(96, 165, 250, 0.35);
+      box-shadow: 0 0 20px rgba(59, 130, 246, 0.25);
+      text-transform: uppercase;
     }
 
+    /* === ICON === */
+    .icon-wrap {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 110px;
+      height: 110px;
+      margin: 28px auto 20px;
+    }
+    .icon-wrap::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #3b82f6, #a855f7, #06b6d4);
+      opacity: 0.25;
+      filter: blur(20px);
+      animation: pulse 3s ease-in-out infinite;
+    }
+    .icon-wrap::after {
+      content: '';
+      position: absolute;
+      inset: 8px;
+      border-radius: 50%;
+      border: 2px dashed rgba(96, 165, 250, 0.4);
+      animation: spin 18s linear infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); opacity: 0.25; }
+      50%      { transform: scale(1.15); opacity: 0.4; }
+    }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
     .icon {
-      font-size: 65px;
-      margin: 25px 0 10px;
+      position: relative;
+      z-index: 1;
+      font-size: 48px;
+      animation: bounce 3s ease-in-out infinite;
+    }
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50%      { transform: translateY(-6px); }
     }
 
+    /* === TEXT === */
     h1 {
-      font-size: 25px;
-      margin-bottom: 12px;
+      font-size: 24px;
+      font-weight: 700;
+      margin-bottom: 14px;
+      background: linear-gradient(90deg, #93c5fd, #c4b5fd, #67e8f9);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      letter-spacing: 0.3px;
     }
 
     p {
-      color: #cbd5e1;
-      line-height: 1.6;
+      color: #94a3b8;
+      line-height: 1.7;
       font-size: 14px;
+      margin-bottom: 10px;
     }
+    p + p { margin-bottom: 22px; }
 
+    /* === BUTTONS === */
     .link {
-      display: block;
+      position: relative;
+      display: flex;
+      align-items: center;
+      gap: 14px;
       text-decoration: none;
       color: white;
-      background: #1e4168;
-      border: 1px solid #345d86;
-      padding: 16px;
-      border-radius: 12px;
-      margin-top: 15px;
-      transition: .2s;
+      padding: 16px 18px;
+      border-radius: 14px;
+      margin-top: 14px;
+      background: linear-gradient(145deg, rgba(30, 58, 100, 0.7), rgba(20, 40, 75, 0.7));
+      border: 1px solid rgba(96, 165, 250, 0.25);
+      overflow: hidden;
+      transition: all 0.3s cubic-bezier(0.2, 0.9, 0.3, 1);
+      text-align: left;
     }
-
+    .link::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(59, 130, 246, 0.3), rgba(168, 85, 247, 0.2));
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
     .link:hover {
-      background: #2563a5;
-      transform: translateY(-2px);
+      transform: translateY(-3px);
+      border-color: rgba(96, 165, 250, 0.6);
+      box-shadow: 0 12px 30px rgba(59, 130, 246, 0.3);
     }
+    .link:hover::before { opacity: 1; }
 
-    .link strong {
-      display: block;
-      font-size: 17px;
-      margin-top: 5px;
+    .link .emoji {
+      position: relative;
+      z-index: 1;
+      font-size: 26px;
+      flex-shrink: 0;
     }
+    .link .text {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .link .label {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 1.5px;
+      color: #93c5fd;
+      text-transform: uppercase;
+    }
+    .link .domain {
+      font-size: 15px;
+      font-weight: 600;
+      color: #f1f5f9;
+    }
+    .link .arrow {
+      position: relative;
+      z-index: 1;
+      margin-left: auto;
+      color: #60a5fa;
+      font-size: 18px;
+      transition: transform 0.3s;
+    }
+    .link:hover .arrow { transform: translateX(4px); }
 
+    /* === FOOTER === */
+    .divider {
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(96, 165, 250, 0.3), transparent);
+      margin: 26px 0 16px;
+    }
     .footer {
-      margin-top: 25px;
       font-size: 12px;
-      color: #94a3b8;
+      color: #64748b;
+      letter-spacing: 0.5px;
+    }
+    .footer span {
+      color: #60a5fa;
+      font-weight: 600;
+    }
+
+    /* === RESPONSIVE === */
+    @media (max-width: 400px) {
+      .container { padding: 32px 20px 25px; }
+      h1 { font-size: 20px; }
+      .icon-wrap { width: 90px; height: 90px; margin: 20px auto 16px; }
+      .icon { font-size: 40px; }
     }
   </style>
 </head>
 
 <body>
 
+  <!-- Floating background orbs -->
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="orb orb-3"></div>
+
   <div class="container">
 
     <div class="logo">ORBITXY.COM</div>
 
-    <div class="icon">🌐</div>
+    <div class="icon-wrap">
+      <div class="icon">🌐</div>
+    </div>
 
     <h1>Halaman Belum Tersedia</h1>
 
@@ -106,21 +286,31 @@
 
     <p>
       Silakan masuk melalui alamat resmi
-      ORBITXY.COM berikut:
+      <strong style="color:#93c5fd">ORBITXY.COM</strong> berikut:
     </p>
 
     <a class="link" href="/">
-      🏠 HALAMAN UTAMA
-      <strong>orbitxy.com</strong>
+      <span class="emoji">🏠</span>
+      <span class="text">
+        <span class="label">Halaman Utama</span>
+        <span class="domain">orbitxy.com</span>
+      </span>
+      <span class="arrow">→</span>
     </a>
 
     <a class="link" href="/ai/">
-      🤖 AI BEKKI
-      <strong>orbitxy.com/ai/</strong>
+      <span class="emoji">🤖</span>
+      <span class="text">
+        <span class="label">AI Bekki</span>
+        <span class="domain">orbitxy.com/ai/</span>
+      </span>
+      <span class="arrow">→</span>
     </a>
 
+    <div class="divider"></div>
+
     <div class="footer">
-      Terima kasih telah mengunjungi ORBITXY.COM
+      Terima kasih telah mengunjungi <span>ORBITXY.COM</span>
     </div>
 
   </div>
