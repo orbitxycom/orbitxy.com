@@ -25,3 +25,7 @@ button,.hist-item,.sug,.avatar,.icon-btn{-webkit-user-select:none;user-select:no
 .fb-msg.bad{color:var(--destructive)}
 .fb .btn-dark:disabled{opacity:.4;cursor:not-allowed}
 .sb-foot .new-chat{margin-bottom:2px}
+
+/* Ikon balasan/thinking: bentuk bintang pixel, hitam di tema terang, putih di tema gelap */
+.avatar{width:28px;height:26px;border:0;border-radius:0;background:var(--foreground);color:transparent;-webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 14 13' shape-rendering='crispEdges'%3E%3Cpath d='M5 0h1v1h-1zM5 1h1v1h-1zM2 3h2v1h-2zM5 3h1v1h-1zM7 3h2v1h-2zM12 3h1v1h-1zM5 5h1v1h-1zM0 6h1v1h-1zM5 6h1v1h-1zM10 6h1v1h-1zM10 7h1v1h-1zM10 8h1v1h-1zM7 9h7v1h-7zM10 10h1v1h-1zM10 11h1v1h-1zM4 12h1v1h-1zM10 12h1v1h-1z'/%3E%3C/svg%3E") center/100% 100% no-repeat;mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 14 13' shape-rendering='crispEdges'%3E%3Cpath d='M5 0h1v1h-1zM5 1h1v1h-1zM2 3h2v1h-2zM5 3h1v1h-1zM7 3h2v1h-2zM12 3h1v1h-1zM5 5h1v1h-1zM0 6h1v1h-1zM5 6h1v1h-1zM10 6h1v1h-1zM10 7h1v1h-1zM10 8h1v1h-1zM7 9h7v1h-7zM10 10h1v1h-1zM10 11h1v1h-1zM4 12h1v1h-1zM10 12h1v1h-1z'/%3E%3C/svg%3E") center/100% 100% no-repeat;margin-top:0}
+.avatar svg{display:none}
