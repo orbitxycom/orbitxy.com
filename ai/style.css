@@ -29,3 +29,13 @@ button,.hist-item,.sug,.avatar,.icon-btn{-webkit-user-select:none;user-select:no
 /* Ikon balasan/thinking: bentuk bintang pixel, hitam di tema terang, putih di tema gelap */
 .avatar{width:26px;height:22px;border:0;border-radius:0;background:var(--foreground);color:transparent;-webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 13 11' shape-rendering='crispEdges'%3E%3Cpath d='M11 0h1v1h-1zM10 1h3v1h-3zM4 2h1v1h-1zM11 2h1v1h-1zM3 3h3v1h-3zM3 4h3v1h-3zM1 5h7v1h-7zM0 6h9v1h-9zM1 7h7v1h-7zM3 8h3v1h-3zM3 9h3v1h-3zM4 10h1v1h-1z'/%3E%3C/svg%3E") center/100% 100% no-repeat;mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 13 11' shape-rendering='crispEdges'%3E%3Cpath d='M11 0h1v1h-1zM10 1h3v1h-3zM4 2h1v1h-1zM11 2h1v1h-1zM3 3h3v1h-3zM3 4h3v1h-3zM1 5h7v1h-7zM0 6h9v1h-9zM1 7h7v1h-7zM3 8h3v1h-3zM3 9h3v1h-3zM4 10h1v1h-1z'/%3E%3C/svg%3E") center/100% 100% no-repeat;margin-top:3px}
 .avatar svg{display:none}
+
+/* Thought / Analysis / Reasoning (bisa dibuka-tutup dengan panah >) */
+.tks{margin:0 0 10px;display:flex;flex-direction:column;gap:2px}
+.tk summary{display:flex;align-items:center;gap:6px;cursor:pointer;list-style:none;font-size:12px;color:var(--muted-foreground);padding:3px 0;-webkit-user-select:none;user-select:none}
+.tk summary::-webkit-details-marker{display:none}
+.tk summary svg{font-size:13px;transition:transform .15s}
+.tk[open] summary svg{transform:rotate(90deg)}
+.tk summary b{font-weight:500;color:var(--foreground)}
+.tk summary span{opacity:.8}
+.tk-b{font-size:12px;line-height:1.6;color:var(--muted-foreground);padding:2px 0 6px 19px}
