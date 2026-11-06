@@ -1,0 +1,17 @@
+{
+  "name": "Bekki",
+  "short_name": "Bekki",
+  "description": "Chat AI Bekki",
+  "lang": "id",
+  "id": "./",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#fafafa",
+  "theme_color": "#f5f5f5",
+  "icons": [
+    { "src": "https://orbitxy.com/bekki.png?v=20261106b", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "https://orbitxy.com/bekki.png?v=20261106b", "sizes": "512x512", "type": "image/png", "purpose": "any" }
+  ]
+}
