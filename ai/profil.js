@@ -55,7 +55,6 @@ var menu=document.createElement("div");menu.className="pf-menu";menu.id="pfMenu"
 menu.innerHTML='<div class="pf-head"><span class="pf-av" id="pfAv2">?</span><span class="pf-txt"><span class="pf-name" id="pfName2"></span><span class="pf-sub" id="pfMail"></span></span></div>'
 +'<div class="pf-sep"></div>'
 +item("pfBug",I.bug,"Laporan bug")
-+item("pfTheme",I.sun,"Ganti tema",'<span class="pf-r" id="pfThemeNow"></span>')
 +'<div class="pf-sep"></div>'
 +item("pfSettings",I.gear,"Settings")
 +item("pfSecurity",I.lock,"Security &amp; Access")
@@ -72,7 +71,7 @@ foot.appendChild(menu);foot.appendChild(card);
 
 function mode(){try{var n=localStorage.getItem("bekki_tema");return n==="dark"||n==="light"?n:"system"}catch(e){return "system"}}
 function dark(){return document.documentElement.classList.contains("dark")}
-function mark(){var m=mode();Array.prototype.forEach.call(menu.querySelectorAll(".pf-mode"),function(b){b.setAttribute("aria-pressed",String(b.getAttribute("data-m")===m))});$("pfThemeNow").textContent=dark()?"Gelap":"Terang"}
+function mark(){var m=mode();Array.prototype.forEach.call(menu.querySelectorAll(".pf-mode"),function(b){b.setAttribute("aria-pressed",String(b.getAttribute("data-m")===m))})}
 function setTheme(m){
 try{if(m==="system")localStorage.removeItem("bekki_tema");else localStorage.setItem("bekki_tema",m)}catch(e){}
 document.documentElement.classList.toggle("dark",m==="dark"||(m==="system"&&matchMedia("(prefers-color-scheme: dark)").matches));mark()}
@@ -86,7 +85,6 @@ card.onclick=function(e){e.stopPropagation();menu.hidden?buka():tutup()};
 document.addEventListener("click",function(e){if(!menu.hidden&&!menu.contains(e.target))tutup()});
 document.addEventListener("keydown",function(e){if(e.key==="Escape")tutup()});
 $("pfBug").onclick=function(){tutup();var b=$("bugBtn");if(b)b.click()};
-$("pfTheme").onclick=function(){setTheme(dark()?"light":"dark");tutup()};
 Array.prototype.forEach.call(menu.querySelectorAll(".pf-mode"),function(b){b.onclick=function(){setTheme(b.getAttribute("data-m"))}});
 $("pfSettings").onclick=function(){go("settings")};
 $("pfSecurity").onclick=function(){go("security")};
