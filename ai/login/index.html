@@ -106,8 +106,21 @@
   }
   .field::placeholder { color: #8a8a8a; }
   .field:focus { border-color: #888; }
-  .btn-main { background: #fff; color: #000; visibility: hidden; opacity: 0; transform: translateY(6px); pointer-events: none; transition: opacity .18s ease, transform .18s ease, visibility .18s; }
+  /* Tombol Continue: di kanan bawah kotak email, baru muncul kalau sudah ada huruf */
+  .btn-main {
+    align-self: flex-end; width: auto; min-width: 116px; height: 44px; padding: 0 22px; border-radius: 12px;
+    background: #fff; color: #000; font-size: 16px;
+    visibility: hidden; opacity: 0; transform: translateY(6px); pointer-events: none;
+    transition: opacity .18s ease, transform .18s ease, visibility .18s;
+  }
   .btn-main.show { visibility: visible; opacity: 1; transform: none; pointer-events: auto; }
+  .step { display: flex; flex-direction: column; gap: var(--gap); }
+  .step[hidden] { display: none; }
+  .hint { color: #bdbdbd; font-size: 14px; line-height: 1.5; text-align: center; }
+  .hint b { color: #fff; font-weight: 500; overflow-wrap: anywhere; }
+  .field.code { text-align: center; font-size: 26px; font-weight: 600; letter-spacing: .5em; padding: 0 0 0 .5em; }
+  .field.code::placeholder { letter-spacing: .5em; font-weight: 400; }
+  .row { display: flex; justify-content: space-between; gap: 12px; }
   .btn:disabled { opacity: .6; cursor: not-allowed; }
   .link { background: none; border: 0; color: #bdbdbd; font: inherit; font-size: 14px; cursor: pointer; text-align: center; padding: 4px; }
   .link:hover { color: #fff; }
@@ -155,11 +168,20 @@
       <div class="or" aria-hidden="true">atau</div>
 
       <form class="manual" id="manual" novalidate>
-        <input class="field" id="email" type="email" inputmode="email" autocomplete="email" placeholder="Email" aria-label="Email">
-        <input class="field" id="pass" type="password" autocomplete="current-password" placeholder="Kata sandi" aria-label="Kata sandi">
-        <button class="btn btn-main" id="btn-manual" type="submit">Masuk</button>
+        <div class="step" id="step1">
+          <input class="field" id="email" type="email" inputmode="email" autocomplete="email" placeholder="Email" aria-label="Email">
+          <button class="btn btn-main" id="btn-manual" type="submit">Continue</button>
+        </div>
+
+        <div class="step" id="step2" hidden>
+          <p class="hint">Masukkan kode <span id="lenShow">6</span> digit yang kami kirim ke <b id="emailShow"></b></p>
+          <input class="field code" id="code" type="text" inputmode="numeric" pattern="[0-9]*" autocomplete="one-time-code" aria-label="Kode verifikasi">
+          <div class="row">
+            <button class="link" id="resend" type="button">Kirim ulang kode</button>
+            <button class="link" id="change" type="button">Ganti email</button>
+          </div>
+        </div>
       </form>
-      <button class="link" id="toggle-mode" type="button">Belum punya akun? Daftar</button>
 
       <p class="err" id="login-err" role="alert"></p>
     </section>
@@ -167,14 +189,18 @@
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4"></script>
 <script>
-  // Login lewat Supabase (Google atau email + kata sandi). Setelah berhasil, pengguna diarahkan ke /ai/
+  // Login lewat Supabase: Google, atau email + kode yang dikirim ke email. Setelah berhasil, ke /ai/
   (function () {
     var URL_ = "https://adxyijyerblmosdzsbyp.supabase.co";
     var KEY = "sb_publishable_bCG2DJjBfLAMp2ME9Pe3cQ_jbPmlnnX";
+    var CODE_LEN = 6; // Supabase hanya mengizinkan kode 6 sampai 10 digit (minimal 6)
     var $ = function (id) { return document.getElementById(id); };
-    var err = $("login-err"), btn = $("btn-google"), form = $("manual"), mainBtn = $("btn-manual"), tog = $("toggle-mode");
-    var mode = "masuk";
+    var err = $("login-err"), btn = $("btn-google"), form = $("manual"), mainBtn = $("btn-manual");
+    var emailEl = $("email"), codeEl = $("code"), step1 = $("step1"), step2 = $("step2"), resend = $("resend"), change = $("change");
+    var sentTo = "", busy = false, cool = 0, coolT = null;
     var sb = (window.supabase && window.supabase.createClient) ? window.supabase.createClient(URL_, KEY) : null;
+
+    codeEl.maxLength = CODE_LEN; $("lenShow").textContent = CODE_LEN;
     function say(t, ok) { err.textContent = t || ""; err.className = "err" + (ok ? " ok" : ""); }
     if (!sb) say("Gagal memuat sistem login. Cek koneksi internet, lalu muat ulang halaman.");
     else sb.auth.getSession().then(function (r) { if (r && r.data && r.data.session) location.replace("/ai/"); });
@@ -186,51 +212,72 @@
       if (res && res.error) { say("Login Google gagal. Coba lagi sebentar ya."); btn.disabled = false; }
     };
 
-    // Tombol Masuk/Daftar baru muncul kalau ada satu huruf saja di kolom email atau kata sandi
-    function sinkron() { mainBtn.classList.toggle("show", !!($("email").value || $("pass").value)); }
-    ["input", "change", "keyup"].forEach(function (ev) { $("email").addEventListener(ev, sinkron); $("pass").addEventListener(ev, sinkron); });
+    // Tombol Continue baru muncul kalau ada satu huruf saja di kolom email
+    function sinkron() { mainBtn.classList.toggle("show", !!emailEl.value); }
+    ["input", "change", "keyup"].forEach(function (ev) { emailEl.addEventListener(ev, sinkron); });
     setTimeout(sinkron, 300); setTimeout(sinkron, 1200); // isi otomatis dari browser
     sinkron();
 
-    tog.onclick = function () {
-      mode = mode === "masuk" ? "daftar" : "masuk";
-      mainBtn.textContent = mode === "masuk" ? "Masuk" : "Daftar";
-      tog.textContent = mode === "masuk" ? "Belum punya akun? Daftar" : "Sudah punya akun? Masuk";
-      $("pass").setAttribute("autocomplete", mode === "masuk" ? "current-password" : "new-password");
-      say("");
-    };
-
     function pesan(m) {
       m = String(m || "").toLowerCase();
-      if (m.indexOf("invalid login") > -1) return "Email atau kata sandi salah.";
-      if (m.indexOf("not confirmed") > -1) return "Email belum dikonfirmasi. Cek kotak masuk Anda.";
-      if (m.indexOf("already registered") > -1) return "Email ini sudah terdaftar. Silakan masuk.";
-      if (m.indexOf("password") > -1 && m.indexOf("character") > -1) return "Kata sandi minimal 6 karakter.";
-      if (m.indexOf("rate limit") > -1 || m.indexOf("too many") > -1) return "Terlalu banyak percobaan. Tunggu sebentar, lalu coba lagi.";
+      if (m.indexOf("email") > -1 && m.indexOf("invalid") > -1) return "Alamat email tidak valid.";
+      if (m.indexOf("expired") > -1 || m.indexOf("invalid") > -1) return "Kode salah atau sudah kedaluwarsa.";
+      if (m.indexOf("rate limit") > -1 || m.indexOf("too many") > -1 || m.indexOf("for security purposes") > -1) return "Terlalu sering meminta kode. Tunggu sebentar, lalu coba lagi.";
       if (m.indexOf("failed to fetch") > -1 || m.indexOf("network") > -1) return "Sepertinya sinyal Anda bermasalah. Cek koneksi internet, lalu coba lagi.";
-      return "Gagal masuk. Coba lagi sebentar ya.";
+      return "Gagal. Coba lagi sebentar ya.";
     }
 
-    form.addEventListener("submit", async function (e) {
-      e.preventDefault();
-      if (!sb) return;
-      var email = $("email").value.trim(), pass = $("pass").value;
+    function mulaiCooldown(n) {
+      cool = n; clearInterval(coolT);
+      function tampil() { resend.disabled = cool > 0; resend.textContent = cool > 0 ? "Kirim ulang kode (" + cool + ")" : "Kirim ulang kode"; resend.style.opacity = cool > 0 ? ".5" : ""; }
+      tampil();
+      coolT = setInterval(function () { cool--; tampil(); if (cool <= 0) clearInterval(coolT); }, 1000);
+    }
+
+    async function kirimKode(ulang) {
+      var email = ulang ? sentTo : emailEl.value.trim();
       if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { say("Isi email dengan benar."); return; }
-      if (pass.length < 6) { say("Kata sandi minimal 6 karakter."); return; }
       say(""); mainBtn.disabled = true;
       try {
-        var res;
-        if (mode === "masuk") {
-          res = await sb.auth.signInWithPassword({ email: email, password: pass });
-        } else {
-          res = await sb.auth.signUp({ email: email, password: pass, options: { emailRedirectTo: location.origin + "/ai/" } });
-        }
+        var res = await sb.auth.signInWithOtp({ email: email, options: { shouldCreateUser: true } });
         if (res.error) { say(pesan(res.error.message)); }
-        else if (res.data && res.data.session) { location.replace("/ai/"); return; }
-        else { say("Pendaftaran berhasil. Cek email Anda untuk konfirmasi, lalu masuk.", true); }
+        else {
+          sentTo = email; mulaiCooldown(60);
+          step1.hidden = true; step2.hidden = false;
+          $("emailShow").textContent = sentTo; codeEl.value = ""; codeEl.focus();
+          say(ulang ? "Kode baru sudah dikirim." : "Kode sudah dikirim. Cek email Anda.", true);
+        }
       } catch (x) { say(pesan(x && x.message)); }
       mainBtn.disabled = false;
+    }
+
+    async function verifikasi() {
+      var kode = codeEl.value.replace(/\D/g, "");
+      if (kode.length !== CODE_LEN || busy) return;
+      busy = true; codeEl.disabled = true; say("");
+      try {
+        var res = await sb.auth.verifyOtp({ email: sentTo, token: kode, type: "email" });
+        if (res.error) { say(pesan(res.error.message)); codeEl.value = ""; }
+        else { location.replace("/ai/"); return; }
+      } catch (x) { say(pesan(x && x.message)); }
+      busy = false; codeEl.disabled = false; codeEl.focus();
+    }
+
+    codeEl.addEventListener("input", function () {
+      codeEl.value = codeEl.value.replace(/\D/g, "").slice(0, CODE_LEN);
+      say("");
+      if (codeEl.value.length === CODE_LEN) verifikasi();
     });
+    form.addEventListener("submit", function (e) {
+      e.preventDefault();
+      if (!sb) return;
+      if (!step2.hidden) verifikasi(); else kirimKode(false);
+    });
+    resend.onclick = function () { if (cool <= 0 && sb) kirimKode(true); };
+    change.onclick = function () {
+      clearInterval(coolT); step2.hidden = true; step1.hidden = false;
+      codeEl.value = ""; say(""); emailEl.focus();
+    };
   })();
 </script>
 <script>
