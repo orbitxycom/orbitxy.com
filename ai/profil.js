@@ -197,8 +197,8 @@ g("stOutAll").onclick=function(){var sb=window.bekkiSB;(sb?sb.auth.signOut({scop
 if(stTab==="priv"){
 g("stDel").onclick=function(){stClose();var d=$("delAll");if(d)d.click()};
 g("stTerms").onclick=function(){go("terms")};g("stPriv").onclick=function(){go("privacy")}}}
-function stOpen(){
-tutup();stClose();stTab="profile";
+function stOpen(t){
+tutup();stClose();stTab=(typeof t==="string")?t:"profile";
 var sb=window.bekkiSB;
 var back=document.createElement("div");back.className="st-back";
 back.innerHTML='<div class="st-box" role="dialog" aria-modal="true" aria-label="Settings"><button class="st-x" id="stX" type="button" aria-label="Tutup">'+SI.x+'</button>'
@@ -215,7 +215,8 @@ function fill(u){stUser=u||{};var n=nm(stUser),full=(n.f+" "+n.l).trim();back.qu
 back.querySelector("#stWho").textContent=full||stUser.email||"Akun saya";back.querySelector("#stMail").textContent=stUser.email||"";stBody()}
 fill(null);
 if(sb)sb.auth.getSession().then(function(r){if(stEl===back)fill(r&&r.data&&r.data.session?r.data.session.user:null)}).catch(function(){})}
-$("pfSettings").onclick=stOpen;
+$("pfSettings").onclick=function(){stOpen("profile")};
+$("pfSecurity").onclick=function(){stOpen("sec")};
 var sb=window.bekkiSB;
 if(sb)sb.auth.getSession().then(function(r){isi(r&&r.data&&r.data.session?r.data.session.user:null)}).catch(function(){});
 }
