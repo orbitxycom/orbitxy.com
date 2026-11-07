@@ -61,7 +61,7 @@
     white-space: nowrap;
   }
   .brand { display: flex; flex-direction: column; align-items: center; gap: 18px; }
-  .logo { width: 64px; height: 64px; object-fit: contain; display: block; animation: logo-melayang 6s ease-in-out infinite; will-change: transform; }
+  .logo { width: 64px; height: 64px; object-fit: contain; display: block; pointer-events: none; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; -webkit-user-drag: none; animation: logo-melayang 6s ease-in-out infinite; will-change: transform; }
   @keyframes logo-melayang {
     0%   { transform: translate(0, 0) rotate(0deg); }
     15%  { transform: translate(45px, -30px) rotate(18deg); }
@@ -177,7 +177,7 @@
   <main class="screen">
     <section class="hero">
       <div class="brand">
-        <img class="logo" src="https://orbitxy.com/bekkiV1.png?v=20261107c" alt="Bekki" width="64" height="64" onerror="this.style.display='none'">
+        <img class="logo" draggable="false" src="https://orbitxy.com/bekkiV1.png?v=20261107c" alt="Bekki" width="64" height="64" onerror="this.style.display='none'">
         <h1 class="headline">Let’s brainstorm<span class="dot" aria-hidden="true"></span></h1>
       </div>
     </section>
@@ -325,6 +325,17 @@
 <script>
   // Daftarkan service worker supaya situs bisa dipasang sebagai aplikasi
   if ("serviceWorker" in navigator) addEventListener("load", function () { navigator.serviceWorker.register("../sw.js").catch(function () {}); });
+</script>
+<script>
+(function(){
+  function stop(e){e.preventDefault();e.stopPropagation();return false}
+  document.addEventListener("keydown",function(e){
+    var k=(e.key||"").toLowerCase(),c=e.ctrlKey||e.metaKey;
+    if(e.key==="F12"||(c&&(k==="u"||k==="s"||k==="p"))||(c&&e.shiftKey&&(k==="i"||k==="j"||k==="c"))||(e.metaKey&&e.altKey&&(k==="i"||k==="u"||k==="j"))){return stop(e)}
+  },true);
+  document.addEventListener("contextmenu",function(e){if(e.target&&e.target.tagName==="IMG")return stop(e)},true);
+  document.addEventListener("dragstart",function(e){if(e.target&&e.target.tagName==="IMG")return stop(e)},true);
+})();
 </script>
 </body>
 </html>
