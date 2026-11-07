@@ -145,6 +145,14 @@
     .hero { padding-bottom: 40px; }
     :root { --btn-h: 46px; --gap: 10px; }
   }
+
+  /* Laptop / desktop: kotak di kiri, teks di kanan */
+  @media (min-width: 900px) {
+    .screen { flex-direction: row; align-items: center; justify-content: center; gap: 6vw; padding: 0 6vw; }
+    .panel { order: 1; flex: none; margin: 0; max-width: 460px; padding-bottom: 32px; min-height: 380px; }
+    .hero { order: 2; flex: 1; padding: 0; justify-content: center; }
+    .headline { font-size: clamp(36px, 4vw, 56px); }
+  }
 </style>
 </head>
 <body>
