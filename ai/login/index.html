@@ -101,6 +101,12 @@
 
   .btn:focus-visible { outline: 2px solid #4c8dff; outline-offset: 2px; }
 
+  /* HP: panel hitam dinaikkan sampai sekitar separuh layar */
+  @media (max-width: 639px) {
+    .panel { min-height: 52dvh; }
+    .hero { padding-bottom: 0; }
+  }
+
   /* Tablet / desktop: panel as floating card */
   @media (min-width: 640px) {
     .panel { border-radius: 40px; margin-bottom: 32px; padding-bottom: 32px; }
