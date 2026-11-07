@@ -96,6 +96,23 @@
 
   .btn-google { background: var(--btn-google); color: #fff; }
 
+  .or { display: flex; align-items: center; gap: 12px; color: #8a8a8a; font-size: 13px; }
+  .or::before, .or::after { content: ""; flex: 1; height: 1px; background: #2e2e2e; }
+  .manual { display: flex; flex-direction: column; gap: var(--gap); }
+  .field {
+    width: 100%; height: var(--btn-h); border-radius: var(--btn-radius);
+    border: 1px solid #333; background: #1b1b1b; color: #fff;
+    padding: 0 16px; font: inherit; font-size: 16px; outline: none;
+  }
+  .field::placeholder { color: #8a8a8a; }
+  .field:focus { border-color: #888; }
+  .btn-main { background: #fff; color: #000; visibility: hidden; opacity: 0; transform: translateY(6px); pointer-events: none; transition: opacity .18s ease, transform .18s ease, visibility .18s; }
+  .btn-main.show { visibility: visible; opacity: 1; transform: none; pointer-events: auto; }
+  .btn:disabled { opacity: .6; cursor: not-allowed; }
+  .link { background: none; border: 0; color: #bdbdbd; font: inherit; font-size: 14px; cursor: pointer; text-align: center; padding: 4px; }
+  .link:hover { color: #fff; }
+  .ok { color: #9be3a8 !important; }
+
   .err { color: #ff9b9b; font-size: 14px; text-align: center; line-height: 1.4; }
   .err:empty { display: none; }
 
@@ -103,7 +120,7 @@
 
   /* HP: panel hitam dinaikkan sampai sekitar separuh layar */
   @media (max-width: 639px) {
-    .panel { min-height: 52dvh; }
+    .panel { min-height: 52dvh; padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 36px); }
     .hero { padding-bottom: 0; }
   }
 
@@ -134,26 +151,86 @@
         </svg>
         Continue with Google
       </button>
+
+      <div class="or" aria-hidden="true">atau</div>
+
+      <form class="manual" id="manual" novalidate>
+        <input class="field" id="email" type="email" inputmode="email" autocomplete="email" placeholder="Email" aria-label="Email">
+        <input class="field" id="pass" type="password" autocomplete="current-password" placeholder="Kata sandi" aria-label="Kata sandi">
+        <button class="btn btn-main" id="btn-manual" type="submit">Masuk</button>
+      </form>
+      <button class="link" id="toggle-mode" type="button">Belum punya akun? Daftar</button>
+
       <p class="err" id="login-err" role="alert"></p>
     </section>
   </main>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4"></script>
 <script>
-  // Login Google lewat Supabase. Setelah berhasil, pengguna diarahkan ke /ai/
+  // Login lewat Supabase (Google atau email + kata sandi). Setelah berhasil, pengguna diarahkan ke /ai/
   (function () {
     var URL_ = "https://adxyijyerblmosdzsbyp.supabase.co";
     var KEY = "sb_publishable_bCG2DJjBfLAMp2ME9Pe3cQ_jbPmlnnX";
-    var err = document.getElementById("login-err");
-    var btn = document.getElementById("btn-google");
-    if (!window.supabase || !window.supabase.createClient) { err.textContent = "Gagal memuat sistem login. Cek koneksi internet, lalu muat ulang halaman."; return; }
-    var sb = window.supabase.createClient(URL_, KEY);
-    sb.auth.getSession().then(function (r) { if (r && r.data && r.data.session) location.replace("/ai/"); });
+    var $ = function (id) { return document.getElementById(id); };
+    var err = $("login-err"), btn = $("btn-google"), form = $("manual"), mainBtn = $("btn-manual"), tog = $("toggle-mode");
+    var mode = "masuk";
+    var sb = (window.supabase && window.supabase.createClient) ? window.supabase.createClient(URL_, KEY) : null;
+    function say(t, ok) { err.textContent = t || ""; err.className = "err" + (ok ? " ok" : ""); }
+    if (!sb) say("Gagal memuat sistem login. Cek koneksi internet, lalu muat ulang halaman.");
+    else sb.auth.getSession().then(function (r) { if (r && r.data && r.data.session) location.replace("/ai/"); });
+
     window.handleGoogleLogin = async function () {
-      err.textContent = ""; btn.disabled = true;
+      if (!sb) return;
+      say(""); btn.disabled = true;
       var res = await sb.auth.signInWithOAuth({ provider: "google", options: { redirectTo: location.origin + "/ai/" } });
-      if (res && res.error) { err.textContent = "Login Google gagal. Coba lagi sebentar ya."; btn.disabled = false; }
+      if (res && res.error) { say("Login Google gagal. Coba lagi sebentar ya."); btn.disabled = false; }
     };
+
+    // Tombol Masuk/Daftar baru muncul kalau ada satu huruf saja di kolom email atau kata sandi
+    function sinkron() { mainBtn.classList.toggle("show", !!($("email").value || $("pass").value)); }
+    ["input", "change", "keyup"].forEach(function (ev) { $("email").addEventListener(ev, sinkron); $("pass").addEventListener(ev, sinkron); });
+    setTimeout(sinkron, 300); setTimeout(sinkron, 1200); // isi otomatis dari browser
+    sinkron();
+
+    tog.onclick = function () {
+      mode = mode === "masuk" ? "daftar" : "masuk";
+      mainBtn.textContent = mode === "masuk" ? "Masuk" : "Daftar";
+      tog.textContent = mode === "masuk" ? "Belum punya akun? Daftar" : "Sudah punya akun? Masuk";
+      $("pass").setAttribute("autocomplete", mode === "masuk" ? "current-password" : "new-password");
+      say("");
+    };
+
+    function pesan(m) {
+      m = String(m || "").toLowerCase();
+      if (m.indexOf("invalid login") > -1) return "Email atau kata sandi salah.";
+      if (m.indexOf("not confirmed") > -1) return "Email belum dikonfirmasi. Cek kotak masuk Anda.";
+      if (m.indexOf("already registered") > -1) return "Email ini sudah terdaftar. Silakan masuk.";
+      if (m.indexOf("password") > -1 && m.indexOf("character") > -1) return "Kata sandi minimal 6 karakter.";
+      if (m.indexOf("rate limit") > -1 || m.indexOf("too many") > -1) return "Terlalu banyak percobaan. Tunggu sebentar, lalu coba lagi.";
+      if (m.indexOf("failed to fetch") > -1 || m.indexOf("network") > -1) return "Sepertinya sinyal Anda bermasalah. Cek koneksi internet, lalu coba lagi.";
+      return "Gagal masuk. Coba lagi sebentar ya.";
+    }
+
+    form.addEventListener("submit", async function (e) {
+      e.preventDefault();
+      if (!sb) return;
+      var email = $("email").value.trim(), pass = $("pass").value;
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { say("Isi email dengan benar."); return; }
+      if (pass.length < 6) { say("Kata sandi minimal 6 karakter."); return; }
+      say(""); mainBtn.disabled = true;
+      try {
+        var res;
+        if (mode === "masuk") {
+          res = await sb.auth.signInWithPassword({ email: email, password: pass });
+        } else {
+          res = await sb.auth.signUp({ email: email, password: pass, options: { emailRedirectTo: location.origin + "/ai/" } });
+        }
+        if (res.error) { say(pesan(res.error.message)); }
+        else if (res.data && res.data.session) { location.replace("/ai/"); return; }
+        else { say("Pendaftaran berhasil. Cek email Anda untuk konfirmasi, lalu masuk.", true); }
+      } catch (x) { say(pesan(x && x.message)); }
+      mainBtn.disabled = false;
+    });
   })();
 </script>
 <script>
