@@ -6,6 +6,11 @@
 <title>Welcome</title>
 <link rel="icon" type="image/png" href="https://orbitxy.com/bekkiV1.png?v=20261107c">
 <link rel="apple-touch-icon" href="https://orbitxy.com/bekkiV1.png?v=20261107c">
+<link rel="manifest" href="../manifest.webmanifest">
+<meta name="theme-color" content="#ffffff">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Bekki">
 <style>
   :root {
     --bg: #ffffff;
@@ -307,6 +312,10 @@
       else document.dispatchEvent(new CustomEvent('auth:google'));
     });
   })();
+</script>
+<script>
+  // Daftarkan service worker supaya situs bisa dipasang sebagai aplikasi
+  if ("serviceWorker" in navigator) addEventListener("load", function () { navigator.serviceWorker.register("../sw.js").catch(function () {}); });
 </script>
 </body>
 </html>
