@@ -56,3 +56,14 @@ button,.hist-item,.sug,.avatar,.icon-btn{-webkit-user-select:none;user-select:no
 .acts svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 .acts .tm{margin-left:auto;font-size:13px;color:var(--muted-foreground);padding-right:4px}
 @media(hover:hover){.msg.bot .acts{opacity:0;transition:opacity .18s}.msg.bot:hover .acts,.msg.bot .acts:focus-within{opacity:1}}
+
+.dk-back{position:fixed;inset:0;z-index:80;background:rgba(0,0,0,.45);display:flex;align-items:flex-end;justify-content:center;animation:dk-fade .2s ease both}
+.dk-back.out{background:transparent;transition:background .22s}
+.dk-sheet{width:100%;max-width:640px;max-height:72dvh;overflow-y:auto;overscroll-behavior:contain;background:var(--background);color:var(--foreground);border-radius:22px 22px 0 0;padding:6px 20px calc(20px + env(safe-area-inset-bottom));box-shadow:0 -8px 30px rgba(0,0,0,.25);animation:dk-up .26s cubic-bezier(.2,.8,.2,1) both;will-change:transform}
+.dk-grab{display:flex;justify-content:center;padding:10px 0 14px;cursor:grab;touch-action:none}
+.dk-grab span{width:44px;height:5px;border-radius:3px;background:color-mix(in oklab,var(--foreground) 25%,transparent)}
+.dk-sheet h3{margin:0 0 14px;font-size:18px;font-weight:600}
+.dk-chips{display:flex;flex-wrap:wrap;gap:8px}
+.dk-act{display:flex;justify-content:flex-end;margin-top:18px}
+@keyframes dk-up{from{transform:translateY(100%)}to{transform:none}}
+@keyframes dk-fade{from{opacity:0}to{opacity:1}}
