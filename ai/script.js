@@ -90,22 +90,22 @@ cv.toBlob(b=>res(b),"image/png")};
 im.src="data:image/svg+xml;charset=utf-8,"+encodeURIComponent(CATS)})}
 function DLB(b,n){const u=URL.createObjectURL(b),l=document.createElement("a");l.href=u;l.download=n;document.body.appendChild(l);l.click();l.remove();setTimeout(()=>URL.revokeObjectURL(u),1500)}
 function SH(c){const old=document.getElementById("sh");old&&old.remove();
-const url=location.origin+location.pathname+"?"+encodeURIComponent(c.id),ti=c.title||"Percakapan",txt=ti+" - Bekki",eu=encodeURIComponent(url),et=encodeURIComponent(txt);
+const ti=c.title||"Percakapan",txt=ti+" - Bekki",et=encodeURIComponent(txt),bs=location.origin+location.pathname.replace(/index\.html$/,""),U=()=>bs+(ci?"s"+(ci+1)+"/":"")+"?"+encodeURIComponent(c.id),EU=()=>encodeURIComponent(U());
 const bgs=["linear-gradient(135deg,#3a3a3f,#111114)","linear-gradient(135deg,#22c55e,#a7f3d0)","linear-gradient(135deg,#2563eb,#a855f7)"];
 const slides=bgs.map(b=>'<div class="sh-sl" style="background:'+b+'"><div class="sh-cd"><div class="sh-br"><span class="sh-lg">'+CATS+'</span><b>BEKKI</b></div><div class="sh-ct">'+ES(ti)+'</div></div></div>').join("");
 let ci=0;
-const shareImg=async fb=>{const bl=await mkImg(ci,ti),f=new File([bl],"bekki.png",{type:"image/png"}),d={files:[f],text:txt+"\n"+url};
+const shareImg=async fb=>{const bl=await mkImg(ci,ti),f=new File([bl],"bekki.png",{type:"image/png"}),d={files:[f],text:txt+"\n"+U()};
 if(navigator.canShare&&navigator.canShare(d)){try{await navigator.share(d)}catch(e){}return}
 let ok=!1;try{await navigator.clipboard.write([new ClipboardItem({"image/png":bl})]);ok=!0;TT("Gambar disalin, tempel di chat")}catch(e){}
 if(!ok){DLB(bl,"bekki.png");TT("Gambar disimpan")}
 fb&&window.open(fb,"_blank","noopener")};
-const apps=[["Salin tautan",SHI.cp,"#e5e7eb","#111",()=>CPY(url).then(()=>TT("Tautan disalin"))],
-["WhatsApp",SHI.wa,"#25d366","#fff","https://wa.me/?text="+et+"%20"+eu],
-["Telegram",SHI.tg,"#2aabee","#fff","https://t.me/share/url?url="+eu+"&text="+et],
-["Facebook",SHI.fb,"#1877f2","#fff","https://www.facebook.com/sharer/sharer.php?u="+eu],
-["X",'<span style="font:700 20px/1 system-ui">X</span>',"#000","#fff","https://twitter.com/intent/tweet?text="+et+"&url="+eu],
-["Email",SHI.mail,"#ea4335","#fff","mailto:?subject="+et+"&body="+eu],
-["Pesan",SHI.sms,"#34c759","#fff","sms:?&body="+et+"%20"+eu],
+const apps=[["Salin tautan",SHI.cp,"#e5e7eb","#111",()=>CPY(U()).then(()=>TT("Tautan disalin"))],
+["WhatsApp",SHI.wa,"#25d366","#fff",()=>"https://wa.me/?text="+et+"%20"+EU()],
+["Telegram",SHI.tg,"#2aabee","#fff",()=>"https://t.me/share/url?url="+EU()+"&text="+et],
+["Facebook",SHI.fb,"#1877f2","#fff",()=>"https://www.facebook.com/sharer/sharer.php?u="+EU()],
+["X",'<span style="font:700 20px/1 system-ui">X</span>',"#000","#fff",()=>"https://twitter.com/intent/tweet?text="+et+"&url="+EU()],
+["Email",SHI.mail,"#ea4335","#fff",()=>"mailto:?subject="+et+"&body="+EU()],
+["Pesan",SHI.sms,"#34c759","#fff",()=>"sms:?&body="+et+"%20"+EU()],
 ["Simpan gambar",SHI.dl,"#e5e7eb","#111",async()=>{DLB(await mkImg(ci,ti),"bekki.png");TT("Gambar disimpan")}]];
 if(navigator.share)apps.push(["Lainnya",SHI.more,"#e5e7eb","#111",()=>shareImg("")]);
 const w=document.createElement("div");w.className="dk-back";w.id="sh";
@@ -115,7 +115,7 @@ const sh=w.querySelector(".dk-sheet"),car=w.querySelector(".sh-car"),dots=w.quer
 let gone=!1;const cl=()=>{if(gone)return;gone=!0;document.removeEventListener("keydown",kd,!0);w.classList.add("out");sh.style.transition="transform .22s ease";sh.style.transform="translateY(105%)";setTimeout(()=>w.remove(),230)};
 function kd(e){e.key==="Escape"&&(e.stopPropagation(),cl())}document.addEventListener("keydown",kd,!0);
 apps.forEach(a=>{const x=document.createElement("button");x.type="button";x.className="sh-app";x.innerHTML='<span class="sh-ic" style="background:'+a[2]+';color:'+a[3]+'">'+a[1]+'</span><span>'+a[0]+'</span>';
-x.onclick=()=>{typeof a[4]==="function"?a[4]():/^https?:/.test(a[4])?window.open(a[4],"_blank","noopener"):location.href=a[4];cl()};ap.appendChild(x)});
+x.onclick=()=>{const r=typeof a[4]==="function"?a[4]():a[4];typeof r==="string"&&(/^https?:/.test(r)?window.open(r,"_blank","noopener"):location.href=r);cl()};ap.appendChild(x)});
 car.addEventListener("scroll",()=>{const i=Math.round(car.scrollLeft/(car.firstChild.offsetWidth+12));ci=i,dots.forEach((d,k)=>d.classList.toggle("on",k===i))},{passive:!0});
 w.onclick=e=>{e.target===w&&cl()};
 let y0=0,drag=!1,can=!1;const mv=y=>{const d=Math.max(0,y-y0);sh.style.transition="none";sh.style.transform="translateY("+d+"px)";return d};
