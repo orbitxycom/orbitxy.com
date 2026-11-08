@@ -132,3 +132,5 @@ button,.hist-item,.sug,.avatar,.icon-btn{-webkit-user-select:none;user-select:no
 .sh-nav:hover{background:rgba(0,0,0,.75)}
 @media(hover:hover) and (pointer:fine){.sh-nav{display:grid}}
 .sh-dots i{cursor:pointer;position:relative}.sh-dots i::after{content:"";position:absolute;inset:-6px}
+.dk-sheet,.pf-menu,.st-main,.art-code,.tt-menu,.sh-apps,.sh-car,.dk-chips{scrollbar-width:none;-ms-overflow-style:none}
+.dk-sheet::-webkit-scrollbar,.pf-menu::-webkit-scrollbar,.st-main::-webkit-scrollbar,.art-code::-webkit-scrollbar,.tt-menu::-webkit-scrollbar,.sh-apps::-webkit-scrollbar,.sh-car::-webkit-scrollbar,.dk-chips::-webkit-scrollbar{display:none;width:0;height:0}
