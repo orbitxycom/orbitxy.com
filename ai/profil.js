@@ -12,7 +12,7 @@ var CSS=".sb-foot{position:relative}"
 +".pf-txt{min-width:0;display:flex;flex-direction:column;gap:1px}"
 +".pf-name{font-size:14px;font-weight:500;color:var(--foreground);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}"
 +".pf-sub{font-size:12px;color:var(--muted-foreground);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}"
-+".pf-menu{position:absolute;left:0;right:0;bottom:calc(100% + 8px);max-height:calc(100dvh - 100px);overflow-y:auto;background:var(--popover);color:var(--popover-foreground);border:1px solid color-mix(in oklab,var(--border) 80%,transparent);border-radius:16px;padding:8px;box-shadow:var(--shadow-float);z-index:30;animation:pf-in .16s var(--ease-spring) both}"
++".pf-menu{position:fixed;overflow-y:auto;background:var(--popover);color:var(--popover-foreground);border:1px solid color-mix(in oklab,var(--border) 80%,transparent);border-radius:16px;padding:8px;box-shadow:var(--shadow-float);z-index:80;animation:pf-in .16s var(--ease-spring) both}"
 +".pf-menu[hidden]{display:none}"
 +"@keyframes pf-in{0%{opacity:0;transform:translateY(6px) scale(.98)}to{opacity:1;transform:none}}"
 +".pf-head{display:flex;align-items:center;gap:12px;padding:8px}"
@@ -67,7 +67,7 @@ menu.innerHTML='<div class="pf-head"><span class="pf-av" id="pfAv2">?</span><spa
 +'<button class="pf-mode" data-m="dark" type="button" aria-label="Gelap" aria-pressed="false">'+I.moon+'</button>'
 +'<button class="pf-mode" data-m="system" type="button" aria-label="Ikuti sistem" aria-pressed="false">'+I.pc+'</button></div>'
 +'<div class="pf-foot"><span>'+APP+' ©'+new Date().getFullYear()+'</span><span><a id="pfTerms">Terms</a> · <a id="pfPrivacy">Privacy policy</a></span></div>';
-foot.appendChild(menu);foot.appendChild(card);
+document.body.appendChild(menu);foot.appendChild(card);
 
 function mode(){try{var n=localStorage.getItem("bekki_tema");return n==="dark"||n==="light"?n:"system"}catch(e){return "system"}}
 function dark(){return document.documentElement.classList.contains("dark")}
@@ -77,7 +77,9 @@ try{if(m==="system")localStorage.removeItem("bekki_tema");else localStorage.setI
 document.documentElement.classList.toggle("dark",m==="dark"||(m==="system"&&matchMedia("(prefers-color-scheme: dark)").matches));mark()}
 try{matchMedia("(prefers-color-scheme: dark)").addEventListener("change",function(){if(mode()==="system")setTheme("system")})}catch(e){}
 function toast(t){var o=document.querySelector(".pf-toast");if(o)o.remove();var e=document.createElement("div");e.className="pf-toast";e.textContent=t;document.body.appendChild(e);setTimeout(function(){e.remove()},2200)}
-function buka(){mark();menu.hidden=false;card.setAttribute("aria-expanded","true")}
+function pos(){var r=card.getBoundingClientRect(),w=Math.min(r.width+64,innerWidth-16),l=Math.max(8,Math.min(r.left,innerWidth-w-8));menu.style.width=w+"px";menu.style.left=l+"px";menu.style.bottom=(innerHeight-r.top+8)+"px";menu.style.maxHeight=Math.max(200,r.top-16)+"px"}
+function buka(){mark();menu.hidden=false;pos();card.setAttribute("aria-expanded","true")}
+addEventListener("resize",function(){if(!menu.hidden)pos()});
 function tutup(){menu.hidden=true;card.setAttribute("aria-expanded","false")}
 function go(k){tutup();if(LINKS[k])window.open(LINKS[k],"_blank","noopener");else toast("Segera hadir")}
 
