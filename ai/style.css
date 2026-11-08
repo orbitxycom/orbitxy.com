@@ -67,3 +67,14 @@ button,.hist-item,.sug,.avatar,.icon-btn{-webkit-user-select:none;user-select:no
 .dk-act{display:flex;justify-content:flex-end;margin-top:18px}
 @keyframes dk-up{from{transform:translateY(100%)}to{transform:none}}
 @keyframes dk-fade{from{opacity:0}to{opacity:1}}
+
+.ttl-mb{width:28px;height:28px;flex:none;border-radius:8px;display:grid;place-items:center;color:var(--muted-foreground);transition:background .15s}
+.ttl-mb[hidden]{display:none}
+.ttl-mb:hover,.ttl-mb[aria-expanded=true]{background:var(--sidebar-accent);color:var(--foreground)}
+.ttl-mb svg,.tt-item svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.tt-menu{position:fixed;z-index:75;min-width:230px;padding:8px;background:var(--popover);color:var(--popover-foreground);border:1px solid color-mix(in oklab,var(--border) 80%,transparent);border-radius:16px;box-shadow:var(--shadow-float,0 10px 30px rgba(0,0,0,.18));animation:fade-up .16s var(--ease-spring,ease) both}
+.tt-item{display:flex;align-items:center;gap:12px;width:100%;height:42px;padding:0 12px;border-radius:10px;font-size:15px;color:var(--foreground);text-align:left}
+.tt-item:hover{background:var(--sidebar-accent)}
+.tt-item.del{color:#e5484d}
+.tt-sep{height:1px;margin:6px 4px;background:color-mix(in oklab,var(--border) 80%,transparent)}
+.tt-toast{position:fixed;left:50%;bottom:90px;transform:translateX(-50%);background:var(--foreground);color:var(--background);padding:10px 16px;border-radius:10px;font-size:13px;z-index:90}
