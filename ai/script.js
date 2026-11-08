@@ -72,7 +72,7 @@ tg:'<svg viewBox="0 0 24 24"><path d="M21 4 3 11l6 2 2 6 3-4 5 4z"/><path d="M9 
 fb:'<svg viewBox="0 0 24 24"><path d="M14 8h3V4h-3a4 4 0 0 0-4 4v3H7v4h3v6h4v-6h3l1-4h-4V8z"/></svg>',
 mail:'<svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>',
 sms:'<svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>',
-dl:'<svg viewBox="0 0 24 24"><path d="M12 3v12M7 10l5 5 5-5M4 21h16"/></svg>',more:'<svg viewBox="0 0 24 24"><circle cx="5" cy="12" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="19" cy="12" r="1.5"/></svg>'};
+dl:'<svg viewBox="0 0 24 24"><path d="M12 3v12M7 10l5 5 5-5M4 21h16"/></svg>',pv:'<svg viewBox="0 0 24 24"><path d="m15 6-6 6 6 6"/></svg>',nx:'<svg viewBox="0 0 24 24"><path d="m9 6 6 6-6 6"/></svg>',more:'<svg viewBox="0 0 24 24"><circle cx="5" cy="12" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="19" cy="12" r="1.5"/></svg>'};
 const SBG=[["#3a3a3f","#111114"],["#22c55e","#a7f3d0"],["#2563eb","#a855f7"]];
 function RR(c,x,y,w,h,r){c.beginPath();c.moveTo(x+r,y);c.arcTo(x+w,y,x+w,y+h,r);c.arcTo(x+w,y+h,x,y+h,r);c.arcTo(x,y+h,x,y,r);c.arcTo(x,y,x+w,y,r);c.closePath()}
 function mkImg(i,title){return new Promise(res=>{const W=1200,H=630,cv=document.createElement("canvas");cv.width=W;cv.height=H;const c=cv.getContext("2d");
@@ -109,13 +109,23 @@ const apps=[["Salin tautan",SHI.cp,"#e5e7eb","#111",()=>CPY(U()).then(()=>TT("Ta
 ["Simpan gambar",SHI.dl,"#e5e7eb","#111",async()=>{DLB(await mkImg(ci,ti),"bekki.png");TT("Gambar disimpan")}]];
 if(navigator.share)apps.push(["Lainnya",SHI.more,"#e5e7eb","#111",()=>shareImg("")]);
 const w=document.createElement("div");w.className="dk-back";w.id="sh";
-w.innerHTML='<div class="dk-sheet sh-sheet" role="dialog" aria-modal="true" aria-labelledby="shT"><div class="dk-grab" aria-hidden="true"><span></span></div><h3 id="shT" class="sh-h">Bagikan percakapan</h3><p class="sh-s">Tautan ini hanya bisa dibuka di perangkat kamu.</p><div class="sh-car">'+slides+'</div><div class="sh-dots"><i class="on"></i><i></i><i></i></div><div class="sh-line"></div><div class="sh-apps"></div></div>';
+w.innerHTML='<div class="dk-sheet sh-sheet" role="dialog" aria-modal="true" aria-labelledby="shT"><div class="dk-grab" aria-hidden="true"><span></span></div><h3 id="shT" class="sh-h">Bagikan percakapan</h3><p class="sh-s">Siapa pun yang memiliki tautan dapat melihat pesan sebelumnya.</p><div class="sh-wrap"><button type="button" class="sh-nav l" aria-label="Sebelumnya">'+SHI.pv+'</button><div class="sh-car">'+slides+'</div><button type="button" class="sh-nav r" aria-label="Berikutnya">'+SHI.nx+'</button></div><div class="sh-dots"><i class="on"></i><i></i><i></i></div><div class="sh-line"></div><div class="sh-apps"></div></div>';
 document.body.appendChild(w);
 const sh=w.querySelector(".dk-sheet"),car=w.querySelector(".sh-car"),dots=w.querySelectorAll(".sh-dots i"),ap=w.querySelector(".sh-apps");
 let gone=!1;const cl=()=>{if(gone)return;gone=!0;document.removeEventListener("keydown",kd,!0);w.classList.add("out");sh.style.transition="transform .22s ease";sh.style.transform="translateY(105%)";setTimeout(()=>w.remove(),230)};
 function kd(e){e.key==="Escape"&&(e.stopPropagation(),cl())}document.addEventListener("keydown",kd,!0);
 apps.forEach(a=>{const x=document.createElement("button");x.type="button";x.className="sh-app";x.innerHTML='<span class="sh-ic" style="background:'+a[2]+';color:'+a[3]+'">'+a[1]+'</span><span>'+a[0]+'</span>';
 x.onclick=()=>{const r=typeof a[4]==="function"?a[4]():a[4];typeof r==="string"&&(/^https?:/.test(r)?window.open(r,"_blank","noopener"):location.href=r);cl()};ap.appendChild(x)});
+const slides0=bgs.length;
+const go=i=>{i=Math.max(0,Math.min(slides0-1,i));car.scrollTo({left:i*(car.firstChild.offsetWidth+12),behavior:"smooth"})};
+w.querySelector(".sh-nav.l").onclick=()=>go(ci-1);w.querySelector(".sh-nav.r").onclick=()=>go(ci+1);
+dots.forEach((d,k)=>{d.onclick=()=>go(k)});
+let dn=!1,sx=0,sl=0,lx=0;
+car.addEventListener("pointerdown",e=>{if(e.pointerType!=="mouse"||e.button)return;dn=!0;sx=lx=e.clientX;sl=car.scrollLeft;car.style.scrollSnapType="none";car.classList.add("drag");try{car.setPointerCapture(e.pointerId)}catch(x){}});
+car.addEventListener("pointermove",e=>{dn&&(lx=e.clientX,car.scrollLeft=sl-(e.clientX-sx))});
+const upd=()=>{if(!dn)return;dn=!1;car.classList.remove("drag");const sw=car.firstChild.offsetWidth+12,si=Math.round(sl/sw),d=lx-sx,i=d<-50?si+1:d>50?si-1:si;car.style.scrollSnapType="";go(i)};
+car.addEventListener("pointerup",upd);car.addEventListener("pointercancel",upd);
+document.addEventListener("keydown",function ka(e){if(!document.getElementById("sh")){document.removeEventListener("keydown",ka);return}if(e.key==="ArrowLeft")go(ci-1);else if(e.key==="ArrowRight")go(ci+1)});
 car.addEventListener("scroll",()=>{const i=Math.round(car.scrollLeft/(car.firstChild.offsetWidth+12));ci=i,dots.forEach((d,k)=>d.classList.toggle("on",k===i))},{passive:!0});
 w.onclick=e=>{e.target===w&&cl()};
 let y0=0,drag=!1,can=!1;const mv=y=>{const d=Math.max(0,y-y0);sh.style.transition="none";sh.style.transform="translateY("+d+"px)";return d};
