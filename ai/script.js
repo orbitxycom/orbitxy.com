@@ -64,6 +64,43 @@ document.addEventListener("click",e=>{const t=e.target.closest&&e.target.closest
 if(t.classList.contains("art-dl")){const bl=new Blob([decodeURIComponent(a.dataset.c)],{type:"text/html;charset=utf-8"}),u=URL.createObjectURL(bl),l=document.createElement("a");l.href=u;l.download=((a.dataset.t||"").toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"")||"halaman")+".html";document.body.appendChild(l);l.click();l.remove();setTimeout(()=>URL.revokeObjectURL(u),1500);return}
 const cd=a.querySelector(".art-code"),pv=a.querySelector(".art-pv");a.querySelectorAll(".art-tabs button").forEach(x=>x.classList.toggle("on",x===t));
 if(t.dataset.v==="pv"){if(!pv.firstChild){const f=document.createElement("iframe");f.setAttribute("sandbox","allow-scripts allow-forms allow-modals allow-popups");f.title="Pratinjau";f.srcdoc=PG+decodeURIComponent(a.dataset.c);pv.appendChild(f)}cd.hidden=!0;pv.hidden=!1}else{cd.hidden=!1;pv.hidden=!0}});
+const CATS='<svg viewBox="190 190 700 700" xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges"><rect x="190" y="190" width="700" height="700" fill="#000"/><rect x="268" y="268" width="78" height="78" fill="#ade4ff"/><rect x="734" y="268" width="78" height="78" fill="#ade4ff"/><rect x="268" y="346" width="156" height="78" fill="#9fdcff"/><rect x="657" y="346" width="156" height="78" fill="#9fdcff"/><rect x="268" y="423" width="544" height="78" fill="#90d6ff"/><rect x="268" y="501" width="78" height="78" fill="#80cbff"/><rect x="424" y="501" width="233" height="78" fill="#80cbff"/><rect x="734" y="501" width="78" height="78" fill="#80cbff"/><rect x="268" y="579" width="233" height="78" fill="#5eb4f7"/><rect x="579" y="579" width="233" height="78" fill="#5eb4f7"/><rect x="268" y="656" width="156" height="78" fill="#2f8add"/><rect x="462" y="656" width="39" height="39" fill="#2f8add"/><rect x="579" y="656" width="39" height="39" fill="#2f8add"/><rect x="657" y="656" width="156" height="78" fill="#2f8add"/><rect x="229" y="734" width="622" height="78" fill="#0d3b87"/></svg>';
+const SHI={
+cp:'<svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.07 0l3-3a5 5 0 0 0-7.07-7.07l-1.5 1.5"/><path d="M14 11a5 5 0 0 0-7.07 0l-3 3a5 5 0 0 0 7.07 7.07l1.5-1.5"/></svg>',
+wa:'<svg viewBox="0 0 24 24"><path d="M3 21l1.6-4.6A8.5 8.5 0 1 1 8 19.6z"/><path d="M9 8.5c0 3.5 3 6.5 6.5 6.5l1-1.5-2-1-1 .8c-1-.4-2-1.4-2.4-2.4l.8-1-1-2z"/></svg>',
+tg:'<svg viewBox="0 0 24 24"><path d="M21 4 3 11l6 2 2 6 3-4 5 4z"/><path d="M9 13l8-6"/></svg>',
+fb:'<svg viewBox="0 0 24 24"><path d="M14 8h3V4h-3a4 4 0 0 0-4 4v3H7v4h3v6h4v-6h3l1-4h-4V8z"/></svg>',
+mail:'<svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>',
+sms:'<svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>',
+more:'<svg viewBox="0 0 24 24"><circle cx="5" cy="12" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="19" cy="12" r="1.5"/></svg>'};
+function SH(c){const old=document.getElementById("sh");old&&old.remove();
+const url=location.origin+location.pathname+"?c="+encodeURIComponent(c.id),ti=c.title||"Percakapan",txt=ti+" - Bekki",eu=encodeURIComponent(url),et=encodeURIComponent(txt);
+const bgs=["linear-gradient(135deg,#3a3a3f,#111114)","linear-gradient(135deg,#22c55e,#a7f3d0)","linear-gradient(135deg,#2563eb,#a855f7)"];
+const slides=bgs.map(b=>'<div class="sh-sl" style="background:'+b+'"><div class="sh-cd"><div class="sh-br"><span class="sh-lg">'+CATS+'</span><b>BEKKI</b></div><div class="sh-ct">'+ES(ti)+'</div></div></div>').join("");
+const apps=[["Salin tautan",SHI.cp,"#e5e7eb","#111",()=>CPY(url).then(()=>TT("Tautan disalin"))],
+["WhatsApp",SHI.wa,"#25d366","#fff","https://wa.me/?text="+et+"%20"+eu],
+["Telegram",SHI.tg,"#2aabee","#fff","https://t.me/share/url?url="+eu+"&text="+et],
+["Facebook",SHI.fb,"#1877f2","#fff","https://www.facebook.com/sharer/sharer.php?u="+eu],
+["X",'<span style="font:700 20px/1 system-ui">X</span>',"#000","#fff","https://twitter.com/intent/tweet?text="+et+"&url="+eu],
+["Email",SHI.mail,"#ea4335","#fff","mailto:?subject="+et+"&body="+eu],
+["Pesan",SHI.sms,"#34c759","#fff","sms:?&body="+et+"%20"+eu]];
+if(navigator.share)apps.push(["Lainnya",SHI.more,"#e5e7eb","#111",()=>navigator.share({title:ti,url:url}).catch(()=>{})]);
+const w=document.createElement("div");w.className="dk-back";w.id="sh";
+w.innerHTML='<div class="dk-sheet sh-sheet" role="dialog" aria-modal="true" aria-labelledby="shT"><div class="dk-grab" aria-hidden="true"><span></span></div><h3 id="shT" class="sh-h">Bagikan percakapan</h3><p class="sh-s">Tautan ini hanya bisa dibuka di perangkat kamu.</p><div class="sh-car">'+slides+'</div><div class="sh-dots"><i class="on"></i><i></i><i></i></div><div class="sh-line"></div><div class="sh-apps"></div></div>';
+document.body.appendChild(w);
+const sh=w.querySelector(".dk-sheet"),car=w.querySelector(".sh-car"),dots=w.querySelectorAll(".sh-dots i"),ap=w.querySelector(".sh-apps");
+let gone=!1;const cl=()=>{if(gone)return;gone=!0;document.removeEventListener("keydown",kd,!0);w.classList.add("out");sh.style.transition="transform .22s ease";sh.style.transform="translateY(105%)";setTimeout(()=>w.remove(),230)};
+function kd(e){e.key==="Escape"&&(e.stopPropagation(),cl())}document.addEventListener("keydown",kd,!0);
+apps.forEach(a=>{const x=document.createElement("button");x.type="button";x.className="sh-app";x.innerHTML='<span class="sh-ic" style="background:'+a[2]+';color:'+a[3]+'">'+a[1]+'</span><span>'+a[0]+'</span>';
+x.onclick=()=>{typeof a[4]==="function"?a[4]():window.open(a[4],"_blank","noopener");cl()};ap.appendChild(x)});
+car.addEventListener("scroll",()=>{const i=Math.round(car.scrollLeft/(car.firstChild.offsetWidth+12));dots.forEach((d,k)=>d.classList.toggle("on",k===i))},{passive:!0});
+w.onclick=e=>{e.target===w&&cl()};
+let y0=0,drag=!1,can=!1;const mv=y=>{const d=Math.max(0,y-y0);sh.style.transition="none";sh.style.transform="translateY("+d+"px)";return d};
+const fin=d=>{drag=!1;if(d>90)cl();else{sh.style.transition="transform .2s ease";sh.style.transform=""}};
+sh.addEventListener("touchstart",e=>{y0=e.touches[0].clientY;can=sh.scrollTop<=0&&!e.target.closest(".sh-car,.sh-apps");drag=!1},{passive:!0});
+sh.addEventListener("touchmove",e=>{const dy=e.touches[0].clientY-y0;if(can&&dy>0){drag=!0;e.cancelable&&e.preventDefault();mv(e.touches[0].clientY)}},{passive:!1});
+sh.addEventListener("touchend",e=>{if(drag)fin(Math.max(0,e.changedTouches[0].clientY-y0))});
+w.querySelector(".dk-grab").addEventListener("mousedown",e=>{e.preventDefault();y0=e.clientY;const m1=ev=>{drag=!0;mv(ev.clientY)},u1=ev=>{window.removeEventListener("mousemove",m1);window.removeEventListener("mouseup",u1);fin(Math.max(0,ev.clientY-y0))};window.addEventListener("mousemove",m1);window.addEventListener("mouseup",u1)})}
 function Y(t){const e=u("div","msg bot");e.appendChild(u("div","avatar",X));const n=u("div","bubble");return n.innerHTML=t,e.appendChild(n),k.appendChild(e),{row:e,bubble:n}}const ee=["What are the advantages of using Next.js?","Write code to demonstrate Dijkstra's algorithm","Help me write an essay about Silicon Valley","What is the weather in San Francisco?"];function te(){k.innerHTML="";const t=u("div","empty");t.appendChild(u("div","greet-t","What can I help with?")),t.appendChild(u("div","greet-s","Ask a question, write code, or explore ideas."));const e=u("div","sugs");ee.forEach((n,a)=>{const i=u("button","sug");i.textContent=n,i.style.animationDelay=.65+a*.08+"s",i.onclick=()=>O(n),e.appendChild(i)}),t.appendChild(e),k.appendChild(t)}function C(){const t=T();if(!t||!t.msgs.length){te();return}k.innerHTML="",t.msgs.forEach(e=>e.role==="user"?U(e.content):AB(Y(NB(e)).row,e)),y()}function ne(t){let e=String(t).replace(/\s+/g," ").trim();const n=e.search(/[.!?]\s/);n>8&&(e=e.slice(0,n+1));const a=/^(tolong|bisa|bisakah|boleh|coba|bantu|bantuin|bantulah|please|can you|could you|help me|hai|halo|hi|hello|hey)[,!\s]+/i;for(let i=0;i<3&&a.test(e)&&e.replace(a,"").length>3;i++)e=e.replace(a,"");if(e=e.replace(/[?!.,;:\s]+$/,""),e||(e=String(t).trim()),e.length>42){e=e.slice(0,42);const i=e.lastIndexOf(" ");e=e.slice(0,i>20?i:42).replace(/[,;:\s]+$/,"")+"\u2026"}return e.charAt(0).toUpperCase()+e.slice(1)}const g=r("title");const TB=u("button","ttl-mb",'<svg viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg>');TB.type="button";TB.setAttribute("aria-label","Menu obrolan");TB.setAttribute("aria-haspopup","menu");g.after(TB);
 const MI={pin:'<svg viewBox="0 0 24 24"><path d="M12 17v5M9 10.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24V17h14v-1.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V6h1a2 2 0 0 0 0-4H8a2 2 0 0 0 0 4h1z"/></svg>',ed:'<svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg>',sh:'<svg viewBox="0 0 24 24"><path d="M12 15V3M7 8l5-5 5 5M4 14v5a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-5"/></svg>',dl:'<svg viewBox="0 0 24 24"><path d="M3 6h18M8 6V4h8v2M6 6l1 14h10l1-14M10 11v6M14 11v6"/></svg>'};
 let TMN=null;
@@ -74,7 +111,7 @@ const d=document.createElement("div");d.className="tt-menu";d.setAttribute("role
 const it=(ic,lb,fn,cls)=>{const x=document.createElement("button");x.type="button";x.className="tt-item"+(cls?" "+cls:"");x.setAttribute("role","menuitem");x.innerHTML=ic+"<span>"+lb+"</span>";em?(x.disabled=!0):x.onclick=()=>{TCL();fn()};d.appendChild(x)};
 it(MI.pin,c.pin?"Lepas sematan":"Sematkan",()=>{c.pin=!c.pin;b();m();TT(c.pin?"Obrolan disematkan":"Sematan dilepas")});
 it(MI.ed,"Ganti nama",()=>{g.dataset.edit||g.onclick()});
-it(MI.sh,"Bagikan sesi",()=>{const u2=location.origin+location.pathname+"?c="+encodeURIComponent(c.id);if(navigator.share){navigator.share({title:c.title,url:u2}).catch(()=>{})}else CPY(u2).then(()=>TT("Tautan disalin"))});
+it(MI.sh,"Bagikan sesi",()=>SH(c));
 const sp=document.createElement("div");sp.className="tt-sep";d.appendChild(sp);
 it(MI.dl,"Hapus",()=>le(c.id),"del");
 document.body.appendChild(d);TMN=d;TB.setAttribute("aria-expanded","true");
