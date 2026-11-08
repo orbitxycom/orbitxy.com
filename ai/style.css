@@ -78,3 +78,4 @@ button,.hist-item,.sug,.avatar,.icon-btn{-webkit-user-select:none;user-select:no
 .tt-item.del{color:#e5484d}
 .tt-sep{height:1px;margin:6px 4px;background:color-mix(in oklab,var(--border) 80%,transparent)}
 .tt-toast{position:fixed;left:50%;bottom:90px;transform:translateX(-50%);background:var(--foreground);color:var(--background);padding:10px 16px;border-radius:10px;font-size:13px;z-index:90}
+.tt-item:disabled{opacity:.4;cursor:default}.tt-item:disabled:hover{background:transparent}
