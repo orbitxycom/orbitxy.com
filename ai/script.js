@@ -72,19 +72,42 @@ tg:'<svg viewBox="0 0 24 24"><path d="M21 4 3 11l6 2 2 6 3-4 5 4z"/><path d="M9 
 fb:'<svg viewBox="0 0 24 24"><path d="M14 8h3V4h-3a4 4 0 0 0-4 4v3H7v4h3v6h4v-6h3l1-4h-4V8z"/></svg>',
 mail:'<svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>',
 sms:'<svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>',
-more:'<svg viewBox="0 0 24 24"><circle cx="5" cy="12" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="19" cy="12" r="1.5"/></svg>'};
+dl:'<svg viewBox="0 0 24 24"><path d="M12 3v12M7 10l5 5 5-5M4 21h16"/></svg>',more:'<svg viewBox="0 0 24 24"><circle cx="5" cy="12" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="19" cy="12" r="1.5"/></svg>'};
+const SBG=[["#3a3a3f","#111114"],["#22c55e","#a7f3d0"],["#2563eb","#a855f7"]];
+function RR(c,x,y,w,h,r){c.beginPath();c.moveTo(x+r,y);c.arcTo(x+w,y,x+w,y+h,r);c.arcTo(x+w,y+h,x,y+h,r);c.arcTo(x,y+h,x,y,r);c.arcTo(x,y,x+w,y,r);c.closePath()}
+function mkImg(i,title){return new Promise(res=>{const W=1200,H=630,cv=document.createElement("canvas");cv.width=W;cv.height=H;const c=cv.getContext("2d");
+const g=c.createLinearGradient(0,0,W,H),bg=SBG[i]||SBG[0];g.addColorStop(0,bg[0]);g.addColorStop(1,bg[1]);c.fillStyle=g;c.fillRect(0,0,W,H);
+const cw=760,ch=370,cx=(W-cw)/2,cy=(H-ch)/2;
+c.save();c.shadowColor="rgba(0,0,0,.4)";c.shadowBlur=50;c.shadowOffsetY=18;RR(c,cx,cy,cw,ch,48);c.fillStyle="#000";c.fill();c.restore();
+RR(c,cx,cy,cw,ch,48);c.strokeStyle="rgba(255,255,255,.14)";c.lineWidth=2;c.stroke();
+const im=new Image();im.onload=im.onerror=()=>{const L=130,tw=(()=>{c.font="800 96px Geist,system-ui,sans-serif";try{c.letterSpacing="8px"}catch(e){}return c.measureText("BEKKI").width})(),gap=30,x0=(W-(L+gap+tw))/2,y0=cy+60;
+c.save();RR(c,x0,y0,L,L,22);c.clip();try{c.drawImage(im,x0,y0,L,L)}catch(e){}c.restore();
+c.fillStyle="#fff";c.textBaseline="middle";c.textAlign="left";c.fillText("BEKKI",x0+L+gap,y0+L/2+4);
+c.font="500 38px Geist,system-ui,sans-serif";try{c.letterSpacing="0px"}catch(e){}c.fillStyle="rgba(255,255,255,.65)";c.textAlign="center";
+let t=String(title||"");while(t.length>1&&c.measureText(t).width>cw-80)t=t.slice(0,-1);if(t!==String(title||""))t=t.trimEnd()+"…";
+c.fillText(t,W/2,cy+ch-62);
+cv.toBlob(b=>res(b),"image/png")};
+im.src="data:image/svg+xml;charset=utf-8,"+encodeURIComponent(CATS)})}
+function DLB(b,n){const u=URL.createObjectURL(b),l=document.createElement("a");l.href=u;l.download=n;document.body.appendChild(l);l.click();l.remove();setTimeout(()=>URL.revokeObjectURL(u),1500)}
 function SH(c){const old=document.getElementById("sh");old&&old.remove();
 const url=location.origin+location.pathname+"?c="+encodeURIComponent(c.id),ti=c.title||"Percakapan",txt=ti+" - Bekki",eu=encodeURIComponent(url),et=encodeURIComponent(txt);
 const bgs=["linear-gradient(135deg,#3a3a3f,#111114)","linear-gradient(135deg,#22c55e,#a7f3d0)","linear-gradient(135deg,#2563eb,#a855f7)"];
 const slides=bgs.map(b=>'<div class="sh-sl" style="background:'+b+'"><div class="sh-cd"><div class="sh-br"><span class="sh-lg">'+CATS+'</span><b>BEKKI</b></div><div class="sh-ct">'+ES(ti)+'</div></div></div>').join("");
+let ci=0;
+const shareImg=async fb=>{const bl=await mkImg(ci,ti),f=new File([bl],"bekki.png",{type:"image/png"}),d={files:[f],text:txt+"\n"+url};
+if(navigator.canShare&&navigator.canShare(d)){try{await navigator.share(d)}catch(e){}return}
+let ok=!1;try{await navigator.clipboard.write([new ClipboardItem({"image/png":bl})]);ok=!0;TT("Gambar disalin, tempel di chat")}catch(e){}
+if(!ok){DLB(bl,"bekki.png");TT("Gambar disimpan")}
+fb&&window.open(fb,"_blank","noopener")};
 const apps=[["Salin tautan",SHI.cp,"#e5e7eb","#111",()=>CPY(url).then(()=>TT("Tautan disalin"))],
-["WhatsApp",SHI.wa,"#25d366","#fff","https://wa.me/?text="+et+"%20"+eu],
-["Telegram",SHI.tg,"#2aabee","#fff","https://t.me/share/url?url="+eu+"&text="+et],
-["Facebook",SHI.fb,"#1877f2","#fff","https://www.facebook.com/sharer/sharer.php?u="+eu],
-["X",'<span style="font:700 20px/1 system-ui">X</span>',"#000","#fff","https://twitter.com/intent/tweet?text="+et+"&url="+eu],
-["Email",SHI.mail,"#ea4335","#fff","mailto:?subject="+et+"&body="+eu],
-["Pesan",SHI.sms,"#34c759","#fff","sms:?&body="+et+"%20"+eu]];
-if(navigator.share)apps.push(["Lainnya",SHI.more,"#e5e7eb","#111",()=>navigator.share({title:ti,url:url}).catch(()=>{})]);
+["WhatsApp",SHI.wa,"#25d366","#fff",()=>shareImg("https://wa.me/?text="+et+"%20"+eu)],
+["Telegram",SHI.tg,"#2aabee","#fff",()=>shareImg("https://t.me/share/url?url="+eu+"&text="+et)],
+["Facebook",SHI.fb,"#1877f2","#fff",()=>shareImg("https://www.facebook.com/sharer/sharer.php?u="+eu)],
+["X",'<span style="font:700 20px/1 system-ui">X</span>',"#000","#fff",()=>shareImg("https://twitter.com/intent/tweet?text="+et+"&url="+eu)],
+["Email",SHI.mail,"#ea4335","#fff",()=>shareImg("mailto:?subject="+et+"&body="+eu)],
+["Pesan",SHI.sms,"#34c759","#fff",()=>shareImg("sms:?&body="+et+"%20"+eu)],
+["Simpan gambar",SHI.dl,"#e5e7eb","#111",async()=>{DLB(await mkImg(ci,ti),"bekki.png");TT("Gambar disimpan")}]];
+if(navigator.share)apps.push(["Lainnya",SHI.more,"#e5e7eb","#111",()=>shareImg("")]);
 const w=document.createElement("div");w.className="dk-back";w.id="sh";
 w.innerHTML='<div class="dk-sheet sh-sheet" role="dialog" aria-modal="true" aria-labelledby="shT"><div class="dk-grab" aria-hidden="true"><span></span></div><h3 id="shT" class="sh-h">Bagikan percakapan</h3><p class="sh-s">Tautan ini hanya bisa dibuka di perangkat kamu.</p><div class="sh-car">'+slides+'</div><div class="sh-dots"><i class="on"></i><i></i><i></i></div><div class="sh-line"></div><div class="sh-apps"></div></div>';
 document.body.appendChild(w);
@@ -93,7 +116,7 @@ let gone=!1;const cl=()=>{if(gone)return;gone=!0;document.removeEventListener("k
 function kd(e){e.key==="Escape"&&(e.stopPropagation(),cl())}document.addEventListener("keydown",kd,!0);
 apps.forEach(a=>{const x=document.createElement("button");x.type="button";x.className="sh-app";x.innerHTML='<span class="sh-ic" style="background:'+a[2]+';color:'+a[3]+'">'+a[1]+'</span><span>'+a[0]+'</span>';
 x.onclick=()=>{typeof a[4]==="function"?a[4]():window.open(a[4],"_blank","noopener");cl()};ap.appendChild(x)});
-car.addEventListener("scroll",()=>{const i=Math.round(car.scrollLeft/(car.firstChild.offsetWidth+12));dots.forEach((d,k)=>d.classList.toggle("on",k===i))},{passive:!0});
+car.addEventListener("scroll",()=>{const i=Math.round(car.scrollLeft/(car.firstChild.offsetWidth+12));ci=i,dots.forEach((d,k)=>d.classList.toggle("on",k===i))},{passive:!0});
 w.onclick=e=>{e.target===w&&cl()};
 let y0=0,drag=!1,can=!1;const mv=y=>{const d=Math.max(0,y-y0);sh.style.transition="none";sh.style.transform="translateY("+d+"px)";return d};
 const fin=d=>{drag=!1;if(d>90)cl();else{sh.style.transition="transform .2s ease";sh.style.transform=""}};
