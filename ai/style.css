@@ -46,4 +46,4 @@ button,.hist-item,.sug,.avatar,.icon-btn{-webkit-user-select:none;user-select:no
 .tk summary span{opacity:.8}
 .tk-b{font-size:12px;line-height:1.6;color:var(--muted-foreground);padding:2px 0 6px 19px}
 
-.disc{margin:8px 0 0;text-align:center;font-size:12px;line-height:1.3;color:var(--muted-foreground);user-select:none;-webkit-user-select:none}
+.disc{margin:10px 0 0;padding:0 8px;text-align:center;font-size:12px;line-height:1.3;color:var(--muted-foreground);user-select:none;-webkit-user-select:none}
