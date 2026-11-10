@@ -134,6 +134,24 @@ sh.addEventListener("touchstart",e=>{y0=e.touches[0].clientY;can=sh.scrollTop<=0
 sh.addEventListener("touchmove",e=>{const dy=e.touches[0].clientY-y0;if(can&&dy>0){drag=!0;e.cancelable&&e.preventDefault();mv(e.touches[0].clientY)}},{passive:!1});
 sh.addEventListener("touchend",e=>{if(drag)fin(Math.max(0,e.changedTouches[0].clientY-y0))});
 w.querySelector(".dk-grab").addEventListener("mousedown",e=>{e.preventDefault();y0=e.clientY;const m1=ev=>{drag=!0;mv(ev.clientY)},u1=ev=>{window.removeEventListener("mousemove",m1);window.removeEventListener("mouseup",u1);fin(Math.max(0,ev.clientY-y0))};window.addEventListener("mousemove",m1);window.addEventListener("mouseup",u1)})}
+const BM=[{id:"1.10",n:"Bekki 1.10",c:["#d9d2fe","#c7bcff","#b3a4ff","#9c8bfb","#8368f3","#6446da","#3a1fa2"]},{id:"1.5",n:"Bekki 1.5",c:["#bdf6d6","#a5f0c5","#8de9b6","#70de9f","#45cc7d","#26ae5c","#0a6b35"]},{id:"1.1",n:"Bekki 1.1",c:["#a9e2ff","#9cdcff","#8ed6fe","#7fcbff","#5bb4f6","#2f8cdc","#0c3c86"]}];
+const BO=["#ade4ff","#9fdcff","#90d6ff","#80cbff","#5eb4f7","#2f8add","#0d3b87"];
+function CATC(c){let x=CATS;BO.forEach((o,i)=>{x=x.split(o).join(c[i])});return x}
+const MB=document.getElementById("modelBtn");let MS=null;try{MS=localStorage.getItem("bekki_model")}catch(e){}if(!BM.some(m=>m.id===MS))MS="1.1";
+const MCH='<svg class="mdl-ch" viewBox="0 0 24 24"><path d="m6 15 6-6 6 6"/></svg>';
+function MR(){const m=BM.find(x=>x.id===MS);MB.innerHTML='<span class="mdl-lg">'+CATC(m.c)+'</span><span>'+m.n+'</span>'+MCH}
+let MP=null;function MCL(){MP&&(MP.remove(),MP=null,MB.setAttribute("aria-expanded","false"))}
+function MO(){const p=document.createElement("div");p.className="mdl-pop";p.setAttribute("role","listbox");
+BM.forEach(m=>{const b2=document.createElement("button");b2.type="button";b2.className="mdl-it";b2.setAttribute("role","option");b2.setAttribute("aria-selected",String(m.id===MS));
+b2.innerHTML='<span class="mdl-lg">'+CATC(m.c)+'</span><span class="mdl-nm">'+m.n+'</span>'+(m.id===MS?'<svg class="mdl-ck" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg>':"");
+b2.onclick=()=>{MS=m.id;try{localStorage.setItem("bekki_model",MS)}catch(e){}MR();MCL()};p.appendChild(b2)});
+document.body.appendChild(p);MP=p;MB.setAttribute("aria-expanded","true");
+const r=MB.getBoundingClientRect();p.style.bottom=innerHeight-r.top+8+"px";p.style.left=Math.max(8,Math.min(r.left,innerWidth-p.offsetWidth-8))+"px"}
+MB.onclick=e=>{e.stopPropagation();MP?MCL():MO()};
+document.addEventListener("click",e=>{MP&&!MP.contains(e.target)&&MCL()});
+document.addEventListener("keydown",e=>{e.key==="Escape"&&MP&&MCL()});
+addEventListener("resize",MCL);
+MR();
 function Y(t){const e=u("div","msg bot");e.appendChild(u("div","avatar",X));const n=u("div","bubble");return n.innerHTML=t,e.appendChild(n),k.appendChild(e),{row:e,bubble:n}}const ee=["What are the advantages of using Next.js?","Write code to demonstrate Dijkstra's algorithm","Help me write an essay about Silicon Valley","What is the weather in San Francisco?"];function te(){k.innerHTML="";const t=u("div","empty");t.appendChild(u("div","greet-t","What can I help with?")),t.appendChild(u("div","greet-s","Ask a question, write code, or explore ideas."));const e=u("div","sugs");ee.forEach((n,a)=>{const i=u("button","sug");i.textContent=n,i.style.animationDelay=.65+a*.08+"s",i.onclick=()=>O(n),e.appendChild(i)}),t.appendChild(e),k.appendChild(t)}function C(){const t=T();if(!t||!t.msgs.length){te();return}k.innerHTML="",t.msgs.forEach(e=>e.role==="user"?U(e.content):AB(Y(NB(e)).row,e)),y()}function ne(t){let e=String(t).replace(/\s+/g," ").trim();const n=e.search(/[.!?]\s/);n>8&&(e=e.slice(0,n+1));const a=/^(tolong|bisa|bisakah|boleh|coba|bantu|bantuin|bantulah|please|can you|could you|help me|hai|halo|hi|hello|hey)[,!\s]+/i;for(let i=0;i<3&&a.test(e)&&e.replace(a,"").length>3;i++)e=e.replace(a,"");if(e=e.replace(/[?!.,;:\s]+$/,""),e||(e=String(t).trim()),e.length>42){e=e.slice(0,42);const i=e.lastIndexOf(" ");e=e.slice(0,i>20?i:42).replace(/[,;:\s]+$/,"")+"\u2026"}return e.charAt(0).toUpperCase()+e.slice(1)}const g=r("title");const TB=u("button","ttl-mb",'<svg viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg>');TB.type="button";TB.setAttribute("aria-label","Menu obrolan");TB.setAttribute("aria-haspopup","menu");g.after(TB);
 const MI={pin:'<svg viewBox="0 0 24 24"><path d="M12 17v5M9 10.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24V17h14v-1.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V6h1a2 2 0 0 0 0-4H8a2 2 0 0 0 0 4h1z"/></svg>',ed:'<svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg>',sh:'<svg viewBox="0 0 24 24"><path d="M12 15V3M7 8l5-5 5 5M4 14v5a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-5"/></svg>',dl:'<svg viewBox="0 0 24 24"><path d="M3 6h18M8 6V4h8v2M6 6l1 14h10l1-14M10 11v6M14 11v6"/></svg>'};
 let TMN=null;
