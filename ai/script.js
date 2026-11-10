@@ -73,6 +73,7 @@ fb:'<svg viewBox="0 0 24 24"><path d="M14 8h3V4h-3a4 4 0 0 0-4 4v3H7v4h3v6h4v-6h
 mail:'<svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>',
 sms:'<svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>',
 dl:'<svg viewBox="0 0 24 24"><path d="M12 3v12M7 10l5 5 5-5M4 21h16"/></svg>',pv:'<svg viewBox="0 0 24 24"><path d="m15 6-6 6 6 6"/></svg>',nx:'<svg viewBox="0 0 24 24"><path d="m9 6 6 6-6 6"/></svg>',more:'<svg viewBox="0 0 24 24"><circle cx="5" cy="12" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="19" cy="12" r="1.5"/></svg>'};
+function LGC(){return[BM[2],BM[1],BM[0]]}
 const SBG=[["#3a3a3f","#111114"],["#22c55e","#a7f3d0"],["#2563eb","#a855f7"]];
 function RR(c,x,y,w,h,r){c.beginPath();c.moveTo(x+r,y);c.arcTo(x+w,y,x+w,y+h,r);c.arcTo(x+w,y+h,x,y+h,r);c.arcTo(x,y+h,x,y,r);c.arcTo(x,y,x+w,y,r);c.closePath()}
 function mkImg(i,title){return new Promise(res=>{const W=1200,H=630,cv=document.createElement("canvas");cv.width=W;cv.height=H;const c=cv.getContext("2d");
@@ -87,12 +88,12 @@ c.font="500 38px Geist,system-ui,sans-serif";try{c.letterSpacing="0px"}catch(e){
 let t=String(title||"");while(t.length>1&&c.measureText(t).width>cw-80)t=t.slice(0,-1);if(t!==String(title||""))t=t.trimEnd()+"…";
 c.fillText(t,W/2,cy+ch-62);
 cv.toBlob(b=>res(b),"image/png")};
-im.src="data:image/svg+xml;charset=utf-8,"+encodeURIComponent(CATS)})}
+im.src="data:image/svg+xml;charset=utf-8,"+encodeURIComponent(CATC(LGC()[i]?LGC()[i].c:LGC()[0].c))})}
 function DLB(b,n){const u=URL.createObjectURL(b),l=document.createElement("a");l.href=u;l.download=n;document.body.appendChild(l);l.click();l.remove();setTimeout(()=>URL.revokeObjectURL(u),1500)}
 function SH(c){const old=document.getElementById("sh");old&&old.remove();
 const ti=c.title||"Percakapan",txt=ti+" - Bekki",et=encodeURIComponent(txt),bs=location.origin+location.pathname.replace(/index\.html$/,""),U=()=>bs+(ci?"s"+(ci+1)+"/":"")+"?"+encodeURIComponent(c.id),EU=()=>encodeURIComponent(U());
 const bgs=["linear-gradient(135deg,#3a3a3f,#111114)","linear-gradient(135deg,#22c55e,#a7f3d0)","linear-gradient(135deg,#2563eb,#a855f7)"];
-const slides=bgs.map(b=>'<div class="sh-sl" style="background:'+b+'"><div class="sh-cd"><div class="sh-br"><span class="sh-lg">'+CATS+'</span><b>BEKKI</b></div><div class="sh-ct">'+ES(ti)+'</div></div></div>').join("");
+const slides=bgs.map((b,k)=>'<div class="sh-sl" style="background:'+b+'"><div class="sh-cd"><div class="sh-br"><span class="sh-lg">'+CATC(LGC()[k].c)+'</span><b>BEKKI</b></div><div class="sh-ct">'+ES(ti)+'</div></div></div>').join("");
 let ci=0;
 const shareImg=async fb=>{const bl=await mkImg(ci,ti),f=new File([bl],"bekki.png",{type:"image/png"}),d={files:[f],text:txt+"\n"+U()};
 if(navigator.canShare&&navigator.canShare(d)){try{await navigator.share(d)}catch(e){}return}
