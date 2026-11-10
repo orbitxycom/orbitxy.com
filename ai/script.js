@@ -137,13 +137,14 @@ w.querySelector(".dk-grab").addEventListener("mousedown",e=>{e.preventDefault();
 const BM=[{id:"1.10",n:"Bekki 1.10",c:["#d9d2fe","#c7bcff","#b3a4ff","#9c8bfb","#8368f3","#6446da","#3a1fa2"]},{id:"1.5",n:"Bekki 1.5",c:["#bdf6d6","#a5f0c5","#8de9b6","#70de9f","#45cc7d","#26ae5c","#0a6b35"]},{id:"1.1",n:"Bekki 1.1",c:["#a9e2ff","#9cdcff","#8ed6fe","#7fcbff","#5bb4f6","#2f8cdc","#0c3c86"]}];
 const BO=["#ade4ff","#9fdcff","#90d6ff","#80cbff","#5eb4f7","#2f8add","#0d3b87"];
 function CATC(c){let x=CATS;BO.forEach((o,i)=>{x=x.split(o).join(c[i])});return x}
+function CATT(c){return CATC(c).replace('viewBox="190 190 700 700"','viewBox="229 268 622 544"').replace('<rect x="190" y="190" width="700" height="700" fill="#000"/>',"")}
 const MB=document.getElementById("modelBtn");let MS=null;try{MS=localStorage.getItem("bekki_model")}catch(e){}if(!BM.some(m=>m.id===MS))MS="1.1";
 const MCH='<svg class="mdl-ch" viewBox="0 0 24 24"><path d="m6 15 6-6 6 6"/></svg>';
-function MR(){const m=BM.find(x=>x.id===MS);MB.innerHTML='<span class="mdl-lg">'+CATC(m.c)+'</span><span>'+m.n+'</span>'+MCH}
+function MR(){const m=BM.find(x=>x.id===MS);MB.innerHTML='<span class="mdl-lg">'+CATT(m.c)+'</span><span>'+m.n+'</span>'+MCH}
 let MP=null;function MCL(){MP&&(MP.remove(),MP=null,MB.setAttribute("aria-expanded","false"))}
 function MO(){const p=document.createElement("div");p.className="mdl-pop";p.setAttribute("role","listbox");
 BM.forEach(m=>{const b2=document.createElement("button");b2.type="button";b2.className="mdl-it";b2.setAttribute("role","option");b2.setAttribute("aria-selected",String(m.id===MS));
-b2.innerHTML='<span class="mdl-lg">'+CATC(m.c)+'</span><span class="mdl-nm">'+m.n+'</span>'+(m.id===MS?'<svg class="mdl-ck" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg>':"");
+b2.innerHTML='<span class="mdl-lg">'+CATT(m.c)+'</span><span class="mdl-nm">'+m.n+'</span>'+(m.id===MS?'<svg class="mdl-ck" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg>':"");
 b2.onclick=()=>{MS=m.id;try{localStorage.setItem("bekki_model",MS)}catch(e){}MR();MCL()};p.appendChild(b2)});
 document.body.appendChild(p);MP=p;MB.setAttribute("aria-expanded","true");
 const r=MB.getBoundingClientRect();p.style.bottom=innerHeight-r.top+8+"px";p.style.left=Math.max(8,Math.min(r.left,innerWidth-p.offsetWidth-8))+"px"}
