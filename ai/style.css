@@ -134,3 +134,14 @@ button,.hist-item,.sug,.avatar,.icon-btn{-webkit-user-select:none;user-select:no
 .sh-dots i{cursor:pointer;position:relative}.sh-dots i::after{content:"";position:absolute;inset:-6px}
 .dk-sheet,.pf-menu,.st-main,.art-code,.tt-menu,.sh-apps,.sh-car,.dk-chips{scrollbar-width:none;-ms-overflow-style:none}
 .dk-sheet::-webkit-scrollbar,.pf-menu::-webkit-scrollbar,.st-main::-webkit-scrollbar,.art-code::-webkit-scrollbar,.tt-menu::-webkit-scrollbar,.sh-apps::-webkit-scrollbar,.sh-car::-webkit-scrollbar,.dk-chips::-webkit-scrollbar{display:none;width:0;height:0}
+
+.model{display:inline-flex;align-items:center;gap:8px;height:32px;padding:0 8px;border-radius:10px;font-size:13px;font-weight:500;color:var(--foreground);transition:background .15s}
+.model:hover,.model[aria-expanded=true]{background:var(--sidebar-accent)}
+.mdl-lg{width:20px;height:20px;border-radius:5px;overflow:hidden;display:block;flex:none}.mdl-lg svg{display:block;width:100%;height:100%}
+.mdl-ch{width:14px;height:14px;fill:none;stroke:var(--muted-foreground);stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;transition:transform .15s}
+.model[aria-expanded=true] .mdl-ch{transform:rotate(180deg)}
+.mdl-pop{position:fixed;z-index:85;min-width:200px;padding:6px;background:var(--popover);color:var(--popover-foreground);border:1px solid color-mix(in oklab,var(--border) 80%,transparent);border-radius:14px;box-shadow:var(--shadow-float,0 10px 30px rgba(0,0,0,.2));animation:fade-up .15s var(--ease-spring,ease) both}
+.mdl-it{display:flex;align-items:center;gap:12px;width:100%;height:42px;padding:0 10px;border-radius:10px;font-size:14px;color:var(--foreground);text-align:left}
+.mdl-it:hover,.mdl-it[aria-selected=true]{background:var(--sidebar-accent)}
+.mdl-nm{flex:1}
+.mdl-ck{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
