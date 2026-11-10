@@ -145,3 +145,4 @@ button,.hist-item,.sug,.avatar,.icon-btn{-webkit-user-select:none;user-select:no
 .mdl-it:hover,.mdl-it[aria-selected=true]{background:var(--sidebar-accent)}
 .mdl-nm{flex:1}
 .mdl-ck{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
+.mdl-it.off{cursor:not-allowed}.mdl-it.off:hover{background:transparent}.mdl-it.off .mdl-nm{color:var(--muted-foreground);opacity:.75}
