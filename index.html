@@ -2,362 +2,366 @@
 <html lang="id">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Bekki — Asisten AI dari Orbitxy</title>
 <meta name="description" content="Bekki adalah asisten AI pribadi dari Orbitxy. Ngobrol, bertanya, dan selesaikan pekerjaan dengan lebih cepat.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Bekki — Asisten AI dari Orbitxy">
+<meta property="og:description" content="Ngobrol, bertanya, dan selesaikan pekerjaan dengan lebih cepat. Bekki 1.1 gratis.">
+<meta property="og:image" content="https://orbitxy.com/ai/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 -.5 8 8'%3E%3Crect y='-.5' width='8' height='8' fill='%23000'/%3E%3Cg shape-rendering='crispEdges'%3E%3Cpath fill='%23ade4ff' d='M.5 0h1v1h-1zM6.5 0h1v1h-1z'/%3E%3Cpath fill='%238fd9f2' d='M.5 1h2v1h-2zM5.5 1h2v1h-2z'/%3E%3Cpath fill='%237adec4' d='M.5 2h7v1h-7z'/%3E%3Cpath fill='%2362d991' d='M.5 3h1v1h-1zM2.5 3h3v1h-3zM6.5 3h1v1h-1z'/%3E%3Cpath fill='%237b8ff0' d='M.5 4h3v1h-3zM4.5 4h3v1h-3z'/%3E%3Cpath fill='%236648d9' d='M.5 5h2v1h-2zM5.5 5h2v1h-2zM3 5h.5v.5H3zM4.5 5h.5v.5h-.5z'/%3E%3Cpath fill='%233a22a3' d='M0 6h8v1H0z'/%3E%3C/g%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
-  :root{
-    --primary:#6366f1;
-    --primary-dark:#4f46e5;
-    --dark:#0f172a;
-    --gray:#64748b;
-    --light:#f8fafc;
-    --border:#e2e8f0;
-    --radius:16px;
-    --shadow:0 10px 40px -10px rgba(15,23,42,.15);
-  }
-  :root{--bg:#fff;--card:#fff;--header-bg:rgba(255,255,255,.85);--chip:#eef2ff;--chip2:#f5f3ff;--accent:#4f46e5}
-  [data-theme="dark"]{
-    --dark:#f1f5f9;--gray:#94a3b8;--light:#111827;--border:#1f2937;
-    --bg:#020617;--card:#0b1222;--header-bg:rgba(2,6,23,.85);
-    --chip:#1e1b4b;--chip2:#1e1b4b;--accent:#a5b4fc;
-    --shadow:0 10px 40px -10px rgba(0,0,0,.6);
-    color-scheme:dark;
-  }
-  body,header,.feature,.mockup{transition:background-color .3s,color .3s,border-color .3s}
-  .theme-toggle{width:40px;height:40px;border-radius:10px;border:1.5px solid var(--border);background:transparent;cursor:pointer;font-size:1.1rem;display:grid;place-items:center;transition:border-color .2s}
-  .theme-toggle:hover{border-color:var(--primary)}
-  .nav-right{display:flex;align-items:center;gap:12px}
-  *{margin:0;padding:0;box-sizing:border-box}
-  html{scroll-behavior:smooth}
-  body{
-    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
-    color:var(--dark);line-height:1.6;background:var(--bg);-webkit-font-smoothing:antialiased;
-  }
-  .container{max-width:1140px;margin:0 auto;padding:0 24px}
-  a{text-decoration:none;color:inherit}
+:root{--bg:#f5f7ff;--ink:#15112e;--mute:#5b5877;--line:rgba(21,17,46,.2);--card:#fff;--inv:#15112e;--inv-ink:#f5f7ff;--sun:#7adec4;--amber:#7b8ff0;--orange:#6648d9;--flame:linear-gradient(90deg,#ade4ff,#7adec4 45%,#7b8ff0)}
+:root:not([data-theme="light"]){color-scheme:light}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#07060d;--ink:#eef1ff;--mute:#9a9cc2;--line:rgba(238,241,255,.2);--card:#100e1c;--inv:#140f33;--inv-ink:#eef1ff;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#07060d;--ink:#eef1ff;--mute:#9a9cc2;--line:rgba(238,241,255,.2);--card:#100e1c;--inv:#140f33;--inv-ink:#eef1ff;color-scheme:dark}
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+html{scroll-behavior:smooth;scroll-padding-top:calc(72px + env(safe-area-inset-top,0px));height:100%}
+*,*::before,*::after{box-sizing:inherit;margin:0;padding:0}
+body{font-family:"Inter Tight",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;background:var(--bg);color:var(--ink);line-height:1.55;-webkit-font-smoothing:antialiased;min-height:100%}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);background:var(--bg);z-index:10}
+a{color:inherit;text-decoration:none}
+:focus-visible{outline:2px solid var(--orange);outline-offset:3px}
+.wrap{max-width:1200px;margin:0 auto;padding:0 28px}
 
-  header{position:sticky;top:0;z-index:100;background:var(--header-bg);backdrop-filter:blur(12px);border-bottom:1px solid var(--border)}
-  .nav{display:flex;align-items:center;justify-content:space-between;height:72px}
-  .logo{font-size:1.35rem;font-weight:800;letter-spacing:-.5px;display:flex;align-items:center;gap:8px}
-  .logo span{width:32px;height:32px;border-radius:9px;background:linear-gradient(135deg,var(--primary),#a855f7);display:grid;place-items:center;color:#fff;font-size:1rem}
-  .logo .logo-mark{background:#000;border:1px solid var(--border)}
-  .nav-links{display:flex;gap:32px;list-style:none}
-  .nav-links a{font-size:.94rem;font-weight:500;color:var(--gray);transition:color .2s}
-  .nav-links a:hover{color:var(--primary)}
-  .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:12px 24px;border-radius:10px;font-weight:600;font-size:.94rem;border:none;cursor:pointer;transition:all .25s;font-family:inherit}
-  .btn-primary{background:linear-gradient(135deg,var(--primary),var(--primary-dark));color:#fff;box-shadow:0 6px 20px -6px rgba(99,102,241,.6)}
-  .btn-primary:hover{transform:translateY(-2px);box-shadow:0 12px 28px -8px rgba(99,102,241,.7)}
-  .btn-outline{background:transparent;color:var(--dark);border:1.5px solid var(--border)}
-  .btn-outline:hover{border-color:var(--primary);color:var(--primary)}
-  .btn-lg{padding:16px 32px;font-size:1rem}
-  .menu-toggle{display:none;background:none;border:none;font-size:1.5rem;cursor:pointer}
+header{position:sticky;top:env(safe-area-inset-top,0px);z-index:100;background:var(--bg);border-bottom:1px solid var(--line)}
+.nav{display:flex;align-items:center;justify-content:space-between;height:72px;gap:16px}
+.logo{display:flex;align-items:center;gap:10px;font-size:1.25rem;font-weight:600;letter-spacing:-.03em}
+.mark{width:32px;height:32px;background:#000;display:grid;place-items:center}
+.mark svg{width:26px;height:26px}
+.links{display:flex;gap:26px;list-style:none}
+.links a{font-size:.95rem;color:var(--mute);transition:color .15s}
+.links a:hover{color:var(--ink)}
+.right{display:flex;align-items:center;gap:10px}
+.btn{display:inline-flex;align-items:center;justify-content:center;padding:13px 24px;font:500 .95rem/1 inherit;font-family:inherit;background:var(--ink);color:var(--bg);border:1px solid var(--ink);cursor:pointer;transition:background .15s,color .15s}
+.btn:hover{background:var(--orange);border-color:var(--orange);color:#fff}
+.btn.ghost{background:transparent;color:var(--ink);border-color:var(--ink)}
+.btn.ghost:hover{background:var(--ink);color:var(--bg)}
+.btn.sm{padding:10px 18px}
+.icon-btn{width:40px;height:40px;background:transparent;border:1px solid var(--line);color:var(--ink);font-size:1.05rem;cursor:pointer}
+.icon-btn:hover{border-color:var(--ink)}
+#menu{display:none}
 
-  .hero{padding:90px 0 100px;position:relative;overflow:hidden}
-  .hero::before{content:"";position:absolute;top:-200px;right:-150px;width:600px;height:600px;background:radial-gradient(circle,rgba(99,102,241,.18),transparent 70%);border-radius:50%;pointer-events:none}
-  .hero::after{content:"";position:absolute;bottom:-250px;left:-200px;width:500px;height:500px;background:radial-gradient(circle,rgba(168,85,247,.14),transparent 70%);border-radius:50%;pointer-events:none}
-  .hero-grid{display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:center;position:relative;z-index:1}
-  .badge{display:inline-flex;align-items:center;gap:8px;background:var(--chip);color:var(--accent);padding:7px 16px;border-radius:100px;font-size:.82rem;font-weight:600;margin-bottom:24px}
-  .badge-dot{width:7px;height:7px;border-radius:50%;background:var(--primary);animation:pulse 2s infinite}
-  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
-  h1{font-size:clamp(2.2rem,5vw,3.4rem);line-height:1.12;font-weight:800;letter-spacing:-1.5px;margin-bottom:20px}
-  .gradient-text{background:linear-gradient(135deg,var(--primary),#a855f7);-webkit-background-clip:text;background-clip:text;color:transparent}
-  .hero p{font-size:1.1rem;color:var(--gray);margin-bottom:32px;max-width:520px}
-  .hero-actions{display:flex;gap:14px;flex-wrap:wrap}
+.hero{padding:72px 0 88px}
+.hero .wrap{display:grid;grid-template-columns:1.05fr .95fr;gap:56px;align-items:center}
+.tag{display:inline-flex;align-items:center;gap:10px;border:1px solid var(--line);padding:6px 14px;font-size:.85rem;margin-bottom:28px}
+.tag i{width:9px;height:9px;background:var(--orange)}
+h1{font-size:clamp(2.7rem,6.4vw,5.3rem);font-weight:400;line-height:1.01;letter-spacing:-.045em;margin-bottom:28px}
+.lead{font-size:1.2rem;color:var(--mute);max-width:30em;margin-bottom:36px}
+.acts{display:flex;gap:12px;flex-wrap:wrap}
 
-  /* Chat mockup */
-  .mockup{background:var(--card);border:1px solid var(--border);border-radius:20px;box-shadow:var(--shadow);overflow:hidden;transform:perspective(1200px) rotateY(-6deg) rotateX(3deg);transition:transform .5s}
-  .mockup:hover{transform:perspective(1200px) rotateY(0) rotateX(0)}
-  .mockup-bar{display:flex;align-items:center;gap:6px;padding:14px 16px;border-bottom:1px solid var(--border);background:var(--light)}
-  .mockup-bar i{width:11px;height:11px;border-radius:50%}
-  .mockup-bar i:nth-child(1){background:#ff5f57}
-  .mockup-bar i:nth-child(2){background:#febc2e}
-  .mockup-bar i:nth-child(3){background:#28c840}
-  .mockup-bar b{margin-left:10px;font-size:.82rem;color:var(--gray);font-weight:600}
-  .chat{padding:24px;display:flex;flex-direction:column;gap:12px}
-  .msg{max-width:82%;padding:12px 16px;border-radius:16px;font-size:.92rem;line-height:1.5}
-  .msg.user{align-self:flex-end;background:linear-gradient(135deg,var(--primary),var(--primary-dark));color:#fff;border-bottom-right-radius:4px}
-  .msg.bot{align-self:flex-start;background:var(--light);border:1px solid var(--border);border-bottom-left-radius:4px}
-  .typing{display:flex;gap:5px;padding:14px 16px}
-  .typing i{width:7px;height:7px;border-radius:50%;background:#cbd5e1;animation:blink 1.2s infinite}
-  .typing i:nth-child(2){animation-delay:.2s}
-  .typing i:nth-child(3){animation-delay:.4s}
-  @keyframes blink{0%,100%{opacity:.3}50%{opacity:1}}
+.stage{position:relative;background:var(--flame);padding:56px 36px;min-height:460px;display:flex;align-items:flex-end}
+.stairs{position:absolute;inset:0 0 auto;height:46%;display:flex;align-items:flex-start}
+.stairs.bottom{inset:auto 0 0;align-items:flex-end}
+.stairs span{flex:1;height:var(--h);background:var(--bg)}
+.chat{position:relative;width:100%;background:var(--bg);border:1px solid var(--ink);color:var(--ink)}
+.chat-bar{display:flex;gap:7px;align-items:center;padding:12px 16px;border-bottom:1px solid var(--line);font-size:.85rem;font-weight:500}
+.chat-bar i{width:9px;height:9px;background:var(--orange)}
+.chat-bar i:nth-child(2){background:var(--amber)}
+.chat-bar i:nth-child(3){background:var(--sun);margin-right:6px}
+.msgs{padding:20px;display:flex;flex-direction:column;gap:10px}
+.msg{max-width:84%;padding:11px 15px;font-size:.93rem;line-height:1.45}
+.msg.u{align-self:flex-end;background:var(--sun);color:#1f1f1f}
+.msg.b{align-self:flex-start;border:1px solid var(--line)}
+.dots{display:flex;gap:5px;padding:15px 16px}
+.dots i{width:7px;height:7px;background:var(--mute);animation:bl 1.2s infinite}
+.dots i:nth-child(2){animation-delay:.2s}.dots i:nth-child(3){animation-delay:.4s}
+@keyframes bl{0%,100%{opacity:.25}50%{opacity:1}}
 
-  section{padding:96px 0}
-  .section-head{text-align:center;max-width:640px;margin:0 auto 60px}
-  .section-head h2{font-size:clamp(1.8rem,3.5vw,2.5rem);font-weight:800;letter-spacing:-1px;margin-bottom:16px;line-height:1.2}
-  .section-head p{color:var(--gray);font-size:1.05rem}
+section{padding:104px 0}
+.head{display:grid;grid-template-columns:1.1fr .9fr;gap:48px;align-items:end;margin-bottom:56px}
+h2{font-size:clamp(2rem,4.4vw,3.6rem);font-weight:400;line-height:1.05;letter-spacing:-.04em}
+.head p{color:var(--mute);font-size:1.1rem}
 
-  .features-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
-  .feature{padding:32px;border:1px solid var(--border);border-radius:var(--radius);transition:all .3s;background:var(--card)}
-  .feature:hover{transform:translateY(-6px);border-color:transparent;box-shadow:var(--shadow)}
-  .feature-icon{width:52px;height:52px;border-radius:14px;display:grid;place-items:center;background:linear-gradient(135deg,var(--chip),var(--chip2));margin-bottom:20px;font-size:1.5rem}
-  .feature h3{font-size:1.12rem;font-weight:700;margin-bottom:10px;letter-spacing:-.3px}
-  .feature p{color:var(--gray);font-size:.94rem}
+.bento{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line);border:1px solid var(--line)}
+.cell{background:var(--bg);padding:32px;min-height:260px;display:flex;flex-direction:column;justify-content:space-between;gap:48px}
+.cell i{display:block;width:20px;height:20px;background:var(--c,var(--orange))}
+.cell h3{font-size:1.35rem;font-weight:500;letter-spacing:-.02em;margin-bottom:8px}
+.cell p{color:var(--mute);max-width:26em}
+.cell.hot{grid-column:span 2;background:var(--flame);color:#1f1f1f}
+.cell.hot p,.cell.sun p{color:#23204a}
+.cell.hot i,.cell.sun i{background:#1f1f1f}
+.cell.hot h3{font-size:2.1rem}
+.cell.sun{background:var(--sun);color:#1f1f1f}
 
-  .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;counter-reset:s}
-  .step{text-align:center;padding:12px}
-  .step::before{counter-increment:s;content:counter(s);display:grid;place-items:center;width:44px;height:44px;margin:0 auto 16px;border-radius:50%;background:var(--chip);color:var(--accent);font-weight:800}
-  .step h3{font-size:1.05rem;margin-bottom:8px}
-  .step p{color:var(--gray);font-size:.94rem}
+.list{border-bottom:1px solid var(--line)}
+.row{display:grid;grid-template-columns:1fr 1.3fr;gap:32px;align-items:baseline;padding:30px 0;border-top:1px solid var(--line);transition:background .15s,padding .15s,color .15s}
+.row:hover{background:var(--sun);color:#1f1f1f;padding-left:20px;padding-right:20px}
+.row h3{font-size:clamp(1.6rem,3vw,2.4rem);font-weight:400;letter-spacing:-.035em}
+.row p{color:var(--mute)}
+.row:hover p{color:#23204a}
 
-  .cta-box{background:linear-gradient(135deg,#4f46e5,#7c3aed 50%,#a855f7);border-radius:24px;padding:72px 48px;text-align:center;color:#fff;position:relative;overflow:hidden}
-  .cta-box::before{content:"";position:absolute;top:-100px;right:-100px;width:350px;height:350px;background:rgba(255,255,255,.1);border-radius:50%}
-  .cta-box::after{content:"";position:absolute;bottom:-130px;left:-80px;width:300px;height:300px;background:rgba(255,255,255,.08);border-radius:50%}
-  .cta-box h2{font-size:clamp(1.7rem,3.5vw,2.4rem);font-weight:800;letter-spacing:-1px;margin-bottom:16px;position:relative}
-  .cta-box p{opacity:.9;margin-bottom:32px;font-size:1.05rem;position:relative}
-  .cta-box .btn{position:relative;background:#fff;color:var(--primary-dark)}
-  .cta-box .btn:hover{transform:translateY(-2px);box-shadow:0 14px 30px -10px rgba(0,0,0,.3)}
+.pill{display:inline-block;border:1px solid currentColor;padding:3px 10px;font-size:.82rem;margin-bottom:14px}
+.cell.off h3{color:var(--mute)}
+.cell.wide{grid-column:1/-1}
+.cell.w2{grid-column:span 2}
+.faq{border-bottom:1px solid var(--line)}
+.faq details{border-top:1px solid var(--line)}
+.faq summary{list-style:none;cursor:pointer;display:flex;justify-content:space-between;gap:24px;padding:26px 0;font-size:clamp(1.15rem,2vw,1.5rem);letter-spacing:-.02em}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary::after{content:"+";font-size:1.6rem;line-height:1}
+.faq details[open] summary::after{content:"−"}
+.faq p{color:var(--mute);padding:0 0 26px;max-width:42em}
+.faq p a{text-decoration:underline}
+.dark{background:var(--inv);color:var(--inv-ink)}
+.dark .head p{color:#9a9cc2}
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:rgba(255,245,225,.2);border:1px solid rgba(255,245,225,.2)}
+.step{background:var(--inv);padding:36px 32px 40px}
+.step b{display:block;font-size:5rem;font-weight:400;line-height:1;letter-spacing:-.05em;color:var(--amber);margin-bottom:56px}
+.step h3{font-size:1.3rem;font-weight:500;letter-spacing:-.02em;margin-bottom:8px}
+.step p{color:#9a9cc2}
 
-  footer{background:#0f172a;color:#94a3b8;padding:48px 0 28px}
-  .footer-top{display:flex;justify-content:space-between;align-items:center;gap:24px;flex-wrap:wrap;margin-bottom:32px}
-  .footer-top .logo{color:#fff}
-  .footer-links{display:flex;gap:24px;list-style:none;font-size:.9rem}
-  .footer-links a:hover{color:#fff}
-  .footer-bottom{border-top:1px solid #1e293b;padding-top:24px;text-align:center;font-size:.85rem;color:#64748b}
+.vision{font-size:clamp(1.6rem,3.2vw,2.6rem);line-height:1.18;letter-spacing:-.035em;max-width:22em;margin-bottom:64px}
+.vision small{display:block;font-size:.95rem;letter-spacing:0;color:var(--mute);margin-bottom:20px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line);border:1px solid var(--line)}
 
-  .reveal{opacity:0;transform:translateY(28px);transition:opacity .7s ease,transform .7s ease}
-  .reveal.visible{opacity:1;transform:none}
+.cta{position:relative;background:var(--flame);color:#1f1f1f;padding:120px 0 96px;overflow:hidden}
+.cta .stairs{height:50%}
+.cta .wrap{position:relative;text-align:center}
+.cta h2{font-size:clamp(2.4rem,6vw,4.8rem);margin-bottom:20px}
+.cta p{font-size:1.15rem;margin-bottom:36px}
+.cta .btn{background:#15112e;color:#fff;border-color:#15112e}
+.cta .btn:hover{background:#fff;color:#15112e}
 
-  /* Kartu contoh: miring 3D, lurus saat disorot */
-  @media(min-width:901px){
-    #contoh .feature,#fitur .feature{transition:transform .5s ease,box-shadow .3s,border-color .3s,opacity .7s,background-color .3s}
-    #contoh .feature.reveal.visible,#fitur .feature.reveal.visible{transform:perspective(900px) rotateY(-6deg) rotateX(3deg)}
-    #contoh .feature.reveal.visible:hover,#fitur .feature.reveal.visible:hover{transform:perspective(900px) rotateY(0) rotateX(0) translateY(-6px)}
-  }
+footer{background:var(--inv);color:var(--inv-ink);padding:56px 0 32px}
+.ft{display:flex;justify-content:space-between;align-items:center;gap:24px;flex-wrap:wrap;margin-bottom:40px}
+.ft ul{display:flex;flex-wrap:wrap;gap:12px 28px;list-style:none;color:#9a9cc2;font-size:.95rem}
+.ft a:hover{color:var(--inv-ink)}
+.fb{border-top:1px solid rgba(255,245,225,.2);padding-top:24px;font-size:.88rem;color:#9a9cc2}
 
-  @media(max-width:900px){
-    .hero-grid{grid-template-columns:1fr;gap:48px}
-    .mockup{transform:none}
-    .features-grid{grid-template-columns:1fr 1fr}
-  }
-  @media(max-width:640px){
-    .nav-links{display:none;position:absolute;top:72px;left:0;right:0;background:var(--bg);flex-direction:column;padding:20px 24px;gap:18px;border-bottom:1px solid var(--border)}
-    .nav-links.open{display:flex}
-    .menu-toggle{display:block}
-    .nav .btn{display:none}
-    section{padding:64px 0}
-    .features-grid,.steps{grid-template-columns:1fr}
-    .cta-box{padding:48px 24px}
-  }
+@media (max-width:900px){
+  .hero .wrap,.head{grid-template-columns:1fr;gap:36px}
+  .links{display:none;position:absolute;top:100%;left:0;right:0;background:var(--bg);flex-direction:column;gap:18px;padding:20px 28px;border-bottom:1px solid var(--line)}
+  .links.open{display:flex}
+  #menu{display:block}
+  .bento.tiers{grid-template-columns:1fr}
+  .bento,.steps,.two{grid-template-columns:1fr 1fr}
+  .cell.hot{grid-column:span 2}
+  .steps{grid-template-columns:1fr}
+  section{padding:80px 0}
+}
+@media (max-width:640px){
+  .links{display:none;position:absolute;top:100%;left:0;right:0;background:var(--bg);flex-direction:column;gap:18px;padding:20px 28px;border-bottom:1px solid var(--line)}
+  .links.open{display:flex}
+  #menu{display:block}
+  .right .btn{display:none}
+  .bento,.two{grid-template-columns:1fr}
+  .cell.hot,.cell.w2{grid-column:auto}
+  .row{grid-template-columns:1fr;gap:8px}
+  .stage{padding:44px 18px 24px;min-height:400px}
+  .wrap{padding:0 20px}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}html{scroll-behavior:auto}}
 </style>
 </head>
 <body>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
   <defs>
-    <linearGradient id="bkg" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0" stop-color="#ffffff"/>
-      <stop offset="1" stop-color="#9ca3af"/>
-    </linearGradient>
-    <symbol id="bk" viewBox="0 0 100 100">
-      <g fill="none" stroke-linejoin="round" stroke-linecap="round">
-        <polygon points="50,20 73.5,31.3 79.2,56.7 63,77 37,77 20.8,56.7 26.5,31.3" stroke="url(#bkg)" stroke-width="9" opacity=".55" transform="rotate(26 50 50)"/>
-        <polygon points="50,20 73.5,31.3 79.2,56.7 63,77 37,77 20.8,56.7 26.5,31.3" stroke="#f1f5f9" stroke-width="9"/>
+    <linearGradient id="bkg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffffff"/><stop offset="1" stop-color="#9ca3af"/></linearGradient>
+    <symbol id="bk" viewBox="0 0 8 7">
+      <g shape-rendering="crispEdges">
+        <path fill="#ade4ff" d="M.5 0h1v1h-1zM6.5 0h1v1h-1z"/>
+        <path fill="#8fd9f2" d="M.5 1h2v1h-2zM5.5 1h2v1h-2z"/>
+        <path fill="#7adec4" d="M.5 2h7v1h-7z"/>
+        <path fill="#62d991" d="M.5 3h1v1h-1zM2.5 3h3v1h-3zM6.5 3h1v1h-1z"/>
+        <path fill="#7b8ff0" d="M.5 4h3v1h-3zM4.5 4h3v1h-3z"/>
+        <path fill="#6648d9" d="M.5 5h2v1h-2zM5.5 5h2v1h-2zM3 5h.5v.5H3zM4.5 5h.5v.5h-.5z"/>
+        <path fill="#3a22a3" d="M0 6h8v1H0z"/>
       </g>
     </symbol>
   </defs>
 </svg>
 
 <header>
-  <div class="container nav">
-    <a href="#" class="logo"><span class="logo-mark"><svg width="22" height="22" viewBox="0 0 100 100" aria-hidden="true"><use href="#bk"/></svg></span>Bekki</a>
-    <ul class="nav-links" id="navLinks">
+  <div class="wrap nav">
+    <a href="#" class="logo"><span class="mark"><svg width="22" height="22" viewBox="0 0 100 100" aria-hidden="true"><use href="#bk"/></svg></span>Bekki</a>
+    <ul class="links" id="links">
       <li><a href="#fitur">Fitur</a></li>
       <li><a href="#contoh">Contoh</a></li>
-      <li><a href="#cara">Cara Pakai</a></li>
+      <li><a href="#cara">Cara pakai</a></li>
+      <li><a href="#model">Model</a></li>
+      <li><a href="#faq">FAQ</a></li>
       <li><a href="#tentang">Tentang Orbitxy</a></li>
     </ul>
-    <div class="nav-right">
-      <button class="theme-toggle" id="themeToggle" aria-label="Ganti tema" title="Ganti tema">🌙</button>
-      <a href="https://orbitxy.com/ai/" class="btn btn-primary">Coba Bekki</a>
-      <button class="menu-toggle" id="menuToggle" aria-label="Buka menu">☰</button>
+    <div class="right">
+      <button class="icon-btn" id="tt" aria-label="Ganti tema" title="Ganti tema">☾</button>
+      <a href="https://orbitxy.com/ai/" class="btn sm">Coba Bekki</a>
+      <button class="icon-btn" id="menu" aria-label="Buka menu">☰</button>
     </div>
   </div>
 </header>
 
+<main>
 <section class="hero">
-  <div class="container hero-grid">
+  <div class="wrap">
     <div>
-      <div class="badge"><span class="badge-dot"></span> Asisten AI dari Orbitxy</div>
-      <h1>Kenalan dengan <span class="gradient-text">Bekki</span>, teman ngobrol pintarmu</h1>
-      <p>Bekki membantu kamu bertanya, menulis, dan menyelesaikan pekerjaan lewat percakapan sederhana — langsung dari browser, tanpa ribet.</p>
-      <div class="hero-actions">
-        <a href="https://orbitxy.com/ai/" class="btn btn-primary btn-lg">Mulai Ngobrol →</a>
-        <a href="#fitur" class="btn btn-outline btn-lg">Lihat Fitur</a>
+      <div class="tag"><i></i>Asisten AI dari Orbitxy</div>
+      <h1>Kenalan dengan Bekki, teman ngobrol pintarmu.</h1>
+      <p class="lead">Bekki membantu kamu bertanya, menulis, dan menyelesaikan pekerjaan lewat percakapan sederhana, langsung dari browser, tanpa ribet.</p>
+      <div class="acts">
+        <a href="https://orbitxy.com/ai/" class="btn">Mulai ngobrol</a>
+        <a href="#fitur" class="btn ghost">Lihat fitur</a>
       </div>
     </div>
-
-    <div class="mockup">
-      <div class="mockup-bar"><i></i><i></i><i></i><b>Bekki</b></div>
+    <div class="stage">
+      <div class="stairs" aria-hidden="true"><span style="--h:100%"></span><span style="--h:100%"></span><span style="--h:78%"></span><span style="--h:78%"></span><span style="--h:56%"></span><span style="--h:56%"></span><span style="--h:34%"></span><span style="--h:34%"></span><span style="--h:14%"></span><span style="--h:14%"></span></div>
       <div class="chat">
-        <div class="msg user">Halo Bekki, bantu aku buat ide caption produk baru dong.</div>
-        <div class="msg bot">Halo! Tentu. Produknya apa, dan mau gaya santai atau profesional?</div>
-        <div class="msg user">Kopi susu botolan, gaya santai.</div>
-        <div class="msg bot typing"><i></i><i></i><i></i></div>
+        <div class="chat-bar"><i></i><i></i><i></i>Bekki</div>
+        <div class="msgs">
+          <div class="msg u">Halo Bekki, bantu aku buat ide caption produk baru dong.</div>
+          <div class="msg b">Halo! Tentu. Produknya apa, dan mau gaya santai atau profesional?</div>
+          <div class="msg u">Kopi susu botolan, gaya santai.</div>
+          <div class="msg b dots"><i></i><i></i><i></i></div>
+        </div>
       </div>
     </div>
   </div>
 </section>
 
-<section id="fitur">
-  <div class="container">
-    <div class="section-head reveal">
-      <h2>Simpel dipakai, nyaman digunakan</h2>
+<section id="fitur" style="padding-top:24px">
+  <div class="wrap">
+    <div class="head">
+      <h2>Simpel dipakai, nyaman digunakan.</h2>
       <p>Semua yang kamu perlukan untuk ngobrol dengan AI, dalam satu tampilan yang bersih.</p>
     </div>
-    <div class="features-grid">
-      <div class="feature reveal">
-        <div class="feature-icon">💬</div>
-        <h3>Chat Natural</h3>
-        <p>Tanya apa saja dalam bahasa sehari-hari. Bekki paham dan menjawab dengan santai.</p>
-      </div>
-      <div class="feature reveal">
-        <div class="feature-icon">🔒</div>
-        <h3>Mode Private</h3>
-        <p>Percakapanmu bersifat pribadi, jadi kamu bisa bertanya dengan tenang.</p>
-      </div>
-      <div class="feature reveal">
-        <div class="feature-icon">🕘</div>
-        <h3>Riwayat Percakapan</h3>
-        <p>Obrolan dikelompokkan per hari, mudah dicari dan dilanjutkan kapan saja.</p>
-      </div>
-      <div class="feature reveal">
-        <div class="feature-icon">🎨</div>
-        <h3>Ganti Tema</h3>
-        <p>Pilih tampilan terang atau gelap sesuai kenyamanan matamu.</p>
-      </div>
-      <div class="feature reveal">
-        <div class="feature-icon">📱</div>
-        <h3>Ramah Ponsel</h3>
-        <p>Tampilan menyesuaikan layar, nyaman di HP, tablet, maupun laptop.</p>
-      </div>
-      <div class="feature reveal">
-        <div class="feature-icon">⚡</div>
-        <h3>Langsung Pakai</h3>
-        <p>Buka di browser, klik New chat, dan mulai bertanya. Tanpa instalasi.</p>
-      </div>
+    <div class="bento">
+      <div class="cell hot"><i></i><div><h3>Chat natural</h3><p>Tanya apa saja dalam bahasa sehari-hari. Bekki paham dan menjawab dengan santai.</p></div></div>
+      
+      <div class="cell"><i style="--c:var(--sun)"></i><div><h3>Riwayat percakapan</h3><p>Obrolan dikelompokkan per hari, mudah dicari dan dilanjutkan kapan saja.</p></div></div>
+      <div class="cell"><i></i><div><h3>Ganti tema</h3><p>Pilih tampilan terang atau gelap sesuai kenyamanan matamu.</p></div></div>
+      <div class="cell w2"><i style="--c:var(--amber)"></i><div><h3>Ramah ponsel</h3><p>Tampilan menyesuaikan layar, nyaman di HP, tablet, maupun laptop.</p></div></div>
+      <div class="cell sun wide"><i></i><div><h3>Langsung pakai</h3><p>Buka di browser, klik New chat, dan mulai bertanya. Tanpa instalasi.</p></div></div>
     </div>
   </div>
 </section>
 
-<section id="contoh">
-  <div class="container">
-    <div class="section-head reveal">
+<section id="contoh" style="padding-top:24px">
+  <div class="wrap">
+    <div class="head">
       <h2>Bekki bisa bantu apa?</h2>
       <p>Beberapa contoh yang bisa kamu coba langsung.</p>
     </div>
-    <div class="features-grid" style="grid-template-columns:repeat(auto-fit,minmax(230px,1fr))">
-      <div class="feature reveal">
-        <div class="feature-icon">✍️</div>
-        <h3>Menulis</h3>
-        <p>Buat caption, email, atau rangkum teks panjang jadi lebih singkat dan rapi.</p>
-      </div>
-      <div class="feature reveal">
-        <div class="feature-icon">📚</div>
-        <h3>Belajar</h3>
-        <p>Minta penjelasan materi dengan bahasa sederhana, lengkap dengan contoh.</p>
-      </div>
-      <div class="feature reveal">
-        <div class="feature-icon">💡</div>
-        <h3>Brainstorming</h3>
-        <p>Cari ide nama, konten, atau solusi saat kamu buntu dan butuh sudut pandang baru.</p>
-      </div>
-      <div class="feature reveal">
-        <div class="feature-icon">🌍</div>
-        <h3>Menerjemahkan</h3>
-        <p>Terjemahkan teks antar bahasa dengan gaya yang tetap natural.</p>
-      </div>
+    <div class="list">
+      <div class="row"><h3>Menulis</h3><p>Buat caption, email, atau rangkum teks panjang jadi lebih singkat dan rapi.</p></div>
+      <div class="row"><h3>Belajar</h3><p>Minta penjelasan materi dengan bahasa sederhana, lengkap dengan contoh.</p></div>
+      <div class="row"><h3>Brainstorming</h3><p>Cari ide nama, konten, atau solusi saat kamu buntu dan butuh sudut pandang baru.</p></div>
+      <div class="row"><h3>Menerjemahkan</h3><p>Terjemahkan teks antar bahasa dengan gaya yang tetap natural.</p></div>
     </div>
   </div>
 </section>
 
-<section id="cara" style="background:var(--light)">
-  <div class="container">
-    <div class="section-head reveal">
-      <h2>Mulai dalam 3 langkah</h2>
+<section id="cara" class="dark">
+  <div class="wrap">
+    <div class="head">
+      <h2>Mulai dalam 3 langkah.</h2>
       <p>Tidak perlu belajar apa-apa dulu.</p>
     </div>
     <div class="steps">
-      <div class="step reveal"><h3>Buka Bekki</h3><p>Kunjungi orbitxy.com/ai di browser kamu.</p></div>
-      <div class="step reveal"><h3>Mulai chat baru</h3><p>Klik New chat lalu ketik pertanyaan atau permintaanmu.</p></div>
-      <div class="step reveal"><h3>Lanjutkan kapan saja</h3><p>Riwayat tersimpan, jadi kamu bisa kembali ke obrolan sebelumnya.</p></div>
+      <div class="step"><b>1</b><h3>Buka Bekki</h3><p>Kunjungi orbitxy.com/ai di browser kamu.</p></div>
+      <div class="step"><b>2</b><h3>Mulai chat baru</h3><p>Klik New chat lalu ketik pertanyaan atau permintaanmu.</p></div>
+      <div class="step"><b>3</b><h3>Lanjutkan kapan saja</h3><p>Riwayat tersimpan, jadi kamu bisa kembali ke obrolan sebelumnya.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="model">
+  <div class="wrap">
+    <div class="head">
+      <h2>Pilih model Bekki.</h2>
+      <p>Bekki 1.1 gratis dan bisa dipakai sekarang. Dua model lainnya belum tersedia.</p>
+    </div>
+    <div class="bento tiers">
+      <div class="cell sun"><i></i><div><span class="pill">Tersedia</span><h3>Bekki 1.1</h3><p>Gratis. Buka orbitxy.com/ai dan langsung mulai ngobrol.</p></div></div>
+      <div class="cell off"><i style="--c:var(--line)"></i><div><span class="pill">Belum tersedia</span><h3>Bekki 1.5</h3><p>Belum bisa dipakai saat ini.</p></div></div>
+      <div class="cell off"><i style="--c:var(--line)"></i><div><span class="pill">Belum tersedia</span><h3>Bekki 1.10</h3><p>Belum bisa dipakai saat ini.</p></div></div>
+    </div>
+    <div class="acts" style="margin-top:32px"><a class="btn" href="https://orbitxy.com/ai/">Coba Bekki 1.1 gratis</a></div>
+  </div>
+</section>
+
+<section id="faq" style="padding-top:24px">
+  <div class="wrap">
+    <div class="head">
+      <h2>Pertanyaan yang sering muncul.</h2>
+      <p>Belum ketemu jawabannya? Hubungi kami lewat orbitxy.com.</p>
+    </div>
+    <div class="faq">
+      <details><summary>Apakah Bekki gratis?</summary><p>Bekki 1.1 gratis dan bisa dipakai sekarang. Bekki 1.5 dan Bekki 1.10 belum tersedia.</p></details>
+      <details><summary>Apakah data saya aman?</summary><p>Riwayat obrolan disimpan supaya kamu bisa melanjutkannya kapan saja. Ringkasannya ada di bagian <a href="#privasi">privasi</a>.</p></details>
+      <details><summary>Bahasa apa saja yang bisa dipakai?</summary><p>Bekki paham bahasa sehari-hari, termasuk bahasa Indonesia yang santai, dan bisa menerjemahkan teks antar bahasa.</p></details>
+      <details><summary>Apakah jawaban Bekki selalu benar?</summary><p>Tidak selalu. Bekki bisa keliru, jadi cek ulang untuk informasi penting seperti kesehatan, hukum, atau keuangan.</p></details>
+      <details><summary>Menemukan masalah atau punya saran?</summary><p>Kabari Orbitxy lewat <a href="https://orbitxy.com">orbitxy.com</a>. Masukanmu membantu Bekki jadi lebih baik.</p></details>
+    </div>
+  </div>
+</section>
+
+<section id="privasi" style="padding-top:24px">
+  <div class="wrap">
+    <div class="head">
+      <h2>Privasi dan penggunaan.</h2>
+      <p>Ringkasan singkat tentang data dan cara memakai Bekki.</p>
+    </div>
+    <div class="two">
+      <div class="cell"><i></i><div><h3>Kebijakan privasi</h3><p>Riwayat obrolan disimpan per hari supaya mudah dicari dan dilanjutkan kapan saja.</p></div></div>
+      <div class="cell" id="syarat"><i style="--c:var(--sun)"></i><div><h3>Syarat penggunaan</h3><p>Bekki adalah asisten AI dan jawabannya bisa keliru. Pakai sebagai bantuan, dan cek ulang untuk keputusan penting.</p></div></div>
     </div>
   </div>
 </section>
 
 <section id="tentang">
-  <div class="container">
-    <div class="section-head reveal">
-      <h2>Tentang Orbitxy</h2>
+  <div class="wrap">
+    <div class="head">
+      <h2>Tentang Orbitxy.</h2>
       <p>Orbitxy adalah pengembang yang membuat dan mengelola Bekki, asisten AI yang kamu kenal di halaman ini.</p>
     </div>
-    <div class="features-grid" style="grid-template-columns:repeat(auto-fit,minmax(260px,1fr));max-width:760px;margin:0 auto">
-      <div class="feature reveal">
-        <div class="feature-icon">🏢</div>
-        <h3>Di Balik Bekki</h3>
-        <p>Orbitxy yang merancang, mengembangkan, dan menjalankan Bekki, dari tampilan sampai pengalaman ngobrolnya.</p>
-      </div>
-      <div class="feature reveal">
-        <div class="feature-icon">🤖</div>
-        <h3>Bekki, Produk Orbitxy</h3>
-        <p>Bekki adalah wajah Orbitxy untuk pengguna: asisten AI yang bisa kamu ajak ngobrol langsung.</p>
-      </div>
-    </div>
-    <div class="reveal" style="max-width:760px;margin:32px auto 0;padding:28px 32px;border-radius:var(--radius);background:linear-gradient(135deg,var(--chip),var(--chip2));text-align:center">
-      <div style="font-size:.8rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--accent);margin-bottom:10px">Visi Orbitxy</div>
-      <p style="font-size:1.1rem;font-weight:600;line-height:1.6">Kami membuat Bekki agar siapa pun bisa memanfaatkan AI dengan mudah, tanpa perlu paham teknologi yang rumit. Teknologi seharusnya terasa seperti ngobrol dengan teman yang membantu.</p>
+    <p class="vision"><small>Visi Orbitxy</small>Kami membuat Bekki agar siapa pun bisa memanfaatkan AI dengan mudah, tanpa perlu paham teknologi yang rumit. Teknologi seharusnya terasa seperti ngobrol dengan teman yang membantu.</p>
+    <div class="two">
+      <div class="cell"><i></i><div><h3>Di balik Bekki</h3><p>Orbitxy yang merancang, mengembangkan, dan menjalankan Bekki, dari tampilan sampai pengalaman ngobrolnya.</p></div></div>
+      <div class="cell"><i style="--c:var(--sun)"></i><div><h3>Bekki, produk Orbitxy</h3><p>Bekki adalah wajah Orbitxy untuk pengguna: asisten AI yang bisa kamu ajak ngobrol langsung.</p></div></div>
     </div>
   </div>
 </section>
 
-<section>
-  <div class="container">
-    <div class="cta-box reveal">
-      <h2>Siap kenalan dengan Bekki?</h2>
-      <p>Coba sekarang dan rasakan ngobrol dengan AI yang simpel.</p>
-      <a href="https://orbitxy.com/ai/" class="btn btn-lg">Coba Bekki Sekarang →</a>
-    </div>
+<div class="cta">
+  <div class="stairs" aria-hidden="true"><span style="--h:100%"></span><span style="--h:100%"></span><span style="--h:100%"></span><span style="--h:80%"></span><span style="--h:80%"></span><span style="--h:60%"></span><span style="--h:60%"></span><span style="--h:40%"></span><span style="--h:20%"></span><span style="--h:20%"></span></div>
+  <div class="wrap">
+    <h2>Siap kenalan dengan Bekki?</h2>
+    <p>Coba sekarang dan rasakan ngobrol dengan AI yang simpel.</p>
+    <a href="https://orbitxy.com/ai/" class="btn">Coba Bekki sekarang</a>
   </div>
-</section>
+</div>
+</main>
 
 <footer>
-  <div class="container">
-    <div class="footer-top">
-      <a href="#" class="logo"><span class="logo-mark"><svg width="22" height="22" viewBox="0 0 100 100" aria-hidden="true"><use href="#bk"/></svg></span>Bekki</a>
-      <ul class="footer-links">
+  <div class="wrap">
+    <div class="ft">
+      <a href="#" class="logo"><span class="mark" style="border:1px solid rgba(255,245,225,.25)"><svg width="22" height="22" viewBox="0 0 100 100" aria-hidden="true"><use href="#bk"/></svg></span>Bekki</a>
+      <ul>
         <li><a href="https://orbitxy.com">orbitxy.com</a></li>
         <li><a href="https://orbitxy.com/ai/">orbitxy.com/ai</a></li>
+        <li><a href="#privasi">Kebijakan privasi</a></li>
+        <li><a href="#syarat">Syarat penggunaan</a></li>
       </ul>
     </div>
-    <div class="footer-bottom">© 2026 Orbitxy, pembuat Bekki. Bekki saat ini masih versi demo.</div>
+    <div class="fb">© 2026 Orbitxy, pembuat Bekki.</div>
   </div>
 </footer>
 
 <script>
-  const themeToggle=document.getElementById('themeToggle');
-  function applyTheme(t){
-    document.documentElement.setAttribute('data-theme',t);
-    themeToggle.textContent=t==='dark'?'☀️':'🌙';
-  }
-  let savedTheme=null;
-  try{savedTheme=localStorage.getItem('theme')}catch(e){}
-  applyTheme(savedTheme||(window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'));
-  themeToggle.addEventListener('click',()=>{
-    const next=document.documentElement.getAttribute('data-theme')==='dark'?'light':'dark';
-    applyTheme(next);
-    try{localStorage.setItem('theme',next)}catch(e){}
-  });
-
-  const menuToggle=document.getElementById('menuToggle');
-  const navLinks=document.getElementById('navLinks');
-  menuToggle.addEventListener('click',()=>navLinks.classList.toggle('open'));
-  navLinks.querySelectorAll('a').forEach(l=>l.addEventListener('click',()=>navLinks.classList.remove('open')));
-  const observer=new IntersectionObserver(entries=>{
-    entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');observer.unobserve(e.target)}});
-  },{threshold:.15});
-  document.querySelectorAll('.reveal').forEach(el=>observer.observe(el));
+const r=document.documentElement,tt=document.getElementById('tt'),mq=matchMedia('(prefers-color-scheme: dark)');
+const cur=()=>r.dataset.theme||(mq.matches?'dark':'light');
+const sync=()=>{tt.textContent=cur()==='dark'?'☀':'☾'};
+try{const s=localStorage.getItem('theme');if(s)r.dataset.theme=s}catch(e){}
+sync();
+tt.onclick=()=>{const n=cur()==='dark'?'light':'dark';r.dataset.theme=n;try{localStorage.setItem('theme',n)}catch(e){}sync()};
+const links=document.getElementById('links');
+document.getElementById('menu').onclick=()=>links.classList.toggle('open');
+links.querySelectorAll('a').forEach(a=>a.onclick=()=>links.classList.remove('open'));
 </script>
 </body>
 </html>
