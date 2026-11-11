@@ -17,7 +17,7 @@ const SL=SN(m.src);if(SL.length){const sb=document.createElement("button");sb.ty
 if(m.t){const t=document.createElement("span");t.className="tm";t.textContent=TM(m.t);d.appendChild(t)}
 bb.appendChild(d);return r}
 let LSRC=[];
-function SN(a){if(!Array.isArray(a))return[];const o=[],seen=new Set;a.forEach(x=>{if(!x)return;const u=String(typeof x==="string"?x:x.url||x.link||x.href||"");if(!/^https?:\/\//i.test(u)||seen.has(u))return;seen.add(u);let h="";try{h=new URL(u).hostname.replace(/^www\./,"")}catch(e){return}o.push({u:u,h:h,t:String(typeof x==="string"?h:x.title||x.name||h).slice(0,140),d:String(typeof x==="string"?"":x.snippet||x.description||x.text||"").slice(0,200)})});return o}
+function SN(a){if(!Array.isArray(a))return[];const o=[],seen=new Set;a.forEach(x=>{if(!x)return;const u=String(typeof x==="string"?x:x.u||x.url||x.link||x.href||"");if(!/^https?:\/\//i.test(u)||seen.has(u))return;seen.add(u);let h="";try{h=new URL(u).hostname.replace(/^www\./,"")}catch(e){return}o.push({u:u,h:h,t:String(typeof x==="string"?h:x.t||x.title||x.name||h).slice(0,140),d:String(typeof x==="string"?"":x.d||x.snippet||x.description||x.text||"").slice(0,200)})});return o}
 function SFV(x){const h=(x.h||"").replace(/[^a-z0-9.\-]/gi,"");return'<img src="https://www.google.com/s2/favicons?domain='+h+'&sz=64" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.replaceWith(Object.assign(document.createElement(\'b\'),{textContent:\''+(h[0]||"?").toUpperCase()+'\'}))">'}
 function SRK(m){const old=document.getElementById("srk");old&&old.remove();const L=SN(m.src);
 const w=document.createElement("div");w.className="dk-back";w.id="srk";
