@@ -13,7 +13,7 @@ const st=()=>{up.setAttribute("aria-pressed",String(m.fb==="up"));dn.setAttribut
 up.onclick=()=>{m.fb=m.fb==="up"?null:"up";st();b()};dn.onclick=()=>{m.fb=m.fb==="down"?null:"down";st();b();m.fb==="down"&&DK(m)};
 cp.onclick=()=>{CPY(m.content||"").then(()=>{cp.innerHTML=AI.ck;setTimeout(()=>{cp.innerHTML=AI.cp},1500)})};
 d.appendChild(up),d.appendChild(dn),d.appendChild(cp);
-const SL=SN(m.src);if(SL.length){const sb=document.createElement("button");sb.type="button";sb.className="a-src";sb.setAttribute("aria-label","Sumber web");sb.innerHTML='<span class="src-fv">'+SL.slice(0,3).map(x=>'<i>'+SFV(x)+"</i>").join("")+'</span><span>'+SL.length+" web pages</span>";sb.onclick=()=>SRK(m);d.appendChild(sb)}
+const SL=SN(m.src);if(SL.length){const sb=document.createElement("button");sb.type="button";sb.className="a-src";sb.setAttribute("aria-label","Sumber web");sb.innerHTML='<span class="src-fv">'+SL.slice(0,3).map(x=>'<i>'+SFV(x)+"</i>").join("")+'</span>';sb.title=SL.length+" web pages";sb.setAttribute("aria-label",SL.length+" sumber web");sb.onclick=()=>SRK(m);d.appendChild(sb)}
 if(m.t){const t=document.createElement("span");t.className="tm";t.textContent=TM(m.t);d.appendChild(t)}
 bb.appendChild(d);return r}
 let LSRC=[];
