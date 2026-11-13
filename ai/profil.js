@@ -77,7 +77,7 @@ try{if(m==="system")localStorage.removeItem("bekki_tema");else localStorage.setI
 document.documentElement.classList.toggle("dark",m==="dark"||(m==="system"&&matchMedia("(prefers-color-scheme: dark)").matches));mark()}
 try{matchMedia("(prefers-color-scheme: dark)").addEventListener("change",function(){if(mode()==="system")setTheme("system")})}catch(e){}
 function toast(t){var o=document.querySelector(".pf-toast");if(o)o.remove();var e=document.createElement("div");e.className="pf-toast";e.textContent=t;document.body.appendChild(e);setTimeout(function(){e.remove()},2200)}
-function pos(){var r=card.getBoundingClientRect(),w=Math.min(r.width,innerWidth-16),l=Math.max(8,Math.min(r.left,innerWidth-w-8));menu.style.width=w+"px";menu.style.left=l+"px";menu.style.bottom=(innerHeight-r.top+8)+"px";menu.style.maxHeight=Math.max(200,r.top-16)+"px"}
+function pos(){var r=card.getBoundingClientRect();if(r.width<120){menu.style.width=Math.min(280,innerWidth-16)+"px";menu.style.left=Math.max(8,Math.min(r.right+8,innerWidth-Math.min(280,innerWidth-16)-8))+"px";menu.style.bottom=Math.max(8,innerHeight-r.bottom)+"px";menu.style.maxHeight=Math.max(200,innerHeight-16)+"px";return}var w=Math.min(r.width,innerWidth-16),l=Math.max(8,Math.min(r.left,innerWidth-w-8));menu.style.width=w+"px";menu.style.left=l+"px";menu.style.bottom=(innerHeight-r.top+8)+"px";menu.style.maxHeight=Math.max(200,r.top-16)+"px"}
 function buka(){mark();menu.hidden=false;pos();card.setAttribute("aria-expanded","true")}
 addEventListener("resize",function(){if(!menu.hidden)pos()});
 function tutup(){menu.hidden=true;card.setAttribute("aria-expanded","false")}
@@ -101,7 +101,7 @@ var m=(u&&u.user_metadata)||{},mail=(u&&u.email)||"";
 var nama=m.full_name||((m.first_name||m.last_name)?((m.first_name||"")+" "+(m.last_name||"")).trim():"")||m.name||(mail?mail.split("@")[0]:"Akun saya");
 var w=String(nama).replace(/[._-]+/g," ").trim().split(/\s+/);
 var ini=(w.length>1?w[0][0]+w[1][0]:String(nama).replace(/[^A-Za-z0-9]/g,"").slice(0,2)||"?").toUpperCase();
-$("pfAv").textContent=ini;$("pfAv2").textContent=ini;
+var foto=m.avatar_url||m.picture||"";if(!/^https:\/\//i.test(foto))foto="";["pfAv","pfAv2"].forEach(function(id){var e=$(id);e.textContent=ini;e.style.backgroundImage=foto?"url(\""+foto.replace(/["\\()\s]/g,encodeURIComponent)+"\")":"";e.style.backgroundSize="cover";e.style.backgroundPosition="center";e.style.color=foto?"transparent":""});
 $("pfName").textContent=nama;$("pfName2").textContent=nama;$("pfMail").textContent=mail;
 $("pfSub").textContent=mail||"Akun saya"}
 /* ===== Jendela Settings ===== */
