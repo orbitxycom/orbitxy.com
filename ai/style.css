@@ -230,6 +230,6 @@ button,.hist-item,.sug,.avatar,.icon-btn{-webkit-user-select:none;user-select:no
   .hist.scrolling{scrollbar-color:color-mix(in oklab,var(--sidebar-foreground) 38%,transparent) transparent}
 }
 
-/* judul diketik saat obrolan pertama */
-.ttl.typing::after{content:"";display:inline-block;width:2px;height:1.05em;margin-left:2px;background:currentColor;vertical-align:-.18em;animation:ttl-car .8s steps(1) infinite}
-@keyframes ttl-car{50%{opacity:0}}
+/* judul diketik: huruf baru muncul memudar satu per satu */
+.ttl .tc{white-space:pre;animation:ttl-ch .14s ease-out both}
+@keyframes ttl-ch{from{opacity:0}to{opacity:1}}
