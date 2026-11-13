@@ -259,3 +259,34 @@ button,.hist-item,.sug,.avatar,.icon-btn{-webkit-user-select:none;user-select:no
 /* judul diketik: huruf baru muncul memudar satu per satu */
 .ttl .tc{white-space:pre;animation:ttl-ch .14s ease-out both}
 @keyframes ttl-ch{from{opacity:0}to{opacity:1}}
+
+/* panel kode di HP: lembar dari bawah, tab berlabel, bisa ditarik turun */
+.ap-grab,.ap-lb{display:none}
+@media (max-width:899px){
+  body.art-open::before{content:"";position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:69;animation:ap-fade .25s ease both}
+  @keyframes ap-fade{from{opacity:0}}
+  @keyframes ap-up{from{transform:translateY(100%)}}
+  .apanel{top:10px;border-radius:20px 20px 0 0;box-shadow:0 -10px 40px rgba(0,0,0,.25);animation:ap-up .3s var(--ease-spring) both;overflow:hidden}
+  .ap-grab{display:flex;justify-content:center;padding:8px 0 2px;flex:none;touch-action:none}
+  .ap-grab span{width:38px;height:4px;border-radius:99px;background:color-mix(in oklab,var(--foreground) 22%,transparent)}
+  .ap-h{height:auto;flex-wrap:wrap;gap:8px 6px;padding:2px 10px 10px 16px;border-bottom:0;touch-action:none}
+  .ap-ti{order:1;flex:1 1 0;flex-direction:column;font-size:16px;font-weight:600;white-space:normal;gap:1px}
+  .ap-ti b{font-weight:600;white-space:nowrap}
+  .ap-ti span{font-size:12.5px;font-weight:400}
+  .ap-split{order:2}.ap-x{order:3;width:36px;height:36px;background:color-mix(in oklab,var(--foreground) 7%,transparent);border-radius:50%;color:var(--foreground)}
+  .ap-seg{order:4;flex:1 1 100%;margin-right:6px;padding:3px}
+  .ap-seg button{flex:1;width:auto;height:34px;gap:8px;font-size:14px;font-weight:500}
+  .ap-lb{display:inline}
+  .ap-cp,.ap-more{height:34px}
+  .ap-b{margin-bottom:env(safe-area-inset-bottom);border-top:1px solid color-mix(in oklab,var(--border) 60%,transparent)}
+  .ap-code{font-size:12px;padding:10px 0}
+  .apanel .no{width:38px;padding-right:10px}
+  .ap-menu{top:40px}
+}
+
+.ap-ti span::before{content:" \00B7 ";white-space:pre}
+@media (max-width:899px){
+  .ap-ti span::before{content:none}
+  .apanel .ap-ex{display:none}
+  .ap-seg button{display:flex;align-items:center;justify-content:center}
+}
