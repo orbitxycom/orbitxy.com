@@ -229,3 +229,7 @@ button,.hist-item,.sug,.avatar,.icon-btn{-webkit-user-select:none;user-select:no
   .hist{scrollbar-width:thin;scrollbar-color:transparent transparent}
   .hist.scrolling{scrollbar-color:color-mix(in oklab,var(--sidebar-foreground) 38%,transparent) transparent}
 }
+
+/* judul diketik saat obrolan pertama */
+.ttl.typing::after{content:"";display:inline-block;width:2px;height:1.05em;margin-left:2px;background:currentColor;vertical-align:-.18em;animation:ttl-car .8s steps(1) infinite}
+@keyframes ttl-car{50%{opacity:0}}
