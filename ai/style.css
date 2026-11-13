@@ -191,15 +191,29 @@ button,.hist-item,.sug,.avatar,.icon-btn{-webkit-user-select:none;user-select:no
 @media (max-width:480px){.acts .a-src{padding:0 7px 0 4px}.src-fv i:nth-child(3){display:inline-grid}}
 .msg.bot .bubble{flex:1 1 auto;min-width:0}
 
-/* laptop: logo di pojok; mouse mendekat -> berubah jadi ikon buka sidebar */
+/* laptop: sidebar tertutup jadi rel ikon (logo, New chat, Delete, foto profil) */
 .tg-lg{display:none}
+@media (min-width:769px){
+  #toggle2{display:none}
+  #toggle{display:grid;position:relative}
+  .sidebar{overflow:hidden}
+  .sidebar.closed{margin-left:0;width:56px;padding:12px 0;align-items:center;transition:width .3s var(--ease-spring)}
+  .sidebar.closed+.main{border-radius:16px 0 0 16px}
+  .sidebar.closed .sb-head{justify-content:center;padding:0 0 8px;width:100%}
+  .sidebar.closed .sb-head>.icon{display:none}
+  .sidebar.closed .new-chat{width:40px;height:40px;padding:0;justify-content:center;gap:0;border:0;font-size:0;border-radius:10px;margin:0 0 2px}
+  .sidebar.closed .hist{display:none}
+  .sidebar.closed .sb-foot{margin-top:auto;border-top:0;padding:0;width:100%;display:flex;justify-content:center}
+  .sidebar.closed .pf-card{width:auto;padding:4px;gap:0}
+  .sidebar.closed .pf-txt,.sidebar.closed .pf-chev{display:none}
+  .sidebar.closed .pf-av{width:32px;height:32px;border-radius:50%;font-size:12px}
+}
 @media (min-width:769px) and (hover:hover) and (pointer:fine){
-  #toggle2{position:relative}
-  #toggle2 .tg-lg{display:grid;place-items:center;position:absolute;inset:0;pointer-events:none;transition:opacity .16s ease,transform .22s var(--ease-spring)}
-  #toggle2 .tg-lg svg{width:22px;height:19px;display:block}
-  #toggle2 .tg-ic{transition:opacity .16s ease,transform .22s var(--ease-spring)}
-  .sidebar.closed+.main #toggle2:not(.near):not(:hover):not(:focus-visible){background:transparent}
-  .sidebar.closed+.main #toggle2:not(.near):not(:hover):not(:focus-visible) .tg-ic{opacity:0;transform:scale(.6)}
-  .sidebar.closed+.main #toggle2.near .tg-lg,.sidebar.closed+.main #toggle2:hover .tg-lg,.sidebar.closed+.main #toggle2:focus-visible .tg-lg{opacity:0;transform:scale(.6)}
-  .sidebar:not(.closed)+.main #toggle2 .tg-lg{display:none}
+  #toggle .tg-lg{display:grid;place-items:center;position:absolute;inset:0;pointer-events:none;transition:opacity .16s ease,transform .22s var(--ease-spring)}
+  #toggle .tg-lg svg{width:22px;height:19px;display:block}
+  #toggle .tg-ic{transition:opacity .16s ease,transform .22s var(--ease-spring)}
+  .sidebar:not(.closed) #toggle .tg-lg{display:none}
+  .sidebar.closed #toggle:not(.near):not(:hover):not(:focus-visible){background:transparent}
+  .sidebar.closed #toggle:not(.near):not(:hover):not(:focus-visible) .tg-ic{opacity:0;transform:scale(.6)}
+  .sidebar.closed #toggle.near .tg-lg,.sidebar.closed #toggle:hover .tg-lg,.sidebar.closed #toggle:focus-visible .tg-lg{opacity:0;transform:scale(.6)}
 }
