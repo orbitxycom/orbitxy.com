@@ -108,7 +108,7 @@ h2{font-size:clamp(2rem,4.4vw,3.6rem);font-weight:400;line-height:1.05;letter-sp
 .peek{position:absolute;left:20px;bottom:100%;width:104px;height:91px;margin-bottom:-1px}
 .msg{animation:in .35s ease both}
 @keyframes in{from{opacity:0;transform:translateY(8px)}}
-.marq{display:flex;overflow:hidden;border-block:1px solid var(--line);padding:20px 0}
+.marq{display:flex;overflow:hidden;border-bottom:1px solid var(--line);padding:20px 0}
 .marq .g{display:flex;flex:none;min-width:100%;justify-content:space-around;gap:40px;padding-right:40px;animation:mq 32s linear infinite}
 .marq span{display:inline-flex;align-items:center;gap:40px;white-space:nowrap;font-size:clamp(1.3rem,2.6vw,2rem);letter-spacing:-.03em}
 .marq span::after{content:"";width:30px;height:26px;background:var(--cat) center/contain no-repeat}
@@ -200,7 +200,7 @@ footer{background:var(--inv);color:var(--inv-ink);padding:56px 0 32px}
   #menu{display:block}
   .right .btn{padding:0 14px;white-space:nowrap;font-size:.85rem}
   .bento,.two,.bento.tiers{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
-  .cell{aspect-ratio:1/1;min-height:0;min-width:0;padding:16px;gap:14px}
+  .cell{aspect-ratio:1/1;min-height:auto;min-width:0;padding:16px;gap:14px}
   .cell.wide,.tiers .cell:first-child{grid-column:1/-1;aspect-ratio:auto}
   .cell h3,.cell.hot h3{font-size:1.05rem;margin-bottom:6px}
   .cell p{font-size:.82rem;line-height:1.4}
@@ -285,6 +285,23 @@ footer{background:var(--inv);color:var(--inv-ink);padding:56px 0 32px}
 .demo .stage{order:0;margin:40px auto 24px}
 @media (max-width:900px){.links a{height:auto;border-left:0;padding:8px 0}}
 @media (max-width:640px){.hz{--u:16vw;display:flex;align-items:flex-start;margin:12px;border:1px solid var(--line);min-height:calc(140vw - 30px);padding:96px 16px 0}.hz::before{inset:0;border:0;background:linear-gradient(var(--card),var(--bg))}.hz-in{padding:0}.hz .lead{display:none}.hz h1{margin-bottom:20px}.rvr{display:none}.rkt{top:14px}.news{font-size:.9rem;text-align:left}}
+
+.dh h2{max-width:15em;margin:0 auto;min-height:2.15em}
+.rot{text-decoration:underline;text-decoration-color:var(--orange);text-decoration-thickness:.06em;text-underline-offset:.12em}
+.rot::after{content:"";display:inline-block;width:.09em;height:.85em;margin-left:.06em;background:var(--orange);vertical-align:-.05em;animation:cur 1s steps(1) infinite}
+@media (max-width:640px){.dh h2{min-height:3.2em}}
+.cloud{position:relative;overflow:hidden;padding:64px 0 104px}
+.cloud .lines{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.cloud .lines path{fill:none;stroke:var(--line);stroke-width:1;vector-effect:non-scaling-stroke}
+.r2{position:relative;display:flex;justify-content:center;align-items:center;gap:46px;margin:18px 0;transform:translateX(var(--o,0))}
+.chip{position:relative;display:inline-flex;align-items:center;padding:13px 20px;border:1px solid transparent;background:rgba(127,127,160,.1);color:var(--mute);font-size:clamp(.95rem,1.7vw,1.3rem);font-weight:500;letter-spacing:-.01em;white-space:nowrap;transition:background .35s,color .35s,border-color .35s,box-shadow .35s}
+.chip::before,.chip::after{content:"";position:absolute;top:50%;width:3px;height:3px;margin-top:-1.5px;background:var(--ink)}
+.chip::before{left:-16px}
+.chip::after{right:-16px}
+.chip.on{background:var(--card);color:var(--ink);border-color:var(--line);box-shadow:0 2px 0 var(--line)}
+.ic{width:0;height:20px;opacity:0;margin-right:0;color:var(--c,var(--orange));fill:currentColor;transition:width .35s,opacity .35s,margin .35s}
+.chip.on .ic{width:20px;opacity:1;margin-right:10px}
+@media (max-width:640px){.cloud{padding:40px 0 72px}.r2{flex-wrap:wrap;gap:10px 24px;transform:none;padding:0 24px;margin:10px 0}.r2:last-child .chip:nth-child(n+2){display:none}.chip{font-size:.88rem;padding:8px 11px}.chip::before{left:-13px}.chip::after{right:-13px}.ic{height:16px}.chip.on .ic{width:16px;margin-right:8px}}
 </style>
 </head>
 <body>
@@ -339,6 +356,11 @@ footer{background:var(--inv);color:var(--inv-ink);padding:56px 0 32px}
   </div>
 </section>
 
+<div class="marq" aria-hidden="true">
+  <div class="g"><span>Ngobrol</span><span>Bertanya</span><span>Menulis</span><span>Belajar</span><span>Brainstorming</span><span>Menerjemahkan</span></div>
+  <div class="g"><span>Ngobrol</span><span>Bertanya</span><span>Menulis</span><span>Belajar</span><span>Brainstorming</span><span>Menerjemahkan</span></div>
+</div>
+
 <div class="strip">
   <div><i></i><div><small>Dibuat oleh</small><b>Orbitxy</b></div></div>
   <div><i style="--c:var(--sun)"></i><div><small>Bekki 1.1</small><b>Gratis untuk dipakai</b></div></div>
@@ -348,30 +370,23 @@ footer{background:var(--inv);color:var(--inv-ink);padding:56px 0 32px}
 
 <section class="demo">
   <div class="wrap">
-    <div class="dh"><h2>Lihat Bekki beraksi.</h2><p>Begini rasanya ngobrol dengan Bekki.</p></div>
-    <div class="stage">
-      <div class="stairs" aria-hidden="true"><span style="--h:100%"></span><span style="--h:100%"></span><span style="--h:78%"></span><span style="--h:78%"></span><span style="--h:56%"></span><span style="--h:56%"></span><span style="--h:34%"></span><span style="--h:34%"></span><span style="--h:14%"></span><span style="--h:14%"></span></div>
-      <div class="chat">
-        <svg class="peek" viewBox="0 0 8 7" aria-hidden="true"><use href="#bk"/></svg>
-        <div class="chat-bar"><i></i><i></i><i></i>Bekki 1.1</div>
-        <aside class="sd"><span class="nw">+ Chat baru</span><small>Hari ini</small><span class="on">Ide caption kopi susu</span><span>Terjemahan ke Inggris</span><small>Kemarin</small><span>Ringkasan teks panjang</span><span>Belajar fotosintesis</span></aside>
-        <div class="msgs">
-          <div class="msg u">Halo Bekki, bantu aku buat ide caption produk baru dong.</div>
-          <div class="msg b">Halo! Tentu. Produknya apa, dan mau gaya santai atau profesional?</div>
-          <div class="msg u">Kopi susu botolan, gaya santai.</div>
-          <div class="msg b dots"><i></i><i></i><i></i></div>
-        </div>
-      </div>
-    </div>
+    <div class="dh"><h2>Tidak ada orang lain yang boleh memegang kendali atas <span class="rot" id="rot">ide-idemu</span></h2><p>Dari menulis sampai belajar, Bekki membantu sesuai maumu.</p></div>
+  </div>
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+<symbol id="i1" viewBox="0 0 8 8"><path d="M0 1h8v5H0zM2 6h2v2H2z"/></symbol>
+<symbol id="i2" viewBox="0 0 8 8"><path d="M6 0h2v2H6zM4 2h2v2H4zM2 4h2v2H2zM0 6h2v2H0z"/></symbol>
+<symbol id="i3" viewBox="0 0 8 8"><path d="M0 1h3v6H0zM5 1h3v6H5zM3 2h2v5H3z"/></symbol>
+<symbol id="i4" viewBox="0 0 8 8"><path d="M2 0h4v1H2zM1 1h6v3H1zM2 4h4v1H2zM3 5h2v1H3zM3 7h2v1H3z"/></symbol>
+<symbol id="i5" viewBox="0 0 8 8"><path d="M2 0h4v1H2zM1 1h2v2H1zM5 1h2v2H5zM4 3h2v1H4zM3 4h2v1H3zM3 6h2v2H3z"/></symbol>
+<symbol id="i6" viewBox="0 0 8 8"><path fill-rule="evenodd" d="M2 0h4v1H2zM1 1h6v6H1zM2 7h4v1H2zM4 2h1v2h2v1H4z"/></symbol>
+<symbol id="i7" viewBox="0 0 8 8"><path fill-rule="evenodd" d="M2 0h4v1H2zM1 1h6v6H1zM2 7h4v1H2zM1 4h3v1H1zM5 4h2v1H5zM4 1h1v6H4z"/></symbol>
+<symbol id="i8" viewBox="0 0 8 8"><path fill-rule="evenodd" d="M1 0h5v1h1v1h1v6H1zM2 3h4v1H2zM2 5h4v1H2z"/></symbol>
+</defs></svg>
+  <div class="cloud" aria-label="Hal-hal yang bisa dibantu Bekki">
+    <svg class="lines" viewBox="0 0 100 60" preserveAspectRatio="none" aria-hidden="true"><path d="M0 12L100 4M0 30L100 42M0 50L70 40M30 0L100 18M0 20L60 60M40 60L100 30M0 8L45 0"/></svg>
+    <div class="r2" style="--o:0px"><span class="chip" style="--c:#2f8cdc"><svg class="ic" viewBox="0 0 8 8" shape-rendering="crispEdges" aria-hidden="true"><use href="#i8"/></svg>Ringkas teks panjang</span><span class="chip on" style="--c:#6648d9"><svg class="ic" viewBox="0 0 8 8" shape-rendering="crispEdges" aria-hidden="true"><use href="#i1"/></svg>Ngobrol santai</span><span class="chip" style="--c:#7b8ff0"><svg class="ic" viewBox="0 0 8 8" shape-rendering="crispEdges" aria-hidden="true"><use href="#i4"/></svg>Ide nama produk</span></div><div class="r2" style="--o:-28px"><span class="chip on" style="--c:#3a22a3"><svg class="ic" viewBox="0 0 8 8" shape-rendering="crispEdges" aria-hidden="true"><use href="#i2"/></svg>Menulis caption</span><span class="chip on" style="--c:#62d991"><svg class="ic" viewBox="0 0 8 8" shape-rendering="crispEdges" aria-hidden="true"><use href="#i3"/></svg>Belajar dari nol</span><span class="chip" style="--c:#2f8cdc"><svg class="ic" viewBox="0 0 8 8" shape-rendering="crispEdges" aria-hidden="true"><use href="#i7"/></svg>Terjemahan natural</span></div><div class="r2" style="--o:24px"><span class="chip" style="--c:#6648d9"><svg class="ic" viewBox="0 0 8 8" shape-rendering="crispEdges" aria-hidden="true"><use href="#i4"/></svg>Brainstorming</span><span class="chip on" style="--c:#7b8ff0"><svg class="ic" viewBox="0 0 8 8" shape-rendering="crispEdges" aria-hidden="true"><use href="#i5"/></svg>Bertanya apa saja</span><span class="chip" style="--c:#3a22a3"><svg class="ic" viewBox="0 0 8 8" shape-rendering="crispEdges" aria-hidden="true"><use href="#i6"/></svg>Riwayat per hari</span></div><div class="r2" style="--o:-12px"><span class="chip" style="--c:#62d991"><svg class="ic" viewBox="0 0 8 8" shape-rendering="crispEdges" aria-hidden="true"><use href="#i1"/></svg>Bahasa sehari-hari</span><span class="chip" style="--c:#6648d9"><svg class="ic" viewBox="0 0 8 8" shape-rendering="crispEdges" aria-hidden="true"><use href="#i6"/></svg>Tema terang dan gelap</span><span class="chip" style="--c:#7b8ff0"><svg class="ic" viewBox="0 0 8 8" shape-rendering="crispEdges" aria-hidden="true"><use href="#i8"/></svg>Tanpa instalasi</span></div>
   </div>
 </section>
-
-<div class="marq" aria-hidden="true">
-  <div class="g"><span>Ngobrol</span><span>Bertanya</span><span>Menulis</span><span>Belajar</span><span>Brainstorming</span><span>Menerjemahkan</span></div>
-  <div class="g"><span>Ngobrol</span><span>Bertanya</span><span>Menulis</span><span>Belajar</span><span>Brainstorming</span><span>Menerjemahkan</span></div>
-</div>
-
-
 
 <section id="fitur">
   <div class="wrap">
@@ -524,6 +539,28 @@ if('IntersectionObserver' in window){
   const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}}),{threshold:0,rootMargin:'0px 0px -8% 0px'});
   document.querySelectorAll('.head,.bento,.list,.steps,.faq,.two,.vision').forEach(e=>{e.classList.add('rv');io.observe(e)});
 }
+const rot=document.getElementById('rot');
+if(rot){const W=['ide-idemu','tulisanmu','pekerjaanmu','rencanamu'];let i=0,n=0,del=false;
+  const tick=()=>{const w=W[i];
+    if(!del){n++;rot.textContent=w.slice(0,n);if(n===w.length){del=true;return setTimeout(tick,1700)}return setTimeout(tick,75)}
+    n--;rot.textContent=w.slice(0,n);if(n===0){del=false;i=(i+1)%W.length;return setTimeout(tick,300)}setTimeout(tick,35)};
+  setTimeout(tick,1500)}
+const chips=[...document.querySelectorAll('.chip')];
+const cl=document.querySelector('.cloud'),ln=cl&&cl.querySelector('.lines');
+const draw=()=>{if(!ln)return;const R=cl.getBoundingClientRect(),W=R.width,H=R.height;
+  ln.setAttribute('viewBox','0 0 '+W+' '+H);
+  const cs=chips.filter(c=>c.offsetParent!==null).map(c=>{const b=c.getBoundingClientRect();return{l:b.left-R.left-14.5,r:b.right-R.left+14.5,y:b.top-R.top+b.height/2}});
+  const rows={};cs.forEach(c=>{const k=Math.round(c.y/6);(rows[k]=rows[k]||[]).push(c)});
+  let d='',i=0;
+  Object.keys(rows).sort((a,b)=>a-b).forEach(k=>{const g=rows[k].sort((a,b)=>a.l-b.l);
+    g.forEach((c,j)=>{if(j<g.length-1)d+='M'+c.r+' '+c.y+'L'+g[j+1].l+' '+g[j+1].y});
+    const f=g[0],l=g[g.length-1],s=i%2?1:-1,len=Math.max(W*.5,300);
+    d+='M'+f.l+' '+f.y+'L'+(f.l-len)+' '+(f.y+s*(70+(i*53)%80));
+    d+='M'+l.r+' '+l.y+'L'+(l.r+len)+' '+(l.y-s*(60+(i*41)%90));i++});
+  ln.innerHTML='<path d="'+d+'"/>'};
+const follow=()=>{const t0=performance.now();const f=()=>{draw();if(performance.now()-t0<700)requestAnimationFrame(f)};f()};
+if(chips.length){const pick=()=>{chips.forEach(c=>c.classList.remove('on'));[...chips].sort(()=>Math.random()-.5).slice(0,4).forEach(c=>c.classList.add('on'));follow()};setInterval(pick,2200)}
+addEventListener('resize',draw);addEventListener('load',draw);if(document.fonts)document.fonts.ready.then(draw);draw();
 const box=document.querySelector('.msgs');
 if(box){
   const items=[...box.children].map(e=>e.cloneNode(true)),dots=items.pop();
