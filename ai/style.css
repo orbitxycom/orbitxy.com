@@ -190,3 +190,16 @@ button,.hist-item,.sug,.avatar,.icon-btn{-webkit-user-select:none;user-select:no
 .acts .tm{margin-left:auto;flex:none;position:static}
 @media (max-width:480px){.acts .a-src{padding:0 7px 0 4px}.src-fv i:nth-child(3){display:inline-grid}}
 .msg.bot .bubble{flex:1 1 auto;min-width:0}
+
+/* laptop: logo di pojok; mouse mendekat -> berubah jadi ikon buka sidebar */
+.tg-lg{display:none}
+@media (min-width:769px) and (hover:hover) and (pointer:fine){
+  #toggle2{position:relative}
+  #toggle2 .tg-lg{display:grid;place-items:center;position:absolute;inset:0;pointer-events:none;transition:opacity .16s ease,transform .22s var(--ease-spring)}
+  #toggle2 .tg-lg svg{width:22px;height:19px;display:block}
+  #toggle2 .tg-ic{transition:opacity .16s ease,transform .22s var(--ease-spring)}
+  .sidebar.closed+.main #toggle2:not(.near):not(:hover):not(:focus-visible){background:transparent}
+  .sidebar.closed+.main #toggle2:not(.near):not(:hover):not(:focus-visible) .tg-ic{opacity:0;transform:scale(.6)}
+  .sidebar.closed+.main #toggle2.near .tg-lg,.sidebar.closed+.main #toggle2:hover .tg-lg,.sidebar.closed+.main #toggle2:focus-visible .tg-lg{opacity:0;transform:scale(.6)}
+  .sidebar:not(.closed)+.main #toggle2 .tg-lg{display:none}
+}
