@@ -372,3 +372,6 @@ button,.hist-item,.sug,.avatar,.icon-btn{-webkit-user-select:none;user-select:no
 .msg.user.has-att{flex-direction:column;align-items:flex-end;gap:6px}
 .msg.user.has-att .att-row{margin:0}
 .msg.user.has-att .att-row img{max-width:min(260px,70vw);max-height:260px}
+
+/* foto lampiran: tidak bisa ditekan lama / diseret / dipilih */
+.att-chip img,.att-row img,.lb img,.lb{-webkit-touch-callout:none;-webkit-user-select:none;user-select:none;-webkit-user-drag:none;-webkit-tap-highlight-color:transparent}
