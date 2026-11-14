@@ -367,3 +367,8 @@ button,.hist-item,.sug,.avatar,.icon-btn{-webkit-user-select:none;user-select:no
   .lb-x{background:rgba(0,0,0,.55);color:#fff;border:0;box-shadow:none;-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
   .lb-x:hover{background:rgba(0,0,0,.7)}
 }
+
+/* gambar terkirim tampil sendiri, tanpa kotak gelembung */
+.msg.user.has-att{flex-direction:column;align-items:flex-end;gap:6px}
+.msg.user.has-att .att-row{margin:0}
+.msg.user.has-att .att-row img{max-width:min(260px,70vw);max-height:260px}
