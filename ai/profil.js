@@ -1,7 +1,7 @@
 /* Kartu profil di bawah sidebar + menu (Laporan bug, Ganti tema, Settings, dst.) */
 (function(){"use strict";
 /* Isi alamat halaman di sini kalau sudah ada. Kosong = muncul tulisan "segera hadir". */
-var LINKS={settings:"",security:"",limits:"",support:"",terms:"",privacy:""};
+var LINKS={settings:"",security:"",upgrade:"",support:"",terms:"",privacy:""};
 var APP="Bekki";
 
 var CSS=".sb-foot{position:relative}"
@@ -40,6 +40,7 @@ moon:'<svg viewBox="0 0 24 24"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9z"/></s
 pc:'<svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M2 20h20"/></svg>',
 gear:'<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>',
 lock:'<svg viewBox="0 0 24 24"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>',
+up:'<svg viewBox="0 0 24 24"><path d="M12 19V5"/><path d="m5 12 7-7 7 7"/></svg>',
 gauge:'<svg viewBox="0 0 24 24"><path d="M12 14l4-4"/><path d="M3.34 19a10 10 0 1 1 17.32 0"/></svg>',
 help:'<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3M12 17h.01"/></svg>',
 out:'<svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="m16 17 5-5-5-5"/><path d="M21 12H9"/></svg>',
@@ -58,7 +59,7 @@ menu.innerHTML='<div class="pf-head"><span class="pf-av" id="pfAv2">?</span><spa
 +'<div class="pf-sep"></div>'
 +item("pfSettings",I.gear,"Settings")
 +item("pfSecurity",I.lock,"Security &amp; Access")
-+item("pfLimits",I.gauge,"Limits",I.chev)
++item("pfLimits",I.up,"Tingkatkan paket")
 +item("pfSupport",I.help,"Support",I.chev)
 +item("pfOut",I.out,"Log out")
 +'<div class="pf-sep"></div>'
@@ -90,7 +91,7 @@ $("pfBug").onclick=function(){tutup();var b=$("bugBtn");if(b)b.click()};
 Array.prototype.forEach.call(menu.querySelectorAll(".pf-mode"),function(b){b.onclick=function(){setTheme(b.getAttribute("data-m"))}});
 $("pfSettings").onclick=function(){go("settings")};
 $("pfSecurity").onclick=function(){go("security")};
-$("pfLimits").onclick=function(){go("limits")};
+$("pfLimits").onclick=function(){go("upgrade")};
 $("pfSupport").onclick=function(){go("support")};
 $("pfTerms").onclick=function(){go("terms")};
 $("pfPrivacy").onclick=function(){go("privacy")};
