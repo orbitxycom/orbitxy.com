@@ -84,11 +84,11 @@ addEventListener("resize",function(){if(!menu.hidden)pos()});
 function tutup(){menu.hidden=true;card.setAttribute("aria-expanded","false")}
 var PK=null,PKS=false;
 var PKN={starter:"Starter",pro:"Pro",promax:"Pro Max"};
-function pktOpen(){
+function pktOpen(fromLoad){
 PK=PK||document.getElementById("pkt");if(!PK){toast("Segera hadir");return}
 if(!PK.hidden)return;
-PK.hidden=false;PK.scrollTop=0;
-try{history.pushState({pkt:1},"")}catch(e){}
+PK.hidden=false;PK.scrollTop=0;window.bekkiPkt=true;
+try{var url=location.pathname+location.search+"#pricing";if(fromLoad===true)history.replaceState({pkt:2},"",url);else history.pushState({pkt:1},"",url)}catch(e){}
 var sb=window.bekkiSB;
 if(sb)sb.auth.getSession().then(function(r){
 var u=r&&r.data&&r.data.session&&r.data.session.user;if(!u)return;
@@ -104,10 +104,12 @@ if(c.getAttribute("data-plan")===plan){c.classList.add("now");var bd=document.cr
 }
 function pktClose(fromPop){
 if(!PK||PK.hidden)return;
-PK.hidden=true;
-if(!fromPop&&history.state&&history.state.pkt){try{history.back()}catch(e){}}
+PK.hidden=true;window.bekkiPkt=false;
+if(fromPop)return;
+if(history.state&&history.state.pkt===1){try{history.back();return}catch(e){}}
+try{history.replaceState(null,"",location.pathname+location.search)}catch(e){}
 }
-window.addEventListener("popstate",function(){if(PK&&!PK.hidden)pktClose(true)});
+window.addEventListener("popstate",function(){if(PK&&!PK.hidden&&location.hash!=="#pricing")pktClose(true)});
 document.addEventListener("keydown",function(e){if(e.key==="Escape"&&PK&&!PK.hidden){e.stopPropagation();pktClose()}},true);
 function go(k){tutup();if(k==="upgrade"){pktOpen();return}var u=LINKS[k];if(!u){toast("Segera hadir");return}if(u.charAt(0)==="/")location.assign(u);else window.open(u,"_blank","noopener")}
 
@@ -248,6 +250,7 @@ fill(null);
 if(sb)sb.auth.getSession().then(function(r){if(stEl===back)fill(r&&r.data&&r.data.session?r.data.session.user:null)}).catch(function(){})}
 $("pfSettings").onclick=function(){stOpen("profile")};
 $("pfSecurity").onclick=function(){stOpen("sec")};
+if(location.hash==="#pricing")setTimeout(function(){pktOpen(true)},0);
 var pb=document.getElementById("pkBack");if(pb)pb.onclick=function(){pktClose()};
 var sb=window.bekkiSB;
 if(sb)sb.auth.getSession().then(function(r){isi(r&&r.data&&r.data.session?r.data.session.user:null)}).catch(function(){});
