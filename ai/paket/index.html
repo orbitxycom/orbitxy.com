@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Paket Bekki</title>
+<meta name="robots" content="noindex">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  :root { --line: rgba(255,255,255,.14); --muted: #9a9a9a; }
+  body {
+    font-family: "Inter", -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background: #000;
+    color: #fff;
+    min-height: 100vh;
+    padding: 40px 16px 48px;
+  }
+  header { text-align: center; max-width: 600px; margin: 0 auto 32px; }
+  .eyebrow {
+    display: inline-block; font-size: 12px; letter-spacing: .14em; text-transform: uppercase;
+    border: 1px solid var(--line); border-radius: 999px; padding: 6px 14px; color: #d4d4d4;
+    background: rgba(255,255,255,.04);
+  }
+  header h1 {
+    margin-top: 0; font-size: clamp(30px, 7vw, 52px); font-weight: 700;
+    letter-spacing: -0.035em; line-height: 1.08;
+    background: linear-gradient(180deg, #fff 30%, #7a7a7a);
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+  }
+  header p { margin-top: 14px; color: var(--muted); font-size: 16px; line-height: 1.55; }
+
+  /* toggle */
+  .toggle {
+    display: flex; width: fit-content; margin: 0 auto 48px; padding: 4px;
+    border: 1px solid var(--line); border-radius: 999px; background: rgba(255,255,255,.04);
+  }
+  .toggle button {
+    all: unset; cursor: pointer; padding: 9px 20px; border-radius: 999px;
+    font-size: 14px; font-weight: 500; color: var(--muted); transition: .2s;
+  }
+  .toggle button.on { background: #fff; color: #000; }
+  .toggle small { font-size: 11px; font-weight: 600; margin-left: 6px; opacity: .7; }
+
+  .grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
+    gap: 22px; max-width: 1020px; margin: 0 auto; align-items: stretch;
+  }
+
+  /* kartu */
+  .card {
+    position: relative; display: flex; flex-direction: column;
+    padding: 34px 28px 28px; border-radius: 24px;
+    background: linear-gradient(160deg, rgba(255,255,255,.09), rgba(255,255,255,.02) 55%, rgba(255,255,255,.04));
+    border: 1px solid var(--line);
+    backdrop-filter: blur(6px);
+    transition: transform .3s ease, border-color .3s ease, box-shadow .3s ease;
+    overflow: hidden;
+  }
+  .card::before { /* kilau atas */
+    content: ""; position: absolute; inset: 0 0 auto 0; height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,.6), transparent);
+  }
+  .card:hover { transform: translateY(-8px); border-color: rgba(255,255,255,.5); box-shadow: 0 24px 60px -20px rgba(255,255,255,.18); }
+
+
+  .badge {
+    position: absolute; top: 18px; right: 18px; font-size: 11px; font-weight: 700;
+    letter-spacing: .06em; text-transform: uppercase;
+    background: #fff; color: #000; padding: 5px 11px; border-radius: 999px;
+  }
+
+  .icon {
+    width: 46px; height: 46px; border-radius: 14px; display: grid; place-items: center;
+    border: 1px solid var(--line); background: rgba(255,255,255,.06); margin-bottom: 20px;
+  }
+  .icon svg { width: 22px; height: 22px; stroke: #fff; fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+
+  .card h2 { font-size: 22px; font-weight: 650; letter-spacing: -0.01em; }
+  .model {
+    display: inline-block; margin-top: 10px; font-size: 12px; font-weight: 600;
+    letter-spacing: .04em; padding: 4px 11px; border-radius: 999px;
+    border: 1px solid rgba(255,255,255,.3); color: #e5e5e5; background: rgba(255,255,255,.06);
+  }
+  .ver { font-size: 15px; font-weight: 500; color: var(--muted); letter-spacing: 0; }
+  .desc { margin-top: 6px; font-size: 14px; line-height: 1.5; color: var(--muted); min-height: 42px; }
+
+  .price { margin: 24px 0 6px; display: flex; align-items: baseline; gap: 6px; }
+  .price .amount { font-size: 46px; font-weight: 700; letter-spacing: -0.04em; line-height: 1; }
+  .price .per { font-size: 14px; color: var(--muted); }
+  .note { font-size: 12px; color: var(--muted); height: 16px; margin-bottom: 24px; }
+
+  hr { border: none; height: 1px; background: var(--line); margin-bottom: 22px; }
+
+  ul { list-style: none; flex: 1; display: grid; gap: 13px; margin-bottom: 30px; }
+  li { display: flex; gap: 12px; align-items: center; font-size: 15px; line-height: 1.35; }
+  li .tick {
+    flex: none; width: 20px; height: 20px; border-radius: 50%; display: grid; place-items: center;
+    background: rgba(255,255,255,.12);
+  }
+  .tick svg { width: 11px; height: 11px; stroke: #fff; fill: none; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+
+  .cta {
+    all: unset; box-sizing: border-box; width: 100%; text-align: center; cursor: pointer;
+    padding: 15px; border-radius: 14px; font-size: 15px; font-weight: 600;
+    border: 1px solid rgba(255,255,255,.4); color: #fff; transition: .2s;
+  }
+  .cta:hover { background: #fff; color: #000; }
+
+  footer { text-align: center; margin-top: 48px; font-size: 13px; color: #6b6b6b; }
+
+  @media (max-width: 640px) {
+    .card:hover { transform: none; }
+  }
+  .back{position:fixed;top:14px;left:14px;z-index:5;color:#d4d4d4;text-decoration:none;font-size:14px;border:1px solid var(--line);border-radius:999px;padding:8px 14px;background:rgba(0,0,0,.6)}
+  .back:hover{background:#fff;color:#000}
+  .acc{text-align:center;margin:0 auto 22px;font-size:14px;color:var(--muted)}
+  .acc b{color:#fff;font-weight:600}
+  .card.now{border-color:rgba(255,255,255,.55)}
+  .card.now .cta{opacity:.55;cursor:default;pointer-events:none}
+  .badge{top:10px!important}.badge.cur{left:18px;right:auto}
+</style>
+</head>
+<body>
+
+<a class="back" href="/ai/">&larr; Kembali</a>
+<header>
+  <h1>Pilih paket AI yang pas untuk Anda</h1>
+  <p>Upgrade atau batalkan kapan saja.</p>
+</header>
+
+<p class="acc" id="acc"></p>
+<div class="toggle" id="toggle">
+  <button class="on" data-mode="bulan">Bulanan</button>
+  <button data-mode="tahun">Tahunan <small>-20%</small></button>
+</div>
+
+<div class="grid">
+
+  <!-- Starter -->
+  <div class="card" data-plan="starter">
+    <div class="icon"><svg viewBox="0 0 24 24"><path d="M13 2 4 14h7l-1 8 9-12h-7l1-8z"/></svg></div>
+    <h2>Starter <span class="ver">- Bekki 1.1</span></h2>
+    <p class="desc">Untuk mencoba dan penggunaan ringan sehari-hari.</p>
+    <div class="price"><span class="amount">Gratis</span></div>
+    <div class="note">Gratis selamanya, tanpa kartu kredit</div>
+    <hr>
+    <ul>
+      <li><span class="tick"><svg viewBox="0 0 24 24"><path d="M5 12l5 5L20 7"/></svg></span>100 pesan per hari</li>
+      <li><span class="tick"><svg viewBox="0 0 24 24"><path d="M5 12l5 5L20 7"/></svg></span>Model AI standar</li>
+      <li><span class="tick"><svg viewBox="0 0 24 24"><path d="M5 12l5 5L20 7"/></svg></span>Riwayat chat 30 hari</li>
+      <li><span class="tick"><svg viewBox="0 0 24 24"><path d="M5 12l5 5L20 7"/></svg></span>Dukungan via email</li>
+    </ul>
+    <button class="cta" data-pilih="Starter">Mulai Gratis</button>
+  </div>
+
+  <!-- Pro -->
+  <div class="card featured" data-plan="pro">
+    <span class="badge">Terpopuler</span>
+    <div class="icon"><svg viewBox="0 0 24 24"><path d="M12 3l2.7 5.9 6.3.8-4.6 4.4 1.2 6.4L12 17.4 6.4 20.5l1.2-6.4L3 9.7l6.3-.8L12 3z"/></svg></div>
+    <h2>Pro <span class="ver">- Bekki 1.5</span></h2>
+    <p class="desc">Untuk profesional dan kreator yang butuh lebih banyak.</p>
+    <div class="price"><span class="amount" data-bulan="149" data-tahun="119">149</span><span class="per">rb / bulan</span></div>
+    <div class="note"></div>
+    <hr>
+    <ul>
+      <li><span class="tick"><svg viewBox="0 0 24 24"><path d="M5 12l5 5L20 7"/></svg></span>Pesan tanpa batas</li>
+      <li><span class="tick"><svg viewBox="0 0 24 24"><path d="M5 12l5 5L20 7"/></svg></span>Model AI lebih canggih</li>
+      <li><span class="tick"><svg viewBox="0 0 24 24"><path d="M5 12l5 5L20 7"/></svg></span>Upload file &amp; gambar</li>
+      <li><span class="tick"><svg viewBox="0 0 24 24"><path d="M5 12l5 5L20 7"/></svg></span>Riwayat chat tanpa batas</li>
+      <li><span class="tick"><svg viewBox="0 0 24 24"><path d="M5 12l5 5L20 7"/></svg></span>Dukungan prioritas</li>
+    </ul>
+    <button class="cta" data-pilih="Pro">Pilih Pro</button>
+  </div>
+
+  <!-- Pro Max -->
+  <div class="card" data-plan="promax">
+    <div class="icon"><svg viewBox="0 0 24 24"><path d="M3 8l4 4 5-7 5 7 4-4-2 11H5L3 8z"/></svg></div>
+    <h2>Pro Max <span class="ver">- Bekki 1.10</span></h2>
+    <p class="desc">Kekuatan penuh untuk tim dan kebutuhan berat.</p>
+    <div class="price"><span class="amount" data-bulan="399" data-tahun="319">399</span><span class="per">rb / bulan</span></div>
+    <div class="note"></div>
+    <hr>
+    <ul>
+      <li><span class="tick"><svg viewBox="0 0 24 24"><path d="M5 12l5 5L20 7"/></svg></span>Semua fitur Pro</li>
+      <li><span class="tick"><svg viewBox="0 0 24 24"><path d="M5 12l5 5L20 7"/></svg></span>Model AI tercanggih</li>
+      <li><span class="tick"><svg viewBox="0 0 24 24"><path d="M5 12l5 5L20 7"/></svg></span>Akses API</li>
+      <li><span class="tick"><svg viewBox="0 0 24 24"><path d="M5 12l5 5L20 7"/></svg></span>Hingga 5 anggota tim</li>
+      <li><span class="tick"><svg viewBox="0 0 24 24"><path d="M5 12l5 5L20 7"/></svg></span>Dukungan khusus 24/7</li>
+    </ul>
+    <button class="cta" data-pilih="Pro Max">Pilih Pro Max</button>
+  </div>
+
+</div>
+
+<footer>Harga dalam Rupiah. Dapat berubah sewaktu-waktu.</footer>
+
+<script>
+  const btns = document.querySelectorAll('#toggle button');
+  btns.forEach(b => b.addEventListener('click', () => {
+    btns.forEach(x => x.classList.remove('on'));
+    b.classList.add('on');
+    const m = b.dataset.mode;
+    document.querySelectorAll('.amount').forEach(a => { if (a.dataset[m]) a.textContent = a.dataset[m]; });
+    document.querySelectorAll('.card:not(:first-child) .note, .card.featured .note').forEach(n =>
+      n.textContent = m === 'tahun' ? 'Ditagih setahun sekali, hemat 20%' : '');
+  }));
+</script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4"></script>
+<script>
+(function(){
+  /* Isi tujuan pembayaran di sini. Contoh: "https://wa.me/62812xxxxxxx" . Kosong = muncul pemberitahuan. */
+  var BAYAR="";
+  var NAMA={starter:"Starter",pro:"Pro",promax:"Pro Max"};
+  var sb=window.supabase.createClient("https://adxyijyerblmosdzsbyp.supabase.co","sb_publishable_bCG2DJjBfLAMp2ME9Pe3cQ_jbPmlnnX");
+  var mode="bulan", mail="";
+  sb.auth.getSession().then(function(r){
+    var s=r&&r.data&&r.data.session;
+    if(!s){location.replace("/ai/login/");return}
+    var u=s.user, m=u.user_metadata||{}; mail=u.email||"";
+    var plan=String(m.plan||(u.app_metadata&&u.app_metadata.plan)||"starter").toLowerCase().replace(/[^a-z]/g,"");
+    if(!NAMA[plan])plan="starter";
+    document.getElementById("acc").innerHTML="Masuk sebagai <b>"+mail.replace(/</g,"&lt;")+"</b> &middot; Paket saat ini: <b>"+NAMA[plan]+"</b>";
+    var c=document.querySelector('.card[data-plan="'+plan+'"]');
+    if(c){c.classList.add("now");var b=document.createElement("span");b.className="badge cur";b.textContent="Paket Anda";c.appendChild(b);
+      var t=c.querySelector(".cta");t.textContent="Paket saat ini"}
+  },function(){location.replace("/ai/login/")});
+  document.querySelectorAll("#toggle button").forEach(function(b){b.addEventListener("click",function(){mode=b.dataset.mode})});
+  document.querySelectorAll(".cta[data-pilih]").forEach(function(b){b.addEventListener("click",function(){
+    if(!BAYAR){alert("Pembayaran belum dibuka. Segera hadir.");return}
+    var t="Halo, saya mau paket "+b.dataset.pilih+" ("+(mode==="tahun"?"tahunan":"bulanan")+") untuk akun "+mail;
+    window.open(BAYAR+(BAYAR.indexOf("?")<0?"?":"&")+"text="+encodeURIComponent(t),"_blank","noopener")
+  })});
+})();
+</script>
+</body>
+</html>
