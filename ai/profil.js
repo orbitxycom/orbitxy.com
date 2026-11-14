@@ -82,7 +82,7 @@ function pos(){var r=card.getBoundingClientRect();if(r.width<120){menu.style.wid
 function buka(){mark();menu.hidden=false;pos();card.setAttribute("aria-expanded","true")}
 addEventListener("resize",function(){if(!menu.hidden)pos()});
 function tutup(){menu.hidden=true;card.setAttribute("aria-expanded","false")}
-function go(k){tutup();if(LINKS[k])window.open(LINKS[k],"_blank","noopener");else toast("Segera hadir")}
+function go(k){tutup();var u=LINKS[k];if(!u){toast("Segera hadir");return}if(u.charAt(0)==="/")location.assign(u);else window.open(u,"_blank","noopener")}
 
 card.onclick=function(e){e.stopPropagation();menu.hidden?buka():tutup()};
 document.addEventListener("click",function(e){if(!menu.hidden&&!menu.contains(e.target))tutup()});
