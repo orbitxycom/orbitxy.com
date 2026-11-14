@@ -103,6 +103,15 @@ el.querySelector(".ap-x").onclick=APA;
 let y0=0,dy=0,dr=!1;[el.querySelector(".ap-grab"),el.querySelector(".ap-h")].forEach(z=>{z.addEventListener("touchstart",e=>{if(!matchMedia("(max-width:899px)").matches||e.target.closest("button"))return;y0=e.touches[0].clientY;dy=0;dr=!0;el.style.animation="none";el.style.transition="none"},{passive:!0});z.addEventListener("touchmove",e=>{if(!dr)return;dy=Math.max(0,e.touches[0].clientY-y0);el.style.transform="translateY("+dy+"px)"},{passive:!0});z.addEventListener("touchend",()=>{if(!dr)return;dr=!1;if(dy>110)APA();else{el.style.transition="transform .2s ease";el.style.transform=""}})});
 const kd=e=>{if(e.key!=="Escape")return;if(!menu.hidden){mc(!1);return}if(document.querySelector(".dk-back,#srk"))return;APA()};document.addEventListener("keydown",kd);
 const oc=e=>{menu.hidden||menu.contains(e.target)||e.target===more||more.contains(e.target)||mc(!1)};document.addEventListener("click",oc,!0);
+const rs=document.createElement("div");rs.className="ap-rs";rs.tabIndex=0;rs.setAttribute("role","separator");rs.setAttribute("aria-orientation","vertical");rs.setAttribute("aria-label","Ubah lebar panel");rs.title="Geser untuk ubah lebar, klik dua kali untuk reset";el.insertBefore(rs,el.firstChild);
+const dsk=()=>matchMedia("(min-width:900px)").matches,sw=w=>{el.style.flex="0 0 "+w+"px";el.style.width=w+"px"},lim=()=>{const m=document.querySelector(".main").getBoundingClientRect(),r=host.getBoundingClientRect();return Math.max(380,r.right-m.left-360)};
+try{const w0=parseInt(localStorage.getItem("bekki_apw")||"",10);w0>0&&dsk()&&sw(Math.min(Math.max(380,w0),lim()))}catch(e){}
+const sv=w=>{try{localStorage.setItem("bekki_apw",String(Math.round(w)))}catch(e){}};
+rs.addEventListener("pointerdown",e=>{if(e.button||!dsk()||el.classList.contains("full"))return;e.preventDefault();rs.setPointerCapture(e.pointerId);document.body.classList.add("ap-drag");rs.classList.add("on");
+const mv=ev=>{const r=host.getBoundingClientRect();sw(Math.max(380,Math.min(r.right-ev.clientX,lim())))},up=()=>{rs.removeEventListener("pointermove",mv);rs.removeEventListener("pointerup",up);rs.removeEventListener("pointercancel",up);document.body.classList.remove("ap-drag");rs.classList.remove("on");sv(el.getBoundingClientRect().width)};
+rs.addEventListener("pointermove",mv);rs.addEventListener("pointerup",up);rs.addEventListener("pointercancel",up)});
+rs.addEventListener("dblclick",()=>{el.style.flex="";el.style.width="";try{localStorage.removeItem("bekki_apw")}catch(e){}});
+rs.addEventListener("keydown",e=>{if(e.key!=="ArrowLeft"&&e.key!=="ArrowRight")return;e.preventDefault();const w=el.getBoundingClientRect().width+(e.key==="ArrowLeft"?24:-24),n=Math.max(380,Math.min(w,lim()));sw(n);sv(n)});
 host.appendChild(el);document.body.classList.add("art-open");card&&card.classList.add("on");
 AP={el:el,code:code,card:card,kd:kd,oc:oc,cid:(T()||{}).id};show("pv")}
 document.addEventListener("click",e=>{const c=e.target.closest&&e.target.closest(".art-card");if(!c)return;const a=c.closest(".art");if(!a||a.classList.contains("live"))return;
