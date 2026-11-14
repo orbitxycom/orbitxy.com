@@ -360,3 +360,10 @@ button,.hist-item,.sug,.avatar,.icon-btn{-webkit-user-select:none;user-select:no
 .lb-x{position:fixed;top:calc(16px + env(safe-area-inset-top));right:16px;width:44px;height:44px;border-radius:50%;display:grid;place-items:center;background:var(--background);color:var(--foreground);border:1px solid color-mix(in oklab,var(--border) 80%,transparent);box-shadow:0 1px 8px rgba(0,0,0,.12);z-index:1}
 .lb-x:hover{background:var(--sidebar-accent)}
 .lb-x svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+/* HP: pratinjau gambar memenuhi layar, tanpa kotak */
+@media (max-width:768px),(pointer:coarse){
+  .lb{padding:0;background:#000}
+  .lb img{width:100vw;height:100dvh;max-width:100vw;max-height:100dvh;border-radius:0;box-shadow:none;object-fit:contain}
+  .lb-x{background:rgba(0,0,0,.55);color:#fff;border:0;box-shadow:none;-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
+  .lb-x:hover{background:rgba(0,0,0,.7)}
+}
