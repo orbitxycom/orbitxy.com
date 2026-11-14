@@ -5,26 +5,31 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Paket Bekki</title>
 <meta name="robots" content="noindex">
+<script>(function(){var d=false;try{var t=localStorage.getItem("bekki_tema");d=t==="dark"||(t!=="light"&&matchMedia("(prefers-color-scheme: dark)").matches)}catch(e){}
+document.documentElement.classList.toggle("dark",d);
+try{matchMedia("(prefers-color-scheme: dark)").addEventListener("change",function(){var t=localStorage.getItem("bekki_tema");if(t!=="dark"&&t!=="light")document.documentElement.classList.toggle("dark",matchMedia("(prefers-color-scheme: dark)").matches)})}catch(e){}})();</script>
+<meta name="color-scheme" content="light dark">
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  :root { --line: rgba(255,255,255,.14); --muted: #9a9a9a; }
+  :root { --fg-rgb:17,17,17; --bg:#fafafa; --fg:#111; --on:#fff; --line: rgba(var(--fg-rgb),.14); --muted:#6b6b6b; --foot:#8a8a8a; --glow:rgba(0,0,0,.12); }
+  :root.dark { --fg-rgb:255,255,255; --bg:#000; --fg:#fff; --on:#000; --muted:#9a9a9a; --foot:#6b6b6b; --glow:var(--glow); }
   body {
     font-family: "Inter", -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-    background: #000;
-    color: #fff;
+    background: var(--bg);
+    color: var(--fg);
     min-height: 100vh;
     padding: 40px 16px 48px;
   }
   header { text-align: center; max-width: 600px; margin: 0 auto 32px; }
   .eyebrow {
     display: inline-block; font-size: 12px; letter-spacing: .14em; text-transform: uppercase;
-    border: 1px solid var(--line); border-radius: 999px; padding: 6px 14px; color: #d4d4d4;
-    background: rgba(255,255,255,.04);
+    border: 1px solid var(--line); border-radius: 999px; padding: 6px 14px; color: var(--muted);
+    background: rgba(var(--fg-rgb),.04);
   }
   header h1 {
     margin-top: 0; font-size: clamp(30px, 7vw, 52px); font-weight: 700;
     letter-spacing: -0.035em; line-height: 1.08;
-    background: linear-gradient(180deg, #fff 30%, #7a7a7a);
+    background: linear-gradient(180deg, var(--fg) 30%, color-mix(in srgb, var(--fg) 45%, var(--bg)));
     -webkit-background-clip: text; background-clip: text; color: transparent;
   }
   header p { margin-top: 14px; color: var(--muted); font-size: 16px; line-height: 1.55; }
@@ -32,13 +37,13 @@
   /* toggle */
   .toggle {
     display: flex; width: fit-content; margin: 0 auto 48px; padding: 4px;
-    border: 1px solid var(--line); border-radius: 999px; background: rgba(255,255,255,.04);
+    border: 1px solid var(--line); border-radius: 999px; background: rgba(var(--fg-rgb),.04);
   }
   .toggle button {
     all: unset; cursor: pointer; padding: 9px 20px; border-radius: 999px;
     font-size: 14px; font-weight: 500; color: var(--muted); transition: .2s;
   }
-  .toggle button.on { background: #fff; color: #000; }
+  .toggle button.on { background: var(--fg); color: var(--on); }
   .toggle small { font-size: 11px; font-weight: 600; margin-left: 6px; opacity: .7; }
 
   .grid {
@@ -50,7 +55,7 @@
   .card {
     position: relative; display: flex; flex-direction: column;
     padding: 34px 28px 28px; border-radius: 24px;
-    background: linear-gradient(160deg, rgba(255,255,255,.09), rgba(255,255,255,.02) 55%, rgba(255,255,255,.04));
+    background: linear-gradient(160deg, rgba(var(--fg-rgb),.09), rgba(var(--fg-rgb),.02) 55%, rgba(var(--fg-rgb),.04));
     border: 1px solid var(--line);
     backdrop-filter: blur(6px);
     transition: transform .3s ease, border-color .3s ease, box-shadow .3s ease;
@@ -58,28 +63,28 @@
   }
   .card::before { /* kilau atas */
     content: ""; position: absolute; inset: 0 0 auto 0; height: 1px;
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,.6), transparent);
+    background: linear-gradient(90deg, transparent, rgba(var(--fg-rgb),.6), transparent);
   }
-  .card:hover { transform: translateY(-8px); border-color: rgba(255,255,255,.5); box-shadow: 0 24px 60px -20px rgba(255,255,255,.18); }
+  .card:hover { transform: translateY(-8px); border-color: rgba(var(--fg-rgb),.5); box-shadow: 0 24px 60px -20px var(--glow); }
 
 
   .badge {
     position: absolute; top: 18px; right: 18px; font-size: 11px; font-weight: 700;
     letter-spacing: .06em; text-transform: uppercase;
-    background: #fff; color: #000; padding: 5px 11px; border-radius: 999px;
+    background: var(--fg); color: var(--on); padding: 5px 11px; border-radius: 999px;
   }
 
   .icon {
     width: 46px; height: 46px; border-radius: 14px; display: grid; place-items: center;
-    border: 1px solid var(--line); background: rgba(255,255,255,.06); margin-bottom: 20px;
+    border: 1px solid var(--line); background: rgba(var(--fg-rgb),.06); margin-bottom: 20px;
   }
-  .icon svg { width: 22px; height: 22px; stroke: #fff; fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+  .icon svg { width: 22px; height: 22px; stroke: var(--fg); fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
 
   .card h2 { font-size: 22px; font-weight: 650; letter-spacing: -0.01em; }
   .model {
     display: inline-block; margin-top: 10px; font-size: 12px; font-weight: 600;
     letter-spacing: .04em; padding: 4px 11px; border-radius: 999px;
-    border: 1px solid rgba(255,255,255,.3); color: #e5e5e5; background: rgba(255,255,255,.06);
+    border: 1px solid rgba(var(--fg-rgb),.3); color: var(--fg); background: rgba(var(--fg-rgb),.06);
   }
   .ver { font-size: 15px; font-weight: 500; color: var(--muted); letter-spacing: 0; }
   .desc { margin-top: 6px; font-size: 14px; line-height: 1.5; color: var(--muted); min-height: 42px; }
@@ -95,27 +100,27 @@
   li { display: flex; gap: 12px; align-items: center; font-size: 15px; line-height: 1.35; }
   li .tick {
     flex: none; width: 20px; height: 20px; border-radius: 50%; display: grid; place-items: center;
-    background: rgba(255,255,255,.12);
+    background: rgba(var(--fg-rgb),.12);
   }
-  .tick svg { width: 11px; height: 11px; stroke: #fff; fill: none; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+  .tick svg { width: 11px; height: 11px; stroke: var(--fg); fill: none; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
 
   .cta {
     all: unset; box-sizing: border-box; width: 100%; text-align: center; cursor: pointer;
     padding: 15px; border-radius: 14px; font-size: 15px; font-weight: 600;
-    border: 1px solid rgba(255,255,255,.4); color: #fff; transition: .2s;
+    border: 1px solid rgba(var(--fg-rgb),.4); color: var(--fg); transition: .2s;
   }
-  .cta:hover { background: #fff; color: #000; }
+  .cta:hover { background: var(--fg); color: var(--on); }
 
-  footer { text-align: center; margin-top: 48px; font-size: 13px; color: #6b6b6b; }
+  footer { text-align: center; margin-top: 48px; font-size: 13px; color: var(--foot); }
 
   @media (max-width: 640px) {
     .card:hover { transform: none; }
   }
-  .back{position:fixed;top:14px;left:14px;z-index:5;color:#d4d4d4;text-decoration:none;font-size:14px;border:1px solid var(--line);border-radius:999px;padding:8px 14px;background:rgba(0,0,0,.6)}
-  .back:hover{background:#fff;color:#000}
+  .back{position:fixed;top:14px;left:14px;z-index:5;color:var(--muted);text-decoration:none;font-size:14px;border:1px solid var(--line);border-radius:999px;padding:8px 14px;background:var(--bg)}
+  .back:hover{background:var(--fg);color:var(--on)}
   .acc{text-align:center;margin:0 auto 22px;font-size:14px;color:var(--muted)}
-  .acc b{color:#fff;font-weight:600}
-  .card.now{border-color:rgba(255,255,255,.55)}
+  .acc b{color:var(--fg);font-weight:600}
+  .card.now{border-color:rgba(var(--fg-rgb),.55)}
   .card.now .cta{opacity:.55;cursor:default;pointer-events:none}
   .badge{top:10px!important}.badge.cur{left:18px;right:auto}
 </style>
