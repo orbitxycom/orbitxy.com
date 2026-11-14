@@ -123,18 +123,24 @@ try{matchMedia("(prefers-color-scheme: dark)").addEventListener("change",functio
   .card.now{border-color:rgba(var(--fg-rgb),.55)}
   .card.now .cta{opacity:.55;cursor:default;pointer-events:none}
   .badge{top:10px!important}.badge.cur{left:18px;right:auto}
+  .sk{display:block;height:12px;border-radius:999px;background:linear-gradient(90deg,rgba(var(--fg-rgb),.08) 30%,rgba(var(--fg-rgb),.2) 50%,rgba(var(--fg-rgb),.08) 70%);background-size:200% 100%;animation:skl 1.6s linear infinite}
+  .sk-price{width:120px;height:40px;border-radius:12px}
+  .sk-list li .tick{background:rgba(var(--fg-rgb),.08)}
+  .cta[disabled]{opacity:.5;cursor:default;pointer-events:none}
+  @keyframes skl{from{background-position:200% 0}to{background-position:-200% 0}}
+  @media (prefers-reduced-motion:reduce){.sk{animation:none}}
 </style>
 </head>
 <body>
 
-<a class="back" href="/ai/">&larr; Kembali</a>
+<a class="back" id="back" href="/ai/">&larr; Kembali</a>
 <header>
   <h1>Pilih paket AI yang pas untuk Anda</h1>
   <p>Upgrade atau batalkan kapan saja.</p>
 </header>
 
 <p class="acc" id="acc"></p>
-<div class="toggle" id="toggle">
+<div class="toggle" id="toggle" hidden style="display:none">
   <button class="on" data-mode="bulan">Bulanan</button>
   <button data-mode="tahun">Tahunan <small>-20%</small></button>
 </div>
@@ -159,40 +165,28 @@ try{matchMedia("(prefers-color-scheme: dark)").addEventListener("change",functio
   </div>
 
   <!-- Pro -->
-  <div class="card featured" data-plan="pro">
+  <div class="card featured" data-plan="pro" data-soon="1">
     <span class="badge">Terpopuler</span>
     <div class="icon"><svg viewBox="0 0 24 24"><path d="M12 3l2.7 5.9 6.3.8-4.6 4.4 1.2 6.4L12 17.4 6.4 20.5l1.2-6.4L3 9.7l6.3-.8L12 3z"/></svg></div>
     <h2>Pro <span class="ver">- Bekki 1.5</span></h2>
     <p class="desc">Untuk profesional dan kreator yang butuh lebih banyak.</p>
-    <div class="price"><span class="amount" data-bulan="149" data-tahun="119">149</span><span class="per">rb / bulan</span></div>
+    <div class="price" aria-hidden="true"><span class="sk sk-price"></span></div>
     <div class="note"></div>
     <hr>
-    <ul>
-      <li><span class="tick"><svg viewBox="0 0 24 24"><path d="M5 12l5 5L20 7"/></svg></span>Pesan tanpa batas</li>
-      <li><span class="tick"><svg viewBox="0 0 24 24"><path d="M5 12l5 5L20 7"/></svg></span>Model AI lebih canggih</li>
-      <li><span class="tick"><svg viewBox="0 0 24 24"><path d="M5 12l5 5L20 7"/></svg></span>Upload file &amp; gambar</li>
-      <li><span class="tick"><svg viewBox="0 0 24 24"><path d="M5 12l5 5L20 7"/></svg></span>Riwayat chat tanpa batas</li>
-      <li><span class="tick"><svg viewBox="0 0 24 24"><path d="M5 12l5 5L20 7"/></svg></span>Dukungan prioritas</li>
-    </ul>
-    <button class="cta" data-pilih="Pro">Pilih Pro</button>
+    <ul class="sk-list" aria-hidden="true"><li><span class="tick"></span><span class="sk" style="width:70%"></span></li><li><span class="tick"></span><span class="sk" style="width:82%"></span></li><li><span class="tick"></span><span class="sk" style="width:64%"></span></li><li><span class="tick"></span><span class="sk" style="width:76%"></span></li><li><span class="tick"></span><span class="sk" style="width:58%"></span></li></ul>
+    <button class="cta" disabled>Segera hadir</button>
   </div>
 
   <!-- Pro Max -->
-  <div class="card" data-plan="promax">
+  <div class="card" data-plan="promax" data-soon="1">
     <div class="icon"><svg viewBox="0 0 24 24"><path d="M3 8l4 4 5-7 5 7 4-4-2 11H5L3 8z"/></svg></div>
     <h2>Pro Max <span class="ver">- Bekki 1.10</span></h2>
     <p class="desc">Kekuatan penuh untuk tim dan kebutuhan berat.</p>
-    <div class="price"><span class="amount" data-bulan="399" data-tahun="319">399</span><span class="per">rb / bulan</span></div>
+    <div class="price" aria-hidden="true"><span class="sk sk-price"></span></div>
     <div class="note"></div>
     <hr>
-    <ul>
-      <li><span class="tick"><svg viewBox="0 0 24 24"><path d="M5 12l5 5L20 7"/></svg></span>Semua fitur Pro</li>
-      <li><span class="tick"><svg viewBox="0 0 24 24"><path d="M5 12l5 5L20 7"/></svg></span>Model AI tercanggih</li>
-      <li><span class="tick"><svg viewBox="0 0 24 24"><path d="M5 12l5 5L20 7"/></svg></span>Akses API</li>
-      <li><span class="tick"><svg viewBox="0 0 24 24"><path d="M5 12l5 5L20 7"/></svg></span>Hingga 5 anggota tim</li>
-      <li><span class="tick"><svg viewBox="0 0 24 24"><path d="M5 12l5 5L20 7"/></svg></span>Dukungan khusus 24/7</li>
-    </ul>
-    <button class="cta" data-pilih="Pro Max">Pilih Pro Max</button>
+    <ul class="sk-list" aria-hidden="true"><li><span class="tick"></span><span class="sk" style="width:60%"></span></li><li><span class="tick"></span><span class="sk" style="width:78%"></span></li><li><span class="tick"></span><span class="sk" style="width:52%"></span></li><li><span class="tick"></span><span class="sk" style="width:72%"></span></li><li><span class="tick"></span><span class="sk" style="width:66%"></span></li></ul>
+    <button class="cta" disabled>Segera hadir</button>
   </div>
 
 </div>
@@ -209,6 +203,13 @@ try{matchMedia("(prefers-color-scheme: dark)").addEventListener("change",functio
     document.querySelectorAll('.card:not(:first-child) .note, .card.featured .note').forEach(n =>
       n.textContent = m === 'tahun' ? 'Ditagih setahun sekali, hemat 20%' : '');
   }));
+</script>
+<script>
+document.getElementById("back").addEventListener("click",function(e){
+  e.preventDefault();
+  var same=false;try{same=document.referrer&&new URL(document.referrer).origin===location.origin&&history.length>1}catch(x){}
+  if(same)history.back();else location.replace("/ai/");
+});
 </script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4"></script>
 <script>
