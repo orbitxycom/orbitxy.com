@@ -352,3 +352,11 @@ button,.hist-item,.sug,.avatar,.icon-btn{-webkit-user-select:none;user-select:no
 .at-toast{position:fixed;left:50%;bottom:96px;transform:translateX(-50%);z-index:95;padding:10px 16px;border-radius:12px;background:var(--foreground);color:var(--background);font-size:13.5px;box-shadow:0 8px 24px rgba(0,0,0,.25);animation:ap-fade .2s ease both;max-width:calc(100% - 32px);text-align:center}
 .at-toast.out{opacity:0;transition:opacity .25s}
 @keyframes ap-fade{from{opacity:0}}
+
+/* pratinjau gambar lampiran: buka besar dan tutup */
+.att-chip.is-img img,.att-row img{cursor:zoom-in}
+.lb{position:fixed;inset:0;z-index:100;display:grid;place-items:center;background:var(--background);padding:calc(64px + env(safe-area-inset-top)) 24px calc(24px + env(safe-area-inset-bottom))}
+.lb img{display:block;max-width:calc(100vw - 48px);max-height:calc(100dvh - 96px);object-fit:contain;border-radius:10px;cursor:zoom-out;box-shadow:0 8px 40px rgba(0,0,0,.16);will-change:transform}
+.lb-x{position:fixed;top:calc(16px + env(safe-area-inset-top));right:16px;width:44px;height:44px;border-radius:50%;display:grid;place-items:center;background:var(--background);color:var(--foreground);border:1px solid color-mix(in oklab,var(--border) 80%,transparent);box-shadow:0 1px 8px rgba(0,0,0,.12);z-index:1}
+.lb-x:hover{background:var(--sidebar-accent)}
+.lb-x svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
