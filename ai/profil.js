@@ -1,7 +1,7 @@
 /* Kartu profil di bawah sidebar + menu (Laporan bug, Ganti tema, Settings, dst.) */
 (function(){"use strict";
 /* Isi alamat halaman di sini kalau sudah ada. Kosong = muncul tulisan "segera hadir". */
-var LINKS={settings:"",security:"",upgrade:"/ai/paket/",support:"",terms:"",privacy:""};
+var LINKS={settings:"",security:"",upgrade:"",support:"",terms:"",privacy:""};
 var APP="Bekki";
 
 var CSS=".sb-foot{position:relative}"
@@ -82,7 +82,35 @@ function pos(){var r=card.getBoundingClientRect();if(r.width<120){menu.style.wid
 function buka(){mark();menu.hidden=false;pos();card.setAttribute("aria-expanded","true")}
 addEventListener("resize",function(){if(!menu.hidden)pos()});
 function tutup(){menu.hidden=true;card.setAttribute("aria-expanded","false")}
-function go(k){tutup();var u=LINKS[k];if(!u){toast("Segera hadir");return}if(u.charAt(0)==="/")location.assign(u);else window.open(u,"_blank","noopener")}
+var PK=null,PKS=false;
+var PKN={starter:"Starter",pro:"Pro",promax:"Pro Max"};
+function pktOpen(){
+PK=PK||document.getElementById("pkt");if(!PK){toast("Segera hadir");return}
+if(!PK.hidden)return;
+PK.hidden=false;PK.scrollTop=0;
+try{history.pushState({pkt:1},"")}catch(e){}
+var sb=window.bekkiSB;
+if(sb)sb.auth.getSession().then(function(r){
+var u=r&&r.data&&r.data.session&&r.data.session.user;if(!u)return;
+var m=u.user_metadata||{},mail=u.email||"";
+var plan=String(m.plan||(u.app_metadata&&u.app_metadata.plan)||"starter").toLowerCase().replace(/[^a-z]/g,"");
+if(!PKN[plan])plan="starter";
+var a=document.getElementById("pkAcc");
+if(a){a.textContent="";a.appendChild(document.createTextNode("Masuk sebagai "));var b1=document.createElement("b");b1.textContent=mail;a.appendChild(b1);a.appendChild(document.createTextNode(" \u00b7 Paket saat ini: "));var b2=document.createElement("b");b2.textContent=PKN[plan];a.appendChild(b2)}
+Array.prototype.forEach.call(PK.querySelectorAll(".card"),function(c){
+c.classList.remove("now");var o=c.querySelector(".badge.cur");if(o)o.remove();
+if(c.getAttribute("data-plan")===plan){c.classList.add("now");var bd=document.createElement("span");bd.className="badge cur";bd.textContent="Paket Anda";c.appendChild(bd);var t=c.querySelector(".cta");if(t&&!c.hasAttribute("data-soon"))t.textContent="Paket saat ini"}})
+}).catch(function(){})
+}
+function pktClose(fromPop){
+if(!PK||PK.hidden)return;
+PK.hidden=true;
+if(!fromPop&&history.state&&history.state.pkt){try{history.back()}catch(e){}}
+}
+window.addEventListener("popstate",function(){if(PK&&!PK.hidden)pktClose(true)});
+document.addEventListener("keydown",function(e){if(e.key==="Escape"&&PK&&!PK.hidden){e.stopPropagation();pktClose()}},true);
+function go(k){tutup();if(k==="upgrade"){pktOpen();return}var u=LINKS[k];if(!u){toast("Segera hadir");return}if(u.charAt(0)==="/")location.assign(u);else window.open(u,"_blank","noopener")}
+
 
 card.onclick=function(e){e.stopPropagation();menu.hidden?buka():tutup()};
 document.addEventListener("click",function(e){if(!menu.hidden&&!menu.contains(e.target))tutup()});
@@ -220,6 +248,7 @@ fill(null);
 if(sb)sb.auth.getSession().then(function(r){if(stEl===back)fill(r&&r.data&&r.data.session?r.data.session.user:null)}).catch(function(){})}
 $("pfSettings").onclick=function(){stOpen("profile")};
 $("pfSecurity").onclick=function(){stOpen("sec")};
+var pb=document.getElementById("pkBack");if(pb)pb.onclick=function(){pktClose()};
 var sb=window.bekkiSB;
 if(sb)sb.auth.getSession().then(function(r){isi(r&&r.data&&r.data.session?r.data.session.user:null)}).catch(function(){});
 }
