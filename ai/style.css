@@ -316,3 +316,39 @@ button,.hist-item,.sug,.avatar,.icon-btn{-webkit-user-select:none;user-select:no
   .vs-th{position:absolute;right:7px;top:0;width:6px;border-radius:999px;background:color-mix(in oklab,var(--foreground) 38%,transparent);transition:width .15s ease,background .15s ease,right .15s ease;cursor:default}
   .vs:hover .vs-th,.vs.drag .vs-th{width:8px;right:6px;background:color-mix(in oklab,var(--foreground) 55%,transparent)}
 }
+/* tombol + dan lampiran */
+.c-left{display:flex;align-items:center;gap:2px;min-width:0}
+.plus{width:32px;height:32px;border-radius:10px;display:grid;place-items:center;flex:none;color:var(--muted-foreground);transition:background .15s,color .15s}
+.plus:hover{background:var(--sidebar-accent);color:var(--foreground)}
+.plus svg,.att-chip svg,.att-file svg,.pl-menu svg,.pl-tiles svg,.pl-row svg{fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.plus svg{width:20px;height:20px}
+.composer.drop{box-shadow:0 0 0 2px color-mix(in oklab,var(--foreground) 35%,transparent)}
+.att-tray{display:flex;flex-wrap:wrap;gap:8px;padding:12px 12px 0}
+.att-tray[hidden]{display:none}
+.att-chip{position:relative;display:flex;align-items:center;gap:8px;border-radius:12px;background:var(--sidebar-accent);color:var(--foreground);max-width:100%}
+.att-chip.is-img{width:64px;height:64px;overflow:visible}
+.att-chip.is-img img{width:100%;height:100%;object-fit:cover;border-radius:12px;display:block}
+.att-chip.is-file{padding:8px 34px 8px 10px;font-size:13px;max-width:220px}
+.att-chip.is-file svg{width:18px;height:18px;flex:none}
+.att-chip.is-file b{font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.att-x{position:absolute;top:-6px;right:-6px;width:20px;height:20px;border-radius:50%;display:grid;place-items:center;background:var(--foreground);color:var(--background);box-shadow:0 1px 4px rgba(0,0,0,.3)}
+.att-x svg{width:12px;height:12px;stroke-width:2.4}
+.att-chip.is-file .att-x{top:50%;right:8px;transform:translateY(-50%);background:transparent;color:var(--muted-foreground);box-shadow:none}
+.att-row{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px;justify-content:flex-end}
+.att-row img{max-width:180px;max-height:180px;border-radius:12px;display:block;object-fit:cover}
+.att-file{display:inline-flex;align-items:center;gap:6px;padding:6px 10px;border-radius:10px;background:color-mix(in oklab,var(--foreground) 8%,transparent);font-size:12.5px;max-width:100%}
+.att-file svg{width:16px;height:16px;flex:none}.att-file b{font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pl-menu{position:fixed;z-index:90;min-width:220px;padding:6px;border-radius:14px;background:var(--background);border:1px solid color-mix(in oklab,var(--border) 80%,transparent);box-shadow:0 12px 34px rgba(0,0,0,.18);animation:ap-fade .12s ease both}
+.pl-menu button{display:flex;align-items:center;gap:12px;width:100%;padding:9px 10px;border-radius:9px;font-size:14px;text-align:left}
+.pl-menu button:hover{background:var(--sidebar-accent)}
+.pl-menu svg{width:17px;height:17px;flex:none;color:var(--muted-foreground)}
+.pl-sep{height:1px;margin:5px 6px;background:color-mix(in oklab,var(--border) 70%,transparent)}
+.pl-h{display:flex;align-items:center;justify-content:space-between;margin:2px 4px 12px}.pl-h h3{font-size:18px;font-weight:600}
+.pl-tiles{display:flex;gap:12px;margin:0 4px 14px}
+.pl-tiles button{width:84px;height:84px;border-radius:18px;display:grid;place-items:center;background:var(--sidebar-accent);color:var(--foreground)}
+.pl-tiles svg{width:26px;height:26px}
+.pl-row{display:flex;align-items:center;gap:16px;width:100%;padding:14px 8px;font-size:17px;font-weight:500;text-align:left;border-radius:12px}
+.pl-row svg{width:22px;height:22px}
+.at-toast{position:fixed;left:50%;bottom:96px;transform:translateX(-50%);z-index:95;padding:10px 16px;border-radius:12px;background:var(--foreground);color:var(--background);font-size:13.5px;box-shadow:0 8px 24px rgba(0,0,0,.25);animation:ap-fade .2s ease both;max-width:calc(100% - 32px);text-align:center}
+.at-toast.out{opacity:0;transition:opacity .25s}
+@keyframes ap-fade{from{opacity:0}}
