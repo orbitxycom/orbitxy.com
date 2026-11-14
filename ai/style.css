@@ -303,3 +303,5 @@ button,.hist-item,.sug,.avatar,.icon-btn{-webkit-user-select:none;user-select:no
   body.ap-drag{cursor:col-resize;user-select:none;-webkit-user-select:none}
   body.ap-drag iframe{pointer-events:none}
 }
+/* layar penuh selalu menimpa lebar hasil geser */
+.apanel.full{position:fixed!important;inset:0!important;width:auto!important;max-width:none!important;min-width:0!important;flex:none!important;z-index:70}
