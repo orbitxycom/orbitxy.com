@@ -290,3 +290,16 @@ button,.hist-item,.sug,.avatar,.icon-btn{-webkit-user-select:none;user-select:no
   .apanel .ap-ex{display:none}
   .ap-seg button{display:flex;align-items:center;justify-content:center}
 }
+
+/* pembatas panel (laptop): geser kiri-kanan */
+.ap-rs{display:none}
+@media (min-width:900px){
+  .apanel{position:relative;min-width:380px;max-width:calc(100% - 420px)}
+  .apanel.full{position:fixed;max-width:none}
+  .ap-rs{display:block;position:absolute;left:-5px;top:0;bottom:0;width:10px;cursor:col-resize;z-index:6;touch-action:none;outline:none}
+  .ap-rs::after{content:"";position:absolute;left:4px;top:0;bottom:0;width:2px;background:transparent;transition:background .15s}
+  .ap-rs:hover::after,.ap-rs.on::after,.ap-rs:focus-visible::after{background:color-mix(in oklab,var(--foreground) 30%,transparent)}
+  .apanel.full .ap-rs{display:none}
+  body.ap-drag{cursor:col-resize;user-select:none;-webkit-user-select:none}
+  body.ap-drag iframe{pointer-events:none}
+}
