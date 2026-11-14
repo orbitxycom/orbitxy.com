@@ -305,3 +305,14 @@ button,.hist-item,.sug,.avatar,.icon-btn{-webkit-user-select:none;user-select:no
 }
 /* layar penuh selalu menimpa lebar hasil geser */
 .apanel.full{position:fixed!important;inset:0!important;width:auto!important;max-width:none!important;min-width:0!important;flex:none!important;z-index:70}
+
+/* scrollbar chat: tipis, bulat, tanpa panah, memanjang sampai bawah, hanya muncul saat digulir */
+@media (hover:hover) and (pointer:fine){
+  .main{position:relative}
+  body.vs-on #chat{scrollbar-width:none}
+  body.vs-on #chat::-webkit-scrollbar{display:none}
+  .vs{position:absolute;right:0;bottom:4px;width:22px;z-index:5;opacity:0;pointer-events:none;transition:opacity .25s ease}
+  .vs.on{opacity:1;pointer-events:auto}
+  .vs-th{position:absolute;right:7px;top:0;width:6px;border-radius:999px;background:color-mix(in oklab,var(--foreground) 38%,transparent);transition:width .15s ease,background .15s ease,right .15s ease;cursor:default}
+  .vs:hover .vs-th,.vs.drag .vs-th{width:8px;right:6px;background:color-mix(in oklab,var(--foreground) 55%,transparent)}
+}
