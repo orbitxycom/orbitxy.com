@@ -1,7 +1,7 @@
 /* Kartu profil di bawah sidebar + menu (Laporan bug, Ganti tema, Settings, dst.) */
 (function(){"use strict";
 /* Isi alamat halaman di sini kalau sudah ada. Kosong = muncul tulisan "segera hadir". */
-var LINKS={settings:"",security:"",upgrade:"",support:"",terms:"",privacy:""};
+var LINKS={settings:"",security:"",upgrade:"/ai/paket/",support:"",terms:"",privacy:""};
 var APP="Bekki";
 
 var CSS=".sb-foot{position:relative}"
