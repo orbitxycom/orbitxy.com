@@ -456,3 +456,12 @@ button,.hist-item,.sug,.avatar,.icon-btn{-webkit-user-select:none;user-select:no
 @media (prefers-reduced-motion:reduce){#pkt .sk{animation:none}}
 
 :where(#pkt *){padding:0;box-sizing:border-box}
+
+/* tombol kembali halaman paket */
+#pkt .pk-back{display:inline-flex;align-items:center;gap:4px;height:40px;padding:0 18px 0 10px;border-radius:999px;border:1px solid var(--line);background:color-mix(in srgb,var(--bg) 82%,transparent);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);color:var(--fg);font-size:14px;font-weight:500;letter-spacing:-.005em;box-shadow:0 2px 10px -4px var(--glow);cursor:pointer;transition:background .18s,border-color .18s,transform .15s;-webkit-tap-highlight-color:transparent}
+#pkt .pk-back svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;transition:transform .2s}
+#pkt .pk-back:hover{background:rgba(var(--fg-rgb),.08);border-color:rgba(var(--fg-rgb),.3);color:var(--fg)}
+#pkt .pk-back:hover svg{transform:translateX(-3px)}
+#pkt .pk-back:active{transform:scale(.96)}
+#pkt .pk-back:focus-visible{outline:2px solid rgba(var(--fg-rgb),.5);outline-offset:2px}
+@media(max-width:640px){#pkt .pk-back{height:38px;padding:0 16px 0 8px;font-size:13.5px}}
