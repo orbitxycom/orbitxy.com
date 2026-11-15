@@ -481,3 +481,34 @@ button,.hist-item,.sug,.avatar,.icon-btn{-webkit-user-select:none;user-select:no
 .sb-search button svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round}
 @media (max-width:768px){.sb-search input{font-size:16px}}
 @media (min-width:769px){.sidebar.closed .sb-sbtn,.sidebar.closed .sb-search{display:none!important}}
+
+/* halaman awal: logo + sapaan + kotak ketik di tengah; turun ke bawah saat chat pertama */
+.main{position:relative}
+.main.home{justify-content:center;padding-bottom:7vh}
+.main.home>header{position:absolute;top:0;left:0;right:0;z-index:2}
+.main.home .chat,.main.home .chat-inner,.main.home .empty{display:contents}
+.main.home .hm-logo,.main.home .greet-t,.main.home .greet-s{width:100%;max-width:768px;margin-left:auto;margin-right:auto;padding-left:16px;padding-right:16px;box-sizing:border-box;text-align:center}
+.main.home .hm-logo{order:1;display:flex;justify-content:center;margin-bottom:18px;animation:greet .5s var(--ease-spring) .15s both}
+.main.home .hm-logo svg{width:64px;height:auto;display:block}
+.main.home .greet-t{order:2;font-size:34px;line-height:1.15;font-weight:600}
+.main.home .greet-s{order:3;margin-top:8px;margin-bottom:22px;font-size:15px}
+.main.home .composer-wrap{order:4;padding-bottom:0}
+.main.home .sugs{order:5;width:100%;max-width:768px;margin:16px auto 0;padding:0 16px;box-sizing:border-box}
+.hm-logo{display:none}
+.main.home .disc{display:none}
+@media (max-width:768px){
+  .main.home{justify-content:flex-start;padding-top:calc(22vh);padding-bottom:0}
+  .main.home .hm-logo{justify-content:flex-start}
+  .main.home .hm-logo svg{width:56px}
+  .main.home .greet-t,.main.home .greet-s{text-align:left;font-size:34px;font-weight:500}
+  .main.home .greet-t{margin-bottom:0}
+  .main.home .greet-s{font-size:34px;color:var(--muted-foreground);margin:0 auto 24px;line-height:1.15}
+}
+/* tombol model: hanya gambar */
+.model{padding:0 8px;gap:4px}
+.mdl-lg{width:22px;height:19px}
+
+/* kotak ketik lebih kecil */
+.composer textarea{min-height:44px;padding:14px 16px 2px}
+.c-foot{padding:0 10px 10px}
+.main.home .greet-s{margin-bottom:18px}
