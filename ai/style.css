@@ -560,3 +560,8 @@ button,.hist-item,.sug,.avatar,.icon-btn{-webkit-user-select:none;user-select:no
   .main.home .greet-t,.main.home .greet-s{font-size:clamp(25px,8.2vw,34px)}
   .main.home .sug{font-size:clamp(14px,4.2vw,15.5px)}
 }
+
+/* nama panjang dipotong (tanpa geser), dan jarak sapaan ke kotak ketik */
+.main.home{overflow-x:hidden}
+.main.home .greet-t{margin-bottom:22px;overflow:hidden}
+.main.home .greet-a{display:inline-block;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;vertical-align:bottom}
