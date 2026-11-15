@@ -565,3 +565,43 @@ button,.hist-item,.sug,.avatar,.icon-btn{-webkit-user-select:none;user-select:no
 .main.home{overflow-x:hidden}
 .main.home .greet-t{margin-bottom:22px;overflow:hidden}
 .main.home .greet-a{display:inline-block;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;vertical-align:bottom}
+
+/* jendela cari obrolan */
+.srch-back{position:fixed;inset:0;z-index:90;display:flex;align-items:flex-start;justify-content:center;padding:12vh 16px 16px;background:rgba(0,0,0,.38);-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px);animation:srchIn .16s ease both}
+.srch-back.out{animation:srchOut .16s ease both}
+.srch{width:100%;max-width:580px;max-height:min(520px,76vh);display:flex;flex-direction:column;background:var(--popover);color:var(--popover-foreground);border:1px solid color-mix(in oklab,var(--border) 70%,transparent);border-radius:16px;box-shadow:0 24px 70px -18px rgba(0,0,0,.45);overflow:hidden;animation:srchPop .2s var(--ease-spring) both}
+.srch-h{display:flex;align-items:center;gap:10px;padding:0 14px;height:54px;border-bottom:1px solid color-mix(in oklab,var(--border) 60%,transparent);flex:none}
+.srch-si svg{width:18px;height:18px;display:block;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;opacity:.5}
+.srch-h input{flex:1;min-width:0;height:100%;border:0;outline:0;background:transparent;color:inherit;font:inherit;font-size:15px}
+.srch-h input::placeholder{color:color-mix(in oklab,var(--muted-foreground) 70%,transparent)}
+.srch-x{width:28px;height:28px;display:grid;place-items:center;border-radius:8px;color:var(--muted-foreground)}
+.srch-x svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round}
+.srch-x:hover{background:color-mix(in oklab,var(--foreground) 8%,transparent)}
+.srch-cancel{display:none;font-size:15px;color:var(--foreground);padding:6px 2px}
+.srch-l{overflow-y:auto;padding:8px;flex:1;overscroll-behavior:contain}
+.srch-lb{font-size:11.5px;letter-spacing:.02em;padding:10px 10px 6px;color:var(--muted-foreground)}
+.srch-it{display:flex;align-items:center;gap:12px;width:100%;padding:9px 10px;border-radius:10px;text-align:left;color:inherit;transition:background .1s}
+.srch-it.on{background:color-mix(in oklab,var(--foreground) 7%,transparent)}
+.srch-ic{flex:none;width:30px;height:30px;display:grid;place-items:center;border-radius:9px;background:color-mix(in oklab,var(--foreground) 6%,transparent);color:color-mix(in oklab,var(--foreground) 65%,transparent)}
+.srch-ic svg{width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.srch-tx{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.srch-t{font-size:14px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.srch-new .srch-t{flex:1}
+.srch-sn{font-size:12.5px;color:var(--muted-foreground);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.srch-d{flex:none;font-size:12px;color:var(--muted-foreground)}
+.srch mark{background:color-mix(in oklab,#facc15 45%,transparent);color:inherit;border-radius:3px;padding:0 1px}
+.srch-em{padding:34px 16px;text-align:center;font-size:14px;color:var(--muted-foreground)}
+.srch-em b{color:var(--foreground);font-weight:600;word-break:break-word}
+@keyframes srchIn{from{opacity:0}to{opacity:1}}
+@keyframes srchOut{from{opacity:1}to{opacity:0}}
+@keyframes srchPop{from{opacity:0;transform:translateY(-8px) scale(.98)}to{opacity:1;transform:none}}
+@media (max-width:768px){
+  .srch-back{padding:0;background:var(--popover);-webkit-backdrop-filter:none;backdrop-filter:none;align-items:stretch}
+  .srch{max-width:none;max-height:none;height:100%;border:0;border-radius:0;box-shadow:none;animation:srchIn .16s ease both}
+  .srch-h{height:58px;padding:0 14px}
+  .srch-h input{font-size:16px}
+  .srch-x{display:none}
+  .srch-cancel{display:block}
+  .srch-it{padding:11px 10px}
+}
+@media (prefers-reduced-motion:reduce){.srch,.srch-back{animation:none}}
