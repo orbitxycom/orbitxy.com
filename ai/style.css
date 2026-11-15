@@ -531,3 +531,21 @@ button,.hist-item,.sug,.avatar,.icon-btn{-webkit-user-select:none;user-select:no
 .main.home .sug:active{background:color-mix(in oklab,var(--foreground) 6%,transparent)}
 @media (hover:hover){.main.home .sug:hover{background:color-mix(in oklab,var(--foreground) 5%,transparent)}}
 @media (min-width:769px){.main.home .sugs{display:none}}
+
+/* laptop: tampilan awal seperti contoh (rata kiri, kotak satu baris, saran ber-ikon) */
+.main.home .greet-b{color:var(--muted-foreground)}
+@media (min-width:769px){
+  .main.home .sugs{display:flex!important;flex-direction:column;gap:0;margin-top:14px;order:5}
+  .main.home .hm-logo,.main.home .greet-t,.main.home .sugs{padding-left:36px;padding-right:36px;text-align:left}
+  .main.home .hm-logo{justify-content:flex-start;margin-bottom:20px}
+  .main.home .hm-logo svg{width:52px}
+  .main.home .greet-t{font-size:32px;line-height:1.2;font-weight:500;letter-spacing:-.02em;margin-bottom:26px}
+  .main.home .greet-b{color:inherit}
+  .main.home .sug{font-size:14.5px;padding:10px 4px;gap:14px}
+  .main.home .composer{display:flex;align-items:center;gap:6px;padding:8px 10px 8px 12px;border-radius:14px;min-height:58px}
+  .main.home .composer .c-foot,.main.home .composer .c-left{display:contents}
+  .main.home .composer .plus{order:1}
+  .main.home .composer textarea{order:2;flex:1;min-width:0;min-height:40px;padding:10px 6px}
+  .main.home .composer .model{order:3}
+  .main.home .composer .send{order:4}
+}
