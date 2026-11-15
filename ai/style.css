@@ -465,3 +465,19 @@ button,.hist-item,.sug,.avatar,.icon-btn{-webkit-user-select:none;user-select:no
 #pkt .pk-back:active{transform:scale(.96)}
 #pkt .pk-back:focus-visible{outline:2px solid rgba(var(--fg-rgb),.5);outline-offset:2px}
 @media(max-width:640px){#pkt .pk-back{height:38px;padding:0 16px 0 8px;font-size:13.5px}}
+
+/* pencarian obrolan di sidebar */
+.sb-head .sb-sbtn{margin-left:auto}
+.sb-head .sb-sbtn.on{background:color-mix(in oklab,var(--sidebar-foreground) 10%,transparent);color:var(--sidebar-foreground)}
+.sb-search{display:flex;align-items:center;gap:8px;height:34px;padding:0 6px 0 10px;margin:0 0 6px;border:1px solid var(--sidebar-border);border-radius:8px;background:color-mix(in oklab,var(--sidebar-foreground) 4%,transparent);transition:border-color .15s}
+.sb-search[hidden]{display:none}
+.sb-search:focus-within{border-color:color-mix(in oklab,var(--sidebar-foreground) 35%,transparent)}
+.sb-search>svg{width:15px;height:15px;flex:none;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;opacity:.5}
+.sb-search input{flex:1;min-width:0;height:100%;border:0;outline:0;background:transparent;color:var(--sidebar-foreground);font:inherit;font-size:13px}
+.sb-search input::placeholder{color:color-mix(in oklab,var(--sidebar-foreground) 40%,transparent)}
+.sb-search button{width:24px;height:24px;display:none;place-items:center;border-radius:6px;color:color-mix(in oklab,var(--sidebar-foreground) 55%,transparent)}
+.sb-search.has button{display:grid}
+.sb-search button:hover{background:color-mix(in oklab,var(--sidebar-foreground) 10%,transparent)}
+.sb-search button svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round}
+@media (max-width:768px){.sb-search input{font-size:16px}}
+@media (min-width:769px){.sidebar.closed .sb-sbtn,.sidebar.closed .sb-search{display:none!important}}
