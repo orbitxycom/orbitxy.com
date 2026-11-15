@@ -133,7 +133,7 @@ $("pfOut").onclick=function(){tutup();var sb=window.bekkiSB;(sb?sb.auth.signOut(
 
 function isi(u){
 var m=(u&&u.user_metadata)||{},mail=(u&&u.email)||"";
-var nama=m.full_name||((m.first_name||m.last_name)?((m.first_name||"")+" "+(m.last_name||"")).trim():"")||m.name||(mail?mail.split("@")[0]:"Akun saya");
+var nama=m.full_name||((m.first_name||m.last_name)?((m.first_name||"")+" "+(m.last_name||"")).trim():"")||m.name||(mail?mail.split("@")[0]:"Akun saya");try{var fn=String(nama||"").trim().split(/\s+/)[0]||"";if(fn&&fn!=="Akun"){window.bekkiName=fn;window.bekkiGreet&&window.bekkiGreet()}}catch(e){}
 var w=String(nama).replace(/[._-]+/g," ").trim().split(/\s+/);
 var ini=(w.length>1?w[0][0]+w[1][0]:String(nama).replace(/[^A-Za-z0-9]/g,"").slice(0,2)||"?").toUpperCase();
 var foto=m.avatar_url||m.picture||"";if(!/^https:\/\//i.test(foto))foto="";["pfAv","pfAv2"].forEach(function(id){var e=$(id);e.textContent=ini;e.style.backgroundImage=foto?"url(\""+foto.replace(/["\\()\s]/g,encodeURIComponent)+"\")":"";e.style.backgroundSize="cover";e.style.backgroundPosition="center";e.style.color=foto?"transparent":""});
