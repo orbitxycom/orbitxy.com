@@ -549,3 +549,14 @@ button,.hist-item,.sug,.avatar,.icon-btn{-webkit-user-select:none;user-select:no
   .main.home .composer .model{order:3}
   .main.home .composer .send{order:4}
 }
+
+/* tengah otomatis di semua ukuran layar */
+.main.home{justify-content:flex-start!important;padding-top:56px!important;padding-bottom:0!important;overflow-y:auto}
+.main.home::before,.main.home::after{content:"";display:block;flex:1 1 0;min-height:0;order:0}
+.main.home::before{flex-grow:1}
+.main.home::after{flex-grow:1.35;order:9}
+@media (max-width:768px){
+  .main.home .hm-logo svg{width:clamp(40px,12vw,56px)}
+  .main.home .greet-t,.main.home .greet-s{font-size:clamp(25px,8.2vw,34px)}
+  .main.home .sug{font-size:clamp(14px,4.2vw,15.5px)}
+}
