@@ -613,3 +613,20 @@ button,.hist-item,.sug,.avatar,.icon-btn{-webkit-user-select:none;user-select:no
 .srch-new .srch-ic svg{width:18px;height:18px}
 .srch-new .srch-t{font-weight:500}
 .srch-lb{padding:12px 12px 6px}
+
+/* tanpa tanda panah di semua scrollbar */
+*::-webkit-scrollbar{width:9px;height:9px}
+*::-webkit-scrollbar-track{background:transparent}
+*::-webkit-scrollbar-thumb{background:color-mix(in oklab,var(--foreground) 22%,transparent);border-radius:999px;border:2px solid transparent;background-clip:padding-box}
+*::-webkit-scrollbar-thumb:hover{background:color-mix(in oklab,var(--foreground) 38%,transparent);background-clip:padding-box}
+*::-webkit-scrollbar-button{display:none;width:0;height:0}
+*::-webkit-scrollbar-corner{background:transparent}
+@supports not selector(::-webkit-scrollbar){*{scrollbar-width:thin;scrollbar-color:color-mix(in oklab,var(--foreground) 25%,transparent) transparent}}
+/* halaman awal: judul "New chat" ikut turun saat digulir (tidak hilang) */
+.main.home{padding-top:0!important}
+.main.home>header{position:sticky!important;top:0;left:auto;right:auto;flex:none;z-index:5}
+
+/* "Obrolan baru" menempel di atas daftar hasil, tidak ikut tergulir */
+.srch-pin{flex:none;padding:8px 8px 6px;border-bottom:1px solid color-mix(in oklab,var(--border) 55%,transparent);background:var(--popover)}
+.srch-pin .srch-new{margin-bottom:0}
+.srch-l{padding-top:4px}
