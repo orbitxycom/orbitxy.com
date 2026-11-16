@@ -281,7 +281,7 @@ document.addEventListener("touchend",end,{passive:!0});document.addEventListener
 const bt=document.createElement("button");bt.className="icon-btn sb-sbtn";bt.id="sbSearch";bt.type="button";bt.title="Cari obrolan";bt.setAttribute("aria-label","Cari obrolan");
 bt.innerHTML='<svg viewBox="0 0 24 24" style="font-size:16px"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>';hd.insertBefore(bt,tg);
 const IC={s:'<svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>',c:'<svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>',n:'<svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>',x:'<svg viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></svg>'};
-let bk=null,inp=null,lst=null,act=-1,items=[];
+let bk=null,inp=null,lst=null,pin=null,act=-1,items=[];
 const el=(t,c,x)=>{const e=document.createElement(t);c&&(e.className=c);x!=null&&(e.textContent=x);return e};
 const hl=(txt,q)=>{const fr=document.createDocumentFragment();if(!q){fr.append(txt);return fr}const lo=txt.toLowerCase();let p=0,i;while((i=lo.indexOf(q,p))>=0){i>p&&fr.append(txt.slice(p,i));const m=el("mark",null,txt.slice(i,i+q.length));fr.append(m);p=i+q.length}p<txt.length&&fr.append(txt.slice(p));return fr};
 const snip=(txt,q)=>{const t=String(txt).replace(/\s+/g," ").trim(),i=t.toLowerCase().indexOf(q);if(i<0)return"";const a=Math.max(0,i-28),b=Math.min(t.length,i+q.length+70);return(a>0?"…":"")+t.slice(a,b)+(b<t.length?"…":"")};
@@ -289,19 +289,19 @@ const dt=u=>{if(!u)return"";const d=new Date(u),n=new Date(),z=x=>new Date(x.get
 const setAct=n=>{if(!items.length){act=-1;return}act=(n+items.length)%items.length;items.forEach((it,i)=>it.el.classList.toggle("on",i===act));const e=items[act].el;e.scrollIntoView&&e.scrollIntoView({block:"nearest"})};
 const close=()=>{if(!bk)return;const b=bk;bk=null;b.classList.add("out");setTimeout(()=>b.remove(),160);document.removeEventListener("keydown",kd,!0)};
 const pick=it=>{close();setTimeout(()=>it.run(),0)};
-const render=()=>{const q=inp.value.trim().toLowerCase();lst.textContent="";items=[];const all=(window.bekkiChats?window.bekkiChats():[]).filter(c=>c.msgs&&c.msgs.length).sort((a,b)=>(b.u||0)-(a.u||0));
-const add=(node,run)=>{lst.appendChild(node);items.push({el:node,run});node.onclick=()=>pick({run});node.onmousemove=()=>{const i=items.findIndex(x=>x.el===node);i!==act&&setAct(i)}};
+const render=()=>{const q=inp.value.trim().toLowerCase();lst.textContent="";pin.textContent="";items=[];const all=(window.bekkiChats?window.bekkiChats():[]).filter(c=>c.msgs&&c.msgs.length).sort((a,b)=>(b.u||0)-(a.u||0));
+const add=(node,run,host)=>{(host||lst).appendChild(node);items.push({el:node,run});node.onclick=()=>pick({run});node.onmousemove=()=>{const i=items.findIndex(x=>x.el===node);i!==act&&setAct(i)}};
 const row=(c,sn)=>{const r=el("button","srch-it");r.type="button";const bx=el("span","srch-tx"),t=el("span","srch-t");t.appendChild(hl(String(c.title||"Obrolan"),q));bx.appendChild(t);if(sn){const s=el("span","srch-sn");s.appendChild(hl(sn,q));bx.appendChild(s)}const d=el("span","srch-d",dt(c.u));r.append(bx,d);return r};
-if(!q){const nw=el("button","srch-it srch-new");nw.type="button";const ic=el("span","srch-ic");ic.innerHTML=IC.n;nw.append(ic,el("span","srch-t","Obrolan baru"));add(nw,()=>window.bekkiNew&&window.bekkiNew());
-if(all.length){lst.appendChild(el("div","srch-lb","Terbaru"));all.slice(0,12).forEach(c=>add(row(c,""),()=>window.bekkiOpen(c.id)))}else lst.appendChild(el("div","srch-em","Belum ada obrolan"))}
+{const nw=el("button","srch-it srch-new");nw.type="button";const ic=el("span","srch-ic");ic.innerHTML=IC.n;nw.append(ic,el("span","srch-t","Obrolan baru"));add(nw,()=>window.bekkiNew&&window.bekkiNew(),pin)}if(!q){
+if(all.length){lst.appendChild(el("div","srch-lb","Terbaru"));all.forEach(c=>add(row(c,""),()=>window.bekkiOpen(c.id)))}else lst.appendChild(el("div","srch-em","Belum ada obrolan"))}
 else{const res=[];all.forEach(c=>{const tm=String(c.title||"").toLowerCase().includes(q);let sn="";if(!tm){const m=c.msgs.find(x=>x&&String(x.content||"").toLowerCase().includes(q));m&&(sn=snip(m.content,q))}else{const m=c.msgs.find(x=>x&&String(x.content||"").toLowerCase().includes(q));m&&(sn=snip(m.content,q))}if(tm||sn)res.push({c,sn,tm})});
 res.sort((a,b)=>(b.tm-a.tm));if(res.length){lst.appendChild(el("div","srch-lb",res.length+" hasil"));res.forEach(r=>add(row(r.c,r.sn),()=>window.bekkiOpen(r.c.id)))}else{const em=el("div","srch-em");em.append("Tidak ada hasil untuk ");em.appendChild(el("b",null,"“"+inp.value.trim()+"”"));lst.appendChild(em)}}
-setAct(items.length?(q?0:1>items.length-1?0:1):-1);if(!q&&items.length>1)setAct(1)};
+setAct(items.length>1?1:0)};
 const kd=e=>{if(!bk)return;if(e.key==="Escape"){e.preventDefault();e.stopPropagation();close()}else if(e.key==="ArrowDown"){e.preventDefault();setAct(act+1)}else if(e.key==="ArrowUp"){e.preventDefault();setAct(act-1)}else if(e.key==="Enter"&&items[act]){e.preventDefault();pick(items[act])}};
 const open=()=>{if(bk)return;bk=el("div","srch-back");const pn=el("div","srch");pn.setAttribute("role","dialog");pn.setAttribute("aria-modal","true");pn.setAttribute("aria-label","Cari obrolan");
 const hdr=el("div","srch-h");const si=el("span","srch-si");si.innerHTML=IC.s;inp=el("input");inp.type="text";inp.placeholder="Cari obrolan";inp.autocomplete="off";inp.spellcheck=!1;inp.setAttribute("autocapitalize","off");inp.setAttribute("enterkeyhint","search");inp.setAttribute("aria-label","Cari obrolan");
 const cx=el("button","srch-x");cx.type="button";cx.setAttribute("aria-label","Tutup");cx.innerHTML=IC.x;cx.onclick=close;const bt2=el("button","srch-cancel","Batal");bt2.type="button";bt2.onclick=close;
-hdr.append(si,inp,cx,bt2);lst=el("div","srch-l");pn.append(hdr,lst);bk.appendChild(pn);document.body.appendChild(bk);
+hdr.append(si,inp,cx,bt2);pin=el("div","srch-pin");lst=el("div","srch-l");pn.append(hdr,pin,lst);bk.appendChild(pn);document.body.appendChild(bk);
 bk.addEventListener("mousedown",e=>{e.target===bk&&close()});inp.addEventListener("input",render);document.addEventListener("keydown",kd,!0);render();setTimeout(()=>inp.focus(),30)};
 bt.onclick=e=>{e.stopPropagation();open()};
 document.addEventListener("keydown",e=>{if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==="k"){e.preventDefault();bk?close():open()}})})();
