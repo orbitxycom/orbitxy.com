@@ -605,3 +605,11 @@ button,.hist-item,.sug,.avatar,.icon-btn{-webkit-user-select:none;user-select:no
   .srch-it{padding:11px 10px}
 }
 @media (prefers-reduced-motion:reduce){.srch,.srch-back{animation:none}}
+
+/* jendela cari: tanpa ikon kotak, baris teks bersih */
+.srch-it{padding:10px 12px;gap:14px}
+.srch-new{margin-bottom:2px}
+.srch-new .srch-ic{width:20px;height:20px;background:none;border-radius:0;color:var(--foreground)}
+.srch-new .srch-ic svg{width:18px;height:18px}
+.srch-new .srch-t{font-weight:500}
+.srch-lb{padding:12px 12px 6px}
