@@ -644,3 +644,14 @@ button,.hist-item,.sug,.avatar,.icon-btn{-webkit-user-select:none;user-select:no
 .ctx-it:hover{background:color-mix(in oklab,var(--sidebar-foreground) 7%,transparent)}
 .ctx-it em{font-style:normal;font-size:10.5px;font-weight:500;padding:2px 8px;border-radius:999px;background:color-mix(in oklab,var(--sidebar-foreground) 9%,transparent);color:color-mix(in oklab,var(--sidebar-foreground) 65%,transparent);white-space:nowrap}
 @media (min-width:769px){.sidebar.closed .ctx{display:none}}
+
+/* teks sidebar lebih gelap (tidak abu-abu pucat) */
+.sidebar .new-chat,.sidebar .ctx-it,.sidebar .ctx-it span,.sidebar .hist-item,.sidebar .hist-item *,.sidebar #theme,.sidebar #bugBtn{color:var(--foreground)}
+.sidebar .new-chat:disabled{opacity:.4}
+.sidebar .hist-label{color:color-mix(in oklab,var(--foreground) 55%,transparent)}
+.sidebar .ctx-it em{color:color-mix(in oklab,var(--foreground) 70%,transparent)}
+.sidebar .ctx-chev{opacity:.7}
+.sidebar .sb-sbtn,.sidebar #toggle{color:var(--foreground)}
+
+/* garis menu Context: gradasi biru, hijau, ungu */
+.ctx-sub{border-left:2px solid transparent;border-image:linear-gradient(to bottom,#5bb4f6 0%,#5ed88f 50%,#6446da 100%) 1}
