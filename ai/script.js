@@ -313,7 +313,7 @@ b.onclick=()=>set(sub.hidden);
 const toast=t=>{document.querySelectorAll(".at-toast.ctx-toast").forEach(e=>e.remove());clearTimeout(T);const e=document.createElement("div");e.className="at-toast ctx-toast";e.setAttribute("role","status");e.textContent=t;document.body.appendChild(e);T=setTimeout(()=>{e.style.transition="opacity .25s";e.style.opacity="0";setTimeout(()=>e.remove(),260)},2200)};
 sub.addEventListener("click",e=>{const i=e.target.closest(".ctx-it");i&&toast(i.dataset.soon+" segera hadir")})})();
 /* proyek + bagian Chats di sidebar */
-(()=>{const KEY="bekki_proyek_v1",OK="bekki_chats_open";const $=id=>document.getElementById(id);
+(()=>{const KEY="bekki_proyek_v1",OK="bekki_chats_open2";const $=id=>document.getElementById(id);
 const E=$("sidebar"),list=$("prjList"),tog=$("chTog"),hist=$("hist");if(!E||!list||!tog||!hist)return;
 const el=(t,c,x)=>{const e=document.createElement(t);c&&(e.className=c);x!=null&&(e.textContent=x);return e};
 let P=[];try{const j=JSON.parse(localStorage.getItem(KEY)||"{}");P=Array.isArray(j.list)?j.list.filter(p=>p&&p.id&&p.name):[]}catch{}
