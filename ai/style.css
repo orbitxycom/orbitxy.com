@@ -630,3 +630,6 @@ button,.hist-item,.sug,.avatar,.icon-btn{-webkit-user-select:none;user-select:no
 .srch-pin{flex:none;padding:8px 8px 6px;border-bottom:1px solid color-mix(in oklab,var(--border) 55%,transparent);background:var(--popover)}
 .srch-pin .srch-new{margin-bottom:0}
 .srch-l{padding-top:4px}
+
+/* judul "New chat" selalu paling atas (di depan jarak otomatis) */
+.main.home>header{order:-1!important}
