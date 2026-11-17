@@ -723,3 +723,6 @@ button,.hist-item,.sug,.avatar,.icon-btn{-webkit-user-select:none;user-select:no
 }
 @keyframes pdUp{from{transform:translateY(40px);opacity:0}to{transform:none;opacity:1}}
 @media (prefers-reduced-motion:reduce){.pd,.sb-pop{animation:none}}
+
+/* profil tetap di bawah walau daftar Chats ditutup */
+.sidebar>.sb-foot{margin-top:auto}
