@@ -810,3 +810,5 @@ button,.hist-item,.sug,.avatar,.icon-btn{-webkit-user-select:none;user-select:no
 .pj-mi{display:flex;align-items:center;justify-content:space-between;width:100%;height:42px;padding:0 12px;border-radius:10px;font-size:16px;text-align:left}
 .pj-mi:hover,.pj-mi.on{background:color-mix(in oklab,var(--foreground) 6%,transparent)}
 .pj-mi svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.pj-body,.pj-dl{scrollbar-width:none;-ms-overflow-style:none}
+.pj-body::-webkit-scrollbar,.pj-dl::-webkit-scrollbar{display:none;width:0;height:0}
