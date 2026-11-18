@@ -367,6 +367,9 @@ window.bekkiPrjR()})();
 (()=>{const $=id=>document.getElementById(id);const main=document.querySelector(".main"),SB=$("sidebar");if(!main)return;
 const el=(t,c,x)=>{const e=document.createElement(t);c&&(e.className=c);x!=null&&(e.textContent=x);return e};
 const API=()=>window.bekkiPrjAPI;let pg=null,cur=null;
+const TONES=[["","Default (Global)","Balanced, natural responses."],["professional","Professional","Polished, precise and well structured."],["empathetic","Empathetic","Warm, understanding and supportive."],["direct","Direct","Best for clear and concise answers."]];
+const TI={professional:"Jawab dengan nada profesional, rapi dan presisi.",empathetic:"Jawab dengan nada empatik, hangat dan suportif.",direct:"Jawab langsung, jelas dan ringkas."};
+const CH=[["Casual","Use a casual tone."],["Polite","Be polite."],["Humorous","Add some humor."],["Earnest","Be earnest and sincere."],["Empathetic","Be empathetic."]];
 const toast=m=>{const o=document.querySelector(".at-toast");o&&o.remove();const d=el("div","at-toast",m);document.body.appendChild(d);setTimeout(()=>{d.classList.add("out");setTimeout(()=>d.remove(),300)},2000)};
 const proj=()=>{const a=API();return a&&a.get().find(p=>p.id===cur)};
 function close(){if(!pg)return;pg.remove();pg=null;cur=null;window.bekkiPrjPage=null;window.bekkiPrjR&&window.bekkiPrjR()}
@@ -375,6 +378,7 @@ const o1=window.bekkiOpen,o2=window.bekkiNew;window.bekkiOpen=t=>{close();return
 [$("newChat"),$("hist")].forEach(x=>x&&x.addEventListener("click",e=>{if(pg&&(x.id==="newChat"||e.target.closest(".hist-item")))close()},!0));
 /* konteks yang dikirim ke AI */
 window.bekkiPrjCtx=()=>{const a=API();if(!a||!window.bekkiPid)return"";const p=a.get().find(x=>x.id===window.bekkiPid);if(!p)return"";let o="";
+if(p.tone&&TI[p.tone])o+="[Nada jawaban]\n"+TI[p.tone]+"\n\n";
 if(p.ins&&p.ins.trim())o+="[Instruksi proyek \u201C"+p.name+"\u201D]\n"+p.ins.trim()+"\n\n";
 if(p.ctx!==!1){const cur=window.bekkiCur&&window.bekkiCur();const l=(window.bekkiChats?window.bekkiChats():[]).filter(c=>c.pid===p.id&&c.id!==cur&&c.msgs&&c.msgs.length).sort((x,y)=>(y.u||0)-(x.u||0)).slice(0,5).map(c=>{const f=c.msgs.find(m=>m.role==="user");return"- "+c.title+(f?": "+String(f.content).replace(/\s+/g," ").slice(0,120):"")});if(l.length)o+="[Obrolan lain di proyek ini]\n"+l.join("\n")+"\n\n"}
 return o?o+"[Pesan pengguna]\n":""};
@@ -400,12 +404,33 @@ if(tab===0){const cs=(window.bekkiChats?window.bekkiChats():[]).filter(c=>c.pid=
 if(!cs.length){const em=el("div","pj-em");em.innerHTML='<svg viewBox="0 0 48 48" aria-hidden="true"><path d="M6 8h20a3 3 0 0 1 3 3v10a3 3 0 0 1-3 3H15l-6 5v-5H6a3 3 0 0 1-3-3V11a3 3 0 0 1 3-3z"/><path d="M22 20h18a3 3 0 0 1 3 3v10a3 3 0 0 1-3 3h-3v5l-6-5H22a3 3 0 0 1-3-3V23a3 3 0 0 1 3-3z"/><path d="M26 28h.01M31 28h.01M36 28h.01"/></svg>';em.append(el("div","pj-et","No conversations yet"),el("div","pj-es","Every big idea starts with a chat. What\u2019s yours? Let\u2019s talk!"));pane.appendChild(em)}
 else{const ul=el("div","pj-ls");cs.forEach(c=>{const b=el("button","pj-ci");b.type="button";b.append(el("span","pj-ct",c.title),el("span","pj-cd",dt(c.u)));b.onclick=()=>window.bekkiOpen(c.id);ul.appendChild(b)});pane.appendChild(ul)}}
 else{const sec=(l,v,x)=>{const d=el("div","pj-sec");d.append(el("div","pj-sl",l));if(v!=null){const e=el("div","pj-sv",v);d.appendChild(e)}x&&d.appendChild(x);pane.appendChild(d);return d};
-const tone=sec("Tone","Default (Global)");tone.classList.add("tap");tone.onclick=()=>toast("Pilihan nada segera hadir");
+const TL=(TONES.find(x=>x[0]===(p.tone||""))||TONES[0])[1];const tone=sec("Tone",TL);tone.classList.add("tap");tone.onclick=()=>dlgIns(p);
 const insD=sec("Instructions",p.ins&&p.ins.trim()?p.ins.trim():"No instructions set for this project");insD.querySelector(".pj-sv").classList.toggle("ph",!(p.ins&&p.ins.trim()));
-const cb=el("button","pj-btn","Customize");cb.type="button";cb.onclick=()=>{if(insD.querySelector("textarea"))return;insD.querySelector(".pj-sv").hidden=!0;cb.hidden=!0;const w=el("div","pj-ed"),t=el("textarea");t.maxLength=2000;t.value=p.ins||"";t.placeholder="Contoh: Jawab singkat dan pakai bahasa Indonesia santai.";t.rows=5;const r=el("div","pj-er"),c=el("button","pj-btn2","Batal"),sv=el("button","pj-btn2 pri","Simpan");c.type=sv.type="button";c.onclick=()=>draw();sv.onclick=()=>{p.ins=t.value.trim().slice(0,2000);API().save();draw();toast("Instruksi disimpan")};r.append(c,sv);w.append(t,r);insD.appendChild(w);t.focus()};pane.appendChild(cb);
+const cb=el("button","pj-btn","Customize");cb.type="button";cb.onclick=()=>dlgIns(p);pane.appendChild(cb);
 const ac=el("div","pj-sec");ac.appendChild(el("div","pj-sl","Additional Context"));const lb=el("label","pj-ck"),ck=el("input");ck.type="checkbox";ck.checked=p.ctx!==!1;ck.onchange=()=>{p.ctx=ck.checked;API().save()};lb.append(ck,el("span",null,"Include other chats in this project as context"));ac.appendChild(lb);pane.appendChild(ac);
 pane.appendChild(el("div","pj-hr"));pane.appendChild(el("div","pj-nf","No files uploaded"));const up=el("button","pj-btn pri","Upload files");up.type="button";up.onclick=()=>toast("Unggah file segera hadir");pane.appendChild(up)}
 }
+function dlgIns(p){if(document.querySelector(".pj-dl"))return;let tone=p.tone||"",menu=null;
+const bk=el("div","pd-back"),pn=el("div","pd pj-dl");pn.setAttribute("role","dialog");pn.setAttribute("aria-modal","true");pn.setAttribute("aria-label","Instructions");
+const x=el("button","pj-dx");x.type="button";x.setAttribute("aria-label","Tutup");x.innerHTML='<svg viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></svg>';
+const sel=el("button","pj-sel");sel.type="button";sel.setAttribute("aria-haspopup","listbox");const sd=el("div","pj-sd");
+const CV='<svg class="pj-cv2" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg>';
+const lab=()=>{const T=TONES.find(a=>a[0]===tone)||TONES[0];sel.innerHTML='<svg viewBox="0 0 24 24"><path d="M12 3a8.5 8.5 0 0 0-7.3 12.9L3.5 20.5l4.7-1.2A8.5 8.5 0 1 0 12 3z"/><path d="M9 10h.01M15 10h.01M9 14s1 1.5 3 1.5 3-1.5 3-1.5"/></svg>';sel.append(el("span",null,T[1]));sel.insertAdjacentHTML("beforeend",CV);sd.textContent=T[2]};lab();
+const hr=el("div","pj-dhr"),l2=el("div","pj-dl1","Additional Instructions"),ta=el("textarea");ta.maxLength=2000;ta.rows=5;ta.value=p.ins||"";ta.placeholder="Be concise, talk in a friendly tone, etc.";
+const chips=el("div","pj-chips");CH.forEach(c=>{const b=el("button","pj-chip");b.type="button";b.innerHTML='<svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>';b.append(c[0]);b.onclick=()=>{if(ta.value.includes(c[1]))return;ta.value=(ta.value.trim()?ta.value.trim()+" ":"")+c[1];ta.focus()};chips.appendChild(b)});
+const rs=el("button","pj-chip pj-rs");rs.type="button";rs.setAttribute("aria-label","Kosongkan");rs.title="Kosongkan";rs.innerHTML='<svg viewBox="0 0 24 24"><path d="M20 12a8 8 0 1 1-2.6-5.9M20 4v5h-5"/></svg>';rs.onclick=()=>{ta.value="";ta.focus()};chips.appendChild(rs);
+const sv=el("button","pj-save","Save");sv.type="button";
+const ttl=el("h3","pj-dt","Instructions"),l1=el("div","pj-dl1","Tone");
+pn.append(x,ttl,l1,sel,sd,hr,l2,ta,chips,sv);bk.appendChild(pn);document.body.appendChild(bk);
+const kd=e=>{if(e.key==="Escape"){e.stopPropagation();menu?cm():end()}};
+function end(){document.removeEventListener("keydown",kd,!0);bk.classList.add("out");setTimeout(()=>bk.remove(),180)}
+function cm(){if(menu){menu.remove();menu=null;sel.classList.remove("on")}}
+sel.onclick=e=>{e.stopPropagation();if(menu)return cm();sel.classList.add("on");menu=el("div","pj-menu");menu.setAttribute("role","listbox");
+const row=(T)=>{const b=el("button","pj-mi"+(T[0]===tone?" on":""),T[1]);b.type="button";b.setAttribute("role","option");if(T[0]===tone)b.insertAdjacentHTML("beforeend",'<svg viewBox="0 0 24 24"><path d="m5 12 5 5 9-10"/></svg>');b.onclick=ev=>{ev.stopPropagation();tone=T[0];lab();cm()};return b};
+menu.append(el("div","pj-mh","Global Tone"),row(TONES[0]),el("div","pj-mh","Project Tone"),row(TONES[1]),row(TONES[2]),row(TONES[3]));pn.appendChild(menu);const r=sel.getBoundingClientRect(),q=pn.getBoundingClientRect();menu.style.top=(r.bottom-q.top+pn.scrollTop+6)+"px";menu.style.left=(r.left-q.left)+"px";menu.style.width=r.width+"px"};
+pn.addEventListener("click",e=>{menu&&!menu.contains(e.target)&&cm()});
+x.onclick=end;bk.addEventListener("pointerdown",e=>{e.target===bk&&end()});document.addEventListener("keydown",kd,!0);
+sv.onclick=()=>{p.ins=ta.value.trim().slice(0,2000);p.tone=tone;API().save();end();draw();toast("Instruksi disimpan")};setTimeout(()=>ta.focus(),60)}
 t0.onclick=()=>{tab=0;draw()};t1.onclick=()=>{tab=1;draw()};
 more.onclick=e=>{e.stopPropagation();API().menu(more,[["Delete",()=>{const p=proj();p&&API().del(p)}]])};
 head();draw();window.bekkiPrjR&&window.bekkiPrjR()}
