@@ -726,3 +726,58 @@ button,.hist-item,.sug,.avatar,.icon-btn{-webkit-user-select:none;user-select:no
 
 /* profil tetap di bawah walau daftar Chats ditutup */
 .sidebar>.sb-foot{margin-top:auto}
+
+/* halaman proyek */
+.prj-cv{margin-left:auto;flex:none;width:22px;height:22px;display:grid;place-items:center;border-radius:6px;opacity:.55}
+.prj-cv:hover{opacity:1;background:color-mix(in oklab,var(--foreground) 8%,transparent)}
+.prj-cv svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;transition:transform .18s}
+.prj-cv.on svg{transform:rotate(90deg)}
+.pj{position:absolute;inset:0;z-index:6;display:flex;flex-direction:column;background:var(--background);color:var(--foreground);animation:srchIn .16s ease both}
+.pj-top{flex:none;height:52px;display:flex;align-items:center;padding:0 12px}
+.pj-body{flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain;width:100%;max-width:760px;margin:0 auto;padding:8px 24px 28px}
+.pj-hd{display:flex;align-items:center;gap:14px;min-width:0}
+.pj-ic{flex:none;width:46px;height:46px;border-radius:50%;display:grid;place-items:center;font-size:23px;background:color-mix(in oklab,var(--foreground) 7%,transparent)}
+.pj-nm{flex:1;min-width:0;margin:0;font-size:clamp(22px,6vw,30px);font-weight:500;letter-spacing:-.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pj-more{flex:none;width:38px;height:38px;border-radius:10px;display:grid;place-items:center;background:color-mix(in oklab,var(--foreground) 7%,transparent);color:var(--foreground)}
+.pj-more:hover{background:color-mix(in oklab,var(--foreground) 12%,transparent)}
+.pj-more svg{width:20px;height:20px;fill:currentColor}
+.pj-tabs{display:grid;grid-template-columns:1fr 1fr;margin-top:24px;border-bottom:1px solid color-mix(in oklab,var(--foreground) 12%,transparent)}
+.pj-tab{padding:13px 0;font-size:15px;color:color-mix(in oklab,var(--foreground) 52%,transparent);border-bottom:2px solid transparent;margin-bottom:-1px;transition:color .15s}
+.pj-tab.on{color:var(--foreground);border-bottom-color:var(--foreground)}
+.pj-pane{padding-top:8px}
+.pj-em{display:flex;flex-direction:column;align-items:center;text-align:center;padding:64px 16px 24px}
+.pj-em svg{width:64px;height:64px;fill:none;stroke:var(--foreground);stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round;margin-bottom:22px}
+.pj-et{font-size:20px;font-weight:600;margin-bottom:10px}
+.pj-es{max-width:320px;font-size:15px;line-height:1.5;color:color-mix(in oklab,var(--foreground) 55%,transparent)}
+.pj-ls{display:flex;flex-direction:column;padding-top:6px}
+.pj-ci{display:flex;align-items:center;gap:12px;width:100%;padding:14px 4px;text-align:left;border-bottom:1px solid color-mix(in oklab,var(--foreground) 8%,transparent)}
+.pj-ci:hover{background:color-mix(in oklab,var(--foreground) 4%,transparent)}
+.pj-ct{flex:1;min-width:0;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pj-cd{flex:none;font-size:12.5px;color:color-mix(in oklab,var(--foreground) 50%,transparent)}
+.pj-sec{padding:20px 0 0}
+.pj-sec.tap{cursor:pointer}
+.pj-sl{font-size:16px;font-weight:500;margin-bottom:8px}
+.pj-sv{font-size:15.5px;line-height:1.5;color:color-mix(in oklab,var(--foreground) 55%,transparent);white-space:pre-wrap;overflow-wrap:anywhere;display:-webkit-box;-webkit-line-clamp:6;-webkit-box-orient:vertical;overflow:hidden}
+.pj-sv[hidden]{display:none}
+.pj-btn{display:block;width:100%;height:46px;margin-top:20px;border-radius:12px;font-size:15px;font-weight:500;background:color-mix(in oklab,var(--foreground) 7%,transparent);color:var(--foreground)}
+.pj-btn:hover{background:color-mix(in oklab,var(--foreground) 11%,transparent)}
+.pj-btn.pri{background:var(--foreground);color:var(--background)}
+.pj-btn.pri:hover{opacity:.88}
+.pj-btn[hidden]{display:none}
+.pj-ck{display:flex;align-items:flex-start;gap:12px;font-size:15.5px;line-height:1.45;color:color-mix(in oklab,var(--foreground) 55%,transparent);cursor:pointer}
+.pj-ck input{flex:none;width:20px;height:20px;margin:1px 0 0;accent-color:#2f8cdc}
+.pj-hr{margin:26px 0 22px;border-top:1px dashed color-mix(in oklab,var(--foreground) 18%,transparent)}
+.pj-nf{font-size:19px;font-weight:500}
+.pj-ed textarea{width:100%;padding:12px 14px;border-radius:12px;border:1px solid color-mix(in oklab,var(--foreground) 16%,transparent);background:transparent;color:inherit;font:inherit;font-size:15px;line-height:1.5;resize:vertical;outline:0}
+.pj-ed textarea:focus{border-color:var(--foreground)}
+.pj-er{display:flex;gap:10px;justify-content:flex-end;margin-top:10px}
+.pj-btn2{height:40px;padding:0 18px;border-radius:10px;font-size:14.5px;font-weight:500;background:color-mix(in oklab,var(--foreground) 7%,transparent);color:var(--foreground)}
+.pj-btn2.pri{background:var(--foreground);color:var(--background)}
+.pj-comp{flex:none;width:100%;max-width:760px;margin:0 auto;padding:8px 16px 16px}
+.pj-comp[hidden]{display:none}
+.pj-cbox{display:flex;align-items:flex-end;gap:8px;padding:8px 8px 8px 16px;border-radius:20px;border:1px solid color-mix(in oklab,var(--foreground) 12%,transparent);background:var(--card);box-shadow:0 2px 10px -4px rgba(0,0,0,.12)}
+.pj-cbox textarea{flex:1;min-width:0;max-height:160px;border:0;outline:0;resize:none;background:transparent;color:inherit;font:inherit;font-size:16px;line-height:1.5;padding:7px 0}
+.pj-send{flex:none;width:38px;height:38px;border-radius:12px;display:grid;place-items:center;background:var(--foreground);color:var(--background);transition:opacity .15s}
+.pj-send:disabled{opacity:.3;cursor:default}
+.pj-send svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+@media (max-width:768px){.pj-body{padding:4px 20px 24px}}
