@@ -843,3 +843,45 @@ button,.hist-item,.sug,.avatar,.icon-btn{-webkit-user-select:none;user-select:no
 .sb-sub .pj-tab.on{color:var(--foreground)}
 .sb-sl{padding-top:10px}
 .cm-it>.cm-em{flex:none;width:20px}
+
+/* skills */
+.composer-wrap{position:relative}
+.sk-act{display:flex;align-items:center;gap:8px;width:max-content;max-width:100%;margin:0 0 8px;padding:6px 6px 6px 12px;border-radius:999px;font-size:13.5px;font-weight:500;background:color-mix(in oklab,var(--foreground) 7%,transparent);color:var(--foreground)}
+.sk-act[hidden],.sk-pop[hidden]{display:none}
+.sk-act svg{width:14px;height:14px;flex:none;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.sk-act span{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sk-act button{width:22px;height:22px;display:grid;place-items:center;border-radius:50%;color:inherit;opacity:.65}
+.sk-act button:hover{opacity:1;background:color-mix(in oklab,var(--foreground) 12%,transparent)}
+.sk-act button svg{width:12px;height:12px}
+.sk-pop{position:absolute;left:16px;right:16px;bottom:100%;z-index:20;max-height:260px;overflow-y:auto;padding:6px;margin-bottom:6px;border-radius:16px;background:var(--popover);color:var(--popover-foreground);border:1px solid color-mix(in oklab,var(--foreground) 12%,transparent);box-shadow:0 18px 50px -12px rgba(0,0,0,.4);scrollbar-width:none}
+.sk-pop::-webkit-scrollbar{display:none}
+.sk-op{display:block;width:100%;padding:9px 12px;border-radius:10px;text-align:left;color:inherit}
+.sk-op b{display:block;font-size:15px;font-weight:600}
+.sk-op span{display:block;font-size:13px;margin-top:1px;color:color-mix(in oklab,var(--foreground) 58%,transparent);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sk-op.hi,.sk-op:hover{background:color-mix(in oklab,var(--foreground) 7%,transparent)}
+.sk-ic svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.sk-new{flex:none;height:38px;padding:0 16px;border-radius:12px;font-size:14.5px;font-weight:500;background:var(--foreground);color:var(--background)}
+.sk-new:hover{opacity:.88}
+.sk-sub{margin:16px 0 4px;font-size:15px;line-height:1.5;color:color-mix(in oklab,var(--foreground) 60%,transparent)}
+.sk-card{margin-top:12px;padding:16px;border-radius:16px;border:1px solid color-mix(in oklab,var(--foreground) 12%,transparent);background:var(--card);transition:opacity .15s}
+.sk-card.off{opacity:.6}
+.sk-row{display:flex;align-items:center;gap:10px}
+.sk-n{flex:1;min-width:0;font-size:16px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sk-tag{flex:none;padding:2px 8px;border-radius:999px;font-size:11.5px;background:color-mix(in oklab,var(--foreground) 8%,transparent);color:color-mix(in oklab,var(--foreground) 65%,transparent)}
+.sk-row .sk-n{flex:0 1 auto}
+.sk-row .sk-sw{margin-left:auto}
+.sk-d{margin:6px 0 0;font-size:14.5px;line-height:1.45;color:color-mix(in oklab,var(--foreground) 62%,transparent)}
+.sk-btns{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.sk-btn{height:36px;padding:0 14px;border-radius:10px;font-size:14px;font-weight:500;background:color-mix(in oklab,var(--foreground) 7%,transparent);color:var(--foreground)}
+.sk-btn:hover{background:color-mix(in oklab,var(--foreground) 12%,transparent)}
+.sk-btn.pri{background:var(--foreground);color:var(--background)}
+.sk-btn.dg{color:#d33}
+.sk-btn:disabled{opacity:.35;cursor:default}
+.sk-sw{flex:none;position:relative;width:42px;height:24px;border-radius:999px;background:color-mix(in oklab,var(--foreground) 22%,transparent);transition:background .18s}
+.sk-sw::after{content:"";position:absolute;top:3px;left:3px;width:18px;height:18px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.3);transition:transform .18s}
+.sk-sw[aria-checked="true"]{background:#2f8cdc}
+.sk-sw[aria-checked="true"]::after{transform:translateX(18px)}
+.sk-lb{font-size:15px;font-weight:500;margin:16px 0 8px}
+.sk-in{width:100%;height:46px;padding:0 14px;border-radius:12px;border:1px solid color-mix(in oklab,var(--foreground) 14%,transparent);background:transparent;color:inherit;font:inherit;font-size:16px;outline:0}
+.sk-in:focus{border-color:var(--foreground)}
+.sk-ro{white-space:pre-wrap;font-size:15px;line-height:1.55;color:color-mix(in oklab,var(--foreground) 75%,transparent);margin:0}
