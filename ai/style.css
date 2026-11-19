@@ -900,3 +900,6 @@ button,.hist-item,.sug,.avatar,.icon-btn{-webkit-user-select:none;user-select:no
 /* keyboard */
 html.kb .app{height:var(--vvh);margin-top:var(--vvt,0px)}
 html.kb,html.kb body{overflow:hidden}
+
+html.kb-home .app{height:var(--hfix)}
+html.kb-home,html.kb-home body{overflow:hidden}
