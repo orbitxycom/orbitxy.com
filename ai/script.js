@@ -510,7 +510,7 @@ const o1=window.bekkiOpen,o2=window.bekkiNew,o3=window.bekkiPrjOpen;
 window.bekkiOpen=t=>{closeP();setActive(null);return o1(t)};window.bekkiNew=()=>{closeP();setActive(null);return o2()};window.bekkiPrjOpen=id=>{closeP();o3&&o3(id)};
 [$("newChat"),$("hist")].forEach(x=>x&&x.addEventListener("click",e=>{if(x.id==="newChat"||e.target.closest(".hist-item")){closeP();setActive(null)}},!0));
 const SVG='<svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 3v18"/></svg>';
-function openP(){window.bekkiPrjClose&&window.bekkiPrjClose();closeP();if(matchMedia("(max-width:768px)").matches&&SB)SB.classList.add("closed");
+window.bekkiSkClose=closeP;function openP(){window.bekkiPrjClose&&window.bekkiPrjClose();window.bekkiCnClose&&window.bekkiCnClose();closeP();if(matchMedia("(max-width:768px)").matches&&SB)SB.classList.add("closed");
 pg=el("div","pj");pg.id="skPage";
 const top=el("div","pj-top"),tg=el("button","icon-btn");tg.type="button";tg.setAttribute("aria-label","Sidebar");tg.style.color="var(--foreground)";tg.innerHTML=SVG;tg.onclick=e=>{e.stopPropagation();SB&&SB.classList.toggle("closed")};top.appendChild(tg);
 const body=el("div","pj-body"),hd=el("div","pj-hd"),ic=el("span","pj-ic");ic.innerHTML=BOLT;ic.classList.add("sk-ic");const nm=el("h2","pj-nm","Skills"),nw=el("button","sk-new","+ Buat skill");nw.type="button";nw.onclick=()=>dlg();hd.append(ic,nm,nw);
@@ -538,3 +538,63 @@ const kd=e=>{e.key==="Escape"&&(e.stopPropagation(),end())};function end(){docum
 x.onclick=end;bk.addEventListener("pointerdown",e=>{e.target===bk&&end()});document.addEventListener("keydown",kd,!0);ro||setTimeout(()=>i1.focus(),60)}
 const it=document.querySelector('.ctx-it[data-soon="Skills"]');it&&it.addEventListener("click",e=>{e.stopPropagation();openP()});
 window.bekkiSkills=()=>openP()})();
+
+/* Connectors */
+(()=>{const $=id=>document.getElementById(id);const main=document.querySelector(".main"),SB=$("sidebar"),inp=$("input");if(!main||!inp)return;
+const KEY="bekki_conn_v1",MAXE=8000,MAXT=12000;
+const el=(t,c,x)=>{const e=document.createElement(t);c&&(e.className=c);x!=null&&(e.textContent=x);return e};
+const toast=m=>{const o=document.querySelector(".at-toast");o&&o.remove();const d=el("div","at-toast",m);document.body.appendChild(d);setTimeout(()=>{d.classList.add("out");setTimeout(()=>d.remove(),300)},2600)};
+const XI='<svg viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></svg>',PLUG='<svg viewBox="0 0 24 24"><path d="M9 2v6M15 2v6M6 8h12v4a6 6 0 0 1-12 0zM12 18v4"/></svg>';
+const TY={note:"Catatan",gh:"GitHub",wiki:"Wikipedia",web:"Halaman web"};
+let C=[];try{const j=JSON.parse(localStorage.getItem(KEY)||"{}");C=Array.isArray(j.list)?j.list.filter(c=>c&&c.id&&c.name&&c.content&&TY[c.type]):[]}catch{}
+const save=()=>{try{localStorage.setItem(KEY,JSON.stringify({list:C}))}catch{}};
+/* konteks yang dikirim ke AI */
+const P1=window.bekkiPrjCtx;window.bekkiPrjCtx=()=>{const base=P1?P1():"";let t=0,o="";C.filter(c=>c.on).forEach(c=>{const room=MAXT-t;if(room<200)return;const x=c.content.slice(0,room);t+=x.length;o+="[Sumber: "+c.name+" ("+TY[c.type]+")]\n"+x+"\n\n"});if(!o)return base;return "[Konteks tambahan dari sumber yang dipilih pengguna, pakai bila relevan]\n"+o+(base||"[Pesan pengguna]\n")};
+/* mengambil isi sumber */
+const tfetch=async(u,o)=>{const ac=new AbortController(),t=setTimeout(()=>ac.abort(),15000);try{return await fetch(u,{...o,signal:ac.signal})}finally{clearTimeout(t)}};
+async function pull(c){try{let tx="";
+if(c.type==="gh"){const m=c.src.trim().replace(/^https?:\/\/(www\.)?github\.com\//i,"").replace(/\.git$/,"").match(/^([\w.-]+)\/([\w.-]+)/);if(!m)throw new Error("Tulis repo seperti owner/nama-repo.");const r=await tfetch("https://api.github.com/repos/"+m[1]+"/"+m[2]+"/readme",{headers:{Accept:"application/vnd.github.raw+json"}});if(r.status===404)throw new Error("Repo tidak ditemukan, bersifat privat, atau tidak punya README.");if(!r.ok)throw new Error("GitHub menolak permintaan (kode "+r.status+"). Coba lagi nanti.");tx=await r.text()}
+else if(c.type==="wiki"){for(const lg of["id","en"]){const r=await tfetch("https://"+lg+".wikipedia.org/w/api.php?action=query&prop=extracts&explaintext=1&redirects=1&format=json&origin=*&titles="+encodeURIComponent(c.src.trim()));if(!r.ok)continue;const j=await r.json();const pg=Object.values((j.query||{}).pages||{})[0];if(pg&&pg.extract){tx=pg.extract;break}}if(!tx)throw new Error("Artikel tidak ditemukan di Wikipedia.")}
+else if(c.type==="web"){let u=c.src.trim();if(!/^https?:\/\//i.test(u))u="https://"+u;try{new URL(u)}catch{throw new Error("Alamat web tidak valid.")}const r=await tfetch("https://r.jina.ai/"+u,{headers:{Accept:"text/plain"}});if(!r.ok)throw new Error("Halaman tidak bisa dibaca (kode "+r.status+").");tx=await r.text()}
+tx=tx.replace(/\r/g,"").replace(/\n{3,}/g,"\n\n").trim();if(!tx)throw new Error("Isinya kosong.");return tx.slice(0,MAXE)}
+catch(e){if(e&&e.name==="AbortError")throw new Error("Terlalu lama merespons. Coba lagi.");if(e instanceof TypeError)throw new Error("Tidak bisa terhubung. Cek internet Anda lalu coba lagi.");throw e}}
+const defName=(t,s)=>{s=s.trim();if(t==="gh")return s.replace(/^https?:\/\/(www\.)?github\.com\//i,"").replace(/\.git$/,"").split("/").slice(0,2).join("/");if(t==="web"){try{return new URL(/^https?:\/\//i.test(s)?s:"https://"+s).hostname.replace(/^www\./,"")}catch{return s}}return s};
+/* halaman */
+let pg=null;function closeP(){pg&&(pg.remove(),pg=null)}window.bekkiCnClose=closeP;
+const o1=window.bekkiOpen,o2=window.bekkiNew,o3=window.bekkiPrjOpen,o4=window.bekkiSkills;
+window.bekkiOpen=t=>{closeP();return o1(t)};window.bekkiNew=()=>{closeP();return o2()};window.bekkiPrjOpen=id=>{closeP();o3&&o3(id)};window.bekkiSkills=()=>{closeP();o4&&o4()};
+[$("newChat"),$("hist")].forEach(x=>x&&x.addEventListener("click",e=>{(x.id==="newChat"||e.target.closest(".hist-item"))&&closeP()},!0));
+const SVG='<svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 3v18"/></svg>';
+const fmt=n=>n.toLocaleString("id-ID");
+function openP(){window.bekkiPrjClose&&window.bekkiPrjClose();window.bekkiSkClose&&window.bekkiSkClose();closeP();if(matchMedia("(max-width:768px)").matches&&SB)SB.classList.add("closed");
+pg=el("div","pj");pg.id="cnPage";
+const top=el("div","pj-top"),tg=el("button","icon-btn");tg.type="button";tg.setAttribute("aria-label","Sidebar");tg.style.color="var(--foreground)";tg.innerHTML=SVG;tg.onclick=e=>{e.stopPropagation();SB&&SB.classList.toggle("closed")};top.appendChild(tg);
+const body=el("div","pj-body"),hd=el("div","pj-hd"),ic=el("span","pj-ic sk-ic");ic.innerHTML=PLUG;const nm=el("h2","pj-nm","Connectors"),nw=el("button","sk-new","+ Tambah");nw.type="button";nw.onclick=()=>dlg();hd.append(ic,nm,nw);
+const sub=el("p","sk-sub","Hubungkan Bekki ke sumber informasi. Isi sumber yang aktif ikut dikirim sebagai konteks di setiap pesan, jadi matikan yang tidak dipakai.");const warn=el("p","cn-warn");warn.hidden=!0;const ls=el("div","sk-list");body.append(hd,sub,warn,ls);pg.append(top,body);main.appendChild(pg);window.__cnDraw=draw;draw();
+function draw(){if(!pg)return;ls.textContent="";const tot=C.filter(c=>c.on).reduce((a,c)=>a+c.content.length,0);warn.hidden=tot<=MAXT;warn.textContent="Total sumber aktif ("+fmt(tot)+" karakter) melebihi batas "+fmt(MAXT)+". Sebagian isi akan dipotong; matikan sumber yang tidak perlu.";
+if(!C.length){const em=el("div","pj-em");em.innerHTML=PLUG;em.append(el("div","pj-et","Belum ada sumber"),el("div","pj-es","Tambahkan catatan, repo GitHub, artikel Wikipedia, atau halaman web agar Bekki bisa menjawab berdasarkan isinya."));ls.appendChild(em);return}
+C.forEach(c=>{const k=el("div","sk-card"+(c.on?"":" off")),r=el("div","sk-row");r.appendChild(el("b","sk-n",c.name));r.appendChild(el("span","sk-tag",TY[c.type]));
+const sw=el("button","sk-sw");sw.type="button";sw.setAttribute("role","switch");sw.setAttribute("aria-checked",c.on?"true":"false");sw.setAttribute("aria-label",(c.on?"Matikan ":"Aktifkan ")+c.name);sw.onclick=()=>{c.on=!c.on;save();draw()};r.appendChild(sw);
+const d=el("p","sk-d",(c.type==="note"?"":c.src+" · ")+fmt(c.content.length)+" karakter"+(c.u?" · "+new Date(c.u).toLocaleDateString("id-ID",{day:"numeric",month:"short"}):""));const a=el("div","sk-btns");
+if(c.type==="note"){const ed=el("button","sk-btn","Edit");ed.type="button";ed.onclick=()=>dlg(c);a.appendChild(ed)}
+else{const rf=el("button","sk-btn","Segarkan");rf.type="button";rf.onclick=async()=>{rf.disabled=!0;rf.textContent="Mengambil…";try{c.content=await pull(c);c.u=Date.now();save();toast("Diperbarui")}catch(e){toast(e.message)}draw()};a.appendChild(rf)}
+const dl=el("button","sk-btn dg","Hapus");dl.type="button";dl.onclick=()=>window.bekkiConfirm("Hapus sumber ini?","“"+c.name+"” akan dihapus dari Connectors.","Hapus",()=>{C=C.filter(x=>x.id!==c.id);save();draw()});a.appendChild(dl);k.append(r,d,a);ls.appendChild(k)})}}
+/* dialog */
+function dlg(ed){if(document.querySelector(".cn-dl"))return;let type=ed?ed.type:"note";const bk=el("div","pd-back"),pn=el("div","pd pj-dl cn-dl");pn.setAttribute("role","dialog");pn.setAttribute("aria-modal","true");
+const x=el("button","pj-dx");x.type="button";x.setAttribute("aria-label","Tutup");x.innerHTML=XI;pn.append(x,el("h3","pj-dt",ed?"Edit catatan":"Tambah sumber"));
+const chips=el("div","pj-chips");const fm=el("div","cn-fm");let busy=!1;
+const fields=()=>{fm.textContent="";chips.querySelectorAll(".pj-chip").forEach(b=>b.classList.toggle("on",b.dataset.t===type));
+const lab=(t)=>fm.appendChild(el("div","sk-lb",t));const mk=(ph,v)=>{const i=el("input","sk-in");i.placeholder=ph;i.value=v||"";fm.appendChild(i);return i};
+if(type==="note"){lab("Nama");var n1=mk("Contoh: Catatan kuliah",ed?ed.name:"");n1.maxLength=40;lab("Isi catatan");var ta=el("textarea");ta.rows=8;ta.maxLength=MAXE;ta.placeholder="Tempel teks yang ingin dijadikan sumber.";ta.value=ed?ed.content:"";fm.appendChild(ta);fm._g=()=>({name:n1.value.trim(),src:"",text:ta.value.trim()});fm._f=n1}
+else{const cfg={gh:["Repo GitHub publik","owner/nama-repo atau tautan github.com/..."],wiki:["Judul artikel Wikipedia","Contoh: Algoritma Dijkstra"],web:["Alamat halaman web","https://..."]}[type];lab(cfg[0]);var i1=mk(cfg[1]);i1.inputMode=type==="web"?"url":"text";lab("Nama (opsional)");var n2=mk("Otomatis dari sumber");n2.maxLength=40;fm._g=()=>({name:n2.value.trim(),src:i1.value.trim()});fm._f=i1;
+const hint=el("p","cn-hint",{gh:"Hanya README dari repo publik yang diambil.",wiki:"Isi artikel diambil dari Wikipedia (Indonesia, lalu Inggris jika tidak ada).",web:"Isi halaman dibaca lewat layanan r.jina.ai, jadi alamat ini dikirim ke pihak ketiga tersebut. Jangan pakai halaman yang privat."}[type]);fm.appendChild(hint)}};
+if(!ed)Object.keys(TY).forEach(k=>{const b=el("button","pj-chip",TY[k]);b.type="button";b.dataset.t=k;b.onclick=()=>{if(busy)return;type=k;fields()};chips.appendChild(b)});
+const sv=el("button","pj-save",ed?"Simpan":"Tambahkan");sv.type="button";sv.style.marginTop="22px";
+sv.onclick=async()=>{if(busy)return;const g=fm._g();
+if(type==="note"){if(!g.name||!g.text){toast("Nama dan isi wajib diisi");return}if(ed){ed.name=g.name;ed.content=g.text.slice(0,MAXE);ed.u=Date.now()}else C.unshift({id:"c"+Date.now().toString(36),type:"note",name:g.name,src:"",content:g.text.slice(0,MAXE),on:!0,u:Date.now()});save();end();window.__cnDraw&&window.__cnDraw();toast("Disimpan");return}
+if(!g.src){toast("Isi sumbernya dulu");return}busy=!0;sv.disabled=!0;sv.textContent="Mengambil…";
+try{const c={id:"c"+Date.now().toString(36),type,name:g.name||defName(type,g.src),src:g.src,on:!0,u:Date.now()};c.content=await pull(c);C.unshift(c);save();end();window.__cnDraw&&window.__cnDraw();toast("Sumber ditambahkan")}catch(e){toast(e.message);busy=!1;sv.disabled=!1;sv.textContent="Tambahkan"}};
+if(!ed)pn.appendChild(chips);pn.append(fm,sv);fields();bk.appendChild(pn);document.body.appendChild(bk);
+const kd=e=>{e.key==="Escape"&&(e.stopPropagation(),end())};function end(){document.removeEventListener("keydown",kd,!0);bk.classList.add("out");setTimeout(()=>bk.remove(),180)}
+x.onclick=end;bk.addEventListener("pointerdown",e=>{e.target===bk&&end()});document.addEventListener("keydown",kd,!0);setTimeout(()=>fm._f&&fm._f.focus(),60)}
+const it=document.querySelector('.ctx-it[data-soon="Connectors"]');it&&it.addEventListener("click",e=>{e.stopPropagation();openP()})})();
