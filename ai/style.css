@@ -886,3 +886,12 @@ button,.hist-item,.sug,.avatar,.icon-btn{-webkit-user-select:none;user-select:no
 .sk-in:focus{border-color:var(--foreground)}
 .sk-ro{white-space:pre-wrap;font-size:15px;line-height:1.55;color:color-mix(in oklab,var(--foreground) 75%,transparent);margin:0}
 @media (min-width:769px){.pj-top{display:none}.pj-body{padding-top:36px}}
+
+/* connectors */
+.pj-chip.on{background:var(--foreground);color:var(--background);border-color:var(--foreground)}
+.pj-dl .pj-chips{margin:0 0 6px}
+.cn-warn{margin:12px 0 0;padding:10px 12px;border-radius:12px;font-size:13.5px;line-height:1.45;background:color-mix(in oklab,#e0a100 16%,transparent);color:var(--foreground)}
+.cn-warn[hidden]{display:none}
+.cn-hint{margin:10px 0 0;font-size:13.5px;line-height:1.45;color:color-mix(in oklab,var(--foreground) 58%,transparent)}
+.sk-d{overflow-wrap:anywhere}
+.pj-em svg{width:56px;height:56px;fill:none;stroke:var(--foreground);stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
