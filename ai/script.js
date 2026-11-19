@@ -476,3 +476,65 @@ m.onclick=e=>{e.stopPropagation();const it=tab===0?[{i:IC.x,t:"Stop sharing",f:(
 sub.append(bk,tabs,ls)}
 window.bekkiSub=t=>{tab=t;shown=!0;SB.classList.add("sub-open");sub.hidden=!1;draw()};
 const R1=window.bekkiRender;window.bekkiRender=()=>{R1();draw()}})();
+
+/* Skills */
+(()=>{const $=id=>document.getElementById(id);const main=document.querySelector(".main"),SB=$("sidebar"),inp=$("input"),cw=document.querySelector(".composer-wrap");if(!main||!inp||!cw)return;
+const KEY="bekki_skills_v1";
+const el=(t,c,x)=>{const e=document.createElement(t);c&&(e.className=c);x!=null&&(e.textContent=x);return e};
+const toast=m=>{const o=document.querySelector(".at-toast");o&&o.remove();const d=el("div","at-toast",m);document.body.appendChild(d);setTimeout(()=>{d.classList.add("out");setTimeout(()=>d.remove(),300)},2200)};
+const BOLT='<svg viewBox="0 0 24 24"><path d="M13 2 4 14h7l-1 8 9-12h-7z"/></svg>',XI='<svg viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></svg>';
+const BI=[
+{id:"b1",name:"Ringkas teks",desc:"Ubah teks panjang jadi poin inti yang singkat.",ins:"Ringkas teks yang saya kirim menjadi 3-6 poin inti yang singkat dan jelas, lalu tutup dengan satu kalimat kesimpulan. Jangan menambah informasi yang tidak ada di teks."},
+{id:"b2",name:"Penulis esai",desc:"Bantu menyusun esai atau surat yang rapi.",ins:"Bertindaklah sebagai penulis yang rapi. Susun tulisan dengan pembuka yang menarik, isi yang runtut, dan penutup yang kuat. Gunakan bahasa Indonesia baku yang enak dibaca, kecuali saya minta lain."},
+{id:"b3",name:"Penerjemah",desc:"Terjemahkan teks dan jaga nuansanya.",ins:"Terjemahkan teks saya ke bahasa yang saya sebutkan (jika tidak disebut: Indonesia <-> Inggris). Jaga nada dan maksudnya, jangan menerjemahkan kata per kata, dan beri catatan singkat kalau ada ungkapan yang punya beberapa arti."},
+{id:"b4",name:"Review kode",desc:"Cari bug, celah keamanan, dan saran perbaikan.",ins:"Tinjau kode yang saya kirim. Sebutkan bug, celah keamanan, dan bagian yang sulit dibaca, urut dari yang paling penting. Untuk tiap temuan beri alasan singkat dan contoh perbaikannya."},
+{id:"b5",name:"Jelaskan sederhana",desc:"Jelaskan hal rumit dengan analogi mudah.",ins:"Jelaskan topik yang saya tanyakan seolah ke pemula: pakai bahasa sehari-hari, satu analogi yang mudah dibayangkan, dan contoh singkat. Hindari istilah teknis kecuali langsung dijelaskan."}];
+let U=[],off=[];try{const j=JSON.parse(localStorage.getItem(KEY)||"{}");U=Array.isArray(j.list)?j.list.filter(s=>s&&s.id&&s.name&&s.ins):[];off=Array.isArray(j.off)?j.off:[]}catch{}
+const save=()=>{try{localStorage.setItem(KEY,JSON.stringify({list:U,off}))}catch{}};
+const all=()=>[...U.map(s=>({...s,on:s.on!==!1})),...BI.map(b=>({...b,bi:1,on:!off.includes(b.id)}))];
+const find=id=>all().find(s=>s.id===id),enabled=()=>all().filter(s=>s.on);
+/* skill aktif (chip di atas kolom chat) */
+let active=null;const chip=el("div","sk-act");chip.hidden=!0;cw.insertBefore(chip,cw.firstChild);
+function setActive(id){const s=id&&find(id);if(!s||!s.on){active=null;chip.hidden=!0;chip.textContent="";return}active=id;chip.hidden=!1;chip.textContent="";chip.insertAdjacentHTML("beforeend",BOLT);chip.appendChild(el("span",null,s.name));const x=el("button");x.type="button";x.setAttribute("aria-label","Lepas skill");x.innerHTML=XI;x.onclick=()=>{setActive(null);inp.focus()};chip.appendChild(x)}
+const P0=window.bekkiPrjCtx;window.bekkiPrjCtx=()=>{const base=P0?P0():"";const s=active&&find(active);if(!s||!s.on)return base;const part="[Skill aktif: "+s.name+"]\n"+s.ins+"\n\n";return base?part+base:part+"[Pesan pengguna]\n"};
+/* ketik / untuk memilih skill */
+const pop=el("div","sk-pop");pop.hidden=!0;pop.setAttribute("role","listbox");cw.appendChild(pop);let items=[],hi=0;
+function upd(){const v=inp.value;if(!/^\/\S*$/.test(v)){pop.hidden=!0;return}const q=v.slice(1).toLowerCase();items=enabled().filter(s=>s.name.toLowerCase().includes(q));pop.textContent="";if(!items.length){pop.hidden=!0;return}hi=Math.min(hi,items.length-1);
+items.forEach((s,i)=>{const b=el("button","sk-op"+(i===hi?" hi":""));b.type="button";b.setAttribute("role","option");b.append(el("b",null,"/"+s.name),el("span",null,s.desc||""));b.onmousedown=e=>e.preventDefault();b.onclick=()=>pick(s.id);pop.appendChild(b)});pop.hidden=!1}
+function pick(id){setActive(id);inp.value="";inp.dispatchEvent(new Event("input",{bubbles:!0}));pop.hidden=!0;inp.focus()}
+inp.addEventListener("input",upd);
+inp.addEventListener("keydown",e=>{if(pop.hidden)return;if(e.key==="ArrowDown"||e.key==="ArrowUp"){e.preventDefault();hi=(hi+(e.key==="ArrowDown"?1:-1)+items.length)%items.length;upd()}else if(e.key==="Enter"||e.key==="Tab"){e.preventDefault();e.stopImmediatePropagation();pick(items[hi].id)}else if(e.key==="Escape"){pop.hidden=!0}},!0);
+/* halaman Skills */
+let pg=null;function closeP(){pg&&(pg.remove(),pg=null)}
+const o1=window.bekkiOpen,o2=window.bekkiNew,o3=window.bekkiPrjOpen;
+window.bekkiOpen=t=>{closeP();setActive(null);return o1(t)};window.bekkiNew=()=>{closeP();setActive(null);return o2()};window.bekkiPrjOpen=id=>{closeP();o3&&o3(id)};
+[$("newChat"),$("hist")].forEach(x=>x&&x.addEventListener("click",e=>{if(x.id==="newChat"||e.target.closest(".hist-item")){closeP();setActive(null)}},!0));
+const SVG='<svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 3v18"/></svg>';
+function openP(){window.bekkiPrjClose&&window.bekkiPrjClose();closeP();if(matchMedia("(max-width:768px)").matches&&SB)SB.classList.add("closed");
+pg=el("div","pj");pg.id="skPage";
+const top=el("div","pj-top"),tg=el("button","icon-btn");tg.type="button";tg.setAttribute("aria-label","Sidebar");tg.style.color="var(--foreground)";tg.innerHTML=SVG;tg.onclick=e=>{e.stopPropagation();SB&&SB.classList.toggle("closed")};top.appendChild(tg);
+const body=el("div","pj-body"),hd=el("div","pj-hd"),ic=el("span","pj-ic");ic.innerHTML=BOLT;ic.classList.add("sk-ic");const nm=el("h2","pj-nm","Skills"),nw=el("button","sk-new","+ Buat skill");nw.type="button";nw.onclick=()=>dlg();hd.append(ic,nm,nw);
+const sub=el("p","sk-sub","Skill adalah instruksi siap pakai untuk Bekki. Aktifkan skill, lalu ketik / di kolom chat atau tekan Gunakan.");const ls=el("div","sk-list");body.append(hd,sub,ls);pg.append(top,body);main.appendChild(pg);
+window.__skDraw=draw;draw();
+function draw(){if(!pg)return;ls.textContent="";all().forEach(s=>{const c=el("div","sk-card"+(s.on?"":" off")),r=el("div","sk-row"),n=el("b","sk-n",s.name);r.appendChild(n);if(s.bi)r.appendChild(el("span","sk-tag","Bawaan"));
+const sw=el("button","sk-sw");sw.type="button";sw.setAttribute("role","switch");sw.setAttribute("aria-checked",s.on?"true":"false");sw.setAttribute("aria-label",(s.on?"Matikan ":"Aktifkan ")+s.name);
+sw.onclick=()=>{const v=!s.on;if(s.bi){off=v?off.filter(x=>x!==s.id):[...off,s.id]}else{const u=U.find(x=>x.id===s.id);u&&(u.on=v)}save();!v&&active===s.id&&setActive(null);draw()};r.appendChild(sw);
+const d=el("p","sk-d",s.desc||s.ins.slice(0,90));const a=el("div","sk-btns");
+const use=el("button","sk-btn pri","Gunakan");use.type="button";use.disabled=!s.on;use.onclick=()=>{window.bekkiNew();setActive(s.id);toast("Skill aktif: "+s.name);inp.focus()};a.appendChild(use);
+if(!s.bi){const ed=el("button","sk-btn","Edit");ed.type="button";ed.onclick=()=>dlg(U.find(x=>x.id===s.id));const dl=el("button","sk-btn dg","Hapus");dl.type="button";dl.onclick=()=>window.bekkiConfirm("Hapus skill ini?","Skill “"+s.name+"” akan dihapus.","Hapus",()=>{U=U.filter(x=>x.id!==s.id);save();active===s.id&&setActive(null);draw()});a.append(ed,dl)}
+else{const iv=el("button","sk-btn","Lihat instruksi");iv.type="button";iv.onclick=()=>dlg(s,!0);a.appendChild(iv)}
+c.append(r,d,a);ls.appendChild(c)})}}
+/* dialog buat/edit */
+function dlg(sk,ro){if(document.querySelector(".sk-dl"))return;const bk=el("div","pd-back"),pn=el("div","pd pj-dl sk-dl");pn.setAttribute("role","dialog");pn.setAttribute("aria-modal","true");
+const x=el("button","pj-dx");x.type="button";x.setAttribute("aria-label","Tutup");x.innerHTML=XI;
+const t=el("h3","pj-dt",ro?sk.name:sk?"Edit skill":"Buat skill");
+const l1=el("div","sk-lb","Nama"),i1=el("input","sk-in");i1.maxLength=40;i1.placeholder="Contoh: Guru matematika";i1.value=sk?sk.name:"";
+const l2=el("div","sk-lb","Deskripsi singkat"),i2=el("input","sk-in");i2.maxLength=90;i2.placeholder="Untuk apa skill ini?";i2.value=sk?sk.desc||"":"";
+const l3=el("div","sk-lb","Instruksi"),ta=el("textarea");ta.rows=7;ta.maxLength=4000;ta.placeholder="Contoh: Jawab sebagai guru matematika yang sabar. Jelaskan langkah demi langkah dan beri satu soal latihan di akhir.";ta.value=sk?sk.ins:"";
+pn.append(x,t);if(ro){const p=el("p","sk-ro",sk.ins);pn.appendChild(p)}else{pn.append(l1,i1,l2,i2,l3,ta);const sv=el("button","pj-save","Simpan");sv.type="button";sv.style.marginTop="22px";sv.onclick=()=>{const n=i1.value.trim(),ins=ta.value.trim();if(!n||!ins){toast("Nama dan instruksi wajib diisi");return}
+if(sk){sk.name=n;sk.desc=i2.value.trim();sk.ins=ins}else U.unshift({id:"s"+Date.now().toString(36),name:n,desc:i2.value.trim(),ins,on:!0});save();end();window.__skDraw&&window.__skDraw();toast("Skill disimpan")};pn.appendChild(sv)}
+bk.appendChild(pn);document.body.appendChild(bk);
+const kd=e=>{e.key==="Escape"&&(e.stopPropagation(),end())};function end(){document.removeEventListener("keydown",kd,!0);bk.classList.add("out");setTimeout(()=>bk.remove(),180)}
+x.onclick=end;bk.addEventListener("pointerdown",e=>{e.target===bk&&end()});document.addEventListener("keydown",kd,!0);ro||setTimeout(()=>i1.focus(),60)}
+const it=document.querySelector('.ctx-it[data-soon="Skills"]');it&&it.addEventListener("click",e=>{e.stopPropagation();openP()});
+window.bekkiSkills=()=>openP()})();
