@@ -599,8 +599,16 @@ const kd=e=>{e.key==="Escape"&&(e.stopPropagation(),end())};function end(){docum
 x.onclick=end;bk.addEventListener("pointerdown",e=>{e.target===bk&&end()});document.addEventListener("keydown",kd,!0);setTimeout(()=>fm._f&&fm._f.focus(),60)}
 const it=document.querySelector('.ctx-it[data-soon="Connectors"]');it&&it.addEventListener("click",e=>{e.stopPropagation();openP()})})();
 
-/* keyboard: kolom chat ikut naik, layar tidak bergeser */
-(()=>{const vv=window.visualViewport;if(!vv)return;const r=document.documentElement;let raf=0;
-const upd=()=>{raf=0;const kb=window.innerHeight-vv.height-vv.offsetTop;if(kb>60||vv.offsetTop>1&&window.innerHeight-vv.height>60){r.style.setProperty("--vvh",Math.round(vv.height)+"px");r.style.setProperty("--vvt",Math.round(vv.offsetTop)+"px");r.classList.add("kb")}else{r.style.removeProperty("--vvh");r.style.removeProperty("--vvt");r.classList.remove("kb")}window.scrollTo(0,0)};
-const sch=()=>{raf||(raf=requestAnimationFrame(upd))};vv.addEventListener("resize",sch);vv.addEventListener("scroll",sch);window.addEventListener("orientationchange",()=>setTimeout(upd,300));
-document.addEventListener("focusin",e=>{e.target&&e.target.matches&&e.target.matches("textarea,input")&&setTimeout(upd,250)})})();
+/* keyboard: kolom chat ikut naik di chat; di halaman New chat tetap diam */
+(()=>{const vv=window.visualViewport;if(!vv)return;const r=document.documentElement;let raf=0,full=window.innerHeight,fw=window.innerWidth;
+const home=()=>!!document.querySelector(".main.home");
+const clr=()=>{["--vvh","--vvt","--hfix"].forEach(k=>r.style.removeProperty(k));r.classList.remove("kb","kb-home")};
+const upd=()=>{raf=0;if(window.innerWidth!==fw){fw=window.innerWidth;full=Math.max(window.innerHeight,vv.height)}
+const kb=vv.height<full-120;
+if(!kb){clr();if(window.innerHeight>full-60)full=Math.max(full,window.innerHeight);return}
+if(home()){r.classList.remove("kb");r.style.removeProperty("--vvh");r.style.removeProperty("--vvt");r.style.setProperty("--hfix",full+"px");r.classList.add("kb-home")}
+else{r.classList.remove("kb-home");r.style.removeProperty("--hfix");r.style.setProperty("--vvh",Math.round(vv.height)+"px");r.style.setProperty("--vvt",Math.round(vv.offsetTop)+"px");r.classList.add("kb")}
+window.scrollTo(0,0)};
+const sch=()=>{raf||(raf=requestAnimationFrame(upd))};vv.addEventListener("resize",sch);vv.addEventListener("scroll",sch);window.addEventListener("resize",sch);window.addEventListener("orientationchange",()=>setTimeout(()=>{full=window.innerHeight;upd()},400));
+document.addEventListener("focusin",e=>{e.target&&e.target.matches&&e.target.matches("textarea,input")&&setTimeout(upd,250)});
+const mn=document.querySelector(".main");mn&&new MutationObserver(sch).observe(mn,{attributes:!0,attributeFilter:["class"]})})();
