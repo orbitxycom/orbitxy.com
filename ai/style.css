@@ -903,3 +903,43 @@ html.kb,html.kb body{overflow:hidden}
 
 html.kb-home .app{height:var(--hfix)}
 html.kb-home,html.kb-home body{overflow:hidden}
+
+/* halaman proyek: tampilan baru */
+.pj::before{content:"";position:absolute;left:0;right:0;top:0;height:300px;pointer-events:none;z-index:0;background:radial-gradient(60% 100% at 30% 0,color-mix(in oklab,#5bb4f6 15%,transparent),transparent 70%),radial-gradient(45% 85% at 90% 0,color-mix(in oklab,#6446da 11%,transparent),transparent 70%)}
+.pj>*{position:relative;z-index:1}
+.pj-hd{gap:16px}
+.pj-ic{width:58px;height:58px;font-size:29px;background:var(--card);border:1px solid color-mix(in oklab,var(--foreground) 10%,transparent);box-shadow:0 6px 20px -10px rgba(0,0,0,.3)}
+.pj-nb{flex:1;min-width:0}
+.pj-nb .pj-nm{display:block;font-size:clamp(22px,6vw,30px);line-height:1.15}
+.pj-meta{margin-top:4px;font-size:13.5px;color:color-mix(in oklab,var(--foreground) 55%,transparent);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pj-more{background:var(--card);border:1px solid color-mix(in oklab,var(--foreground) 10%,transparent)}
+.pj .pj-tabs{gap:4px;padding:4px;margin-top:24px;border:0;border-radius:14px;background:color-mix(in oklab,var(--foreground) 6%,transparent)}
+.pj .pj-tab{display:flex;align-items:center;justify-content:center;gap:8px;padding:10px 0;margin:0;border:0;border-radius:10px;font-size:14.5px;font-weight:500}
+.pj .pj-tab.on{background:var(--background);color:var(--foreground);box-shadow:0 1px 4px rgba(0,0,0,.14)}
+.pj-bd{padding:1px 8px;border-radius:999px;font-size:12px;background:color-mix(in oklab,var(--foreground) 9%,transparent)}
+.pj-pane{padding-top:6px}
+.pj-ls{gap:8px;padding-top:14px}
+.pj-ci{gap:12px;padding:14px 14px 14px 16px;border:1px solid color-mix(in oklab,var(--foreground) 9%,transparent);border-radius:16px;background:var(--card);transition:border-color .15s,transform .15s,box-shadow .15s}
+.pj-ci:hover{background:var(--card);border-color:color-mix(in oklab,var(--foreground) 22%,transparent);transform:translateY(-1px);box-shadow:0 8px 22px -14px rgba(0,0,0,.35)}
+.pj-cm{flex:1;min-width:0;display:block}
+.pj-cm .pj-ct{display:block;font-size:15.5px;font-weight:500}
+.pj-cs{display:block;margin-top:3px;font-size:13.5px;color:color-mix(in oklab,var(--foreground) 52%,transparent);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pj-cr2{flex:none;display:flex;flex-direction:column;align-items:flex-end;gap:3px}
+.pj-cn{font-size:11.5px;color:color-mix(in oklab,var(--foreground) 45%,transparent)}
+.pj-ch2{flex:none;width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;opacity:.4}
+.pj-card{margin-top:12px;padding:16px;border-radius:16px;border:1px solid color-mix(in oklab,var(--foreground) 10%,transparent);background:var(--card)}
+.pj-card.tap{cursor:pointer;transition:border-color .15s}
+.pj-card.tap:hover{border-color:color-mix(in oklab,var(--foreground) 24%,transparent)}
+.pj-card .pj-sl{margin:0}
+.pj-card .pj-sv{margin-top:6px}
+.pj-card .pj-sv.ph{color:color-mix(in oklab,var(--foreground) 42%,transparent)}
+.pj-ch{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:30px}
+.pj-mini{height:30px;padding:0 13px;border-radius:9px;font-size:13px;font-weight:500;background:color-mix(in oklab,var(--foreground) 8%,transparent);color:var(--foreground)}
+.pj-mini:hover{background:color-mix(in oklab,var(--foreground) 14%,transparent)}
+.pj-cx{display:flex;align-items:center;gap:16px}
+.pj-cxt{flex:1;min-width:0}
+.pj-files{border-style:dashed;text-align:center;padding:26px 16px 20px}
+.pj-files>svg{width:30px;height:30px;margin:0 auto 10px;display:block;fill:none;stroke:color-mix(in oklab,var(--foreground) 50%,transparent);stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.pj-files .pj-btn{margin-top:16px}
+.pj-cbox{border-radius:22px;box-shadow:0 10px 32px -14px rgba(0,0,0,.28);transition:border-color .15s}
+.pj-cbox:focus-within{border-color:color-mix(in oklab,var(--foreground) 35%,transparent)}
