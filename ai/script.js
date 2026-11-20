@@ -616,3 +616,10 @@ window.scrollTo(0,0)};
 const sch=()=>{raf||(raf=requestAnimationFrame(upd))};vv.addEventListener("resize",sch);vv.addEventListener("scroll",sch);window.addEventListener("resize",sch);window.addEventListener("orientationchange",()=>setTimeout(()=>{full=window.innerHeight;upd()},400));
 document.addEventListener("focusin",e=>{e.target&&e.target.matches&&e.target.matches("textarea,input")&&setTimeout(upd,250)});
 const mn=document.querySelector(".main");mn&&new MutationObserver(sch).observe(mn,{attributes:!0,attributeFilter:["class"]})})();
+
+/* skeleton muncul sebentar saat kembali ke website */
+(()=>{let t0=0,tm=0;const r=document.documentElement,MIN=2000,SHOW=900;
+const hide=()=>{t0=Date.now()};
+const back=()=>{if(!t0||Date.now()-t0<MIN||!r.classList.contains("auth-ok"))return;t0=0;try{window.__sklFit&&window.__sklFit(window.bekkiCur&&window.bekkiCur())}catch{}r.classList.add("skl-on");clearTimeout(tm);tm=setTimeout(()=>r.classList.remove("skl-on"),SHOW)};
+document.addEventListener("visibilitychange",()=>document.hidden?hide():back());
+window.addEventListener("pagehide",hide);window.addEventListener("pageshow",e=>{e.persisted&&back()})})();
