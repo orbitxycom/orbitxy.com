@@ -389,7 +389,7 @@ if(matchMedia("(max-width:768px)").matches&&SB)SB.classList.add("closed");
 pg=el("div","pj");pg.id="prjPage";
 const top=el("div","pj-top"),tg=el("button","icon-btn");tg.type="button";tg.setAttribute("aria-label","Sidebar");tg.style.color="var(--foreground)";tg.innerHTML=SVG;tg.onclick=e=>{e.stopPropagation();SB&&SB.classList.toggle("closed")};top.appendChild(tg);
 const body=el("div","pj-body"),hd=el("div","pj-hd"),ic=el("span","pj-ic"),nm=el("h2","pj-nm"),more=el("button","pj-more");more.type="button";more.setAttribute("aria-label","Menu proyek");more.innerHTML='<svg viewBox="0 0 24 24"><circle cx="5" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="19" cy="12" r="1.6"/></svg>';
-hd.append(ic,nm,more);
+const nb=el("div","pj-nb"),meta=el("div","pj-meta");nb.append(nm,meta);hd.append(ic,nb,more);
 const tabs=el("div","pj-tabs"),t0=el("button","pj-tab","Conversations"),t1=el("button","pj-tab","Settings");[t0,t1].forEach(b=>{b.type="button";b.setAttribute("role","tab")});tabs.append(t0,t1);
 const pane=el("div","pj-pane");body.append(hd,tabs,pane);
 /* composer */
@@ -398,17 +398,21 @@ const fit=()=>{ta.style.height="auto";ta.style.height=Math.min(160,ta.scrollHeig
 const send=()=>{const v=ta.value.trim();if(!v)return;const pid=cur;window.bekkiNew();window.bekkiPid=pid;const inp=$("input");inp.value=v;inp.dispatchEvent(new Event("input",{bubbles:!0}));$("send").click()};
 ta.oninput=fit;ta.onkeydown=e=>{if(e.key==="Enter"&&!e.shiftKey&&!e.isComposing){e.preventDefault();send()}};sd.onclick=send;
 pg.append(top,body,comp);main.appendChild(pg);
-function head(){const p=proj();if(!p)return close();ic.textContent=p.icon||"\u{1F4C1}";nm.textContent=p.name;nm.title=p.name}
-function draw(){const p=proj();if(!p)return close();t0.classList.toggle("on",tab===0);t1.classList.toggle("on",tab===1);t0.setAttribute("aria-selected",tab===0);t1.setAttribute("aria-selected",tab===1);comp.hidden=tab!==0;pane.textContent="";
-if(tab===0){const cs=(window.bekkiChats?window.bekkiChats():[]).filter(c=>c.pid===p.id&&!c.arc&&c.msgs&&c.msgs.length).sort((x,y)=>(y.u||0)-(x.u||0));
-if(!cs.length){const em=el("div","pj-em");em.innerHTML='<svg viewBox="0 0 48 48" aria-hidden="true"><path d="M6 8h20a3 3 0 0 1 3 3v10a3 3 0 0 1-3 3H15l-6 5v-5H6a3 3 0 0 1-3-3V11a3 3 0 0 1 3-3z"/><path d="M22 20h18a3 3 0 0 1 3 3v10a3 3 0 0 1-3 3h-3v5l-6-5H22a3 3 0 0 1-3-3V23a3 3 0 0 1 3-3z"/><path d="M26 28h.01M31 28h.01M36 28h.01"/></svg>';em.append(el("div","pj-et","No conversations yet"),el("div","pj-es","Every big idea starts with a chat. What\u2019s yours? Let\u2019s talk!"));pane.appendChild(em)}
-else{const ul=el("div","pj-ls");cs.forEach(c=>{const b=el("button","pj-ci");b.type="button";b.append(el("span","pj-ct",c.title),el("span","pj-cd",dt(c.u)));b.onclick=()=>window.bekkiOpen(c.id);ul.appendChild(b)});pane.appendChild(ul)}}
-else{const sec=(l,v,x)=>{const d=el("div","pj-sec");d.append(el("div","pj-sl",l));if(v!=null){const e=el("div","pj-sv",v);d.appendChild(e)}x&&d.appendChild(x);pane.appendChild(d);return d};
-const TL=(TONES.find(x=>x[0]===(p.tone||""))||TONES[0])[1];const tone=sec("Tone",TL);tone.classList.add("tap");tone.onclick=()=>dlgIns(p);
-const insD=sec("Instructions",p.ins&&p.ins.trim()?p.ins.trim():"No instructions set for this project");insD.querySelector(".pj-sv").classList.toggle("ph",!(p.ins&&p.ins.trim()));
-const cb=el("button","pj-btn","Customize");cb.type="button";cb.onclick=()=>dlgIns(p);pane.appendChild(cb);
-const ac=el("div","pj-sec");ac.appendChild(el("div","pj-sl","Additional Context"));const lb=el("label","pj-ck"),ck=el("input");ck.type="checkbox";ck.checked=p.ctx!==!1;ck.onchange=()=>{p.ctx=ck.checked;API().save()};lb.append(ck,el("span",null,"Include other chats in this project as context"));ac.appendChild(lb);pane.appendChild(ac);
-pane.appendChild(el("div","pj-hr"));pane.appendChild(el("div","pj-nf","No files uploaded"));const up=el("button","pj-btn pri","Upload files");up.type="button";up.onclick=()=>toast("Unggah file segera hadir");pane.appendChild(up)}
+function head(){const p=proj();if(!p)return close();ic.textContent=p.icon||"\u{1F4C1}";nm.textContent=p.name;nm.title=p.name;ta.placeholder="Mulai chat baru di "+p.name+"\u2026"}
+function draw(){const p=proj();if(!p)return close();const cs=(window.bekkiChats?window.bekkiChats():[]).filter(c=>c.pid===p.id&&!c.arc&&c.msgs&&c.msgs.length).sort((x,y)=>(y.u||0)-(x.u||0));
+const TL=(TONES.find(x=>x[0]===(p.tone||""))||TONES[0])[1];meta.textContent=cs.length+" percakapan · Tone: "+TL.replace(" (Global)","");
+t0.textContent="Conversations";cs.length&&t0.appendChild(el("span","pj-bd",String(cs.length)));t1.textContent="Settings";
+t0.classList.toggle("on",tab===0);t1.classList.toggle("on",tab===1);t0.setAttribute("aria-selected",tab===0);t1.setAttribute("aria-selected",tab===1);comp.hidden=tab!==0;pane.textContent="";
+if(tab===0){
+if(!cs.length){const em=el("div","pj-em");em.innerHTML='<svg viewBox="0 0 48 48" aria-hidden="true"><path d="M6 8h20a3 3 0 0 1 3 3v10a3 3 0 0 1-3 3H15l-6 5v-5H6a3 3 0 0 1-3-3V11a3 3 0 0 1 3-3z"/><path d="M22 20h18a3 3 0 0 1 3 3v10a3 3 0 0 1-3 3h-3v5l-6-5H22a3 3 0 0 1-3-3V23a3 3 0 0 1 3-3z"/><path d="M26 28h.01M31 28h.01M36 28h.01"/></svg>';em.append(el("div","pj-et","No conversations yet"),el("div","pj-es","Every big idea starts with a chat. What’s yours? Let’s talk!"));pane.appendChild(em)}
+else{const ul=el("div","pj-ls");cs.forEach(c=>{const b=el("button","pj-ci");b.type="button";const last=c.msgs[c.msgs.length-1],sn=String(last&&last.content||"").replace(/[#*`>_~|]/g," ").replace(/\s+/g," ").trim().slice(0,100);const m=el("span","pj-cm");m.appendChild(el("span","pj-ct",c.title));sn&&m.appendChild(el("span","pj-cs",sn));const r=el("span","pj-cr2");r.append(el("span","pj-cd",dt(c.u)),el("span","pj-cn",c.msgs.length+" pesan"));b.append(m,r);b.insertAdjacentHTML("beforeend",'<svg class="pj-ch2" viewBox="0 0 24 24"><path d="m9 6 6 6-6 6"/></svg>');b.onclick=()=>window.bekkiOpen(c.id);ul.appendChild(b)});pane.appendChild(ul)}}
+else{const CV='<svg class="pj-ch2" viewBox="0 0 24 24"><path d="m9 6 6 6-6 6"/></svg>';
+const card=(l,v,cls)=>{const d=el("div","pj-card"+(cls?" "+cls:"")),h=el("div","pj-ch");h.appendChild(el("div","pj-sl",l));d.appendChild(h);if(v!=null)d.appendChild(el("div","pj-sv",v));pane.appendChild(d);return d};
+const tone=card("Tone",TL,"tap");tone.querySelector(".pj-ch").insertAdjacentHTML("beforeend",CV);tone.onclick=()=>dlgIns(p);
+const has=!!(p.ins&&p.ins.trim());const ins=card("Instructions",has?p.ins.trim():"No instructions set for this project");ins.querySelector(".pj-sv").classList.toggle("ph",!has);
+const cb=el("button","pj-mini",has?"Edit":"Customize");cb.type="button";cb.onclick=()=>dlgIns(p);ins.querySelector(".pj-ch").appendChild(cb);
+const cx=el("div","pj-card pj-cx"),tx=el("div","pj-cxt");tx.append(el("div","pj-sl","Additional Context"),el("div","pj-sv","Include other chats in this project as context"));const sw=el("button","sk-sw");sw.type="button";sw.setAttribute("role","switch");sw.setAttribute("aria-label","Additional Context");sw.setAttribute("aria-checked",p.ctx!==!1?"true":"false");sw.onclick=()=>{p.ctx=p.ctx===!1;API().save();sw.setAttribute("aria-checked",p.ctx!==!1?"true":"false")};cx.append(tx,sw);cx.onclick=e=>{e.target.closest(".sk-sw")||sw.click()};cx.style.cursor="pointer";pane.appendChild(cx);
+const fl=el("div","pj-card pj-files");fl.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 16V4M7 9l5-5 5 5M4 20h16"/></svg>';fl.append(el("div","pj-sl","No files uploaded"),el("div","pj-sv","Tambahkan file sebagai bahan rujukan proyek."));const up=el("button","pj-btn pri","Upload files");up.type="button";up.onclick=()=>toast("Unggah file segera hadir");fl.appendChild(up);pane.appendChild(fl)}
 }
 function dlgIns(p){if(document.querySelector(".pj-dl"))return;let tone=p.tone||"",menu=null;
 const bk=el("div","pd-back"),pn=el("div","pd pj-dl");pn.setAttribute("role","dialog");pn.setAttribute("aria-modal","true");pn.setAttribute("aria-label","Instructions");
