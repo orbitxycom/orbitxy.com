@@ -3,312 +3,480 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Bekki — Asisten AI dari Orbitxy</title>
-<meta name="description" content="Bekki adalah asisten AI pribadi dari Orbitxy. Ngobrol, bertanya, dan selesaikan pekerjaan dengan lebih cepat.">
+<title>Bekki — Asisten AI dari Orbitxy | Gratis, Tanpa Instalasi</title>
+<meta name="description" content="Bekki adalah asisten AI pribadi dari Orbitxy. Ngobrol, bertanya, menulis, dan selesaikan pekerjaan lewat percakapan sederhana langsung di browser. Gratis.">
+<meta name="keywords" content="Bekki, Orbitxy, asisten AI, chatbot Indonesia, AI gratis, chat AI, AI bahasa Indonesia">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://orbitxy.com/ai/">
 <meta property="og:type" content="website">
 <meta property="og:title" content="Bekki — Asisten AI dari Orbitxy">
 <meta property="og:description" content="Ngobrol, bertanya, dan selesaikan pekerjaan dengan lebih cepat. Bekki 1.1 gratis.">
+<meta property="og:url" content="https://orbitxy.com/ai/">
 <meta property="og:image" content="https://orbitxy.com/ai/og-image.png">
+<meta property="og:locale" content="id_ID">
+<meta property="og:site_name" content="Bekki">
 <meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Bekki — Asisten AI dari Orbitxy">
+<meta name="twitter:description" content="Ngobrol, bertanya, dan selesaikan pekerjaan dengan lebih cepat. Bekki 1.1 gratis.">
+<meta name="twitter:image" content="https://orbitxy.com/ai/og-image.png">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 -.5 8 8'%3E%3Crect y='-.5' width='8' height='8' fill='%23000'/%3E%3Cg shape-rendering='crispEdges'%3E%3Cpath fill='%23ade4ff' d='M.5 0h1v1h-1zM6.5 0h1v1h-1z'/%3E%3Cpath fill='%238fd9f2' d='M.5 1h2v1h-2zM5.5 1h2v1h-2z'/%3E%3Cpath fill='%237adec4' d='M.5 2h7v1h-7z'/%3E%3Cpath fill='%2362d991' d='M.5 3h1v1h-1zM2.5 3h3v1h-3zM6.5 3h1v1h-1z'/%3E%3Cpath fill='%237b8ff0' d='M.5 4h3v1h-3zM4.5 4h3v1h-3z'/%3E%3Cpath fill='%236648d9' d='M.5 5h2v1h-2zM5.5 5h2v1h-2zM3 5h.5v.5H3zM4.5 5h.5v.5h-.5z'/%3E%3Cpath fill='%233a22a3' d='M0 6h8v1H0z'/%3E%3C/g%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700;800&family=Geist:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#f5f7ff;--ink:#15112e;--mute:#5b5877;--line:rgba(21,17,46,.2);--card:#fff;--inv:#15112e;--inv-ink:#f5f7ff;--sun:#7adec4;--amber:#7b8ff0;--orange:#6648d9;--flame:linear-gradient(90deg,#ade4ff,#7adec4 45%,#7b8ff0)}
-:root:not([data-theme="light"]){color-scheme:light}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#07060d;--ink:#eef1ff;--mute:#9a9cc2;--line:rgba(238,241,255,.2);--card:#100e1c;--inv:#140f33;--inv-ink:#eef1ff;color-scheme:dark}}
-:root[data-theme="dark"]{--bg:#07060d;--ink:#eef1ff;--mute:#9a9cc2;--line:rgba(238,241,255,.2);--card:#100e1c;--inv:#140f33;--inv-ink:#eef1ff;color-scheme:dark}
-:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
-html{scroll-behavior:smooth;scroll-padding-top:calc(72px + env(safe-area-inset-top,0px));height:100%}
-*,*::before,*::after{box-sizing:inherit;margin:0;padding:0}
-body{font-family:"Inter Tight",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;background:var(--bg);color:var(--ink);line-height:1.55;-webkit-font-smoothing:antialiased;min-height:100%}
-body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);background:var(--bg);z-index:10}
+:root{
+  --bg:#f5f7ff;--ink:#15112e;--mute:#5b5877;--line:rgba(21,17,46,.14);
+  --card:#fff;--inv:#0d0a20;--inv-ink:#f5f7ff;--sun:#7adec4;--amber:#7b8ff0;
+  --orange:#6648d9;--sky:#8fd9f2;--mint:#62d991;
+  --flame:linear-gradient(90deg,#ade4ff,#7adec4 45%,#7b8ff0);
+  --mesh:radial-gradient(ellipse 60% 50% at 20% 0%,rgba(173,228,255,.55),transparent 60%),
+         radial-gradient(ellipse 50% 40% at 80% 10%,rgba(122,222,196,.45),transparent 60%),
+         radial-gradient(ellipse 60% 50% at 50% 100%,rgba(123,143,240,.35),transparent 60%);
+  --soft:rgba(127,127,160,.08);
+  --shadow-sm:0 2px 8px -2px rgba(21,17,46,.08);
+  --shadow-md:0 12px 32px -12px rgba(21,17,46,.18);
+  --shadow-lg:0 32px 80px -24px rgba(21,17,46,.28);
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#07060d;--ink:#eef1ff;--mute:#9a9cc2;--line:rgba(238,241,255,.16);
+    --card:#100e1c;--inv:#050310;--inv-ink:#eef1ff;--soft:rgba(200,200,255,.06);
+    --shadow-sm:0 2px 8px -2px rgba(0,0,0,.5);
+    --shadow-md:0 12px 32px -12px rgba(0,0,0,.6);
+    --shadow-lg:0 32px 80px -24px rgba(0,0,0,.8);
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#07060d;--ink:#eef1ff;--mute:#9a9cc2;--line:rgba(238,241,255,.16);
+  --card:#100e1c;--inv:#050310;--inv-ink:#eef1ff;--soft:rgba(200,200,255,.06);
+  --shadow-sm:0 2px 8px -2px rgba(0,0,0,.5);
+  --shadow-md:0 12px 32px -12px rgba(0,0,0,.6);
+  --shadow-lg:0 32px 80px -24px rgba(0,0,0,.8);
+  color-scheme:dark;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;scroll-padding-top:96px;height:100%}
+body{font-family:"Inter Tight",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;background:var(--bg);color:var(--ink);line-height:1.55;-webkit-font-smoothing:antialiased;min-height:100%;overflow-x:hidden}
 a{color:inherit;text-decoration:none}
 :focus-visible{outline:2px solid var(--orange);outline-offset:3px}
+img,svg{display:block;max-width:100%}
 .wrap{max-width:1200px;margin:0 auto;padding:0 28px}
+.skip{position:absolute;left:-9999px;top:0;background:var(--ink);color:var(--bg);padding:12px 20px;z-index:1000}
+.skip:focus{left:12px;top:12px}
 
-header{position:sticky;top:env(safe-area-inset-top,0px);z-index:100;background:var(--bg);border-bottom:1px solid var(--line)}
+/* ===== Banner ===== */
+.banner{background:var(--flame);color:#1f1f1f;text-align:center;font-size:.88rem;padding:9px 16px;font-weight:500;position:relative;overflow:hidden}
+.banner::before{content:"";position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,.35),transparent);animation:shine 3s infinite}
+@keyframes shine{0%{transform:translateX(-100%)}100%{transform:translateX(100%)}}
+.banner a{text-decoration:underline;text-underline-offset:3px;margin-left:6px;position:relative;z-index:1}
+.banner a:hover{opacity:.75}
+
+/* ===== Header ===== */
+header{position:sticky;top:0;z-index:100;background:color-mix(in srgb,var(--bg) 85%,transparent);border-bottom:1px solid var(--line);backdrop-filter:blur(14px)}
 .nav{display:flex;align-items:center;justify-content:space-between;height:72px;gap:16px}
-.logo{display:flex;align-items:center;gap:10px;font-size:1.25rem;font-weight:600;letter-spacing:-.03em}
-.mark{width:32px;height:32px;background:#000;display:grid;place-items:center}
+.logo{display:flex;align-items:center;gap:10px;font-size:1.25rem;font-weight:700;letter-spacing:-.03em}
+.mark{width:34px;height:34px;background:#000;display:grid;place-items:center;transition:transform .3s}
+.logo:hover .mark{transform:rotate(-8deg) scale(1.05)}
 .mark svg{width:26px;height:26px}
-.links{display:flex;gap:0;list-style:none;height:72px}
-.links a{display:flex;align-items:center;height:72px;padding:0 20px;border-left:1px solid var(--line);font-size:.95rem;color:var(--mute);transition:color .15s,background .15s}
-.links a:hover{color:var(--ink);background:var(--card)}
+.links{display:flex;list-style:none;height:72px}
+.links a{display:flex;align-items:center;height:72px;padding:0 20px;border-left:1px solid var(--line);font-size:.95rem;color:var(--mute);transition:color .15s,background .15s;position:relative}
+.links a::after{content:"";position:absolute;left:20px;right:20px;bottom:22px;height:2px;background:var(--orange);transform:scaleX(0);transform-origin:left;transition:transform .25s}
+.links a:hover{color:var(--ink)}
+.links a:hover::after{transform:scaleX(1)}
 .right{display:flex;align-items:stretch;gap:0;height:72px}
-.btn{display:inline-flex;align-items:center;justify-content:center;padding:13px 24px;font:500 .95rem/1 inherit;font-family:inherit;background:var(--ink);color:var(--bg);border:1px solid var(--ink);cursor:pointer;transition:background .15s,color .15s}
-.btn:hover{background:var(--orange);border-color:var(--orange);color:#fff}
-.btn.ghost{background:transparent;color:var(--ink);border-color:var(--ink)}
-.btn.ghost:hover{background:var(--ink);color:var(--bg)}
-.btn.sm{padding:0 26px;height:72px;border-width:0}
-.icon-btn{width:56px;height:72px;background:transparent;border:0;border-left:1px solid var(--line);color:var(--ink);font-size:1.05rem;cursor:pointer}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:13px 24px;font:600 .95rem/1 inherit;font-family:inherit;background:var(--ink);color:var(--bg);border:1px solid var(--ink);cursor:pointer;transition:all .2s;white-space:nowrap;position:relative;overflow:hidden}
+.btn::before{content:"";position:absolute;inset:0;background:linear-gradient(135deg,var(--orange),var(--amber));opacity:0;transition:opacity .25s;z-index:-1}
+.btn:hover{transform:translateY(-1px);box-shadow:var(--shadow-md);border-color:transparent}
+.btn:hover::before{opacity:1}
+.btn.ghost{background:transparent;color:var(--ink)}
+.btn.ghost::before{display:none}
+.btn.ghost:hover{background:var(--ink);color:var(--bg);box-shadow:none}
+.btn.sm{padding:0 24px;height:72px;border-width:0}
+.icon-btn{width:56px;height:72px;background:transparent;border:0;border-left:1px solid var(--line);color:var(--ink);font-size:1.05rem;cursor:pointer;transition:background .15s}
 .icon-btn:hover{background:var(--card)}
 #menu{display:none}
 
-.tag{display:inline-flex;align-items:center;gap:10px;border:1px solid var(--line);padding:6px 14px;font-size:.85rem;margin-bottom:28px}
-.tag i{width:9px;height:9px;background:var(--orange)}
-h1{font-size:clamp(2.7rem,6.4vw,5.3rem);font-weight:400;line-height:1.01;letter-spacing:-.045em;margin-bottom:28px}
-.lead{font-size:1.2rem;color:var(--mute);max-width:30em;margin-bottom:36px}
-.acts{display:flex;gap:12px;flex-wrap:wrap}
-
-.stage{position:relative;background:var(--flame);padding:104px 36px 36px;min-height:540px;display:flex;align-items:flex-end}
-.stairs{position:absolute;inset:0 0 auto;height:46%;display:flex;align-items:flex-start}
-.stairs.bottom{inset:auto 0 0;align-items:flex-end}
-.stairs span{flex:1;height:var(--h);background:var(--bg)}
-.chat{position:relative;width:100%;background:var(--bg);border:1px solid var(--ink);color:var(--ink)}
-.chat-bar{display:flex;gap:7px;align-items:center;padding:12px 16px;border-bottom:1px solid var(--line);font-size:.85rem;font-weight:500}
-.chat-bar i{width:9px;height:9px;background:var(--orange)}
-.chat-bar i:nth-child(2){background:var(--amber)}
-.chat-bar i:nth-child(3){background:var(--sun);margin-right:6px}
-.msgs{padding:20px;display:flex;flex-direction:column;gap:10px;min-height:300px}
-.msg{max-width:84%;padding:11px 15px;font-size:.93rem;line-height:1.45}
-.msg.u{align-self:flex-end;background:var(--sun);color:#1f1f1f}
-.msg.b{align-self:flex-start;border:1px solid var(--line)}
-.dots{display:flex;gap:5px;padding:15px 16px}
-.dots i{width:7px;height:7px;background:var(--mute);animation:bl 1.2s infinite}
-.dots i:nth-child(2){animation-delay:.2s}.dots i:nth-child(3){animation-delay:.4s}
-@keyframes bl{0%,100%{opacity:.25}50%{opacity:1}}
-
-section{padding:104px 0}
-.head{display:grid;grid-template-columns:1.1fr .9fr;gap:48px;align-items:end;margin-bottom:56px}
-h2{font-size:clamp(2rem,4.4vw,3.6rem);font-weight:400;line-height:1.05;letter-spacing:-.04em}
-.head p{color:var(--mute);font-size:1.1rem}
-
-.bento{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line);border:1px solid var(--line)}
-.cell{background:var(--bg);padding:32px;min-height:260px;display:flex;flex-direction:column;justify-content:space-between;gap:48px}
-.cell i{display:block;width:20px;height:20px;background:var(--c,var(--orange))}
-.cell h3{font-size:1.35rem;font-weight:500;letter-spacing:-.02em;margin-bottom:8px}
-.cell p{color:var(--mute);max-width:26em}
-.cell.hot{grid-column:span 2;background:var(--flame);color:#1f1f1f}
-.cell.hot p,.cell.sun p{color:#23204a}
-.cell.hot i,.cell.sun i{background:#1f1f1f}
-.cell.hot h3{font-size:2.1rem}
-.cell.sun{background:var(--sun);color:#1f1f1f}
-
-.list{border-bottom:1px solid var(--line)}
-.row{display:grid;grid-template-columns:1fr 1.3fr 56px;gap:32px;align-items:baseline;padding:30px 0;border-top:1px solid var(--line);transition:background .15s,padding .15s,color .15s}
-.row:hover{background:var(--sun);color:#1f1f1f;padding-left:20px;padding-right:20px}
-.row h3{font-size:clamp(1.6rem,3vw,2.4rem);font-weight:400;letter-spacing:-.035em}
-.row p{color:var(--mute)}
-.row:hover p{color:#23204a}
-
-.pill{display:inline-block;border:1px solid currentColor;padding:3px 10px;font-size:.82rem;margin-bottom:14px}
-.cell.off h3{color:var(--mute)}
-.cell.wide{grid-column:1/-1}
-.cell.w2{grid-column:span 2}
-.faq{border-bottom:1px solid var(--line)}
-.faq details{border-top:1px solid var(--line)}
-.faq summary{list-style:none;cursor:pointer;display:flex;justify-content:space-between;gap:24px;padding:26px 0;font-size:clamp(1.15rem,2vw,1.5rem);letter-spacing:-.02em}
-.faq summary::-webkit-details-marker{display:none}
-.faq summary::after{content:"+";font-size:1.6rem;line-height:1}
-.faq details[open] summary::after{content:"−"}
-.faq p{color:var(--mute);padding:0 0 26px;max-width:42em}
-.faq p a{text-decoration:underline}
-.peek{position:absolute;left:20px;bottom:100%;width:104px;height:91px;margin-bottom:-1px}
-.msg{animation:in .35s ease both}
-@keyframes in{from{opacity:0;transform:translateY(8px)}}
-.marq{display:flex;overflow:hidden;border-bottom:1px solid var(--line);padding:20px 0}
-.marq .g{display:flex;flex:none;min-width:100%;justify-content:space-around;gap:40px;padding-right:40px;animation:mq 32s linear infinite}
-.marq span{display:inline-flex;align-items:center;gap:40px;white-space:nowrap;font-size:clamp(1.3rem,2.6vw,2rem);letter-spacing:-.03em}
-.marq span::after{content:"";width:30px;height:26px;background:var(--cat) center/contain no-repeat}
-.marq span:nth-child(3n+1){--c:var(--sun)}
-.marq span:nth-child(3n+2){--c:var(--amber)}
-@keyframes mq{to{transform:translateX(-100%)}}
-.js .rv{opacity:0;transform:translateY(24px);transition:opacity .7s ease,transform .7s ease}
-.js .rv.in{opacity:1;transform:none}
-.sdiv{display:flex;align-items:flex-end;height:72px;background:var(--bg)}
-.sdiv span{flex:1;height:var(--h);background:var(--inv)}
-
-:root{--cat:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 7'%3E%3Cg shape-rendering='crispEdges'%3E%3Cpath fill='%23ade4ff' d='M.5 0h1v1h-1zM6.5 0h1v1h-1z'/%3E%3Cpath fill='%238fd9f2' d='M.5 1h2v1h-2zM5.5 1h2v1h-2z'/%3E%3Cpath fill='%237adec4' d='M.5 2h7v1h-7z'/%3E%3Cpath fill='%2362d991' d='M.5 3h1v1h-1zM2.5 3h3v1h-3zM6.5 3h1v1h-1z'/%3E%3Cpath fill='%237b8ff0' d='M.5 4h3v1h-3zM4.5 4h3v1h-3z'/%3E%3Cpath fill='%236648d9' d='M.5 5h2v1h-2zM5.5 5h2v1h-2zM3 5h.5v.5H3zM4.5 5h.5v.5h-.5z'/%3E%3Cpath fill='%233a22a3' d='M0 6h8v1H0z'/%3E%3C/g%3E%3C/svg%3E")}
-.sil{--c0:#15112e;--c1:#15112e;--c2:#15112e;--c3:#15112e;--c4:#15112e;--c5:#15112e;--c6:#15112e}
-.ghost{--c0:var(--line);--c1:var(--line);--c2:var(--line);--c3:var(--line);--c4:var(--line);--c5:var(--line);--c6:var(--line)}
-.vio{--c0:#7b8ff0;--c1:#7b8ff0;--c2:#6648d9;--c3:#6648d9;--c4:#6648d9;--c5:#3a22a3;--c6:#3a22a3}
-.ti{display:block;width:80px;height:70px}
-.blu{--c0:#a9e2ff;--c1:#9cdcff;--c2:#8ed6fe;--c3:#7fcbff;--c4:#5bb4f6;--c5:#2f8cdc;--c6:#0c3c86}
-.pill.on{background:var(--sun);color:#1f1f1f;border-color:var(--sun)}
-.pk{position:absolute;bottom:-32px;width:120px;height:105px}
-.pk.l{left:7%}
-.pk.r{right:9%;width:92px;height:80px;bottom:-24px}
-.sdiv{position:relative}
-.sdiv .st{position:absolute;left:calc(33.33% + 4px);bottom:30px;width:60px;height:52px}
-.row::after{content:"";width:48px;height:42px;align-self:center;justify-self:end;background:var(--cat) center/contain no-repeat;opacity:0;transform:translateX(10px);transition:opacity .2s,transform .2s}
-.row:hover::after{opacity:1;transform:none}
-.faq{position:relative}
-.faq::before{content:"";position:absolute;right:24px;bottom:100%;width:88px;height:77px;margin-bottom:-1px;background:var(--cat) center/contain no-repeat}
-h1::after{content:"";display:inline-block;width:.34em;height:.78em;margin-left:.1em;background:var(--orange);animation:cur 1.1s steps(1) infinite}
-@keyframes cur{50%{opacity:0}}
-.facts{display:flex;flex-wrap:wrap;gap:10px 24px;list-style:none;margin-top:28px;font-size:.92rem;color:var(--mute)}
+/* ===== Hero ===== */
+.hero{padding:80px 0 0;text-align:center;position:relative;overflow:hidden}
+.hero::before{content:"";position:absolute;inset:0;background:var(--mesh);opacity:.8;pointer-events:none;z-index:0}
+.hero::after{content:"";position:absolute;inset:0;background-image:radial-gradient(circle at 1px 1px,var(--line) 1px,transparent 0);background-size:32px 32px;opacity:.4;pointer-events:none;z-index:0;mask-image:linear-gradient(to bottom,black 0%,black 50%,transparent 100%)}
+.hero-in{position:relative;z-index:2;max-width:980px;margin:0 auto;padding:0 20px}
+.tag{display:inline-flex;align-items:center;gap:10px;border:1px solid var(--line);padding:7px 16px;font-size:.85rem;margin-bottom:28px;background:var(--card);box-shadow:var(--shadow-sm);backdrop-filter:blur(8px)}
+.tag i{width:9px;height:9px;background:var(--mint);border-radius:50%;position:relative}
+.tag i::after{content:"";position:absolute;inset:-3px;border-radius:50%;background:var(--mint);opacity:.4;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{transform:scale(1);opacity:.4}50%{transform:scale(1.8);opacity:0}}
+.hero h1{font-size:clamp(2.8rem,7vw,5.6rem);font-weight:800;line-height:.98;letter-spacing:-.05em;margin-bottom:24px;text-wrap:balance}
+.hero h1 .grad{background:linear-gradient(90deg,#6648d9,#7b8ff0 40%,#7adec4 80%);-webkit-background-clip:text;background-clip:text;color:transparent;position:relative}
+.inl{display:inline-block;width:.86em;height:.75em;vertical-align:-.02em;margin-left:.12em;animation:bob 3s ease-in-out infinite}
+@keyframes bob{50%{transform:translateY(-8px) rotate(-4deg)}}
+.hero .lead{font-size:1.2rem;color:var(--mute);max-width:34em;margin:0 auto 40px;line-height:1.6}
+.acts{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-bottom:56px}
+.facts{display:flex;flex-wrap:wrap;gap:12px 28px;list-style:none;justify-content:center;font-size:.92rem;color:var(--mute);margin-bottom:72px}
 .facts li{display:flex;align-items:center;gap:8px}
-.facts li::before{content:"";width:9px;height:9px;background:var(--c,var(--sun))}
+.facts li::before{content:"";width:9px;height:9px;background:var(--c,var(--sun));border-radius:2px;transform:rotate(45deg)}
 .facts li:nth-child(2){--c:var(--amber)}
 .facts li:nth-child(3){--c:var(--orange)}
-.peek{animation:bob 3.2s ease-in-out infinite}
-@keyframes bob{50%{transform:translateY(-7px)}}
-.pk{transition:transform .35s ease}
-.cta:hover .pk{transform:translateY(-16px)}
 
-.tw{animation:tw 2.4s steps(1) infinite}
-@keyframes tw{50%{opacity:.15}}
-.fl{transform-box:fill-box;transform-origin:right center;animation:fl .18s steps(1) infinite}
-@keyframes fl{50%{transform:scaleX(.65)}}
-.pf{animation:pf .9s linear infinite}
-@keyframes pf{0%{transform:translateX(0);opacity:.9}100%{transform:translateX(-26px);opacity:0}}
-.flag{animation:fw .6s steps(1) infinite}
-@keyframes fw{50%{width:3px}}
-.stage{order:-1;width:calc(100% - 40px);max-width:640px;margin:72px auto 24px}
-.dark{background:var(--inv);color:var(--inv-ink)}
+/* ===== Chat Mockup (mirip app Bekki) ===== */
+.preview{max-width:1040px;margin:0 auto;padding:0 20px;position:relative;z-index:2;perspective:2000px}
+.chat-mock{
+  background:#fafaf7;
+  border:1px solid rgba(0,0,0,.1);
+  overflow:hidden;
+  box-shadow:var(--shadow-lg);
+  transform:rotateX(3deg);
+  transition:transform .6s cubic-bezier(.22,1,.36,1);
+  border-radius:14px;
+  font-family:"Geist",ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;
+  color:#111;
+  color-scheme:light;
+  -webkit-font-smoothing:antialiased;
+}
+.chat-mock:hover{transform:rotateX(0deg)}
+.dark .chat-mock,:root[data-theme="dark"] .chat-mock{
+  background:#191919;
+  color:#eee;
+  border-color:rgba(255,255,255,.1);
+  color-scheme:dark;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]) .chat-mock{
+    background:#191919;
+    color:#eee;
+    border-color:rgba(255,255,255,.1);
+    color-scheme:dark;
+  }
+}
+.chat-mock *{box-sizing:border-box;margin:0;border-color:var(--cm-border)}
+.chat-mock{
+  --cm-bg:#fafaf7;
+  --cm-side:#f4f4f1;
+  --cm-card:#fff;
+  --cm-fg:#111;
+  --cm-muted:#6b6b6b;
+  --cm-border:rgba(0,0,0,.09);
+  --cm-border-side:rgba(0,0,0,.08);
+  --cm-accent:rgba(0,0,0,.06);
+  --cm-secondary:#ededeb;
+}
+.dark .chat-mock,:root[data-theme="dark"] .chat-mock{
+  --cm-bg:#1a1a1a;
+  --cm-side:#171717;
+  --cm-card:#242424;
+  --cm-fg:#eee;
+  --cm-muted:#9a9a9a;
+  --cm-border:rgba(255,255,255,.1);
+  --cm-border-side:rgba(255,255,255,.08);
+  --cm-accent:rgba(255,255,255,.06);
+  --cm-secondary:#2c2c2c;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]) .chat-mock{
+    --cm-bg:#1a1a1a;--cm-side:#171717;--cm-card:#242424;--cm-fg:#eee;--cm-muted:#9a9a9a;
+    --cm-border:rgba(255,255,255,.1);--cm-border-side:rgba(255,255,255,.08);
+    --cm-accent:rgba(255,255,255,.06);--cm-secondary:#2c2c2c;
+  }
+}
+/* layout */
+.cm-app{display:flex;min-height:460px}
+.cm-side{
+  width:200px;flex:none;background:var(--cm-side);
+  border-right:1px solid var(--cm-border-side);
+  display:flex;flex-direction:column;padding:10px 6px;
+}
+.cm-side-head{display:flex;justify-content:space-between;align-items:center;padding:0 4px 8px;color:var(--cm-muted)}
+.cm-side-head svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;opacity:.6}
+.cm-new{
+  display:flex;align-items:center;gap:6px;height:28px;padding:0 8px;
+  border:1px solid var(--cm-border-side);border-radius:6px;
+  font-size:11.5px;font-weight:500;color:var(--cm-fg);
+  margin-bottom:8px;cursor:default;
+}
+.cm-new svg{width:12px;height:12px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.cm-side-label{font-size:10px;color:var(--cm-muted);padding:6px 6px 3px;font-weight:500}
+.cm-side-item{
+  padding:5px 8px;border-radius:6px;font-size:11.5px;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  color:var(--cm-fg);opacity:.85;
+}
+.cm-side-item.on{background:var(--cm-accent);opacity:1;font-weight:500}
+/* main area */
+.cm-main{flex:1;display:flex;flex-direction:column;min-width:0;background:var(--cm-bg)}
+.cm-head{
+  height:44px;display:flex;align-items:center;gap:8px;
+  padding:0 12px;background:var(--cm-side);
+  border-bottom:1px solid var(--cm-border-side);
+}
+.cm-head-btn{
+  width:26px;height:26px;border-radius:6px;
+  display:grid;place-items:center;color:var(--cm-muted);
+}
+.cm-head-btn svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.cm-title{font-size:12px;font-weight:500;color:var(--cm-muted);padding:0 6px}
+/* chat body */
+.cm-body{flex:1;padding:16px 20px;display:flex;flex-direction:column;gap:14px;overflow:hidden}
+.cm-msg{display:flex;animation:cm-in .5s cubic-bezier(.16,1,.3,1) both}
+.cm-msg.user{justify-content:flex-end}
+.cm-msg.bot{align-items:flex-start;gap:10px}
+.cm-avatar{
+  width:24px;height:20px;flex:none;margin-top:2px;
+  background:var(--cm-fg);
+  -webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 13 11' shape-rendering='crispEdges'%3E%3Cpath d='M11 0h1v1h-1zM10 1h3v1h-3zM4 2h1v1h-1zM11 2h1v1h-1zM3 3h3v1h-3zM3 4h3v1h-3zM1 5h7v1h-7zM0 6h9v1h-9zM1 7h7v1h-7zM3 8h3v1h-3zM3 9h3v1h-3zM4 10h1v1h-1z'/%3E%3C/svg%3E") center/100% 100% no-repeat;
+  mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 13 11' shape-rendering='crispEdges'%3E%3Cpath d='M11 0h1v1h-1zM10 1h3v1h-3zM4 2h1v1h-1zM11 2h1v1h-1zM3 3h3v1h-3zM3 4h3v1h-3zM1 5h7v1h-7zM0 6h9v1h-9zM1 7h7v1h-7zM3 8h3v1h-3zM3 9h3v1h-3zM4 10h1v1h-1z'/%3E%3C/svg%3E") center/100% 100% no-repeat;
+}
+.cm-bubble{font-size:12.5px;line-height:1.55;max-width:82%}
+.cm-bubble p{margin:0 0 .5em}
+.cm-bubble p:last-child{margin:0}
+.cm-bubble ul{padding-left:1.2em;margin:0 0 .5em}
+.cm-bubble li{margin:.15em 0}
+.cm-msg.user .cm-bubble{
+  background:var(--cm-secondary);padding:7px 12px;border-radius:14px;color:var(--cm-fg);
+}
+.cm-msg.bot .cm-bubble{padding-top:2px;color:var(--cm-fg)}
+.cm-meta{font-size:10px;color:var(--cm-muted);margin-top:4px;display:flex;align-items:center;gap:6px}
+.cm-msg.user .cm-meta{justify-content:flex-end}
+.cm-dots{display:flex;gap:3px;padding:8px 0}
+.cm-dots i{width:4px;height:4px;border-radius:50%;background:var(--cm-muted);animation:cm-bl 1.4s infinite}
+.cm-dots i:nth-child(2){animation-delay:.2s}
+.cm-dots i:nth-child(3){animation-delay:.4s}
+@keyframes cm-bl{0%,60%,100%{opacity:.3;transform:translateY(0)}30%{opacity:1;transform:translateY(-2px)}}
+@keyframes cm-in{from{opacity:0;transform:translateY(6px)}}
+/* composer */
+.cm-composer-wrap{padding:0 12px 10px;background:var(--cm-bg)}
+.cm-composer{
+  border:1px solid var(--cm-border);background:var(--cm-card);
+  border-radius:12px;box-shadow:0 1px 2px rgba(0,0,0,.04);
+  padding:10px 12px 6px;
+}
+.cm-ta{
+  display:block;width:100%;min-height:18px;font-size:12.5px;
+  color:var(--cm-fg);line-height:1.4;
+  font-family:inherit;
+}
+.cm-ta .ph{color:var(--cm-muted);opacity:.6}
+.cm-cfoot{display:flex;justify-content:space-between;align-items:center;margin-top:6px}
+.cm-left{display:flex;align-items:center;gap:2px}
+.cm-plus{width:22px;height:22px;border-radius:6px;display:grid;place-items:center;color:var(--cm-muted)}
+.cm-plus svg{width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.cm-model{
+  display:inline-flex;align-items:center;gap:5px;height:22px;padding:0 6px;
+  border-radius:6px;font-size:11px;font-weight:500;color:var(--cm-fg);
+}
+.cm-model svg{width:16px;height:14px;stroke:none;fill:currentColor;display:block}
+.cm-model .ch{width:10px;height:10px;stroke:var(--cm-muted);fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+.cm-send{
+  width:24px;height:24px;border-radius:8px;
+  background:var(--cm-fg);color:var(--cm-bg);
+  display:grid;place-items:center;
+}
+.cm-send svg{width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
+.cm-disc{text-align:center;font-size:10px;color:var(--cm-muted);margin-top:6px}
+
+/* responsive mockup */
+@media (max-width:640px){
+  .cm-app{min-height:auto;flex-direction:column}
+  .cm-side{width:100%;border-right:0;border-bottom:1px solid var(--cm-border-side);flex-direction:row;align-items:center;padding:8px;gap:6px;overflow-x:auto}
+  .cm-side-head{display:none}
+  .cm-new{margin-bottom:0;flex:none}
+  .cm-side-label,.cm-side-item{display:none}
+  .cm-body{padding:12px 14px;gap:10px}
+  .cm-bubble{font-size:11.5px;max-width:90%}
+  .cm-composer-wrap{padding:0 8px 8px}
+}
+
+/* ===== sisa landing (marquee, stats, model, contoh, fitur, cara, faq, cta, footer) ===== */
+.marq{display:flex;overflow:hidden;border-block:1px solid var(--line);padding:22px 0;background:var(--card);margin-top:80px}
+.marq .g{display:flex;flex:none;min-width:100%;justify-content:space-around;gap:0;animation:mq 40s linear infinite}
+.marq span{display:inline-flex;align-items:center;gap:40px;white-space:nowrap;font-size:clamp(1.2rem,2.4vw,1.8rem);font-weight:500;letter-spacing:-.03em;color:var(--mute);padding-right:40px}
+.marq span::after{content:"";width:24px;height:22px;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 7'%3E%3Cg shape-rendering='crispEdges'%3E%3Cpath fill='%23ade4ff' d='M.5 0h1v1h-1zM6.5 0h1v1h-1z'/%3E%3Cpath fill='%238fd9f2' d='M.5 1h2v1h-2zM5.5 1h2v1h-2z'/%3E%3Cpath fill='%237adec4' d='M.5 2h7v1h-7z'/%3E%3Cpath fill='%2362d991' d='M.5 3h1v1h-1zM2.5 3h3v1h-3zM6.5 3h1v1h-1z'/%3E%3Cpath fill='%237b8ff0' d='M.5 4h3v1h-3zM4.5 4h3v1h-3z'/%3E%3Cpath fill='%236648d9' d='M.5 5h2v1h-2zM5.5 5h2v1h-2zM3 5h.5v.5H3zM4.5 5h.5v.5h-.5z'/%3E%3Cpath fill='%233a22a3' d='M0 6h8v1H0z'/%3E%3C/g%3E%3C/svg%3E") center/contain no-repeat;opacity:.6}
+@keyframes mq{to{transform:translateX(-100%)}}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);border-bottom:1px solid var(--line);background:var(--card)}
+.stat{padding:36px 28px;border-left:1px solid var(--line);display:flex;flex-direction:column;gap:8px;transition:background .2s}
+.stat:first-child{border-left:0}
+.stat:hover{background:var(--bg)}
+.stat .num{font-size:clamp(2rem,3.5vw,3rem);font-weight:800;letter-spacing:-.04em;line-height:1;background:linear-gradient(90deg,#6648d9,#7adec4);-webkit-background-clip:text;background-clip:text;color:transparent}
+.stat .lbl{font-size:.85rem;color:var(--mute);font-weight:500}
+section{padding:104px 0}
+.head{display:grid;grid-template-columns:1.1fr .9fr;gap:48px;align-items:end;margin-bottom:56px}
+.eyebrow{font-size:.78rem;font-weight:700;color:var(--orange);text-transform:uppercase;letter-spacing:.14em;margin-bottom:14px;display:inline-flex;align-items:center;gap:8px}
+.eyebrow::before{content:"";width:24px;height:2px;background:var(--orange)}
+h2{font-size:clamp(2.1rem,4.6vw,3.6rem);font-weight:700;line-height:1.04;letter-spacing:-.045em;text-wrap:balance}
+.head p{color:var(--mute);font-size:1.05rem;line-height:1.6}
+.center{text-align:center;max-width:720px;margin:0 auto 56px}
+.center .eyebrow{justify-content:center}
+.center .eyebrow::before{display:none}
+.models-wrap{position:relative;margin:0 -28px;padding:0 28px}
+.models-scroll{display:flex;gap:18px;overflow-x:auto;scroll-snap-type:x mandatory;padding:12px 4px 32px;scrollbar-width:thin;scrollbar-color:var(--line) transparent}
+.models-scroll::-webkit-scrollbar{height:6px}
+.models-scroll::-webkit-scrollbar-track{background:transparent}
+.models-scroll::-webkit-scrollbar-thumb{background:var(--line);border-radius:3px}
+.model-card{flex:0 0 300px;scroll-snap-align:start;background:var(--card);border:1px solid var(--line);padding:26px;display:flex;flex-direction:column;gap:16px;transition:all .3s;position:relative;overflow:hidden}
+.model-card::before{content:"";position:absolute;inset:0;background:linear-gradient(135deg,transparent,var(--soft));opacity:0;transition:opacity .3s;pointer-events:none}
+.model-card:hover{border-color:var(--ink);transform:translateY(-6px);box-shadow:var(--shadow-lg)}
+.model-card:hover::before{opacity:1}
+.model-card .mc-head{display:flex;align-items:center;justify-content:space-between;position:relative;z-index:1}
+.model-card svg{width:64px;height:56px;transition:transform .4s}
+.model-card:hover svg{transform:scale(1.1) rotate(-5deg)}
+.model-card h3{font-size:1.25rem;font-weight:700;letter-spacing:-.02em;position:relative;z-index:1}
+.model-card p{color:var(--mute);font-size:.92rem;flex:1;position:relative;z-index:1;line-height:1.55}
+.pill{display:inline-block;border:1px solid currentColor;padding:4px 12px;font-size:.72rem;font-weight:700;align-self:flex-start;color:var(--mute);text-transform:uppercase;letter-spacing:.06em}
+.pill.on{background:var(--sun);color:#1f1f1f;border-color:var(--sun)}
+.tabs{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-bottom:40px}
+.tab{padding:10px 22px;border:1px solid var(--line);background:var(--card);font:500 .92rem/1 inherit;font-family:inherit;cursor:pointer;transition:all .2s;color:var(--mute)}
+.tab:hover{border-color:var(--ink);color:var(--ink)}
+.tab.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.tab-panel{display:none;animation:fadeIn .4s ease}
+.tab-panel.on{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}}
+.prompt-demo{max-width:800px;margin:0 auto;background:var(--card);border:1px solid var(--line);padding:32px;box-shadow:var(--shadow-md)}
+.prompt-demo .user-q{background:var(--sun);color:#1f1f1f;padding:14px 18px;border-radius:14px 14px 2px 14px;max-width:80%;margin-left:auto;font-size:.95rem;line-height:1.5;margin-bottom:14px}
+.prompt-demo .bot-a{background:var(--bg);border:1px solid var(--line);padding:16px 18px;border-radius:14px 14px 14px 2px;max-width:85%;font-size:.93rem;line-height:1.6}
+.prompt-demo .bot-a strong{color:var(--orange)}
+.prompt-demo .meta{font-size:.78rem;color:var(--mute);margin-top:12px;text-align:right;display:flex;align-items:center;gap:6px;justify-content:flex-end}
+.prompt-demo .meta::before{content:"";width:6px;height:6px;background:var(--mint);border-radius:50%}
+.bento{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.cell{background:var(--card);padding:32px;min-height:260px;display:flex;flex-direction:column;justify-content:space-between;gap:32px;border:1px solid var(--line);transition:all .3s;position:relative;overflow:hidden}
+.cell::before{content:"";position:absolute;inset:0;background:radial-gradient(circle at top right,var(--soft),transparent 60%);opacity:0;transition:opacity .3s}
+.cell:hover{transform:translateY(-4px);box-shadow:var(--shadow-md)}
+.cell:hover::before{opacity:1}
+.cell i{display:block;width:22px;height:22px;background:var(--c,var(--orange));position:relative;z-index:1}
+.cell h3{font-size:1.4rem;font-weight:700;letter-spacing:-.02em;margin-bottom:8px;position:relative;z-index:1}
+.cell p{color:var(--mute);max-width:26em;font-size:.95rem;position:relative;z-index:1;line-height:1.55}
+.cell.hot{grid-column:span 2;background:var(--flame);color:#1f1f1f;border:0}
+.cell.hot p{color:#23204a}
+.cell.hot i{background:#1f1f1f}
+.cell.hot h3{font-size:2.1rem}
+.cell.sun{background:var(--sun);color:#1f1f1f;border:0}
+.cell.sun p{color:#23204a}
+.cell.sun i{background:#1f1f1f}
+.cell.wide{grid-column:1/-1}
+.cell.w2{grid-column:span 2}
+.dark{background:var(--inv);color:var(--inv-ink);position:relative;overflow:hidden}
+.dark::before{content:"";position:absolute;inset:0;background:radial-gradient(ellipse 60% 40% at 50% 0%,rgba(123,143,240,.2),transparent 70%);pointer-events:none}
+.dark .wrap{position:relative;z-index:1}
 .dark .head p{color:#9a9cc2}
-.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:rgba(255,245,225,.2);border:1px solid rgba(255,245,225,.2)}
-.step{background:var(--inv);padding:36px 32px 40px}
-.step b{display:block;font-size:5rem;font-weight:400;line-height:1;letter-spacing:-.05em;color:var(--amber);margin-bottom:56px}
-.step h3{font-size:1.3rem;font-weight:500;letter-spacing:-.02em;margin-bottom:8px}
-.step p{color:#9a9cc2}
-
-.vision{font-size:clamp(1.6rem,3.2vw,2.6rem);line-height:1.18;letter-spacing:-.035em;max-width:22em;margin-bottom:64px}
-.vision small{display:block;font-size:.95rem;letter-spacing:0;color:var(--mute);margin-bottom:20px}
-.two{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line);border:1px solid var(--line)}
-
-.cta{position:relative;background:var(--flame);color:#1f1f1f;padding:120px 0 96px;overflow:hidden}
-.cta .stairs{height:50%}
-.cta .wrap{position:relative;text-align:center}
-.cta h2{font-size:clamp(2.4rem,6vw,4.8rem);margin-bottom:20px}
-.cta p{font-size:1.15rem;margin-bottom:36px}
-.cta .btn{background:#15112e;color:#fff;border-color:#15112e}
-.cta .btn:hover{background:#fff;color:#15112e}
-
-footer{background:var(--inv);color:var(--inv-ink);padding:56px 0 32px}
-.ft{display:flex;justify-content:space-between;align-items:center;gap:24px;flex-wrap:wrap;margin-bottom:40px}
-.ft ul{display:flex;flex-wrap:wrap;gap:12px 28px;list-style:none;color:#9a9cc2;font-size:.95rem}
-.ft a:hover{color:var(--inv-ink)}
-.fb{border-top:1px solid rgba(255,245,225,.2);padding-top:24px;font-size:.88rem;color:#9a9cc2}
-
+.dark .eyebrow{color:var(--sun)}
+.dark .eyebrow::before{background:var(--sun)}
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.step{background:rgba(255,255,255,.03);padding:40px 32px 44px;border:1px solid rgba(255,245,225,.12);transition:all .3s;position:relative;overflow:hidden}
+.step::before{content:"";position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--amber),var(--sun));transform:scaleX(0);transform-origin:left;transition:transform .4s}
+.step:hover{background:rgba(255,255,255,.06);transform:translateY(-4px)}
+.step:hover::before{transform:scaleX(1)}
+.step b{display:block;font-size:5rem;font-weight:800;line-height:1;letter-spacing:-.06em;background:linear-gradient(135deg,var(--amber),var(--sun));-webkit-background-clip:text;background-clip:text;color:transparent;margin-bottom:40px}
+.step h3{font-size:1.25rem;font-weight:700;letter-spacing:-.02em;margin-bottom:10px}
+.step p{color:#9a9cc2;font-size:.95rem;line-height:1.55}
+.list{border-bottom:1px solid var(--line)}
+.row{display:grid;grid-template-columns:1fr 1.3fr 56px;gap:32px;align-items:baseline;padding:32px 0;border-top:1px solid var(--line);transition:all .2s;position:relative}
+.row::after{content:"→";position:absolute;right:0;top:50%;transform:translateY(-50%) translateX(-10px);font-size:1.5rem;color:var(--orange);opacity:0;transition:all .3s}
+.row:hover{background:var(--sun);color:#1f1f1f;padding-left:24px;padding-right:24px}
+.row:hover::after{opacity:1;transform:translateY(-50%) translateX(0);color:#1f1f1f}
+.row h3{font-size:clamp(1.5rem,3vw,2.3rem);font-weight:600;letter-spacing:-.035em}
+.row p{color:var(--mute);font-size:.95rem}
+.row:hover p{color:#23204a}
+.faq{border-bottom:1px solid var(--line)}
+.faq details{border-top:1px solid var(--line);transition:background .2s}
+.faq details:hover{background:var(--soft)}
+.faq summary{list-style:none;cursor:pointer;display:flex;justify-content:space-between;gap:24px;padding:26px 8px;font-size:clamp(1.1rem,2vw,1.4rem);font-weight:600;letter-spacing:-.02em;transition:color .2s}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary::after{content:"+";font-size:1.6rem;line-height:1;color:var(--orange);transition:transform .3s;display:inline-block}
+.faq details[open] summary::after{content:"−";transform:rotate(180deg)}
+.faq p{color:var(--mute);padding:0 8px 26px;max-width:42em;font-size:.95rem;line-height:1.6}
+.faq p a{text-decoration:underline;text-decoration-color:var(--orange);text-underline-offset:3px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.cta{position:relative;background:var(--inv);color:var(--inv-ink);padding:120px 0 100px;overflow:hidden;text-align:center}
+.cta::before{content:"";position:absolute;inset:0;background:
+  radial-gradient(ellipse 50% 60% at 20% 30%,rgba(123,143,240,.35),transparent 60%),
+  radial-gradient(ellipse 50% 60% at 80% 70%,rgba(122,222,196,.3),transparent 60%),
+  radial-gradient(ellipse 40% 50% at 50% 0%,rgba(173,228,255,.25),transparent 60%);
+  animation:meshMove 12s ease-in-out infinite alternate}
+@keyframes meshMove{0%{transform:scale(1) rotate(0)}100%{transform:scale(1.15) rotate(3deg)}}
+.cta::after{content:"";position:absolute;inset:0;background-image:radial-gradient(circle at 1px 1px,rgba(255,255,255,.15) 1px,transparent 0);background-size:40px 40px;mask-image:radial-gradient(ellipse 70% 70% at 50% 50%,black,transparent);pointer-events:none}
+.cta-in{position:relative;z-index:2;max-width:760px;margin:0 auto;padding:0 20px}
+.cta .cat-big{width:100px;height:88px;margin:0 auto 32px;animation:bob 4s ease-in-out infinite;position:relative}
+.cta .cat-big::before{content:"";position:absolute;inset:-30px;background:radial-gradient(circle,rgba(122,222,196,.4),transparent 70%);border-radius:50%;animation:pulse 3s infinite;z-index:-1}
+.cta h2{font-size:clamp(2.4rem,5.5vw,4.4rem);font-weight:800;margin-bottom:20px;letter-spacing:-.045em;line-height:1}
+.cta p{font-size:1.15rem;margin-bottom:40px;color:#c4c6e0;max-width:32em;margin-inline:auto;line-height:1.6}
+.cta .btn{background:var(--inv-ink);color:var(--inv);border-color:var(--inv-ink);padding:16px 32px;font-size:1.02rem}
+.cta .btn:hover{background:var(--sun);border-color:var(--sun);color:#1f1f1f}
+footer{background:var(--inv);color:var(--inv-ink);padding:64px 0 32px;border-top:1px solid rgba(255,255,255,.08)}
+.ft-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:48px;margin-bottom:48px}
+.ft-brand p{color:#9a9cc2;font-size:.92rem;margin-top:16px;max-width:28em;line-height:1.65}
+.ft-col h4{font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.14em;color:#9a9cc2;margin-bottom:18px}
+.ft-col ul{list-style:none;display:flex;flex-direction:column;gap:12px}
+.ft-col a{color:#c4c6e0;font-size:.92rem;transition:color .15s;position:relative;padding-left:0;transition:padding .2s}
+.ft-col a:hover{color:var(--inv-ink);padding-left:6px}
+.ft-col a::before{content:"";position:absolute;left:0;top:50%;width:3px;height:3px;background:var(--sun);border-radius:50%;opacity:0;transition:opacity .2s;transform:translateY(-50%) translateX(-6px)}
+.ft-col a:hover::before{opacity:1}
+.fb{border-top:1px solid rgba(255,245,225,.12);padding-top:24px;font-size:.85rem;color:#9a9cc2;display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px}
+.fb a:hover{color:var(--inv-ink)}
+.js .rv{opacity:0;transform:translateY(30px);filter:blur(4px);transition:opacity .8s cubic-bezier(.16,1,.3,1),transform .8s cubic-bezier(.16,1,.3,1),filter .8s}
+.js .rv.in{opacity:1;transform:none;filter:none}
+.js .rv[data-delay="1"]{transition-delay:.1s}
+.js .rv[data-delay="2"]{transition-delay:.2s}
+.js .rv[data-delay="3"]{transition-delay:.3s}
+.cursor-glow{position:fixed;width:400px;height:400px;border-radius:50%;background:radial-gradient(circle,rgba(123,143,240,.12),transparent 70%);pointer-events:none;z-index:1;transform:translate(-50%,-50%);transition:opacity .3s;opacity:0}
+@media (hover:hover) and (pointer:fine){.cursor-glow.active{opacity:1}}
 @media (max-width:900px){
-  .head{grid-template-columns:1fr;gap:36px}
-  .links{display:none;position:absolute;top:100%;left:0;right:0;background:var(--bg);flex-direction:column;gap:18px;padding:20px 28px;border-bottom:1px solid var(--line)}
+  .head{grid-template-columns:1fr;gap:24px;margin-bottom:40px}
+  .links{display:none;position:absolute;top:100%;left:0;right:0;background:var(--bg);flex-direction:column;height:auto;padding:16px 28px;border-bottom:1px solid var(--line);gap:0;box-shadow:var(--shadow-lg)}
   .links.open{display:flex}
+  .links a{height:auto;border-left:0;padding:14px 0;border-bottom:1px solid var(--line)}
+  .links a::after{display:none}
+  .links li:last-child a{border-bottom:0}
   #menu{display:block}
-  .bento.tiers{grid-template-columns:1fr}
-  .bento,.steps,.two{grid-template-columns:1fr 1fr}
+  .btn.sm{padding:0 18px;font-size:.88rem}
+  .icon-btn{width:48px}
+  .bento,.two{grid-template-columns:1fr 1fr}
   .cell.hot{grid-column:span 2}
   .steps{grid-template-columns:1fr}
+  .stats{grid-template-columns:1fr 1fr}
+  .stat:nth-child(3){border-left:0}
+  .stat:nth-child(n+3){border-top:1px solid var(--line)}
+  .ft-grid{grid-template-columns:1fr 1fr;gap:36px}
+  .ft-brand{grid-column:1/-1}
   section{padding:80px 0}
 }
 @media (max-width:640px){
-  .links{display:none;position:absolute;top:100%;left:0;right:0;background:var(--bg);flex-direction:column;gap:18px;padding:20px 28px;border-bottom:1px solid var(--line)}
-  .links.open{display:flex}
-  #menu{display:block}
-  .right .btn{padding:0 14px;white-space:nowrap;font-size:.85rem}
-  .bento,.two,.bento.tiers{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
-  .cell{aspect-ratio:1/1;min-height:auto;min-width:0;padding:16px;gap:14px}
-  .cell.wide,.tiers .cell:first-child{grid-column:1/-1;aspect-ratio:auto}
-  .cell h3,.cell.hot h3{font-size:1.05rem;margin-bottom:6px}
-  .cell p{font-size:.82rem;line-height:1.4}
-  .cell i{width:16px;height:16px}
-  .ti{width:56px;height:49px}
-  .pill{font-size:.72rem;padding:2px 8px;margin-bottom:8px}
-  .steps{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
-  .step{padding:18px 16px 22px;min-width:0}
-  .step:nth-child(-n+2){aspect-ratio:1/1}
-  .step:last-child{grid-column:1/-1}
-  .step b{font-size:3rem;margin-bottom:20px}
-  .step h3{font-size:1.05rem}
-  .step p{font-size:.85rem}
-  .cell.hot,.cell.w2{grid-column:auto}
-  .row{grid-template-columns:1fr;gap:8px}
-  
-  
-  
-  .row::after{display:none}
-  .pk.l{left:2%;width:76px;height:66px;bottom:-20px}
-  .pk.r{right:3%;width:60px;height:52px;bottom:-14px}
-  .stage{padding:88px 18px 24px;min-height:440px}
-  .peek{width:72px;height:63px}
   .wrap{padding:0 20px}
+  .banner{font-size:.8rem;padding:8px 12px}
+  .hero{padding:56px 0 0}
+  .hero h1{font-size:clamp(2.4rem,9.5vw,3.6rem)}
+  .hero .lead{font-size:1.02rem}
+  .acts{margin-bottom:48px}
+  .facts{margin-bottom:56px;gap:8px 16px;font-size:.85rem}
+  .bento,.two{grid-template-columns:1fr}
+  .cell.hot,.cell.w2{grid-column:auto}
+  .cell{min-height:auto;padding:28px;gap:24px}
+  .cell.hot h3{font-size:1.6rem}
+  .row{grid-template-columns:1fr;gap:6px;padding:24px 0}
+  .row::after{display:none}
+  .step{padding:32px 26px 36px}
+  .step b{font-size:4rem;margin-bottom:28px}
+  .ft-grid{grid-template-columns:1fr;gap:32px}
+  .models-wrap{margin:0 -20px;padding:0 20px}
+  .model-card{flex:0 0 260px}
+  .prompt-demo{padding:24px}
+  .cta{padding:80px 0 64px}
+  .cta .cat-big{width:80px;height:70px}
+  section{padding:64px 0}
+  .tabs{gap:6px}
+  .tab{padding:8px 16px;font-size:.85rem}
 }
-
-
-:root{--ol:#15112e;--star:rgba(102,72,217,.35)}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--ol:transparent;--star:rgba(238,241,255,.8)}}
-:root[data-theme="dark"]{--ol:transparent;--star:rgba(238,241,255,.8)}
-.ol{filter:drop-shadow(1px 0 0 var(--ol)) drop-shadow(-1px 0 0 var(--ol)) drop-shadow(0 1px 0 var(--ol)) drop-shadow(0 -1px 0 var(--ol))}
-.hz{--u:clamp(52px,9.4vw,120px);position:relative;overflow:hidden;min-height:clamp(560px,calc(100svh - 72px),780px);display:flex;align-items:center;justify-content:center;text-align:center;padding:48px 20px calc(var(--u)*.9);border-bottom:1px solid var(--line)}
-.hz::after{content:"";position:absolute;left:0;top:0;width:2px;height:2px;box-shadow:120px 90px var(--star),260px 160px var(--star),420px 70px var(--star),610px 130px var(--star),780px 60px var(--star),900px 150px var(--star),1040px 80px var(--star),1180px 140px var(--star),340px 300px var(--star),700px 330px var(--star),980px 280px var(--star),180px 240px var(--star);animation:tw 2.6s steps(1) infinite}
-.hz-in{position:relative;z-index:2;max-width:980px}
-.hz h1{font-size:clamp(2.5rem,6.6vw,5.4rem);font-weight:500;line-height:1.02;letter-spacing:-.045em;margin:0 0 24px;text-wrap:balance}
-.inl{display:inline-block;width:.86em;height:.75em;vertical-align:-.02em;margin-left:.12em}
-.hz .lead{margin:0 auto 32px;max-width:32em;font-size:1.15rem}
-.news{display:inline-flex;align-items:center;gap:14px;padding:8px 18px 8px 8px;border:1px solid var(--line);background:var(--card);font-size:.98rem;transition:border-color .15s}
-.news:hover{border-color:var(--ink)}
-.pi{width:34px;height:34px;display:grid;place-items:center;background:#000}
-.pi svg{width:22px;height:19px}
-.ar{font-size:1.3rem;line-height:1;color:var(--mute)}
-.sc{position:absolute;bottom:0;display:flex;align-items:flex-end}
-.sc.l{left:0}
-.sc.r{right:0;flex-direction:row-reverse}
-.blk{width:var(--u)}
-.ba{height:calc(var(--u)*2);background:linear-gradient(#7b8ff0 50%,#6648d9 0)}
-.bc{width:calc(var(--u)*.55);height:calc(var(--u)*.5);background:#7adec4}
-.bd{height:calc(var(--u)*1.6);background:linear-gradient(#8fd9f2 75%,#7b8ff0 0)}
-.be{width:calc(var(--u)*.9);height:calc(var(--u)*1.05);background:linear-gradient(#62d991 70%,#7adec4 0)}
-.kat{position:absolute;left:calc(var(--u)*.22);bottom:calc(var(--u)*2);width:calc(var(--u)*.56);height:calc(var(--u)*.49);animation:cj 6s ease-in-out infinite}
-.dm{position:absolute;right:calc(var(--u)*.14);bottom:calc(var(--u)*1.72);width:calc(var(--u)*.72);height:calc(var(--u)*.72);background:#6648d9;animation:dm 3.2s ease-in-out infinite}
-.twr{position:absolute;bottom:0;right:calc(var(--u)*2.1);width:calc(var(--u)*.5);height:calc(var(--u)*.92)}
-.rvr{position:absolute;bottom:0;left:calc(var(--u)*2.2);width:calc(var(--u)*.42);height:calc(var(--u)*.52);animation:rvx 22s linear infinite}
-.rvr svg{width:100%;height:100%;overflow:visible;animation:rvf 22s steps(1) infinite}
-.rkt{position:absolute;top:6%;left:0;width:clamp(72px,8vw,110px);z-index:1;animation:rkx 12s linear infinite}
-@keyframes cj{0%,70%,82%,100%{transform:none}76%{transform:translateY(calc(var(--u)*-.28))}}
-@keyframes dm{0%,100%{transform:translateY(0) rotate(45deg)}50%{transform:translateY(-12px) rotate(225deg)}}
-@keyframes rkx{0%{transform:translate(-140px,30px)}100%{transform:translate(calc(100vw + 40px),-30px)}}
-@keyframes rvx{0%,100%{left:calc(var(--u)*2.2)}50%{left:calc(100% - var(--u)*3.6)}}
-@keyframes rvf{0%{transform:scaleX(1)}50%{transform:scaleX(-1)}}
-.hz::before{content:"";position:absolute;inset:0 var(--u);border-inline:1px solid var(--line);pointer-events:none}
-.strip{display:grid;grid-template-columns:repeat(4,1fr);border-bottom:1px solid var(--line)}
-.strip>div{display:flex;flex-direction:column;justify-content:space-between;gap:28px;min-height:150px;padding:28px;border-left:1px solid var(--line)}
-.strip>div:first-child{border-left:0}
-.strip small{display:block;color:var(--mute);font-size:.88rem;margin-bottom:4px}
-.strip b{font-size:clamp(1.25rem,2.2vw,1.8rem);font-weight:500;letter-spacing:-.03em;line-height:1.15}
-.strip i{display:block;width:18px;height:18px;background:var(--c,var(--orange))}
-.chat{display:grid;grid-template-columns:200px 1fr;grid-template-rows:auto 1fr}
-.chat-bar{grid-column:1/-1}
-.sd{border-right:1px solid var(--line);padding:16px 14px;font-size:.86rem;display:flex;flex-direction:column;gap:6px;min-width:0}
-.sd .nw{display:block;border:1px solid var(--ink);color:var(--ink);padding:8px 10px;margin-bottom:10px;font-weight:500}
-.sd small{color:var(--mute);margin:10px 0 2px;font-size:.76rem}
-.sd span{padding:6px 8px;color:var(--mute);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.sd span.on{background:var(--sun);color:#1f1f1f}
-.demo .stage{max-width:980px}
-@media (max-width:900px){.chat{grid-template-columns:150px 1fr}}
-@media (max-width:640px){.chat{grid-template-columns:1fr}.sd{display:none}.strip{grid-template-columns:1fr 1fr}.strip>div:nth-child(3){border-left:0}.strip>div:nth-child(n+3){border-top:1px solid var(--line)}.strip>div{aspect-ratio:1/1;min-height:0;min-width:0;padding:16px}.strip b{font-size:1.1rem}}
-.demo{padding:24px 0 0}
-.dh{text-align:center;padding-top:72px}
-.dh p{color:var(--mute);margin-top:12px;font-size:1.1rem}
-.demo .stage{order:0;margin:40px auto 24px}
-@media (max-width:900px){.links a{height:auto;border-left:0;padding:8px 0}}
-@media (max-width:640px){.hz{--u:16vw;display:flex;align-items:flex-start;margin:12px;border:1px solid var(--line);min-height:calc(140vw - 30px);padding:96px 16px 0}.hz::before{inset:0;border:0;background:linear-gradient(var(--card),var(--bg))}.hz-in{padding:0}.hz .lead{display:none}.hz h1{margin-bottom:20px}.rvr{display:none}.rkt{top:14px}.news{font-size:.9rem;text-align:left}}
-
-.dh h2{max-width:15em;margin:0 auto;min-height:2.15em}
-.rot{text-decoration:underline;text-decoration-color:var(--orange);text-decoration-thickness:.06em;text-underline-offset:.12em}
-.rot::after{content:"";display:inline-block;width:.09em;height:.85em;margin-left:.06em;background:var(--orange);vertical-align:-.05em;animation:cur 1s steps(1) infinite}
-@media (max-width:640px){.dh h2{min-height:3.2em}}
-.cloud{position:relative;overflow:hidden;padding:64px 0 104px}
-.cloud .lines{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
-.cloud .lines path{fill:none;stroke:var(--line);stroke-width:1;vector-effect:non-scaling-stroke}
-.r2{position:relative;display:flex;justify-content:center;align-items:center;gap:46px;margin:18px 0;transform:translateX(var(--o,0))}
-.chip{position:relative;display:inline-flex;align-items:center;padding:13px 20px;border:1px solid transparent;background:rgba(127,127,160,.1);color:var(--mute);font-size:clamp(.95rem,1.7vw,1.3rem);font-weight:500;letter-spacing:-.01em;white-space:nowrap;transition:background .35s,color .35s,border-color .35s,box-shadow .35s}
-.chip::before,.chip::after{content:"";position:absolute;top:50%;width:3px;height:3px;margin-top:-1.5px;background:var(--ink)}
-.chip::before{left:-16px}
-.chip::after{right:-16px}
-.chip.on{background:var(--card);color:var(--ink);border-color:var(--line);box-shadow:0 2px 0 var(--line)}
-.ic{width:0;height:20px;opacity:0;margin-right:0;color:var(--c,var(--orange));fill:currentColor;transition:width .35s,opacity .35s,margin .35s}
-.chip.on .ic{width:20px;opacity:1;margin-right:10px}
-@media (max-width:640px){.cloud{padding:40px 0 72px}.r2{flex-wrap:wrap;gap:10px 24px;transform:none;padding:0 24px;margin:10px 0}.r2:last-child .chip:nth-child(n+2){display:none}.chip{font-size:.88rem;padding:8px 11px}.chip::before{left:-13px}.chip::after{right:-13px}.ic{height:16px}.chip.on .ic{width:16px;margin-right:8px}}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important;scroll-behavior:auto!important}
+  .chat-mock{transform:none}
+}
 </style>
 </head>
 <body>
 
+<a href="#main" class="skip">Lewati ke konten</a>
+<div class="cursor-glow" id="glow" aria-hidden="true"></div>
+
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
   <defs>
-    <linearGradient id="bkg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffffff"/><stop offset="1" stop-color="#9ca3af"/></linearGradient>
     <symbol id="bk" viewBox="0 0 8 7">
       <g shape-rendering="crispEdges">
         <path style="fill:var(--c0,#ade4ff)" d="M.5 0h1v1h-1zM6.5 0h1v1h-1z"/>
@@ -323,95 +491,276 @@ footer{background:var(--inv);color:var(--inv-ink);padding:56px 0 32px}
   </defs>
 </svg>
 
+<div class="banner" role="region" aria-label="Pengumuman">
+  🎉 Bekki 1.1 sudah bisa dipakai, gratis. <a href="https://orbitxy.com/ai/">Coba sekarang →</a>
+</div>
+
 <header>
   <div class="wrap nav">
-    <a href="#" class="logo"><span class="mark"><svg width="22" height="22" viewBox="0 0 100 100" aria-hidden="true"><use href="#bk"/></svg></span>Bekki</a>
+    <a href="#" class="logo" aria-label="Bekki beranda">
+      <span class="mark"><svg width="24" height="24" viewBox="0 0 100 100" aria-hidden="true"><use href="#bk"/></svg></span>Bekki
+    </a>
     <ul class="links" id="links">
       <li><a href="#fitur">Fitur</a></li>
+      <li><a href="#model">Model</a></li>
       <li><a href="#contoh">Contoh</a></li>
       <li><a href="#cara">Cara pakai</a></li>
-      <li><a href="#model">Model</a></li>
       <li><a href="#faq">FAQ</a></li>
-      <li><a href="#tentang">Tentang Orbitxy</a></li>
+      <li><a href="#tentang">Tentang</a></li>
     </ul>
     <div class="right">
       <button class="icon-btn" id="tt" aria-label="Ganti tema" title="Ganti tema">☾</button>
       <a href="https://orbitxy.com/ai/" class="btn sm">Coba Bekki</a>
-      <button class="icon-btn" id="menu" aria-label="Buka menu">☰</button>
+      <button class="icon-btn" id="menu" aria-label="Buka menu" aria-expanded="false">☰</button>
     </div>
   </div>
 </header>
 
-<main>
-<section class="hz">
-  <svg class="rkt ol" viewBox="-8 0 26 9" aria-hidden="true" shape-rendering="crispEdges"><g class="fl"><rect x="-4" y="3" width="6" height="3" fill="#7adec4"/><rect x="-1" y="4" width="3" height="1" fill="#eef1ff"/></g><g fill="#ade4ff"><rect class="pf" x="-6" y="3" width="2" height="2"/><rect class="pf" x="-6" y="5" width="2" height="2" style="animation-delay:-.3s"/><rect class="pf" x="-6" y="4" width="2" height="2" style="animation-delay:-.6s"/></g><rect x="2" y="2" width="2" height="5" fill="#7b8ff0"/><rect x="2" y="0" width="4" height="2" fill="#6648d9"/><rect x="2" y="7" width="4" height="2" fill="#6648d9"/><rect x="4" y="2" width="10" height="5" fill="#eef1ff"/><rect x="4" y="5" width="10" height="2" fill="#8fd9f2"/><rect x="9" y="3" width="2" height="2" fill="#7adec4"/><rect x="14" y="3" width="2" height="3" fill="#6648d9"/><rect x="16" y="4" width="1" height="1" fill="#6648d9"/></svg>
-  <div class="sc l" aria-hidden="true"><div class="blk ba"></div><div class="blk bc"></div><svg class="kat ol" viewBox="0 0 8 7"><use href="#bk"/></svg></div>
-  <div class="sc r" aria-hidden="true"><div class="blk bd"></div><div class="blk be"></div><i class="dm"></i></div>
-  <svg class="twr ol" viewBox="0 0 12 22" aria-hidden="true" shape-rendering="crispEdges"><rect class="flag" x="7" y="0" width="5" height="3" fill="#7adec4"/><rect x="5" y="0" width="2" height="8" fill="#7b8ff0"/><rect x="1" y="8" width="10" height="14" fill="#6648d9"/><rect class="tw" x="3" y="11" width="2" height="2" fill="#7adec4"/><rect class="tw" x="7" y="11" width="2" height="2" fill="#7adec4" style="animation-delay:-1.2s"/><rect x="4" y="17" width="4" height="5" fill="#3a22a3"/></svg>
-  <div class="rvr" aria-hidden="true"><svg class="ol" viewBox="0 -3 6 9" shape-rendering="crispEdges"><rect width="6" height="4" fill="#ade4ff"/><rect x="3" y="1" width="3" height="2" fill="#0e0a24"/><rect x="2" y="-2" width="1" height="2" fill="#7adec4"/><rect class="tw" x="1" y="-3" width="3" height="1" fill="#7adec4"/><rect y="4" width="2" height="2" fill="#6648d9"/><rect x="4" y="4" width="2" height="2" fill="#6648d9"/></svg></div>
-  <div class="hz-in">
-    <h1>Kenalan dengan Bekki<svg class="inl ol" viewBox="0 0 8 7" aria-hidden="true"><use href="#bk"/></svg><br>teman ngobrol pintarmu.</h1>
-    <p class="lead">Bekki membantu kamu bertanya, menulis, dan menyelesaikan pekerjaan lewat percakapan sederhana, langsung dari browser, tanpa ribet.</p>
-    <a class="news" href="https://orbitxy.com/ai/"><span class="pi"><svg viewBox="0 0 8 7" aria-hidden="true"><use href="#bk"/></svg></span>Bekki 1.1 sudah bisa dipakai, gratis.<span class="ar">›</span></a>
+<main id="main">
+
+<section class="hero" aria-labelledby="hero-h">
+  <div class="hero-in">
+    <span class="tag"><i></i>Bekki 1.1 — gratis, tanpa instalasi</span>
+    <h1 id="hero-h">Kenalan dengan Bekki<svg class="inl" viewBox="0 0 8 7" aria-hidden="true"><use href="#bk"/></svg><br><span class="grad">teman ngobrol pintarmu.</span></h1>
+    <p class="lead">Bekki membantu kamu bertanya, menulis, belajar, dan menyelesaikan pekerjaan lewat percakapan sederhana — langsung dari browser, tanpa ribet.</p>
+    <div class="acts">
+      <a href="https://orbitxy.com/ai/" class="btn">Coba Bekki gratis →</a>
+      <a href="#contoh" class="btn ghost">Lihat contoh</a>
+    </div>
+    <ul class="facts">
+      <li>Gratis dipakai</li>
+      <li>Langsung di browser</li>
+      <li>Riwayat tersimpan per hari</li>
+    </ul>
+  </div>
+
+  <!-- ===== MOCKUP CHAT mirip app Bekki ===== -->
+  <div class="preview">
+    <div class="chat-mock" role="img" aria-label="Pratinjau antarmuka chat Bekki">
+      <div class="cm-app">
+        <!-- sidebar -->
+        <aside class="cm-side" aria-hidden="true">
+          <div class="cm-side-head">
+            <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+            <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 3v18"/></svg>
+          </div>
+          <div class="cm-new">
+            <svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg>
+            New chat
+          </div>
+          <div class="cm-side-label">Hari ini</div>
+          <div class="cm-side-item on">Ide nama produk</div>
+          <div class="cm-side-item">Ringkas artikel</div>
+          <div class="cm-side-item">Belajar Python</div>
+          <div class="cm-side-label">Kemarin</div>
+          <div class="cm-side-item">Caption IG</div>
+          <div class="cm-side-item">Terjemah email</div>
+        </aside>
+        <!-- main -->
+        <div class="cm-main">
+          <div class="cm-head">
+            <div class="cm-head-btn">
+              <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 3v18"/></svg>
+            </div>
+            <span class="cm-title">New chat</span>
+          </div>
+          <div class="cm-body" id="cmBody">
+            <div class="cm-msg user">
+              <div>
+                <div class="cm-bubble">Halo Bekki! Bisa bantu aku cari ide nama untuk kedai kopi kecil di Bandung?</div>
+                <div class="cm-meta">10:24</div>
+              </div>
+            </div>
+            <div class="cm-msg bot">
+              <div class="cm-avatar" aria-hidden="true"></div>
+              <div>
+                <div class="cm-bubble">
+                  <p>Tentu! Beberapa ide yang mungkin cocok:</p>
+                  <ul>
+                    <li><strong>Kopi Cakrawala</strong> — nuansa luas &amp; terbuka</li>
+                    <li><strong>Seduh Senja</strong> — hangat, cocok untuk sore</li>
+                    <li><strong>Bandung Brew Co.</strong> — modern &amp; lokal</li>
+                  </ul>
+                  <p>Mau aku bantu cek ketersediaan domainnya?</p>
+                </div>
+                <div class="cm-meta">10:24</div>
+              </div>
+            </div>
+            <div class="cm-msg user">
+              <div>
+                <div class="cm-bubble">Boleh, yang nomor 2 dong.</div>
+                <div class="cm-meta">10:25</div>
+              </div>
+            </div>
+            <div class="cm-msg bot">
+              <div class="cm-avatar" aria-hidden="true"></div>
+              <div>
+                <div class="cm-dots"><i></i><i></i><i></i></div>
+              </div>
+            </div>
+          </div>
+          <div class="cm-composer-wrap">
+            <div class="cm-composer">
+              <div class="cm-ta"><span class="ph">Tulis pesan...</span></div>
+              <div class="cm-cfoot">
+                <div class="cm-left">
+                  <div class="cm-plus"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></div>
+                  <div class="cm-model">
+                    <svg viewBox="0 0 13 11" aria-hidden="true"><path d="M11 0h1v1h-1zM10 1h3v1h-3zM4 2h1v1h-1zM11 2h1v1h-1zM3 3h3v1h-3zM3 4h3v1h-3zM1 5h7v1h-7zM0 6h9v1h-9zM1 7h7v1h-7zM3 8h3v1h-3zM3 9h3v1h-3zM4 10h1v1h-1z"/></svg>
+                    Bekki 1.1
+                    <svg class="ch" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg>
+                  </div>
+                </div>
+                <div class="cm-send"><svg viewBox="0 0 24 24"><path d="M12 19V5M5 12l7-7 7 7"/></svg></div>
+              </div>
+            </div>
+            <p class="cm-disc">Bekki can make mistakes. Check answers.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="marq" aria-hidden="true">
+    <div class="g"><span>Ngobrol</span><span>Bertanya</span><span>Menulis</span><span>Belajar</span><span>Brainstorming</span><span>Menerjemahkan</span></div>
+    <div class="g"><span>Ngobrol</span><span>Bertanya</span><span>Menulis</span><span>Belajar</span><span>Brainstorming</span><span>Menerjemahkan</span></div>
+  </div>
+
+  <div class="stats" role="list">
+    <div class="stat" role="listitem"><span class="num" data-count="100">0%</span><span class="lbl">Gratis dipakai</span></div>
+    <div class="stat" role="listitem"><span class="num" data-count="0">0</span><span class="lbl">Instalasi dibutuhkan</span></div>
+    <div class="stat" role="listitem"><span class="num" data-count="1">1</span><span class="lbl">Model aktif saat ini</span></div>
+    <div class="stat" role="listitem"><span class="num" data-count="24">24/7</span><span class="lbl">Siap kapan saja</span></div>
   </div>
 </section>
 
-<div class="marq" aria-hidden="true">
-  <div class="g"><span>Ngobrol</span><span>Bertanya</span><span>Menulis</span><span>Belajar</span><span>Brainstorming</span><span>Menerjemahkan</span></div>
-  <div class="g"><span>Ngobrol</span><span>Bertanya</span><span>Menulis</span><span>Belajar</span><span>Brainstorming</span><span>Menerjemahkan</span></div>
-</div>
-
-<div class="strip">
-  <div><i></i><div><small>Dibuat oleh</small><b>Orbitxy</b></div></div>
-  <div><i style="--c:var(--sun)"></i><div><small>Bekki 1.1</small><b>Gratis untuk dipakai</b></div></div>
-  <div><i style="--c:var(--amber)"></i><div><small>Akses</small><b>Langsung di browser</b></div></div>
-  <div><i style="--c:var(--sun)"></i><div><small>Riwayat</small><b>Tersimpan per hari</b></div></div>
-</div>
-
-<section class="demo">
+<section id="model" aria-labelledby="model-h">
   <div class="wrap">
-    <div class="dh"><h2>Tidak ada orang lain yang boleh memegang kendali atas <span class="rot" id="rot">ide-idemu</span></h2><p>Dari menulis sampai belajar, Bekki membantu sesuai maumu.</p></div>
-  </div>
-  <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
-<symbol id="i1" viewBox="0 0 8 8"><path d="M0 1h8v5H0zM2 6h2v2H2z"/></symbol>
-<symbol id="i2" viewBox="0 0 8 8"><path d="M6 0h2v2H6zM4 2h2v2H4zM2 4h2v2H2zM0 6h2v2H0z"/></symbol>
-<symbol id="i3" viewBox="0 0 8 8"><path d="M0 1h3v6H0zM5 1h3v6H5zM3 2h2v5H3z"/></symbol>
-<symbol id="i4" viewBox="0 0 8 8"><path d="M2 0h4v1H2zM1 1h6v3H1zM2 4h4v1H2zM3 5h2v1H3zM3 7h2v1H3z"/></symbol>
-<symbol id="i5" viewBox="0 0 8 8"><path d="M2 0h4v1H2zM1 1h2v2H1zM5 1h2v2H5zM4 3h2v1H4zM3 4h2v1H3zM3 6h2v2H3z"/></symbol>
-<symbol id="i6" viewBox="0 0 8 8"><path fill-rule="evenodd" d="M2 0h4v1H2zM1 1h6v6H1zM2 7h4v1H2zM4 2h1v2h2v1H4z"/></symbol>
-<symbol id="i7" viewBox="0 0 8 8"><path fill-rule="evenodd" d="M2 0h4v1H2zM1 1h6v6H1zM2 7h4v1H2zM1 4h3v1H1zM5 4h2v1H5zM4 1h1v6H4z"/></symbol>
-<symbol id="i8" viewBox="0 0 8 8"><path fill-rule="evenodd" d="M1 0h5v1h1v1h1v6H1zM2 3h4v1H2zM2 5h4v1H2z"/></symbol>
-</defs></svg>
-  <div class="cloud" aria-label="Hal-hal yang bisa dibantu Bekki">
-    <svg class="lines" viewBox="0 0 100 60" preserveAspectRatio="none" aria-hidden="true"><path d="M0 12L100 4M0 30L100 42M0 50L70 40M30 0L100 18M0 20L60 60M40 60L100 30M0 8L45 0"/></svg>
-    <div class="r2" style="--o:0px"><span class="chip" style="--c:#2f8cdc"><svg class="ic" viewBox="0 0 8 8" shape-rendering="crispEdges" aria-hidden="true"><use href="#i8"/></svg>Ringkas teks panjang</span><span class="chip on" style="--c:#6648d9"><svg class="ic" viewBox="0 0 8 8" shape-rendering="crispEdges" aria-hidden="true"><use href="#i1"/></svg>Ngobrol santai</span><span class="chip" style="--c:#7b8ff0"><svg class="ic" viewBox="0 0 8 8" shape-rendering="crispEdges" aria-hidden="true"><use href="#i4"/></svg>Ide nama produk</span></div><div class="r2" style="--o:-28px"><span class="chip on" style="--c:#3a22a3"><svg class="ic" viewBox="0 0 8 8" shape-rendering="crispEdges" aria-hidden="true"><use href="#i2"/></svg>Menulis caption</span><span class="chip on" style="--c:#62d991"><svg class="ic" viewBox="0 0 8 8" shape-rendering="crispEdges" aria-hidden="true"><use href="#i3"/></svg>Belajar dari nol</span><span class="chip" style="--c:#2f8cdc"><svg class="ic" viewBox="0 0 8 8" shape-rendering="crispEdges" aria-hidden="true"><use href="#i7"/></svg>Terjemahan natural</span></div><div class="r2" style="--o:24px"><span class="chip" style="--c:#6648d9"><svg class="ic" viewBox="0 0 8 8" shape-rendering="crispEdges" aria-hidden="true"><use href="#i4"/></svg>Brainstorming</span><span class="chip on" style="--c:#7b8ff0"><svg class="ic" viewBox="0 0 8 8" shape-rendering="crispEdges" aria-hidden="true"><use href="#i5"/></svg>Bertanya apa saja</span><span class="chip" style="--c:#3a22a3"><svg class="ic" viewBox="0 0 8 8" shape-rendering="crispEdges" aria-hidden="true"><use href="#i6"/></svg>Riwayat per hari</span></div><div class="r2" style="--o:-12px"><span class="chip" style="--c:#62d991"><svg class="ic" viewBox="0 0 8 8" shape-rendering="crispEdges" aria-hidden="true"><use href="#i1"/></svg>Bahasa sehari-hari</span><span class="chip" style="--c:#6648d9"><svg class="ic" viewBox="0 0 8 8" shape-rendering="crispEdges" aria-hidden="true"><use href="#i6"/></svg>Tema terang dan gelap</span><span class="chip" style="--c:#7b8ff0"><svg class="ic" viewBox="0 0 8 8" shape-rendering="crispEdges" aria-hidden="true"><use href="#i8"/></svg>Tanpa instalasi</span></div>
+    <div class="center rv">
+      <span class="eyebrow">Model Bekki</span>
+      <h2 id="model-h">Pilih model sesuai kebutuhanmu.</h2>
+      <p style="color:var(--mute);margin-top:12px">Bekki 1.1 tersedia sekarang dan gratis. Model berikutnya sedang disiapkan.</p>
+    </div>
+    <div class="models-wrap">
+      <div class="models-scroll" tabindex="0" aria-label="Daftar model Bekki, geser horizontal">
+        <article class="model-card rv">
+          <div class="mc-head"><svg viewBox="0 0 8 7" aria-hidden="true"><use href="#bk"/></svg><span class="pill on">Tersedia</span></div>
+          <h3>Bekki 1.1</h3>
+          <p>Model utama. Cepat, ramah, dan gratis. Cocok untuk ngobrol sehari-hari, menulis, dan belajar.</p>
+          <a href="https://orbitxy.com/ai/" class="btn" style="padding:11px 18px;font-size:.88rem">Pakai sekarang →</a>
+        </article>
+        <article class="model-card rv" data-delay="1">
+          <div class="mc-head"><svg viewBox="0 0 8 7" aria-hidden="true" style="--c0:#c4c6e0;--c1:#c4c6e0;--c2:#c4c6e0;--c3:#c4c6e0;--c4:#c4c6e0;--c5:#c4c6e0;--c6:#c4c6e0"><use href="#bk"/></svg><span class="pill">Segera</span></div>
+          <h3>Bekki 1.5</h3>
+          <p>Peningkatan pemahaman konteks dan jawaban lebih panjang. Belum tersedia.</p>
+        </article>
+        <article class="model-card rv" data-delay="2">
+          <div class="mc-head"><svg viewBox="0 0 8 7" aria-hidden="true" style="--c0:#c4c6e0;--c1:#c4c6e0;--c2:#c4c6e0;--c3:#c4c6e0;--c4:#c4c6e0;--c5:#c4c6e0;--c6:#c4c6e0"><use href="#bk"/></svg><span class="pill">Segera</span></div>
+          <h3>Bekki 1.10</h3>
+          <p>Model lanjutan untuk tugas kompleks. Belum tersedia.</p>
+        </article>
+        <article class="model-card rv" data-delay="3">
+          <div class="mc-head"><svg viewBox="0 0 8 7" aria-hidden="true" style="--c0:#7b8ff0;--c1:#7b8ff0;--c2:#6648d9;--c3:#6648d9;--c4:#6648d9;--c5:#3a22a3;--c6:#3a22a3"><use href="#bk"/></svg><span class="pill">Beta</span></div>
+          <h3>Bekki Vision</h3>
+          <p>Bisa membaca gambar. Eksperimen — coba lebih awal.</p>
+        </article>
+      </div>
+    </div>
   </div>
 </section>
 
-<section id="fitur">
+<section id="contoh" aria-labelledby="contoh-h" style="padding-top:0">
   <div class="wrap">
-    <div class="head">
-      <h2>Simpel dipakai, nyaman digunakan.</h2>
+    <div class="center rv">
+      <span class="eyebrow">Contoh penggunaan</span>
+      <h2 id="contoh-h">Bekki bisa bantu apa?</h2>
+      <p style="color:var(--mute);margin-top:12px">Klik kategori di bawah untuk melihat contoh percakapan.</p>
+    </div>
+    <div class="tabs rv" role="tablist">
+      <button class="tab on" data-tab="tulis" role="tab" aria-selected="true">✍️ Menulis</button>
+      <button class="tab" data-tab="belajar" role="tab" aria-selected="false">📚 Belajar</button>
+      <button class="tab" data-tab="ide" role="tab" aria-selected="false">💡 Brainstorming</button>
+      <button class="tab" data-tab="terjemah" role="tab" aria-selected="false">🌐 Menerjemahkan</button>
+    </div>
+    <div class="rv">
+      <div class="tab-panel on" data-panel="tulis">
+        <div class="prompt-demo">
+          <div class="user-q">Buat caption Instagram untuk promo kopi susu gula aren, gaya santai tapi tetap jualan.</div>
+          <div class="bot-a">Siap! Ini beberapa pilihan:<br><br><strong>1.</strong> "Senja + kopi susu gula aren = kombinasi yang nggak pernah salah ☕✨ Yuk mampir sebelum kehabisan!"<br><br><strong>2.</strong> "Manisnya pas, pahitnya bikin melek. Kopi susu gula aren, teman setia sore hari 🌇"<br><br><strong>3.</strong> "Nggak perlu nunggu akhir pekan buat manja. Kopi susu gula aren siap nemenin harimu 💛"<br><br>Mau yang lebih formal, atau tambah hashtag?</div>
+          <div class="meta">Bekki · 3 varian caption</div>
+        </div>
+      </div>
+      <div class="tab-panel" data-panel="belajar">
+        <div class="prompt-demo">
+          <div class="user-q">Jelaskan apa itu API dengan bahasa sederhana, pakai analogi.</div>
+          <div class="bot-a">Bayangkan API seperti <strong>pelayan restoran</strong>:<br><br>• Kamu (aplikasi) ingin makanan (data/fitur)<br>• Kamu nggak masuk ke dapur sendiri — kamu pesan lewat pelayan<br>• Pelayan (API) yang ngatur pesananmu ke dapur (server)<br>• Pelayan juga yang antar hasilnya balik ke meja kamu<br><br>Jadi API = perantara yang bikin dua sistem bisa "ngobrol" tanpa harus saling tahu isi dapur masing-masing. Simple kan?</div>
+          <div class="meta">Bekki · analogi restoran</div>
+        </div>
+      </div>
+      <div class="tab-panel" data-panel="ide">
+        <div class="prompt-demo">
+          <div class="user-q">Kasih 5 ide nama untuk brand skincare lokal yang natural.</div>
+          <div class="bot-a">Ini 5 ide + alasan singkatnya:<br><br><strong>1. Daun Muda</strong> — kesan segar &amp; alami<br><strong>2. Rasa Bumi</strong> — bahan dari alam, lokal<br><strong>3. Sinar Alami</strong> — menonjolkan hasil natural<br><strong>4. Kulit Cerah</strong> — jelas, mudah diingat<br><strong>5. Akar Wangi</strong> — unik, nuansa rempah<br><br>Mau aku cek ketersediaan domain atau handle Instagram-nya?</div>
+          <div class="meta">Bekki · 5 ide nama brand</div>
+        </div>
+      </div>
+      <div class="tab-panel" data-panel="terjemah">
+        <div class="prompt-demo">
+          <div class="user-q">Terjemahkan "We're thrilled to announce our new feature" ke Indonesia yang natural, bukan kaku.</div>
+          <div class="bot-a">Beberapa pilihan natural:<br><br><strong>1.</strong> "Kami sangat senang mengumumkan fitur baru kami."<br><strong>2.</strong> "Dengan bangga, kami persembahkan fitur terbaru kami."<br><strong>3.</strong> "Kabar gembira — fitur baru kami sudah hadir!"<br><br>Yang mana paling cocok dengan tone brand-mu?</div>
+          <div class="meta">Bekki · 3 varian terjemahan</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="fitur" aria-labelledby="fitur-h" class="dark">
+  <div class="wrap">
+    <div class="head rv">
+      <div>
+        <span class="eyebrow">Fitur</span>
+        <h2 id="fitur-h" style="color:var(--inv-ink)">Simpel dipakai, nyaman digunakan.</h2>
+      </div>
       <p>Semua yang kamu perlukan untuk ngobrol dengan AI, dalam satu tampilan yang bersih.</p>
     </div>
-    <div class="bento">
+    <div class="bento rv">
       <div class="cell hot"><i></i><div><h3>Chat natural</h3><p>Tanya apa saja dalam bahasa sehari-hari. Bekki paham dan menjawab dengan santai.</p></div></div>
-      
       <div class="cell"><i style="--c:var(--sun)"></i><div><h3>Riwayat percakapan</h3><p>Obrolan dikelompokkan per hari, mudah dicari dan dilanjutkan kapan saja.</p></div></div>
       <div class="cell"><i></i><div><h3>Ganti tema</h3><p>Pilih tampilan terang atau gelap sesuai kenyamanan matamu.</p></div></div>
-      <div class="cell w2"><i style="--c:var(--amber)"></i><div><h3>Ramah ponsel</h3><p>Tampilan menyesuaikan layar, nyaman di HP, tablet, maupun laptop.</p></div></div>
+      <div class="cell w2"><i style="--c:var(--amber)"></i><div><h3>Ramah ponsel</h3><p>Tampilan menyesuaikan layar — nyaman di HP, tablet, maupun laptop.</p></div></div>
       <div class="cell sun wide"><i></i><div><h3>Langsung pakai</h3><p>Buka di browser, klik New chat, dan mulai bertanya. Tanpa instalasi.</p></div></div>
     </div>
   </div>
 </section>
 
-<section id="contoh" style="padding-top:24px">
+<section id="cara" aria-labelledby="cara-h">
   <div class="wrap">
-    <div class="head">
-      <h2>Bekki bisa bantu apa?</h2>
-      <p>Beberapa contoh yang bisa kamu coba langsung.</p>
+    <div class="head rv">
+      <div>
+        <span class="eyebrow">Cara pakai</span>
+        <h2 id="cara-h">Mulai dalam 3 langkah.</h2>
+      </div>
+      <p>Tidak perlu belajar apa-apa dulu. Buka, ketik, selesai.</p>
     </div>
-    <div class="list">
+    <div class="steps rv">
+      <div class="step"><b>1</b><h3>Buka Bekki</h3><p>Kunjungi orbitxy.com/ai di browser kamu.</p></div>
+      <div class="step"><b>2</b><h3>Mulai chat baru</h3><p>Klik New chat lalu ketik pertanyaan atau permintaanmu.</p></div>
+      <div class="step"><b>3</b><h3>Lanjutkan kapan saja</h3><p>Riwayat tersimpan, jadi kamu bisa kembali ke obrolan sebelumnya.</p></div>
+    </div>
+  </div>
+</section>
+
+<section aria-labelledby="manfaat-h" style="padding-top:0">
+  <div class="wrap">
+    <div class="head rv">
+      <div>
+        <span class="eyebrow">Manfaat</span>
+        <h2 id="manfaat-h">Empat hal yang paling sering dibantu.</h2>
+      </div>
+      <p>Dari pekerjaan kecil sampai tugas besar, Bekki siap bantu.</p>
+    </div>
+    <div class="list rv">
       <div class="row"><h3>Menulis</h3><p>Buat caption, email, atau rangkum teks panjang jadi lebih singkat dan rapi.</p></div>
       <div class="row"><h3>Belajar</h3><p>Minta penjelasan materi dengan bahasa sederhana, lengkap dengan contoh.</p></div>
       <div class="row"><h3>Brainstorming</h3><p>Cari ide nama, konten, atau solusi saat kamu buntu dan butuh sudut pandang baru.</p></div>
@@ -420,44 +769,16 @@ footer{background:var(--inv);color:var(--inv-ink);padding:56px 0 32px}
   </div>
 </section>
 
-<div class="sdiv" aria-hidden="true"><svg class="vio st" viewBox="0 0 8 7"><use href="#bk"/></svg><span style="--h:8%"></span><span style="--h:8%"></span><span style="--h:25%"></span><span style="--h:25%"></span><span style="--h:42%"></span><span style="--h:42%"></span><span style="--h:58%"></span><span style="--h:58%"></span><span style="--h:75%"></span><span style="--h:75%"></span><span style="--h:100%"></span><span style="--h:100%"></span></div>
-
-<section id="cara" class="dark">
+<section id="faq" aria-labelledby="faq-h">
   <div class="wrap">
-    <div class="head">
-      <h2>Mulai dalam 3 langkah.</h2>
-      <p>Tidak perlu belajar apa-apa dulu.</p>
-    </div>
-    <div class="steps">
-      <div class="step"><b>1</b><h3>Buka Bekki</h3><p>Kunjungi orbitxy.com/ai di browser kamu.</p></div>
-      <div class="step"><b>2</b><h3>Mulai chat baru</h3><p>Klik New chat lalu ketik pertanyaan atau permintaanmu.</p></div>
-      <div class="step"><b>3</b><h3>Lanjutkan kapan saja</h3><p>Riwayat tersimpan, jadi kamu bisa kembali ke obrolan sebelumnya.</p></div>
-    </div>
-  </div>
-</section>
-
-<section id="model">
-  <div class="wrap">
-    <div class="head">
-      <h2>Pilih model Bekki.</h2>
-      <p>Bekki 1.1 gratis dan bisa dipakai sekarang. Dua model lainnya belum tersedia.</p>
-    </div>
-    <div class="bento tiers">
-      <div class="cell"><svg class="ti blu" viewBox="0 0 8 7" aria-hidden="true"><use href="#bk"/></svg><div><span class="pill on">Tersedia</span><h3>Bekki 1.1</h3><p>Gratis. Buka orbitxy.com/ai dan langsung mulai ngobrol.</p></div></div>
-      <div class="cell off"><svg class="ti ghost" viewBox="0 0 8 7" aria-hidden="true"><use href="#bk"/></svg><div><span class="pill">Belum tersedia</span><h3>Bekki 1.5</h3><p>Belum bisa dipakai saat ini.</p></div></div>
-      <div class="cell off"><svg class="ti ghost" viewBox="0 0 8 7" aria-hidden="true"><use href="#bk"/></svg><div><span class="pill">Belum tersedia</span><h3>Bekki 1.10</h3><p>Belum bisa dipakai saat ini.</p></div></div>
-    </div>
-    <div class="acts" style="margin-top:32px"><a class="btn" href="https://orbitxy.com/ai/">Coba Bekki 1.1 gratis</a></div>
-  </div>
-</section>
-
-<section id="faq" style="padding-top:24px">
-  <div class="wrap">
-    <div class="head">
-      <h2>Pertanyaan yang sering muncul.</h2>
+    <div class="head rv">
+      <div>
+        <span class="eyebrow">FAQ</span>
+        <h2 id="faq-h">Pertanyaan yang sering muncul.</h2>
+      </div>
       <p>Belum ketemu jawabannya? Hubungi kami lewat orbitxy.com.</p>
     </div>
-    <div class="faq">
+    <div class="faq rv">
       <details><summary>Apakah Bekki gratis?</summary><p>Bekki 1.1 gratis dan bisa dipakai sekarang. Bekki 1.5 dan Bekki 1.10 belum tersedia.</p></details>
       <details><summary>Apakah data saya aman?</summary><p>Riwayat obrolan disimpan supaya kamu bisa melanjutkannya kapan saja. Ringkasannya ada di bagian <a href="#privasi">privasi</a>.</p></details>
       <details><summary>Bahasa apa saja yang bisa dipakai?</summary><p>Bekki paham bahasa sehari-hari, termasuk bahasa Indonesia yang santai, dan bisa menerjemahkan teks antar bahasa.</p></details>
@@ -467,113 +788,189 @@ footer{background:var(--inv);color:var(--inv-ink);padding:56px 0 32px}
   </div>
 </section>
 
-<section id="privasi" style="padding-top:24px">
+<section id="privasi" aria-labelledby="privasi-h" style="padding-top:0">
   <div class="wrap">
-    <div class="head">
-      <h2>Privasi dan penggunaan.</h2>
+    <div class="head rv">
+      <div>
+        <span class="eyebrow">Privasi &amp; penggunaan</span>
+        <h2 id="privasi-h">Privasi dan penggunaan.</h2>
+      </div>
       <p>Ringkasan singkat tentang data dan cara memakai Bekki.</p>
     </div>
-    <div class="two">
+    <div class="two rv">
       <div class="cell"><i></i><div><h3>Kebijakan privasi</h3><p>Riwayat obrolan disimpan per hari supaya mudah dicari dan dilanjutkan kapan saja.</p></div></div>
       <div class="cell" id="syarat"><i style="--c:var(--sun)"></i><div><h3>Syarat penggunaan</h3><p>Bekki adalah asisten AI dan jawabannya bisa keliru. Pakai sebagai bantuan, dan cek ulang untuk keputusan penting.</p></div></div>
     </div>
   </div>
 </section>
 
-<section id="tentang">
+<section id="tentang" aria-labelledby="tentang-h" style="padding-top:0">
   <div class="wrap">
-    <div class="head">
-      <h2>Tentang Orbitxy.</h2>
+    <div class="head rv">
+      <div>
+        <span class="eyebrow">Tentang</span>
+        <h2 id="tentang-h">Tentang Orbitxy.</h2>
+      </div>
       <p>Orbitxy adalah pengembang yang membuat dan mengelola Bekki, asisten AI yang kamu kenal di halaman ini.</p>
     </div>
-    <p class="vision"><small>Visi Orbitxy</small>Kami membuat Bekki agar siapa pun bisa memanfaatkan AI dengan mudah, tanpa perlu paham teknologi yang rumit. Teknologi seharusnya terasa seperti ngobrol dengan teman yang membantu.</p>
-    <div class="two">
-      <div class="cell"><i></i><div><h3>Di balik Bekki</h3><p>Orbitxy yang merancang, mengembangkan, dan menjalankan Bekki, dari tampilan sampai pengalaman ngobrolnya.</p></div></div>
+    <p style="font-size:clamp(1.4rem,3.2vw,2.4rem);line-height:1.18;letter-spacing:-.04em;max-width:22em;margin-bottom:64px;font-weight:600" class="rv"><small style="display:block;font-size:.9rem;letter-spacing:0;color:var(--mute);margin-bottom:16px;text-transform:uppercase;font-weight:700">Visi Orbitxy</small>Kami membuat Bekki agar siapa pun bisa memanfaatkan AI dengan mudah, tanpa perlu paham teknologi yang rumit. <span style="color:var(--mute)">Teknologi seharusnya terasa seperti ngobrol dengan teman yang membantu.</span></p>
+    <div class="two rv">
+      <div class="cell"><i></i><div><h3>Di balik Bekki</h3><p>Orbitxy yang merancang, mengembangkan, dan menjalankan Bekki — dari tampilan sampai pengalaman ngobrolnya.</p></div></div>
       <div class="cell"><i style="--c:var(--sun)"></i><div><h3>Bekki, produk Orbitxy</h3><p>Bekki adalah wajah Orbitxy untuk pengguna: asisten AI yang bisa kamu ajak ngobrol langsung.</p></div></div>
     </div>
   </div>
 </section>
 
 <div class="cta">
-  <svg class="sil pk l" viewBox="0 0 8 7" aria-hidden="true"><use href="#bk"/></svg>
-  <svg class="sil pk r" viewBox="0 0 8 7" aria-hidden="true"><use href="#bk"/></svg>
-  <div class="stairs" aria-hidden="true"><span style="--h:100%"></span><span style="--h:100%"></span><span style="--h:100%"></span><span style="--h:80%"></span><span style="--h:80%"></span><span style="--h:60%"></span><span style="--h:60%"></span><span style="--h:40%"></span><span style="--h:20%"></span><span style="--h:20%"></span></div>
-  <div class="wrap">
+  <div class="cta-in">
+    <svg class="cat-big" viewBox="0 0 8 7" aria-hidden="true"><use href="#bk"/></svg>
     <h2>Siap kenalan dengan Bekki?</h2>
-    <p>Coba sekarang dan rasakan ngobrol dengan AI yang simpel.</p>
-    <a href="https://orbitxy.com/ai/" class="btn">Coba Bekki sekarang</a>
+    <p>Coba sekarang dan rasakan ngobrol dengan AI yang simpel, gratis, dan tanpa ribet.</p>
+    <a href="https://orbitxy.com/ai/" class="btn">Coba Bekki sekarang →</a>
   </div>
 </div>
+
 </main>
 
 <footer>
   <div class="wrap">
-    <div class="ft">
-      <a href="#" class="logo"><span class="mark" style="border:1px solid rgba(255,245,225,.25)"><svg width="22" height="22" viewBox="0 0 100 100" aria-hidden="true"><use href="#bk"/></svg></span>Bekki</a>
-      <ul>
-        <li><a href="https://orbitxy.com">orbitxy.com</a></li>
-        <li><a href="https://orbitxy.com/ai/">orbitxy.com/ai</a></li>
-        <li><a href="#privasi">Kebijakan privasi</a></li>
-        <li><a href="#syarat">Syarat penggunaan</a></li>
-      </ul>
+    <div class="ft-grid">
+      <div class="ft-brand">
+        <a href="#" class="logo" style="color:var(--inv-ink)">
+          <span class="mark" style="border:1px solid rgba(255,245,225,.25)"><svg width="24" height="24" viewBox="0 0 100 100" aria-hidden="true"><use href="#bk"/></svg></span>Bekki
+        </a>
+        <p>Asisten AI dari Orbitxy. Ngobrol, bertanya, dan selesaikan pekerjaan dengan lebih cepat — gratis, tanpa instalasi.</p>
+      </div>
+      <div class="ft-col">
+        <h4>Produk</h4>
+        <ul>
+          <li><a href="https://orbitxy.com/ai/">Bekki</a></li>
+          <li><a href="#model">Model</a></li>
+          <li><a href="#fitur">Fitur</a></li>
+          <li><a href="#faq">FAQ</a></li>
+        </ul>
+      </div>
+      <div class="ft-col">
+        <h4>Perusahaan</h4>
+        <ul>
+          <li><a href="https://orbitxy.com">Orbitxy</a></li>
+          <li><a href="#tentang">Tentang</a></li>
+          <li><a href="#contoh">Contoh</a></li>
+        </ul>
+      </div>
+      <div class="ft-col">
+        <h4>Legal</h4>
+        <ul>
+          <li><a href="#privasi">Kebijakan privasi</a></li>
+          <li><a href="#syarat">Syarat penggunaan</a></li>
+          <li><a href="https://orbitxy.com/ai/">Kontak</a></li>
+        </ul>
+      </div>
     </div>
-    
-    <div class="fb">© 2026 Orbitxy, pembuat Bekki.</div>
+    <div class="fb">
+      <span>© 2026 Orbitxy, pembuat Bekki.</span>
+      <span><a href="https://orbitxy.com">orbitxy.com</a> · <a href="https://orbitxy.com/ai/">orbitxy.com/ai</a></span>
+    </div>
   </div>
 </footer>
 
-
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {"@type": "Organization", "name": "Orbitxy", "url": "https://orbitxy.com", "description": "Pengembang Bekki, asisten AI berbahasa Indonesia."},
+    {"@type": "WebApplication", "name": "Bekki", "description": "Asisten AI dari Orbitxy. Ngobrol, bertanya, dan selesaikan pekerjaan lewat percakapan sederhana langsung di browser. Gratis.", "url": "https://orbitxy.com/ai/", "applicationCategory": "ProductivityApplication", "operatingSystem": "Web", "isAccessibleForFree": true, "inLanguage": "id", "publisher": {"@type": "Organization", "name": "Orbitxy"}},
+    {"@type": "FAQPage", "mainEntity": [
+      {"@type": "Question", "name": "Apakah Bekki gratis?", "acceptedAnswer": {"@type": "Answer", "text": "Bekki 1.1 gratis dan bisa dipakai sekarang. Bekki 1.5 dan Bekki 1.10 belum tersedia."}},
+      {"@type": "Question", "name": "Apakah data saya aman?", "acceptedAnswer": {"@type": "Answer", "text": "Riwayat obrolan disimpan supaya kamu bisa melanjutkannya kapan saja."}},
+      {"@type": "Question", "name": "Bahasa apa saja yang bisa dipakai?", "acceptedAnswer": {"@type": "Answer", "text": "Bekki paham bahasa sehari-hari, termasuk bahasa Indonesia yang santai, dan bisa menerjemahkan teks antar bahasa."}},
+      {"@type": "Question", "name": "Apakah jawaban Bekki selalu benar?", "acceptedAnswer": {"@type": "Answer", "text": "Tidak selalu. Bekki bisa keliru, jadi cek ulang untuk informasi penting seperti kesehatan, hukum, atau keuangan."}}
+    ]}
+  ]
+}
+</script>
 
 <script>
-const r=document.documentElement,tt=document.getElementById('tt'),mq=matchMedia('(prefers-color-scheme: dark)');
-const cur=()=>r.dataset.theme||(mq.matches?'dark':'light');
-const sync=()=>{tt.textContent=cur()==='dark'?'☀':'☾'};
-try{const s=localStorage.getItem('theme');if(s)r.dataset.theme=s}catch(e){}
-sync();
-tt.onclick=()=>{const n=cur()==='dark'?'light':'dark';r.dataset.theme=n;try{localStorage.setItem('theme',n)}catch(e){}sync()};
-const links=document.getElementById('links');
-document.getElementById('menu').onclick=()=>links.classList.toggle('open');
-links.querySelectorAll('a').forEach(a=>a.onclick=()=>links.classList.remove('open'));
-if('IntersectionObserver' in window){
-  r.classList.add('js');
-  const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}}),{threshold:0,rootMargin:'0px 0px -8% 0px'});
-  document.querySelectorAll('.head,.bento,.list,.steps,.faq,.two,.vision').forEach(e=>{e.classList.add('rv');io.observe(e)});
-}
-const rot=document.getElementById('rot');
-if(rot){const W=['ide-idemu','tulisanmu','pekerjaanmu','rencanamu'];let i=0,n=0,del=false;
-  const tick=()=>{const w=W[i];
-    if(!del){n++;rot.textContent=w.slice(0,n);if(n===w.length){del=true;return setTimeout(tick,1700)}return setTimeout(tick,75)}
-    n--;rot.textContent=w.slice(0,n);if(n===0){del=false;i=(i+1)%W.length;return setTimeout(tick,300)}setTimeout(tick,35)};
-  setTimeout(tick,1500)}
-const chips=[...document.querySelectorAll('.chip')];
-const cl=document.querySelector('.cloud'),ln=cl&&cl.querySelector('.lines');
-const draw=()=>{if(!ln)return;const R=cl.getBoundingClientRect(),W=R.width,H=R.height;
-  ln.setAttribute('viewBox','0 0 '+W+' '+H);
-  const cs=chips.filter(c=>c.offsetParent!==null).map(c=>{const b=c.getBoundingClientRect();return{l:b.left-R.left-14.5,r:b.right-R.left+14.5,y:b.top-R.top+b.height/2}});
-  const rows={};cs.forEach(c=>{const k=Math.round(c.y/6);(rows[k]=rows[k]||[]).push(c)});
-  let d='',i=0;
-  Object.keys(rows).sort((a,b)=>a-b).forEach(k=>{const g=rows[k].sort((a,b)=>a.l-b.l);
-    g.forEach((c,j)=>{if(j<g.length-1)d+='M'+c.r+' '+c.y+'L'+g[j+1].l+' '+g[j+1].y});
-    const f=g[0],l=g[g.length-1],s=i%2?1:-1,len=Math.max(W*.5,300);
-    d+='M'+f.l+' '+f.y+'L'+(f.l-len)+' '+(f.y+s*(70+(i*53)%80));
-    d+='M'+l.r+' '+l.y+'L'+(l.r+len)+' '+(l.y-s*(60+(i*41)%90));i++});
-  ln.innerHTML='<path d="'+d+'"/>'};
-const follow=()=>{const t0=performance.now();const f=()=>{draw();if(performance.now()-t0<700)requestAnimationFrame(f)};f()};
-if(chips.length){const pick=()=>{chips.forEach(c=>c.classList.remove('on'));[...chips].sort(()=>Math.random()-.5).slice(0,4).forEach(c=>c.classList.add('on'));follow()};setInterval(pick,2200)}
-addEventListener('resize',draw);addEventListener('load',draw);if(document.fonts)document.fonts.ready.then(draw);draw();
-const box=document.querySelector('.msgs');
-if(box){
-  const items=[...box.children].map(e=>e.cloneNode(true)),dots=items.pop();
-  const run=()=>{
-    box.replaceChildren();let k=0;
-    const next=()=>{
-      if(k<items.length){box.append(items[k++].cloneNode(true));setTimeout(next,k===1?1200:1700)}
-      else{box.append(dots.cloneNode(true));setTimeout(run,3800)}
-    };
-    next();
-  };
-  run();
-}
+(function(){
+  const r = document.documentElement;
+  const tt = document.getElementById('tt');
+  const mq = matchMedia('(prefers-color-scheme: dark)');
+  const cur = () => r.dataset.theme || (mq.matches ? 'dark' : 'light');
+  const sync = () => { tt.textContent = cur() === 'dark' ? '☀' : '☾'; };
+  try { const s = localStorage.getItem('theme'); if (s) r.dataset.theme = s; } catch(e){}
+  sync();
+  tt.addEventListener('click', () => {
+    const n = cur() === 'dark' ? 'light' : 'dark';
+    r.dataset.theme = n;
+    try { localStorage.setItem('theme', n); } catch(e){}
+    sync();
+  });
+
+  const links = document.getElementById('links');
+  const menu = document.getElementById('menu');
+  menu.addEventListener('click', () => {
+    const open = links.classList.toggle('open');
+    menu.setAttribute('aria-expanded', open ? 'true' : 'false');
+  });
+  links.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
+    links.classList.remove('open');
+    menu.setAttribute('aria-expanded', 'false');
+  }));
+
+  if ('IntersectionObserver' in window) {
+    r.classList.add('js');
+    const io = new IntersectionObserver(entries => {
+      entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
+    }, { threshold: 0, rootMargin: '0px 0px -10% 0px' });
+    document.querySelectorAll('.rv').forEach(e => io.observe(e));
+  }
+
+  const tabs = document.querySelectorAll('.tab');
+  const panels = document.querySelectorAll('.tab-panel');
+  tabs.forEach(t => t.addEventListener('click', () => {
+    tabs.forEach(x => { x.classList.remove('on'); x.setAttribute('aria-selected', 'false'); });
+    panels.forEach(p => p.classList.remove('on'));
+    t.classList.add('on'); t.setAttribute('aria-selected', 'true');
+    const panel = document.querySelector(`.tab-panel[data-panel="${t.dataset.tab}"]`);
+    if (panel) panel.classList.add('on');
+  }));
+
+  const stats = document.querySelectorAll('.stat .num');
+  const io2 = 'IntersectionObserver' in window ? new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (!e.isIntersecting) return;
+      const el = e.target, target = el.dataset.count;
+      const suffix = el.textContent.replace(/[0-9]/g, '');
+      let n = 0;
+      const dur = 1400, t0 = performance.now();
+      const step = (t) => {
+        const p = Math.min((t - t0) / dur, 1);
+        const eased = 1 - Math.pow(1 - p, 3);
+        n = Math.round(eased * Number(target));
+        el.textContent = n + (target === '24' ? '/7' : suffix);
+        if (p < 1) requestAnimationFrame(step);
+      };
+      requestAnimationFrame(step);
+      io2.unobserve(el);
+    });
+  }, { threshold: .5 }) : null;
+  if (io2) stats.forEach(s => io2.observe(s));
+
+  const glow = document.getElementById('glow');
+  if (glow && matchMedia('(hover:hover) and (pointer:fine)').matches) {
+    let raf = null;
+    document.addEventListener('mousemove', e => {
+      glow.classList.add('active');
+      if (raf) return;
+      raf = requestAnimationFrame(() => {
+        glow.style.left = e.clientX + 'px';
+        glow.style.top = e.clientY + 'px';
+        raf = null;
+      });
+    });
+    document.addEventListener('mouseleave', () => glow.classList.remove('active'));
+  }
+})();
 </script>
 </body>
 </html>
