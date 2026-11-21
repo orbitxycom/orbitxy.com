@@ -1019,3 +1019,6 @@ header #toggle2 svg{font-size:22px!important}
 .sidebar:not(.closed) .ctx-it{height:38px}
 .sidebar:not(.closed) .hist-item{display:block;line-height:40px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .sidebar:not(.closed) .prj-list>.hist-label,.sidebar:not(.closed) .prj-empty{padding-left:14px}
+.sidebar:not(.closed) .sb-foot{margin-top:auto!important}
+.sidebar:not(.closed) .hist{flex:0 1 auto}
+.sidebar:not(.closed) .hist[hidden]{display:none}
