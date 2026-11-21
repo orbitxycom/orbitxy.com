@@ -73,7 +73,7 @@ img,svg{display:block;max-width:100%}
 .banner a{text-decoration:underline;text-underline-offset:3px;margin-left:6px;position:relative;z-index:1}
 .banner a:hover{opacity:.75}
 
-/* ===== HEADER GAYA VHEER ===== */
+/* ===== HEADER ===== */
 header{
   position:sticky;top:0;z-index:100;
   background:color-mix(in srgb, var(--bg) 85%, transparent);
@@ -83,92 +83,39 @@ header{
 }
 header.scrolled{border-bottom-color:var(--line)}
 .nav{display:flex;align-items:center;justify-content:space-between;height:72px;gap:16px}
-
-/* Logo */
-.logo{
-  display:flex;align-items:center;gap:10px;
-  font-family:"Inter Tight",sans-serif;font-size:1.35rem;font-weight:700;color:var(--ink);
-}
-.mark{
-  width:38px;height:38px;background:#000;border-radius:8px;
-  display:grid;place-items:center;transition:transform .3s;
-}
+.logo{display:flex;align-items:center;gap:10px;font-family:"Inter Tight",sans-serif;font-size:1.35rem;font-weight:700;color:var(--ink);}
+.mark{width:38px;height:38px;background:#000;border-radius:8px;display:grid;place-items:center;transition:transform .3s;}
 .logo:hover .mark{transform:rotate(-8deg) scale(1.05)}
 .mark svg{width:22px;height:22px}
-
-/* Kanan: ikon */
 .right{display:flex;align-items:center;gap:4px}
-.icon-btn{
-  width:44px;height:44px;border-radius:50%;
-  display:grid;place-items:center;
-  background:transparent;border:0;color:var(--ink);
-  font-size:1.15rem;cursor:pointer;transition:background .15s;
-}
+.icon-btn{width:44px;height:44px;border-radius:50%;display:grid;place-items:center;background:transparent;border:0;color:var(--ink);font-size:1.15rem;cursor:pointer;transition:background .15s;}
 .icon-btn:hover{background:var(--soft)}
-
-/* Menu links desktop */
 .links{display:none}
-
 @media (min-width:900px){
-  .links{
-    display:flex;align-items:center;gap:4px;
-    list-style:none;margin-left:auto;margin-right:16px;
-  }
-  .links a{
-    font-size:.95rem;font-weight:500;color:var(--mute);
-    padding:8px 14px;border-radius:8px;
-    transition:color .15s, background .15s;
-  }
+  .links{display:flex;align-items:center;gap:4px;list-style:none;margin-left:auto;margin-right:16px;}
+  .links a{font-size:.95rem;font-weight:500;color:var(--mute);padding:8px 14px;border-radius:8px;transition:color .15s, background .15s;}
   .links a:hover{color:var(--ink);background:var(--soft)}
   #menu{display:none}
 }
-
-/* Menu mobile drawer */
 @media (max-width:899px){
-  .links{
-    display:none;position:absolute;top:100%;left:0;right:0;
-    background:var(--bg);flex-direction:column;
-    padding:16px 20px;gap:0;
-    border-bottom:1px solid var(--line);
-    box-shadow:0 10px 30px rgba(0,0,0,.08);
-    animation:drawerIn .22s ease;
-  }
+  .links{display:none;position:absolute;top:100%;left:0;right:0;background:var(--bg);flex-direction:column;padding:16px 20px;gap:0;border-bottom:1px solid var(--line);box-shadow:0 10px 30px rgba(0,0,0,.08);animation:drawerIn .22s ease;}
   .links.open{display:flex}
   @keyframes drawerIn{from{opacity:0;transform:translateY(-8px)}}
-  .links a{
-    padding:12px 0;font-size:1rem;font-weight:500;color:var(--ink);
-    border-bottom:1px solid var(--line);
-  }
+  .links a{padding:12px 0;font-size:1rem;font-weight:500;color:var(--ink);border-bottom:1px solid var(--line);}
   .links li:last-child a{border-bottom:0}
 }
 
-/* ===== HERO (serif gaya Vheer) ===== */
-.hero{padding:60px 0 0;text-align:center;position:relative;overflow:hidden} /* Padding atas dikurangi agar naik */
+/* ===== HERO ===== */
+.hero{padding:60px 0 0;text-align:center;position:relative;overflow:hidden}
 .hero::before{content:"";position:absolute;inset:0;background:var(--mesh);opacity:.7;pointer-events:none;z-index:0}
 .hero::after{content:"";position:absolute;inset:0;background-image:radial-gradient(circle at 1px 1px,var(--line) 1px,transparent 0);background-size:32px 32px;opacity:.3;pointer-events:none;z-index:0;mask-image:linear-gradient(to bottom,black 0%,black 50%,transparent 100%)}
 .hero-in{position:relative;z-index:2;max-width:980px;margin:0 auto;padding:0 20px}
-.hero h1{
-  font-family:"Playfair Display",Georgia,serif;
-  font-size:clamp(2.6rem,6.5vw,5.4rem);
-  font-weight:500;line-height:1.05;letter-spacing:-.02em;margin-bottom:24px;
-  text-wrap:balance;
-}
+.hero h1{font-family:"Playfair Display",Georgia,serif;font-size:clamp(2.6rem,6.5vw,5.4rem);font-weight:500;line-height:1.05;letter-spacing:-.02em;margin-bottom:24px;text-wrap:balance;}
 .hero h1 .gray{color:#8a8a9a;font-weight:500}
-.hero .lead{
-  font-size:clamp(1rem,2.2vw,1.3rem);
-  color:#6b6b7d;max-width:32em;margin:0 auto 36px;
-  line-height:1.65;font-weight:400;
-}
+.hero .lead{font-size:clamp(1rem,2.2vw,1.3rem);color:#6b6b7d;max-width:32em;margin:0 auto 36px;line-height:1.65;font-weight:400;}
 .hero .lead strong{color:var(--ink);font-weight:600}
 .acts{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-bottom:56px}
-.btn-hero{
-  display:inline-flex;align-items:center;gap:12px;
-  background:#0d0a20;color:#fff;border:1px solid #0d0a20;
-  padding:18px 36px;border-radius:999px;
-  font-size:1.05rem;font-weight:600;
-  transition:all .25s;cursor:pointer;
-  box-shadow:0 8px 24px -8px rgba(13,10,32,.4);
-}
+.btn-hero{display:inline-flex;align-items:center;gap:12px;background:#0d0a20;color:#fff;border:1px solid #0d0a20;padding:18px 36px;border-radius:999px;font-size:1.05rem;font-weight:600;transition:all .25s;cursor:pointer;box-shadow:0 8px 24px -8px rgba(13,10,32,.4);}
 .btn-hero:hover{transform:translateY(-2px);box-shadow:0 12px 32px -8px rgba(13,10,32,.5);background:#1a1540}
 .btn-hero svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;transition:transform .25s}
 .btn-hero:hover svg{transform:translateX(4px)}
@@ -178,106 +125,71 @@ header.scrolled{border-bottom-color:var(--line)}
 .facts li:nth-child(2){--c:var(--amber)}
 .facts li:nth-child(3){--c:var(--orange)}
 
-/* ===== Preview + Play ===== */
-.preview{max-width:1040px;margin:0 auto;padding:0 20px;position:relative;z-index:2;perspective:2000px}
-.preview-wrap{position:relative;border-radius:16px;overflow:hidden;box-shadow:var(--shadow-lg);cursor:pointer;transition:transform .5s cubic-bezier(.22,1,.36,1)}
-.preview-wrap:hover{transform:translateY(-4px)}
-.preview-play{
-  position:absolute;inset:0;display:grid;place-items:center;
-  background:rgba(0,0,0,.35);transition:background .3s;z-index:5;
+/* ===== VIDEO PREVIEW (BARU) ===== */
+.preview{max-width:1040px;margin:0 auto;padding:0 20px;position:relative;z-index:2;}
+.video-wrapper{
+  position:relative;
+  width:100%;
+  max-width:400px; /* Ukuran kotak segi empat (di tengah) */
+  margin:0 auto;
+  aspect-ratio: 9/16; /* Rasio video Instagram Reel */
+  border-radius:20px;
+  overflow:hidden;
+  box-shadow:var(--shadow-lg);
+  background:#000;
+  cursor:pointer;
+  transition:transform .5s cubic-bezier(.22,1,.36,1);
 }
-.preview-wrap:hover .preview-play{background:rgba(0,0,0,.5)}
+@media (min-width:900px){
+  .video-wrapper{
+    max-width: 800px; /* Lebar maksimal di laptop */
+    aspect-ratio: 16/9; /* Rasio lebar di laptop */
+  }
+}
+.video-wrapper:hover{transform:translateY(-4px)}
+/* Gambar Sampul Video */
+.video-cover{
+  position:absolute;inset:0;
+  background: linear-gradient(135deg, #1a1540, #0d0a20);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:20px;
+}
+.video-cover svg.bg-pattern{
+  position:absolute;inset:0;width:100%;height:100%;
+  opacity:0.1;pointer-events:none;
+}
+.video-cover .logo-vid{
+  width:60px;height:60px;background:#000;border-radius:12px;
+  display:grid;place-items:center;border:1px solid rgba(255,255,255,0.1);
+  z-index:2;
+}
+.video-cover .logo-vid svg{width:36px;height:36px;}
+.video-cover h3{
+  color:#fff;font-family:"Inter Tight",sans-serif;font-size:1.2rem;
+  z-index:2;text-align:center;padding:0 20px;
+}
+/* Tombol Play Merah */
 .play-btn{
-  width:80px;height:80px;border-radius:50%;background:#e11d48;
-  display:grid;place-items:center;color:#fff;
+  position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+  width:80px;height:80px;border-radius:50%;
+  background:#e11d48;color:#fff;
+  display:grid;place-items:center;
   box-shadow:0 12px 32px -8px rgba(225,29,72,.6);
   transition:transform .3s,background .3s;
   animation:playPulse 2.5s ease-in-out infinite;
+  z-index:3;
 }
-@keyframes playPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.06)}}
-.preview-wrap:hover .play-btn{transform:scale(1.12);background:#f43f5e}
-.play-btn svg{width:32px;height:32px;fill:#fff;stroke:none;margin-left:3px}
-
-/* ===== Chat Mockup ===== */
-.chat-mock{
-  background:#fafaf7;border:1px solid rgba(0,0,0,.1);overflow:hidden;border-radius:14px;
-  font-family:"Geist",ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;
-  color:#111;color-scheme:light;-webkit-font-smoothing:antialiased;
+@keyframes playPulse{0%,100%{transform:translate(-50%,-50%) scale(1)}50%{transform:translate(-50%,-50%) scale(1.08)}}
+.video-wrapper:hover .play-btn{transform:translate(-50%,-50%) scale(1.15);background:#f43f5e}
+.play-btn svg{width:32px;height:32px;fill:#fff;stroke:none;margin-left:4px;}
+/* Ikon Instagram di pojok */
+.ig-badge{
+  position:absolute;bottom:16px;right:16px;
+  width:36px;height:36px;border-radius:50%;
+  background:rgba(255,255,255,0.15);backdrop-filter:blur(8px);
+  display:grid;place-items:center;z-index:3;
 }
-.dark .chat-mock,:root[data-theme="dark"] .chat-mock{
-  background:#191919;color:#eee;border-color:rgba(255,255,255,.1);color-scheme:dark;
-}
-@media (prefers-color-scheme:dark){
-  :root:not([data-theme="light"]) .chat-mock{
-    background:#191919;color:#eee;border-color:rgba(255,255,255,.1);color-scheme:dark;
-  }
-}
-.chat-mock *{box-sizing:border-box;margin:0;border-color:var(--cm-border)}
-.chat-mock{
-  --cm-bg:#fafaf7;--cm-side:#f4f4f1;--cm-card:#fff;--cm-fg:#111;--cm-muted:#6b6b6b;
-  --cm-border:rgba(0,0,0,.09);--cm-border-side:rgba(0,0,0,.08);
-  --cm-accent:rgba(0,0,0,.06);--cm-secondary:#ededeb;
-}
-.dark .chat-mock,:root[data-theme="dark"] .chat-mock{
-  --cm-bg:#1a1a1a;--cm-side:#171717;--cm-card:#242424;--cm-fg:#eee;--cm-muted:#9a9a9a;
-  --cm-border:rgba(255,255,255,.1);--cm-border-side:rgba(255,255,255,.08);
-  --cm-accent:rgba(255,255,255,.06);--cm-secondary:#2c2c2c;
-}
-@media (prefers-color-scheme:dark){
-  :root:not([data-theme="light"]) .chat-mock{
-    --cm-bg:#1a1a1a;--cm-side:#171717;--cm-card:#242424;--cm-fg:#eee;--cm-muted:#9a9a9a;
-    --cm-border:rgba(255,255,255,.1);--cm-border-side:rgba(255,255,255,.08);
-    --cm-accent:rgba(255,255,255,.06);--cm-secondary:#2c2c2c;
-  }
-}
-.cm-app{display:flex;min-height:460px}
-.cm-side{width:200px;flex:none;background:var(--cm-side);border-right:1px solid var(--cm-border-side);display:flex;flex-direction:column;padding:10px 6px}
-.cm-side-head{display:flex;justify-content:space-between;align-items:center;padding:0 4px 8px;color:var(--cm-muted)}
-.cm-side-head svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;opacity:.6}
-.cm-new{display:flex;align-items:center;gap:6px;height:28px;padding:0 8px;border:1px solid var(--cm-border-side);border-radius:6px;font-size:11.5px;font-weight:500;color:var(--cm-fg);margin-bottom:8px;cursor:default}
-.cm-new svg{width:12px;height:12px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
-.cm-side-label{font-size:10px;color:var(--cm-muted);padding:6px 6px 3px;font-weight:500}
-.cm-side-item{padding:5px 8px;border-radius:6px;font-size:11.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--cm-fg);opacity:.85}
-.cm-side-item.on{background:var(--cm-accent);opacity:1;font-weight:500}
-.cm-main{flex:1;display:flex;flex-direction:column;min-width:0;background:var(--cm-bg)}
-.cm-head{height:44px;display:flex;align-items:center;gap:8px;padding:0 12px;background:var(--cm-side);border-bottom:1px solid var(--cm-border-side)}
-.cm-head-btn{width:26px;height:26px;border-radius:6px;display:grid;place-items:center;color:var(--cm-muted)}
-.cm-head-btn svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
-.cm-title{font-size:12px;font-weight:500;color:var(--cm-muted);padding:0 6px}
-.cm-body{flex:1;padding:16px 20px;display:flex;flex-direction:column;gap:14px;overflow:hidden}
-.cm-msg{display:flex;animation:cm-in .5s cubic-bezier(.16,1,.3,1) both}
-.cm-msg.user{justify-content:flex-end}
-.cm-msg.bot{align-items:flex-start;gap:10px}
-.cm-avatar{width:24px;height:20px;flex:none;margin-top:2px;background:var(--cm-fg);-webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 13 11' shape-rendering='crispEdges'%3E%3Cpath d='M11 0h1v1h-1zM10 1h3v1h-3zM4 2h1v1h-1zM11 2h1v1h-1zM3 3h3v1h-3zM3 4h3v1h-3zM1 5h7v1h-7zM0 6h9v1h-9zM1 7h7v1h-7zM3 8h3v1h-3zM3 9h3v1h-3zM4 10h1v1h-1z'/%3E%3C/svg%3E") center/100% 100% no-repeat;mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 13 11' shape-rendering='crispEdges'%3E%3Cpath d='M11 0h1v1h-1zM10 1h3v1h-3zM4 2h1v1h-1zM11 2h1v1h-1zM3 3h3v1h-3zM3 4h3v1h-3zM1 5h7v1h-7zM0 6h9v1h-9zM1 7h7v1h-7zM3 8h3v1h-3zM3 9h3v1h-3zM4 10h1v1h-1z'/%3E%3C/svg%3E") center/100% 100% no-repeat}
-.cm-bubble{font-size:12.5px;line-height:1.55;max-width:82%}
-.cm-bubble p{margin:0 0 .5em}
-.cm-bubble p:last-child{margin:0}
-.cm-bubble ul{padding-left:1.2em;margin:0 0 .5em}
-.cm-bubble li{margin:.15em 0}
-.cm-msg.user .cm-bubble{background:var(--cm-secondary);padding:7px 12px;border-radius:14px;color:var(--cm-fg)}
-.cm-msg.bot .cm-bubble{padding-top:2px;color:var(--cm-fg)}
-.cm-meta{font-size:10px;color:var(--cm-muted);margin-top:4px;display:flex;align-items:center;gap:6px}
-.cm-msg.user .cm-meta{justify-content:flex-end}
-.cm-dots{display:flex;gap:3px;padding:8px 0}
-.cm-dots i{width:4px;height:4px;border-radius:50%;background:var(--cm-muted);animation:cm-bl 1.4s infinite}
-.cm-dots i:nth-child(2){animation-delay:.2s}
-.cm-dots i:nth-child(3){animation-delay:.4s}
-@keyframes cm-bl{0%,60%,100%{opacity:.3;transform:translateY(0)}30%{opacity:1;transform:translateY(-2px)}}
-@keyframes cm-in{from{opacity:0;transform:translateY(6px)}}
-.cm-composer-wrap{padding:0 12px 10px;background:var(--cm-bg)}
-.cm-composer{border:1px solid var(--cm-border);background:var(--cm-card);border-radius:12px;box-shadow:0 1px 2px rgba(0,0,0,.04);padding:10px 12px 6px}
-.cm-ta{display:block;width:100%;min-height:18px;font-size:12.5px;color:var(--cm-fg);line-height:1.4;font-family:inherit}
-.cm-ta .ph{color:var(--cm-muted);opacity:.6}
-.cm-cfoot{display:flex;justify-content:space-between;align-items:center;margin-top:6px}
-.cm-left{display:flex;align-items:center;gap:2px}
-.cm-plus{width:22px;height:22px;border-radius:6px;display:grid;place-items:center;color:var(--cm-muted)}
-.cm-plus svg{width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
-.cm-model{display:inline-flex;align-items:center;gap:5px;height:22px;padding:0 6px;border-radius:6px;font-size:11px;font-weight:500;color:var(--cm-fg)}
-.cm-model svg{width:16px;height:14px;stroke:none;fill:currentColor;display:block}
-.cm-model .ch{width:10px;height:10px;stroke:var(--cm-muted);fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
-.cm-send{width:24px;height:24px;border-radius:8px;background:var(--cm-fg);color:var(--cm-bg);display:grid;place-items:center}
-.cm-send svg{width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
-.cm-disc{text-align:center;font-size:10px;color:var(--cm-muted);margin-top:6px}
+.ig-badge svg{width:20px;height:20px;fill:none;stroke:#fff;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
 
 /* ===== Marquee ===== */
 .marq{display:flex;overflow:hidden;border-block:1px solid var(--line);padding:22px 0;background:var(--card);margin-top:80px}
@@ -294,7 +206,7 @@ header.scrolled{border-bottom-color:var(--line)}
 .stat .num{font-size:clamp(2rem,3.5vw,3rem);font-weight:800;letter-spacing:-.04em;line-height:1;background:linear-gradient(90deg,#6648d9,#7adec4);-webkit-background-clip:text;background-clip:text;color:transparent}
 .stat .lbl{font-size:.85rem;color:var(--mute);font-weight:500}
 
-/* ===== Section umum ===== */
+/* ===== Section Umum ===== */
 section{padding:104px 0}
 .head{display:grid;grid-template-columns:1.1fr .9fr;gap:48px;align-items:end;margin-bottom:56px}
 .eyebrow{font-size:.78rem;font-weight:700;color:var(--orange);text-transform:uppercase;letter-spacing:.14em;margin-bottom:14px;display:inline-flex;align-items:center;gap:8px}
@@ -305,7 +217,7 @@ h2{font-size:clamp(2.1rem,4.6vw,3.6rem);font-weight:700;line-height:1.04;letter-
 .center .eyebrow{justify-content:center}
 .center .eyebrow::before{display:none}
 
-/* ===== Model scroll ===== */
+/* ===== Model & Lainnya ===== */
 .models-wrap{position:relative;margin:0 -28px;padding:0 28px}
 .models-scroll{display:flex;gap:18px;overflow-x:auto;scroll-snap-type:x mandatory;padding:12px 4px 32px;scrollbar-width:thin;scrollbar-color:var(--line) transparent}
 .models-scroll::-webkit-scrollbar{height:6px}
@@ -323,7 +235,6 @@ h2{font-size:clamp(2.1rem,4.6vw,3.6rem);font-weight:700;line-height:1.04;letter-
 .pill{display:inline-block;border:1px solid currentColor;padding:4px 12px;font-size:.72rem;font-weight:700;align-self:flex-start;color:var(--mute);text-transform:uppercase;letter-spacing:.06em}
 .pill.on{background:var(--sun);color:#1f1f1f;border-color:var(--sun)}
 
-/* ===== Contoh tab ===== */
 .tabs{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-bottom:40px}
 .tab{padding:10px 22px;border:1px solid var(--line);background:var(--card);font:500 .92rem/1 inherit;font-family:inherit;cursor:pointer;transition:all .2s;color:var(--mute)}
 .tab:hover{border-color:var(--ink);color:var(--ink)}
@@ -338,7 +249,6 @@ h2{font-size:clamp(2.1rem,4.6vw,3.6rem);font-weight:700;line-height:1.04;letter-
 .prompt-demo .meta{font-size:.78rem;color:var(--mute);margin-top:12px;text-align:right;display:flex;align-items:center;gap:6px;justify-content:flex-end}
 .prompt-demo .meta::before{content:"";width:6px;height:6px;background:var(--mint);border-radius:50%}
 
-/* ===== Bento fitur ===== */
 .bento{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
 .cell{background:var(--card);padding:32px;min-height:260px;display:flex;flex-direction:column;justify-content:space-between;gap:32px;border:1px solid var(--line);transition:all .3s;position:relative;overflow:hidden}
 .cell::before{content:"";position:absolute;inset:0;background:radial-gradient(circle at top right,var(--soft),transparent 60%);opacity:0;transition:opacity .3s}
@@ -357,7 +267,6 @@ h2{font-size:clamp(2.1rem,4.6vw,3.6rem);font-weight:700;line-height:1.04;letter-
 .cell.wide{grid-column:1/-1}
 .cell.w2{grid-column:span 2}
 
-/* ===== Steps dark ===== */
 .dark{background:var(--inv);color:var(--inv-ink);position:relative;overflow:hidden}
 .dark::before{content:"";position:absolute;inset:0;background:radial-gradient(ellipse 60% 40% at 50% 0%,rgba(123,143,240,.2),transparent 70%);pointer-events:none}
 .dark .wrap{position:relative;z-index:1}
@@ -373,7 +282,6 @@ h2{font-size:clamp(2.1rem,4.6vw,3.6rem);font-weight:700;line-height:1.04;letter-
 .step h3{font-size:1.25rem;font-weight:700;letter-spacing:-.02em;margin-bottom:10px}
 .step p{color:#9a9cc2;font-size:.95rem;line-height:1.55}
 
-/* ===== List ===== */
 .list{border-bottom:1px solid var(--line)}
 .row{display:grid;grid-template-columns:1fr 1.3fr 56px;gap:32px;align-items:baseline;padding:32px 0;border-top:1px solid var(--line);transition:all .2s;position:relative}
 .row::after{content:"→";position:absolute;right:0;top:50%;transform:translateY(-50%) translateX(-10px);font-size:1.5rem;color:var(--orange);opacity:0;transition:all .3s}
@@ -383,7 +291,6 @@ h2{font-size:clamp(2.1rem,4.6vw,3.6rem);font-weight:700;line-height:1.04;letter-
 .row p{color:var(--mute);font-size:.95rem}
 .row:hover p{color:#23204a}
 
-/* ===== FAQ ===== */
 .faq{border-bottom:1px solid var(--line)}
 .faq details{border-top:1px solid var(--line);transition:background .2s}
 .faq details:hover{background:var(--soft)}
@@ -394,10 +301,8 @@ h2{font-size:clamp(2.1rem,4.6vw,3.6rem);font-weight:700;line-height:1.04;letter-
 .faq p{color:var(--mute);padding:0 8px 26px;max-width:42em;font-size:.95rem;line-height:1.6}
 .faq p a{text-decoration:underline;text-decoration-color:var(--orange);text-underline-offset:3px}
 
-/* ===== Two col ===== */
 .two{display:grid;grid-template-columns:1fr 1fr;gap:16px}
 
-/* ===== CTA ===== */
 .cta{position:relative;background:var(--inv);color:var(--inv-ink);padding:120px 0 100px;overflow:hidden;text-align:center}
 .cta::before{content:"";position:absolute;inset:0;background:
   radial-gradient(ellipse 50% 60% at 20% 30%,rgba(123,143,240,.35),transparent 60%),
@@ -414,7 +319,6 @@ h2{font-size:clamp(2.1rem,4.6vw,3.6rem);font-weight:700;line-height:1.04;letter-
 .cta .btn{background:var(--inv-ink);color:var(--inv);border-color:var(--inv-ink);padding:16px 32px;font-size:1.02rem;border-radius:999px}
 .cta .btn:hover{background:var(--sun);border-color:var(--sun);color:#1f1f1f}
 
-/* ===== Footer ===== */
 footer{background:var(--inv);color:var(--inv-ink);padding:64px 0 32px;border-top:1px solid rgba(255,255,255,.08)}
 .ft-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:48px;margin-bottom:48px}
 .ft-brand p{color:#9a9cc2;font-size:.92rem;margin-top:16px;max-width:28em;line-height:1.65}
@@ -427,23 +331,18 @@ footer{background:var(--inv);color:var(--inv-ink);padding:64px 0 32px;border-top
 .fb{border-top:1px solid rgba(255,245,225,.12);padding-top:24px;font-size:.85rem;color:#9a9cc2;display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px}
 .fb a:hover{color:var(--inv-ink)}
 
-/* ===== Animasi reveal ===== */
 .js .rv{opacity:0;transform:translateY(30px);filter:blur(4px);transition:opacity .8s cubic-bezier(.16,1,.3,1),transform .8s cubic-bezier(.16,1,.3,1),filter .8s}
 .js .rv.in{opacity:1;transform:none;filter:none}
 .js .rv[data-delay="1"]{transition-delay:.1s}
 .js .rv[data-delay="2"]{transition-delay:.2s}
 .js .rv[data-delay="3"]{transition-delay:.3s}
 
-/* ===== Cursor glow ===== */
 .cursor-glow{position:fixed;width:400px;height:400px;border-radius:50%;background:radial-gradient(circle,rgba(123,143,240,.12),transparent 70%);pointer-events:none;z-index:1;transform:translate(-50%,-50%);transition:opacity .3s;opacity:0}
 @media (hover:hover) and (pointer:fine){.cursor-glow.active{opacity:1}}
 
-/* ============================================= */
-/* ===== LAPTOP (≥900px) ======================== */
-/* ============================================= */
 @media (min-width:900px){
   section{padding:120px 0}
-  .hero{padding:80px 0 0} /* Padding atas laptop diturunkan */
+  .hero{padding:80px 0 0}
   .stats .stat{padding:44px 32px}
   .stat .num{font-size:clamp(2.4rem,3.5vw,3.4rem)}
   .models-wrap::before,.models-wrap::after{content:"";position:absolute;top:0;bottom:32px;width:60px;pointer-events:none;z-index:2}
@@ -452,9 +351,6 @@ footer{background:var(--inv);color:var(--inv-ink);padding:64px 0 32px;border-top
   .cta{padding:140px 0 120px}
 }
 
-/* ============================================= */
-/* ===== TABLET (≤900px) ======================== */
-/* ============================================= */
 @media (max-width:900px){
   .head{grid-template-columns:1fr;gap:24px;margin-bottom:40px}
   .btn.sm{display:none}
@@ -469,15 +365,10 @@ footer{background:var(--inv);color:var(--inv-ink);padding:64px 0 32px;border-top
   section{padding:80px 0}
 }
 
-/* ============================================= */
-/* ===== HP (≤640px) ============================ */
-/* ============================================= */
 @media (max-width:640px){
   .wrap{padding:0 18px}
   .banner{font-size:.78rem;padding:8px 12px;line-height:1.4}
-
-  /* HERO */
-  .hero{padding:32px 0 0} /* Padding di HP dinaikkan/dikurangi */
+  .hero{padding:32px 0 0}
   .hero-in{padding:0 20px}
   .hero h1{font-size:clamp(2.4rem,9vw,3.6rem);line-height:1.04;margin-bottom:24px}
   .hero .lead{font-size:1rem;margin-bottom:32px;line-height:1.65;color:#6b6b7d}
@@ -485,97 +376,56 @@ footer{background:var(--inv);color:var(--inv-ink);padding:64px 0 32px;border-top
   .btn-hero{padding:16px 30px;font-size:1rem}
   .facts{margin-bottom:48px;gap:10px 18px;font-size:.82rem}
   .facts li::before{width:7px;height:7px}
-
-  /* preview */
-  .preview{padding:0 12px}
+  
+  /* Preview Video di HP */
+  .preview{padding:0 20px}
+  .video-wrapper{max-width:100%; border-radius:16px;}
   .play-btn{width:64px;height:64px}
   .play-btn svg{width:26px;height:26px}
-  .preview-wrap{border-radius:12px}
-
-  /* chat mockup */
-  .chat-mock{transform:none;border-radius:12px}
-  .cm-app{flex-direction:column;min-height:auto}
-  .cm-side{width:100%;border-right:0;border-bottom:1px solid var(--cm-border-side);flex-direction:row;align-items:center;padding:8px 10px;gap:6px;overflow-x:auto;scrollbar-width:none}
-  .cm-side::-webkit-scrollbar{display:none}
-  .cm-side-head{display:none}
-  .cm-new{margin-bottom:0;flex:none;height:26px;font-size:11px}
-  .cm-side-label{flex:none;padding:0 4px;font-size:9.5px;opacity:.7}
-  .cm-side-item{flex:none;padding:4px 8px;font-size:11px;background:var(--cm-card);border:1px solid var(--cm-border)}
-  .cm-side-item.on{background:var(--cm-accent);border-color:transparent}
-  .cm-head{height:40px}
-  .cm-body{padding:14px;gap:12px}
-  .cm-bubble{font-size:12px;max-width:88%}
-  .cm-bubble ul{padding-left:1.1em}
-  .cm-avatar{width:22px;height:18px}
-  .cm-composer-wrap{padding:0 10px 10px}
-  .cm-composer{padding:9px 11px 6px;border-radius:11px}
-  .cm-ta{font-size:12px}
-  .cm-disc{font-size:9.5px}
-
-  /* marquee */
+  
   .marq{margin-top:56px;padding:18px 0}
   .marq .g{animation-duration:55s}
   .marq span{font-size:1.1rem;gap:28px;padding-right:28px}
   .marq span::after{width:18px;height:16px}
-
-  /* stats */
   .stats .stat{padding:24px 20px;gap:6px}
   .stat .num{font-size:1.8rem}
   .stat .lbl{font-size:.78rem}
-
-  /* section */
   section{padding:56px 0}
   .center{margin-bottom:36px}
   h2{font-size:clamp(1.75rem,6.5vw,2.4rem);line-height:1.08}
   .head p{font-size:.98rem}
-
-  /* model */
   .models-wrap{margin:0 -18px;padding:0 18px}
   .models-scroll{gap:12px;padding:8px 4px 24px}
   .model-card{flex:0 0 260px;padding:22px}
   .model-card h3{font-size:1.15rem}
   .model-card p{font-size:.88rem}
   .model-card svg{width:56px;height:49px}
-
-  /* tabs */
   .tabs{flex-wrap:nowrap;justify-content:flex-start;overflow-x:auto;margin:0 -18px 32px;padding:4px 18px 8px;scrollbar-width:none;gap:8px}
   .tabs::-webkit-scrollbar{display:none}
   .tab{padding:9px 16px;font-size:.84rem;flex:none;white-space:nowrap}
   .prompt-demo{padding:20px;border-radius:14px}
   .prompt-demo .user-q{font-size:.9rem;padding:12px 14px;max-width:88%}
   .prompt-demo .bot-a{font-size:.88rem;padding:14px 16px;max-width:92%}
-
-  /* bento */
   .bento,.two{grid-template-columns:1fr;gap:12px}
   .cell.hot,.cell.w2{grid-column:auto}
   .cell{min-height:auto;padding:24px;gap:20px;border-radius:12px}
   .cell.hot h3{font-size:1.5rem}
   .cell h3{font-size:1.2rem}
   .cell p{font-size:.9rem}
-
-  /* steps */
   .step{padding:28px 24px 32px}
   .step b{font-size:3.6rem;margin-bottom:24px}
   .step h3{font-size:1.15rem}
-
-  /* list */
   .row{grid-template-columns:1fr;gap:6px;padding:22px 0}
   .row::after{display:none}
   .row h3{font-size:1.4rem}
   .row p{font-size:.9rem}
-
-  /* faq */
   .faq summary{padding:20px 4px;font-size:1.02rem}
   .faq p{padding:0 4px 20px;font-size:.9rem}
-
-  /* cta */
   .cta{padding:80px 0 72px}
   .cta .cat-big{width:80px;height:70px;margin-bottom:24px}
   .cta h2{font-size:clamp(2rem,7.5vw,2.8rem);margin-bottom:16px}
   .cta p{font-size:1rem;margin-bottom:32px}
   .cta .btn{padding:14px 26px;font-size:.95rem}
-
-  /* footer */
   .ft-grid{grid-template-columns:1fr;gap:32px;margin-bottom:36px}
   .ft-brand{grid-column:auto}
   .ft-brand p{font-size:.88rem}
@@ -589,7 +439,6 @@ footer{background:var(--inv);color:var(--inv-ink);padding:64px 0 32px;border-top
   .hero h1{font-size:clamp(2rem,9.5vw,2.8rem)}
   .hero .lead{font-size:.94rem}
   .icon-btn{width:42px;height:42px;font-size:1rem}
-  .cm-bubble{font-size:11.5px}
   .btn-hero{padding:14px 26px;font-size:.95rem}
 }
 </style>
@@ -612,6 +461,10 @@ footer{background:var(--inv);color:var(--inv-ink);padding:64px 0 32px;border-top
         <path style="fill:var(--c6,#3a22a3)" d="M0 6h8v1H0z"/>
       </g>
     </symbol>
+    <!-- SVG pattern untuk latar video -->
+    <pattern id="grid-pattern" width="20" height="20" patternUnits="userSpaceOnUse">
+      <path d="M 20 0 L 0 0 0 20" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="1"/>
+    </pattern>
   </defs>
 </svg>
 
@@ -619,13 +472,11 @@ footer{background:var(--inv);color:var(--inv-ink);padding:64px 0 32px;border-top
   🎉 Bekki 1.1 sudah bisa dipakai, gratis. <a href="https://orbitxy.com/ai/">Coba sekarang →</a>
 </div>
 
-<!-- HEADER -->
 <header id="siteHeader">
   <div class="wrap nav">
     <a href="#" class="logo" aria-label="Bekki beranda">
       <span class="mark"><svg width="22" height="22" viewBox="0 0 100 100" aria-hidden="true"><use href="#bk"/></svg></span>Bekki
     </a>
-    
     <ul class="links" id="links">
       <li><a href="#fitur">Fitur</a></li>
       <li><a href="#model">Model</a></li>
@@ -634,7 +485,6 @@ footer{background:var(--inv);color:var(--inv-ink);padding:64px 0 32px;border-top
       <li><a href="#faq">FAQ</a></li>
       <li><a href="#tentang">Tentang</a></li>
     </ul>
-
     <div class="right">
       <button class="icon-btn" id="tt" aria-label="Ganti tema" title="Ganti tema">☾</button>
       <button class="icon-btn" id="menu" aria-label="Buka menu" aria-expanded="false">
@@ -646,10 +496,8 @@ footer{background:var(--inv);color:var(--inv-ink);padding:64px 0 32px;border-top
 
 <main id="main">
 
-<!-- HERO -->
 <section class="hero" aria-labelledby="hero-h">
   <div class="hero-in">
-    <!-- Tag dihapus, judul dinaikkan -->
     <h1 id="hero-h">Asisten AI dari Orbitxy <span class="gray">Gratis</span></h1>
     <p class="lead">Ngobrol, bertanya, menulis, dan selesaikan pekerjaan dengan <strong>Bekki</strong> — asisten AI berbahasa Indonesia yang langsung jalan di browser, tanpa ribet.</p>
     <div class="acts">
@@ -665,94 +513,30 @@ footer{background:var(--inv);color:var(--inv-ink);padding:64px 0 32px;border-top
     </ul>
   </div>
 
-  <!-- Preview + Play overlay -->
+  <!-- === KOTAK VIDEO INSTAGRAM (BARU) === -->
   <div class="preview">
-    <a href="https://orbitxy.com/ai/" class="preview-wrap" aria-label="Buka Bekki">
-      <div class="chat-mock" role="img" aria-label="Pratinjau antarmuka chat Bekki">
-        <div class="cm-app">
-          <aside class="cm-side" aria-hidden="true">
-            <div class="cm-side-head">
-              <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-              <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 3v18"/></svg>
-            </div>
-            <div class="cm-new">
-              <svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg>
-              New chat
-            </div>
-            <div class="cm-side-label">Hari ini</div>
-            <div class="cm-side-item on">Ide nama produk</div>
-            <div class="cm-side-item">Ringkas artikel</div>
-            <div class="cm-side-item">Belajar Python</div>
-            <div class="cm-side-label">Kemarin</div>
-            <div class="cm-side-item">Caption IG</div>
-            <div class="cm-side-item">Terjemah email</div>
-          </aside>
-          <div class="cm-main">
-            <div class="cm-head">
-              <div class="cm-head-btn">
-                <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 3v18"/></svg>
-              </div>
-              <span class="cm-title">orbitxy.com/ai</span>
-            </div>
-            <div class="cm-body">
-              <div class="cm-msg user">
-                <div>
-                  <div class="cm-bubble">Halo Bekki! Bisa bantu aku cari ide nama untuk kedai kopi kecil di Bandung?</div>
-                  <div class="cm-meta">10:24</div>
-                </div>
-              </div>
-              <div class="cm-msg bot">
-                <div class="cm-avatar" aria-hidden="true"></div>
-                <div>
-                  <div class="cm-bubble">
-                    <p>Tentu! Beberapa ide yang mungkin cocok:</p>
-                    <ul>
-                      <li><strong>Kopi Cakrawala</strong> — nuansa luas &amp; terbuka</li>
-                      <li><strong>Seduh Senja</strong> — hangat, cocok untuk sore</li>
-                      <li><strong>Bandung Brew Co.</strong> — modern &amp; lokal</li>
-                    </ul>
-                    <p>Mau aku bantu cek ketersediaan domainnya?</p>
-                  </div>
-                  <div class="cm-meta">10:24</div>
-                </div>
-              </div>
-              <div class="cm-msg user">
-                <div>
-                  <div class="cm-bubble">Boleh, yang nomor 2 dong.</div>
-                  <div class="cm-meta">10:25</div>
-                </div>
-              </div>
-              <div class="cm-msg bot">
-                <div class="cm-avatar" aria-hidden="true"></div>
-                <div>
-                  <div class="cm-dots"><i></i><i></i><i></i></div>
-                </div>
-              </div>
-            </div>
-            <div class="cm-composer-wrap">
-              <div class="cm-composer">
-                <div class="cm-ta"><span class="ph">Tulis pesan...</span></div>
-                <div class="cm-cfoot">
-                  <div class="cm-left">
-                    <div class="cm-plus"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></div>
-                    <div class="cm-model">
-                      <svg viewBox="0 0 13 11" aria-hidden="true"><path d="M11 0h1v1h-1zM10 1h3v1h-3zM4 2h1v1h-1zM11 2h1v1h-1zM3 3h3v1h-3zM3 4h3v1h-3zM1 5h7v1h-7zM0 6h9v1h-9zM1 7h7v1h-7zM3 8h3v1h-3zM3 9h3v1h-3zM4 10h1v1h-1z"/></svg>
-                      Bekki 1.1
-                      <svg class="ch" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg>
-                    </div>
-                  </div>
-                  <div class="cm-send"><svg viewBox="0 0 24 24"><path d="M12 19V5M5 12l7-7 7 7"/></svg></div>
-                </div>
-              </div>
-              <p class="cm-disc">Bekki can make mistakes. Check answers.</p>
-            </div>
-          </div>
+    <!-- Ganti href dengan link Instagram yang Anda kirim -->
+    <a href="https://www.instagram.com/reel/Df9vim6TkCn/?avpt=MWl1enJ2aHo4Y2Fxdg==" target="_blank" rel="noopener noreferrer" class="video-wrapper" aria-label="Tonton video Bekki di Instagram">
+      
+      <!-- Latar Belakang & Sampul -->
+      <div class="video-cover">
+        <svg class="bg-pattern" viewBox="0 0 100 100" preserveAspectRatio="none">
+          <rect width="100" height="100" fill="url(#grid-pattern)"/>
+        </svg>
+        <div class="logo-vid">
+          <svg viewBox="0 0 100 100" aria-hidden="true"><use href="#bk"/></svg>
         </div>
+        <h3>Kenalan dengan Bekki AI</h3>
       </div>
-      <div class="preview-play">
-        <div class="play-btn">
-          <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
-        </div>
+
+      <!-- Tombol Play -->
+      <div class="play-btn">
+        <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+      </div>
+
+      <!-- Ikon Instagram -->
+      <div class="ig-badge">
+        <svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"></line></svg>
       </div>
     </a>
   </div>
@@ -769,6 +553,8 @@ footer{background:var(--inv);color:var(--inv-ink);padding:64px 0 32px;border-top
     <div class="stat" role="listitem"><span class="num" data-count="24">24/7</span><span class="lbl">Siap kapan saja</span></div>
   </div>
 </section>
+
+<!-- Semua section lainnya (Model, Contoh, Fitur, Cara, Manfaat, FAQ, Privasi, Tentang) tetap SAMA seperti versi sebelumnya -->
 
 <section id="model" aria-labelledby="model-h">
   <div class="wrap">
@@ -1048,7 +834,6 @@ footer{background:var(--inv);color:var(--inv-ink);padding:64px 0 32px;border-top
     menu.setAttribute('aria-expanded', 'false');
   }));
 
-  // Efek header scroll
   const headerEl = document.getElementById('siteHeader');
   window.addEventListener('scroll', () => {
     if (window.scrollY > 10) headerEl.classList.add('scrolled');
