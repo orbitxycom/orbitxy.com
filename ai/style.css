@@ -1031,3 +1031,4 @@ header #toggle2 svg{font-size:22px!important}
 .sidebar:not(.closed) #ctx{flex:none;min-height:40px}
 .sidebar:not(.closed) .sb-sec,.sidebar:not(.closed) .sb-sec-h,.sidebar:not(.closed) .sb-foot{flex:none}
 .sidebar:not(.closed) .hist{overflow-y:auto;overscroll-behavior:contain}
+.sidebar .sb-foot,.sidebar:not(.closed) .sb-foot{border-top:0!important}
