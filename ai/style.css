@@ -999,3 +999,23 @@ header #toggle2 svg{font-size:22px!important}
 .msg.bot>.avatar{display:none!important}
 .msg.bot{gap:0}
 .bubble .tko{display:none!important}
+/* ===== rapikan tata letak sidebar ===== */
+.sidebar:not(.closed){padding:14px 10px 10px}
+.sidebar:not(.closed) .sb-head{padding:2px 6px 14px}
+.sidebar:not(.closed) #newChat{height:42px;border-radius:12px;gap:10px;padding:0 14px;font-size:14px;font-weight:600;background:var(--foreground);color:var(--background);border:0;box-shadow:0 1px 2px rgba(0,0,0,.12);justify-content:flex-start}
+.sidebar:not(.closed) #newChat:hover{opacity:.9;background:var(--foreground)}
+.sidebar:not(.closed) #newChat svg{font-size:17px!important}
+.sidebar:not(.closed) #delAll,.sidebar:not(.closed) #ctxBtn,.sidebar:not(.closed) #bugBtn,.sidebar:not(.closed) #theme{height:40px;border-radius:10px;padding:0 14px;gap:12px;font-size:14px;font-weight:500;margin-top:2px!important;color:color-mix(in oklab,var(--sidebar-foreground) 85%,transparent)}
+.sidebar:not(.closed) #ctx{margin-top:2px}
+.sidebar:not(.closed) .sb-sec-h{padding:0 6px 0 14px;height:34px;margin-top:14px}
+.sidebar:not(.closed) .sb-sec-t{font-size:11.5px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:color-mix(in oklab,var(--sidebar-foreground) 55%,transparent)}
+.sidebar:not(.closed) .sb-sec-a button{width:30px;height:30px;border-radius:8px}
+.sidebar:not(.closed) .prj-list>*{font-size:14px}
+.sidebar:not(.closed) .hist{margin-top:2px;padding-bottom:6px}
+.sidebar:not(.closed) .hist-label{font-size:11.5px;padding:10px 14px 4px;font-weight:500;color:color-mix(in oklab,var(--sidebar-foreground) 45%,transparent)}
+.sidebar:not(.closed) .hist-item{height:40px;display:flex;align-items:center;padding:0 38px 0 14px;font-size:14px;border-radius:10px}
+.sidebar:not(.closed) .hist-item.active{font-weight:600;background:color-mix(in oklab,var(--sidebar-foreground) 10%,transparent)}
+.sidebar:not(.closed) .sb-foot{margin-top:6px;padding-top:8px}
+.sidebar:not(.closed) .ctx-it{height:38px}
+.sidebar:not(.closed) .hist-item{display:block;line-height:40px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sidebar:not(.closed) .prj-list>.hist-label,.sidebar:not(.closed) .prj-empty{padding-left:14px}
