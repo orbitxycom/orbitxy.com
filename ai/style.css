@@ -943,3 +943,9 @@ html.kb-home,html.kb-home body{overflow:hidden}
 .pj-files .pj-btn{margin-top:16px}
 .pj-cbox{border-radius:22px;box-shadow:0 10px 32px -14px rgba(0,0,0,.28);transition:border-color .15s}
 .pj-cbox:focus-within{border-color:color-mix(in oklab,var(--foreground) 35%,transparent)}
+
+/* skeleton kartu (Skills & Connectors) */
+.sh-b{display:block;border-radius:8px;--b:color-mix(in oklab,var(--foreground) 8%,transparent);--h:color-mix(in oklab,var(--foreground) 16%,transparent);background:linear-gradient(100deg,var(--b) 30%,var(--h) 50%,var(--b) 70%) 100% 0/300% 100%;animation:sklS 1.5s ease-in-out infinite}
+.sh-sw{margin-left:auto;flex:none;width:42px;height:24px;border-radius:999px}
+.sh-card .sk-row{align-items:center}
+@media(prefers-reduced-motion:reduce){.sh-b{animation:none}}
