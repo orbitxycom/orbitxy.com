@@ -957,3 +957,12 @@ header #toggle2 svg{font-size:22px!important}
 /* ikon di dalam sidebar (cari & tutup sidebar) sedikit lebih besar */
 .sidebar:not(.closed) .sb-head .icon-btn{width:40px;height:40px;border-radius:10px}
 .sidebar:not(.closed) .sb-head .icon-btn svg{font-size:22px!important}
+
+/* memori */
+.mm-t{margin:0;font-size:15.5px;line-height:1.5;white-space:pre-wrap;overflow-wrap:anywhere}
+.mm-card .sk-d{margin-top:8px}
+.mm-dl textarea{resize:none;height:120px;min-height:0;max-height:120px;overflow-y:auto}
+.mm-cnt{margin-top:6px;text-align:right;font-size:12.5px;color:color-mix(in oklab,var(--foreground) 50%,transparent)}
+.mm-all{margin-top:18px;color:#d33;background:transparent;border:1px solid color-mix(in oklab,#d33 35%,transparent)}
+.mm-all:hover{background:color-mix(in oklab,#d33 8%,transparent)}
+#mmPage .pj-cx{margin-top:14px}
