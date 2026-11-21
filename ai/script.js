@@ -515,7 +515,7 @@ const o1=window.bekkiOpen,o2=window.bekkiNew,o3=window.bekkiPrjOpen;
 window.bekkiOpen=t=>{closeP();setActive(null);return o1(t)};window.bekkiNew=()=>{closeP();setActive(null);return o2()};window.bekkiPrjOpen=id=>{closeP();o3&&o3(id)};
 [$("newChat"),$("hist")].forEach(x=>x&&x.addEventListener("click",e=>{if(x.id==="newChat"||e.target.closest(".hist-item")){closeP();setActive(null)}},!0));
 const SVG='<svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 3v18"/></svg>';
-window.bekkiSkClose=closeP;function openP(){window.bekkiPrjClose&&window.bekkiPrjClose();window.bekkiCnClose&&window.bekkiCnClose();closeP();if(matchMedia("(max-width:768px)").matches&&SB)SB.classList.add("closed");
+window.bekkiSkClose=closeP;function openP(){window.bekkiPrjClose&&window.bekkiPrjClose();window.bekkiCnClose&&window.bekkiCnClose();window.bekkiMmClose&&window.bekkiMmClose();closeP();if(matchMedia("(max-width:768px)").matches&&SB)SB.classList.add("closed");
 pg=el("div","pj");pg.id="skPage";
 const top=el("div","pj-top"),tg=el("button","icon-btn");tg.type="button";tg.setAttribute("aria-label","Sidebar");tg.style.color="var(--foreground)";tg.innerHTML=SVG;tg.onclick=e=>{e.stopPropagation();SB&&SB.classList.toggle("closed")};top.appendChild(tg);
 const body=el("div","pj-body"),hd=el("div","pj-hd"),ic=el("span","pj-ic");ic.innerHTML=BOLT;ic.classList.add("sk-ic");const nm=el("h2","pj-nm","Skills"),nw=el("button","sk-new","+ Buat skill");nw.type="button";nw.onclick=()=>dlg();hd.append(ic,nm,nw);
@@ -571,7 +571,7 @@ window.bekkiOpen=t=>{closeP();return o1(t)};window.bekkiNew=()=>{closeP();return
 [$("newChat"),$("hist")].forEach(x=>x&&x.addEventListener("click",e=>{(x.id==="newChat"||e.target.closest(".hist-item"))&&closeP()},!0));
 const SVG='<svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 3v18"/></svg>';
 const fmt=n=>n.toLocaleString("id-ID"),LD=new Set();
-function openP(){window.bekkiPrjClose&&window.bekkiPrjClose();window.bekkiSkClose&&window.bekkiSkClose();closeP();if(matchMedia("(max-width:768px)").matches&&SB)SB.classList.add("closed");
+function openP(){window.bekkiPrjClose&&window.bekkiPrjClose();window.bekkiSkClose&&window.bekkiSkClose();window.bekkiMmClose&&window.bekkiMmClose();closeP();if(matchMedia("(max-width:768px)").matches&&SB)SB.classList.add("closed");
 pg=el("div","pj");pg.id="cnPage";
 const top=el("div","pj-top"),tg=el("button","icon-btn");tg.type="button";tg.setAttribute("aria-label","Sidebar");tg.style.color="var(--foreground)";tg.innerHTML=SVG;tg.onclick=e=>{e.stopPropagation();SB&&SB.classList.toggle("closed")};top.appendChild(tg);
 const body=el("div","pj-body"),hd=el("div","pj-hd"),ic=el("span","pj-ic sk-ic");ic.innerHTML=PLUG;const nm=el("h2","pj-nm","Connectors"),nw=el("button","sk-new","+ Tambah");nw.type="button";nw.onclick=()=>dlg();hd.append(ic,nm,nw);
@@ -624,3 +624,46 @@ const hide=()=>{t0=Date.now()};
 const back=()=>{if(!t0||Date.now()-t0<MIN||!r.classList.contains("auth-ok"))return;t0=0;try{window.__sklFit&&window.__sklFit(window.bekkiCur&&window.bekkiCur())}catch{}r.classList.add("skl-on");clearTimeout(tm);tm=setTimeout(()=>r.classList.remove("skl-on"),SHOW)};
 document.addEventListener("visibilitychange",()=>document.hidden?hide():back());
 window.addEventListener("pagehide",hide);window.addEventListener("pageshow",e=>{e.persisted&&back()})})();
+
+/* Memori */
+(()=>{const $=id=>document.getElementById(id);const main=document.querySelector(".main"),SB=$("sidebar");if(!main)return;
+const KEY="bekki_mem_v1",MAXI=300,MAXN=50,MAXC=2000;
+const el=(t,c,x)=>{const e=document.createElement(t);c&&(e.className=c);x!=null&&(e.textContent=x);return e};
+const toast=m=>{const o=document.querySelector(".at-toast");o&&o.remove();const d=el("div","at-toast",m);document.body.appendChild(d);setTimeout(()=>{d.classList.add("out");setTimeout(()=>d.remove(),300)},2200)};
+const XI='<svg viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></svg>',BR='<svg viewBox="0 0 24 24"><path d="M9.5 3A3.5 3.5 0 0 0 6 6.5v.2A3.5 3.5 0 0 0 4 10a3.5 3.5 0 0 0 1.3 2.7A3.5 3.5 0 0 0 6 17a3.5 3.5 0 0 0 3.5 3A2.5 2.5 0 0 0 12 17.5V5.5A2.5 2.5 0 0 0 9.5 3zM14.5 3A3.5 3.5 0 0 1 18 6.5v.2A3.5 3.5 0 0 1 20 10a3.5 3.5 0 0 1-1.3 2.7A3.5 3.5 0 0 1 18 17a3.5 3.5 0 0 1-3.5 3 2.5 2.5 0 0 1-2.5-2.500"/></svg>';
+let M={on:!0,list:[]};try{const j=JSON.parse(localStorage.getItem(KEY)||"{}");M.on=j.on!==!1;M.list=Array.isArray(j.list)?j.list.filter(x=>x&&x.id&&x.t):[]}catch{}
+const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(M))}catch{}};
+/* konteks yang dikirim ke AI */
+const P2=window.bekkiPrjCtx;window.bekkiPrjCtx=()=>{const base=P2?P2():"";if(!M.on||!M.list.length)return base;let n=0,o="";for(const x of [...M.list].sort((a,b)=>(b.u||0)-(a.u||0))){const ln="- "+x.t+"\n";if(n+ln.length>MAXC)break;n+=ln.length;o+=ln}if(!o)return base;return "[Memori tentang pengguna, pakai bila relevan]\n"+o+"\n"+(base||"[Pesan pengguna]\n")};
+/* halaman */
+let pg=null;function closeP(){pg&&(pg.remove(),pg=null)}window.bekkiMmClose=closeP;
+const o1=window.bekkiOpen,o2=window.bekkiNew,o3=window.bekkiPrjOpen,o4=window.bekkiSkills;
+window.bekkiOpen=t=>{closeP();return o1(t)};window.bekkiNew=()=>{closeP();return o2()};window.bekkiPrjOpen=id=>{closeP();o3&&o3(id)};window.bekkiSkills=()=>{closeP();o4&&o4()};
+[$("newChat"),$("hist")].forEach(x=>x&&x.addEventListener("click",e=>{(x.id==="newChat"||e.target.closest(".hist-item"))&&closeP()},!0));
+const SVG='<svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 3v18"/></svg>';
+const dts=u=>u?new Date(u).toLocaleDateString("id-ID",{day:"numeric",month:"short"}):"";
+function skel(ls,n){ls.textContent="";ls.setAttribute("aria-busy","true");const b=(st,c)=>{const i=document.createElement("i");i.className="sh-b "+(c||"");i.style.cssText=st;return i};for(let k=0;k<n;k++){const c=el("div","sk-card sh-card");c.setAttribute("aria-hidden","true");const bt=el("div","sk-btns");bt.append(b("width:64px;height:36px;border-radius:10px"),b("width:64px;height:36px;border-radius:10px"));c.append(b("width:92%;height:13px"),b("width:"+(40+(k*17)%40)+"%;height:13px;margin-top:9px"),bt);ls.appendChild(c)}}
+function openP(){window.bekkiPrjClose&&window.bekkiPrjClose();window.bekkiSkClose&&window.bekkiSkClose();window.bekkiCnClose&&window.bekkiCnClose();closeP();if(matchMedia("(max-width:768px)").matches&&SB)SB.classList.add("closed");
+pg=el("div","pj");pg.id="mmPage";
+const top=el("div","pj-top"),tg=el("button","icon-btn");tg.type="button";tg.setAttribute("aria-label","Sidebar");tg.style.color="var(--foreground)";tg.innerHTML=SVG;tg.onclick=e=>{e.stopPropagation();SB&&SB.classList.toggle("closed")};top.appendChild(tg);
+const body=el("div","pj-body"),hd=el("div","pj-hd"),ic=el("span","pj-ic sk-ic");ic.innerHTML=BR;const nm=el("h2","pj-nm","Memori"),nw=el("button","sk-new","+ Tambah");nw.type="button";nw.onclick=()=>dlg();hd.append(ic,nm,nw);
+const sub=el("p","sk-sub","Bekki mengingat hal-hal yang Anda simpan di sini dan memakainya di setiap chat. Data hanya tersimpan di browser ini.");
+const sw=el("div","pj-card pj-cx"),tx=el("div","pj-cxt");tx.append(el("div","pj-sl","Gunakan memori"),el("div","pj-sv","Matikan untuk sementara tanpa menghapus isinya."));const sb=el("button","sk-sw");sb.type="button";sb.setAttribute("role","switch");sb.setAttribute("aria-label","Gunakan memori");const sync=()=>sb.setAttribute("aria-checked",M.on?"true":"false");sync();sb.onclick=()=>{M.on=!M.on;save();sync();draw()};sw.append(tx,sb);sw.onclick=e=>{e.target.closest(".sk-sw")||sb.click()};sw.style.cursor="pointer";
+const ls=el("div","sk-list");body.append(hd,sub,sw,ls);pg.append(top,body);main.appendChild(pg);window.__mmDraw=draw;
+if(M.list.length){skel(ls,Math.min(4,M.list.length));setTimeout(()=>{ls.removeAttribute("aria-busy");draw()},450)}else draw();
+function draw(){if(!pg)return;sync();ls.textContent="";const L=[...M.list].sort((a,b)=>(b.u||0)-(a.u||0));
+if(!L.length){const em=el("div","pj-em");em.innerHTML=BR;em.append(el("div","pj-et","Belum ada memori"),el("div","pj-es","Tambahkan hal yang perlu Bekki ingat, misalnya: “Nama saya Orbit” atau “Saya suka jawaban singkat dan santai”."));ls.appendChild(em);return}
+L.forEach(x=>{const c=el("div","sk-card"+(M.on?"":" off")),t=el("p","mm-t",x.t),m=el("p","sk-d",dts(x.u)),a=el("div","sk-btns");
+const ed=el("button","sk-btn","Edit");ed.type="button";ed.onclick=()=>dlg(x);const dl=el("button","sk-btn dg","Hapus");dl.type="button";dl.onclick=()=>{M.list=M.list.filter(y=>y.id!==x.id);save();draw();toast("Memori dihapus")};a.append(ed,dl);c.append(t,m,a);ls.appendChild(c)});
+const all=el("button","pj-btn mm-all","Hapus semua memori");all.type="button";all.onclick=()=>window.bekkiConfirm("Hapus semua memori?","Semua "+L.length+" memori akan dihapus dan tidak bisa dikembalikan.","Hapus",()=>{M.list=[];save();draw()});ls.appendChild(all)}}
+function dlg(ed){if(document.querySelector(".mm-dl"))return;if(!ed&&M.list.length>=MAXN){toast("Maksimal "+MAXN+" memori. Hapus yang lama dulu.");return}
+const bk=el("div","pd-back"),pn=el("div","pd pj-dl mm-dl");pn.setAttribute("role","dialog");pn.setAttribute("aria-modal","true");
+const x=el("button","pj-dx");x.type="button";x.setAttribute("aria-label","Tutup");x.innerHTML=XI;
+const ta=el("textarea");ta.maxLength=MAXI;ta.placeholder="Contoh: Nama saya Orbit, saya pelajar yang suka coding Python.";ta.value=ed?ed.t:"";
+const cnt=el("div","mm-cnt"),upd=()=>{cnt.textContent=ta.value.length+" / "+MAXI};ta.oninput=upd;upd();
+const sv=el("button","pj-save",ed?"Simpan":"Tambahkan");sv.type="button";sv.style.marginTop="18px";
+sv.onclick=()=>{const v=ta.value.replace(/\s+/g," ").trim();if(!v){toast("Isi memorinya dulu");return}if(ed){ed.t=v.slice(0,MAXI);ed.u=Date.now()}else M.list.push({id:"m"+Date.now().toString(36),t:v.slice(0,MAXI),u:Date.now()});save();end();window.__mmDraw&&window.__mmDraw();toast("Memori disimpan")};
+pn.append(x,el("h3","pj-dt",ed?"Edit memori":"Tambah memori"),ta,cnt,sv);bk.appendChild(pn);document.body.appendChild(bk);
+const kd=e=>{e.key==="Escape"&&(e.stopPropagation(),end())};function end(){document.removeEventListener("keydown",kd,!0);bk.classList.add("out");setTimeout(()=>bk.remove(),180)}
+x.onclick=end;bk.addEventListener("pointerdown",e=>{e.target===bk&&end()});document.addEventListener("keydown",kd,!0);setTimeout(()=>ta.focus(),60)}
+const it=document.querySelector('.ctx-it[data-soon="Memori"]');it&&it.addEventListener("click",e=>{e.stopPropagation();openP()})})();
