@@ -125,71 +125,103 @@ header.scrolled{border-bottom-color:var(--line)}
 .facts li:nth-child(2){--c:var(--amber)}
 .facts li:nth-child(3){--c:var(--orange)}
 
-/* ===== VIDEO PREVIEW (BARU) ===== */
+/* ===== VIDEO PREVIEW (SIMPLE / SEPERTI FOTO) ===== */
 .preview{max-width:1040px;margin:0 auto;padding:0 20px;position:relative;z-index:2;}
 .video-wrapper{
   position:relative;
   width:100%;
-  max-width:400px; /* Ukuran kotak segi empat (di tengah) */
+  max-width:900px; 
   margin:0 auto;
-  aspect-ratio: 9/16; /* Rasio video Instagram Reel */
-  border-radius:20px;
+  aspect-ratio: 16/9; 
+  border-radius:24px; /* Sudut membulat seperti foto */
   overflow:hidden;
-  box-shadow:var(--shadow-lg);
-  background:#000;
+  box-shadow:0 20px 50px -12px rgba(0,0,0,0.3);
+  background:#0d0a20;
   cursor:pointer;
-  transition:transform .5s cubic-bezier(.22,1,.36,1);
+  transition:transform .4s ease, box-shadow .4s ease;
+  display:block; 
 }
-@media (min-width:900px){
-  .video-wrapper{
-    max-width: 800px; /* Lebar maksimal di laptop */
-    aspect-ratio: 16/9; /* Rasio lebar di laptop */
-  }
+.video-wrapper:hover{
+  transform:translateY(-4px);
+  box-shadow:0 30px 60px -12px rgba(0,0,0,0.4);
 }
-.video-wrapper:hover{transform:translateY(-4px)}
-/* Gambar Sampul Video */
+
+/* Latar belakang dashboard (Sederhana mirip foto) */
 .video-cover{
   position:absolute;inset:0;
-  background: linear-gradient(135deg, #1a1540, #0d0a20);
-  display:flex;flex-direction:column;align-items:center;justify-content:center;
-  gap:20px;
+  background: #0d0a20;
+  display:flex;
+  padding: 24px; /* Padding agar konten di dalam tidak menempel ke tepi */
+  gap: 16px;
 }
-.video-cover svg.bg-pattern{
-  position:absolute;inset:0;width:100%;height:100%;
-  opacity:0.1;pointer-events:none;
+
+/* Sidebar kiri sederhana */
+.vc-sidebar{
+  width:20%; 
+  display:flex; flex-direction:column; gap:12px;
+  padding-top: 10px;
 }
-.video-cover .logo-vid{
-  width:60px;height:60px;background:#000;border-radius:12px;
-  display:grid;place-items:center;border:1px solid rgba(255,255,255,0.1);
-  z-index:2;
+.vc-item{ height:10px; background:rgba(255,255,255,0.08); border-radius:4px; width:85%; }
+.vc-item:nth-child(2){ width:60%; }
+.vc-item:nth-child(3){ width:70%; }
+.vc-item:nth-child(4){ width:50%; }
+.vc-item:nth-child(5){ width:80%; margin-top:20px;}
+
+/* Main area dashboard */
+.vc-main{
+  flex:1; display:flex; flex-direction:column; gap:16px;
+  background: #141126; /* Sedikit lebih terang dari background */
+  border-radius: 16px;
+  padding: 20px;
+  border: 1px solid rgba(255,255,255,0.05);
 }
-.video-cover .logo-vid svg{width:36px;height:36px;}
-.video-cover h3{
-  color:#fff;font-family:"Inter Tight",sans-serif;font-size:1.2rem;
-  z-index:2;text-align:center;padding:0 20px;
+.vc-header-row{ display:flex; gap: 12px; align-items:center; margin-bottom: 8px;}
+.vc-title{ height:16px; width:120px; background:rgba(255,255,255,0.15); border-radius:4px; }
+
+/* Grid Menu (Kotak-kotak gambar) */
+.vc-grid{
+  display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px; flex:1;
 }
-/* Tombol Play Merah */
+.vc-box{
+  background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.06);
+  border-radius:10px; padding:10px; display:flex; flex-direction:column; gap:8px;
+  align-items: center; justify-content: center;
+}
+/* Gambar-gambar di dalam kotak grid */
+.vc-box-img{ 
+  height:36px; width: 36px; 
+  background:rgba(255,255,255,0.1); border-radius:8px; 
+}
+.vc-box-txt{ height:6px; background:rgba(255,255,255,0.15); border-radius:3px; width:70%; }
+
+/* Tombol Play Merah (PERSIS FOTO) */
 .play-btn{
   position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
-  width:80px;height:80px;border-radius:50%;
-  background:#e11d48;color:#fff;
+  width:90px;height:90px;border-radius:50%;
+  background:#e11d48; color:#fff;
   display:grid;place-items:center;
-  box-shadow:0 12px 32px -8px rgba(225,29,72,.6);
+  box-shadow:0 10px 30px rgba(225,29,72,0.4);
   transition:transform .3s,background .3s;
   animation:playPulse 2.5s ease-in-out infinite;
-  z-index:3;
+  z-index:10;
 }
 @keyframes playPulse{0%,100%{transform:translate(-50%,-50%) scale(1)}50%{transform:translate(-50%,-50%) scale(1.08)}}
-.video-wrapper:hover .play-btn{transform:translate(-50%,-50%) scale(1.15);background:#f43f5e}
-.play-btn svg{width:32px;height:32px;fill:#fff;stroke:none;margin-left:4px;}
-/* Ikon Instagram di pojok */
-.ig-badge{
-  position:absolute;bottom:16px;right:16px;
-  width:36px;height:36px;border-radius:50%;
-  background:rgba(255,255,255,0.15);backdrop-filter:blur(8px);
-  display:grid;place-items:center;z-index:3;
+.video-wrapper:hover .play-btn{transform:translate(-50%,-50%) scale(1.1);background:#f43f5e}
+.play-btn svg{width:36px;height:36px;fill:#fff;stroke:none;margin-left:4px;}
+
+/* Responsif di HP */
+@media (max-width:640px){
+  .preview{padding:0 16px}
+  .video-wrapper{ border-radius: 20px; max-width:100%; }
+  .video-cover{ padding: 12px; gap: 10px; }
+  .vc-sidebar{ display:none; /* Sembunyikan sidebar agar fokus ke gambar tengah */ }
+  .vc-main{ padding: 12px; gap: 8px; }
+  .vc-grid{ grid-template-columns: 1fr 1fr; gap: 8px; } /* 2 kolom di HP */
+  .vc-box-img{ height:24px; width:24px; }
+  .vc-title{ height:12px; width:80px; }
+  .play-btn{ width:64px; height:64px; }
+  .play-btn svg{ width:26px; height:26px; }
 }
-.ig-badge svg{width:20px;height:20px;fill:none;stroke:#fff;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
 
 /* ===== Marquee ===== */
 .marq{display:flex;overflow:hidden;border-block:1px solid var(--line);padding:22px 0;background:var(--card);margin-top:80px}
@@ -377,11 +409,17 @@ footer{background:var(--inv);color:var(--inv-ink);padding:64px 0 32px;border-top
   .facts{margin-bottom:48px;gap:10px 18px;font-size:.82rem}
   .facts li::before{width:7px;height:7px}
   
-  /* Preview Video di HP */
-  .preview{padding:0 20px}
-  .video-wrapper{max-width:100%; border-radius:16px;}
-  .play-btn{width:64px;height:64px}
-  .play-btn svg{width:26px;height:26px}
+  /* Video HP */
+  .preview{padding:0 16px}
+  .video-wrapper{ border-radius: 20px; max-width:100%; }
+  .video-cover{ padding: 12px; gap: 10px; }
+  .vc-sidebar{ display:none; }
+  .vc-main{ padding: 12px; gap: 8px; }
+  .vc-grid{ grid-template-columns: 1fr 1fr; gap: 8px; }
+  .vc-box-img{ height:24px; width:24px; }
+  .vc-title{ height:12px; width:80px; }
+  .play-btn{ width:64px; height:64px; }
+  .play-btn svg{ width:26px; height:26px; }
   
   .marq{margin-top:56px;padding:18px 0}
   .marq .g{animation-duration:55s}
@@ -461,10 +499,6 @@ footer{background:var(--inv);color:var(--inv-ink);padding:64px 0 32px;border-top
         <path style="fill:var(--c6,#3a22a3)" d="M0 6h8v1H0z"/>
       </g>
     </symbol>
-    <!-- SVG pattern untuk latar video -->
-    <pattern id="grid-pattern" width="20" height="20" patternUnits="userSpaceOnUse">
-      <path d="M 20 0 L 0 0 0 20" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="1"/>
-    </pattern>
   </defs>
 </svg>
 
@@ -513,30 +547,38 @@ footer{background:var(--inv);color:var(--inv-ink);padding:64px 0 32px;border-top
     </ul>
   </div>
 
-  <!-- === KOTAK VIDEO INSTAGRAM (BARU) === -->
+  <!-- === KOTAK VIDEO (MIRIP FOTO VHEER) === -->
   <div class="preview">
-    <!-- Ganti href dengan link Instagram yang Anda kirim -->
     <a href="https://www.instagram.com/reel/Df9vim6TkCn/?avpt=MWl1enJ2aHo4Y2Fxdg==" target="_blank" rel="noopener noreferrer" class="video-wrapper" aria-label="Tonton video Bekki di Instagram">
       
-      <!-- Latar Belakang & Sampul -->
+      <!-- Konten di dalam kotak: Tiruan Dashboard Vheer -->
       <div class="video-cover">
-        <svg class="bg-pattern" viewBox="0 0 100 100" preserveAspectRatio="none">
-          <rect width="100" height="100" fill="url(#grid-pattern)"/>
-        </svg>
-        <div class="logo-vid">
-          <svg viewBox="0 0 100 100" aria-hidden="true"><use href="#bk"/></svg>
+        <div class="vc-sidebar">
+          <div class="vc-item"></div>
+          <div class="vc-item"></div>
+          <div class="vc-item"></div>
+          <div class="vc-item"></div>
+          <div class="vc-item"></div>
         </div>
-        <h3>Kenalan dengan Bekki AI</h3>
+        <div class="vc-main">
+          <div class="vc-header-row">
+            <div class="vc-title"></div>
+          </div>
+          <div class="vc-grid">
+            <!-- 6 kotak kecil -->
+            <div class="vc-box"><div class="vc-box-img"></div><div class="vc-box-txt"></div></div>
+            <div class="vc-box"><div class="vc-box-img"></div><div class="vc-box-txt"></div></div>
+            <div class="vc-box"><div class="vc-box-img"></div><div class="vc-box-txt"></div></div>
+            <div class="vc-box"><div class="vc-box-img"></div><div class="vc-box-txt"></div></div>
+            <div class="vc-box"><div class="vc-box-img"></div><div class="vc-box-txt"></div></div>
+            <div class="vc-box"><div class="vc-box-img"></div><div class="vc-box-txt"></div></div>
+          </div>
+        </div>
       </div>
 
-      <!-- Tombol Play -->
+      <!-- Tombol Play Merah (Di Tengah) -->
       <div class="play-btn">
         <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
-      </div>
-
-      <!-- Ikon Instagram -->
-      <div class="ig-badge">
-        <svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"></line></svg>
       </div>
     </a>
   </div>
@@ -553,8 +595,6 @@ footer{background:var(--inv);color:var(--inv-ink);padding:64px 0 32px;border-top
     <div class="stat" role="listitem"><span class="num" data-count="24">24/7</span><span class="lbl">Siap kapan saja</span></div>
   </div>
 </section>
-
-<!-- Semua section lainnya (Model, Contoh, Fitur, Cara, Manfaat, FAQ, Privasi, Tentang) tetap SAMA seperti versi sebelumnya -->
 
 <section id="model" aria-labelledby="model-h">
   <div class="wrap">
