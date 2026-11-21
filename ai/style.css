@@ -966,3 +966,16 @@ header #toggle2 svg{font-size:22px!important}
 .mm-all{margin-top:18px;color:#d33;background:transparent;border:1px solid color-mix(in oklab,#d33 35%,transparent)}
 .mm-all:hover{background:color-mix(in oklab,#d33 8%,transparent)}
 #mmPage .pj-cx{margin-top:14px}
+
+/* instruksi umum */
+.gi-card{padding:18px}
+.gi-tones{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:10px}
+.gi-tone{padding:10px 6px;border-radius:10px;border:1px solid var(--border,rgba(0,0,0,.12));background:transparent;color:var(--foreground);font:inherit;font-size:14px;cursor:pointer}
+.gi-tone.on{background:var(--foreground);color:var(--background,#fff);border-color:var(--foreground)}
+#giPage .pj-sd{margin-top:10px}
+#giPage textarea{display:block;width:100%;box-sizing:border-box;margin-top:8px;resize:none;height:130px;overflow-y:auto}
+#giPage .pj-chips{margin-top:10px}
+#giPage .pj-save:disabled{cursor:default}
+@media (max-width:480px){.gi-tones{grid-template-columns:repeat(2,1fr)}}
+#giPage textarea{border:1px solid var(--border,rgba(0,0,0,.12));border-radius:12px;padding:10px 12px;background:transparent;color:var(--foreground);font:inherit;font-size:15px;outline:none}
+#giPage textarea:focus{border-color:color-mix(in oklab,var(--foreground) 45%,transparent)}
