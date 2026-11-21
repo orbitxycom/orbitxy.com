@@ -1026,3 +1026,8 @@ header #toggle2 svg{font-size:22px!important}
 .sidebar>*:not(.hist){flex-shrink:0}
 .sidebar .new-chat,.sidebar .sb-sec,.sidebar .sb-sec-h,.sidebar .ctx{flex-shrink:0}
 .sidebar:not(.closed) .hist{flex:1 1 0;min-height:0}
+.sidebar:not(.closed) #newChat{min-height:42px;flex:none}
+.sidebar:not(.closed) #delAll,.sidebar:not(.closed) #ctxBtn{min-height:40px;flex:none}
+.sidebar:not(.closed) #ctx{flex:none;min-height:40px}
+.sidebar:not(.closed) .sb-sec,.sidebar:not(.closed) .sb-sec-h,.sidebar:not(.closed) .sb-foot{flex:none}
+.sidebar:not(.closed) .hist{overflow-y:auto;overscroll-behavior:contain}
