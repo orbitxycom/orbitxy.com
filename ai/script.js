@@ -483,6 +483,7 @@ const R1=window.bekkiRender;window.bekkiRender=()=>{R1();draw()}})();
 
 /* Skills */
 (()=>{const $=id=>document.getElementById(id);const main=document.querySelector(".main"),SB=$("sidebar"),inp=$("input"),cw=document.querySelector(".composer-wrap");if(!main||!inp||!cw)return;
+window.bekkiSkelCards=(ls,n)=>{ls.textContent="";const b=(c,st)=>{const i=document.createElement("i");i.className="sh-b "+(c||"");st&&(i.style.cssText=st);return i};for(let k=0;k<n;k++){const c=document.createElement("div");c.className="sk-card sh-card";c.setAttribute("aria-hidden","true");const r=document.createElement("div");r.className="sk-row";r.append(b("","width:"+(30+(k*13)%22)+"%;height:16px"),b("sh-sw"));const d1=b("","width:86%;height:12px;margin-top:12px"),d2=b("","width:"+(48+(k*9)%24)+"%;height:12px;margin-top:8px"),bt=document.createElement("div");bt.className="sk-btns";bt.append(b("","width:92px;height:36px;border-radius:10px"),b("","width:64px;height:36px;border-radius:10px"));c.append(r,d1,d2,bt);ls.appendChild(c)}ls.setAttribute("aria-busy","true")};
 const KEY="bekki_skills_v1";
 const el=(t,c,x)=>{const e=document.createElement(t);c&&(e.className=c);x!=null&&(e.textContent=x);return e};
 const toast=m=>{const o=document.querySelector(".at-toast");o&&o.remove();const d=el("div","at-toast",m);document.body.appendChild(d);setTimeout(()=>{d.classList.add("out");setTimeout(()=>d.remove(),300)},2200)};
@@ -519,7 +520,7 @@ pg=el("div","pj");pg.id="skPage";
 const top=el("div","pj-top"),tg=el("button","icon-btn");tg.type="button";tg.setAttribute("aria-label","Sidebar");tg.style.color="var(--foreground)";tg.innerHTML=SVG;tg.onclick=e=>{e.stopPropagation();SB&&SB.classList.toggle("closed")};top.appendChild(tg);
 const body=el("div","pj-body"),hd=el("div","pj-hd"),ic=el("span","pj-ic");ic.innerHTML=BOLT;ic.classList.add("sk-ic");const nm=el("h2","pj-nm","Skills"),nw=el("button","sk-new","+ Buat skill");nw.type="button";nw.onclick=()=>dlg();hd.append(ic,nm,nw);
 const sub=el("p","sk-sub","Skill adalah instruksi siap pakai untuk Bekki. Aktifkan skill, lalu ketik / di kolom chat atau tekan Gunakan.");const ls=el("div","sk-list");body.append(hd,sub,ls);pg.append(top,body);main.appendChild(pg);
-window.__skDraw=draw;draw();
+window.__skDraw=draw;window.bekkiSkelCards(ls,Math.min(5,Math.max(2,all().length)));setTimeout(()=>{ls.removeAttribute("aria-busy");draw()},450);
 function draw(){if(!pg)return;ls.textContent="";all().forEach(s=>{const c=el("div","sk-card"+(s.on?"":" off")),r=el("div","sk-row"),n=el("b","sk-n",s.name);r.appendChild(n);if(s.bi)r.appendChild(el("span","sk-tag","Bawaan"));
 const sw=el("button","sk-sw");sw.type="button";sw.setAttribute("role","switch");sw.setAttribute("aria-checked",s.on?"true":"false");sw.setAttribute("aria-label",(s.on?"Matikan ":"Aktifkan ")+s.name);
 sw.onclick=()=>{const v=!s.on;if(s.bi){off=v?off.filter(x=>x!==s.id):[...off,s.id]}else{const u=U.find(x=>x.id===s.id);u&&(u.on=v)}save();!v&&active===s.id&&setActive(null);draw()};r.appendChild(sw);
@@ -569,19 +570,19 @@ const o1=window.bekkiOpen,o2=window.bekkiNew,o3=window.bekkiPrjOpen,o4=window.be
 window.bekkiOpen=t=>{closeP();return o1(t)};window.bekkiNew=()=>{closeP();return o2()};window.bekkiPrjOpen=id=>{closeP();o3&&o3(id)};window.bekkiSkills=()=>{closeP();o4&&o4()};
 [$("newChat"),$("hist")].forEach(x=>x&&x.addEventListener("click",e=>{(x.id==="newChat"||e.target.closest(".hist-item"))&&closeP()},!0));
 const SVG='<svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 3v18"/></svg>';
-const fmt=n=>n.toLocaleString("id-ID");
+const fmt=n=>n.toLocaleString("id-ID"),LD=new Set();
 function openP(){window.bekkiPrjClose&&window.bekkiPrjClose();window.bekkiSkClose&&window.bekkiSkClose();closeP();if(matchMedia("(max-width:768px)").matches&&SB)SB.classList.add("closed");
 pg=el("div","pj");pg.id="cnPage";
 const top=el("div","pj-top"),tg=el("button","icon-btn");tg.type="button";tg.setAttribute("aria-label","Sidebar");tg.style.color="var(--foreground)";tg.innerHTML=SVG;tg.onclick=e=>{e.stopPropagation();SB&&SB.classList.toggle("closed")};top.appendChild(tg);
 const body=el("div","pj-body"),hd=el("div","pj-hd"),ic=el("span","pj-ic sk-ic");ic.innerHTML=PLUG;const nm=el("h2","pj-nm","Connectors"),nw=el("button","sk-new","+ Tambah");nw.type="button";nw.onclick=()=>dlg();hd.append(ic,nm,nw);
-const sub=el("p","sk-sub","Hubungkan Bekki ke sumber informasi. Isi sumber yang aktif ikut dikirim sebagai konteks di setiap pesan, jadi matikan yang tidak dipakai.");const warn=el("p","cn-warn");warn.hidden=!0;const ls=el("div","sk-list");body.append(hd,sub,warn,ls);pg.append(top,body);main.appendChild(pg);window.__cnDraw=draw;draw();
+const sub=el("p","sk-sub","Hubungkan Bekki ke sumber informasi. Isi sumber yang aktif ikut dikirim sebagai konteks di setiap pesan, jadi matikan yang tidak dipakai.");const warn=el("p","cn-warn");warn.hidden=!0;const ls=el("div","sk-list");body.append(hd,sub,warn,ls);pg.append(top,body);main.appendChild(pg);window.__cnDraw=draw;if(C.length){window.bekkiSkelCards(ls,Math.min(4,C.length));setTimeout(()=>{ls.removeAttribute("aria-busy");draw()},450)}else draw();
 function draw(){if(!pg)return;ls.textContent="";const tot=C.filter(c=>c.on).reduce((a,c)=>a+c.content.length,0);warn.hidden=tot<=MAXT;warn.textContent="Total sumber aktif ("+fmt(tot)+" karakter) melebihi batas "+fmt(MAXT)+". Sebagian isi akan dipotong; matikan sumber yang tidak perlu.";
 if(!C.length){const em=el("div","pj-em");em.innerHTML=PLUG;em.append(el("div","pj-et","Belum ada sumber"),el("div","pj-es","Tambahkan catatan, repo GitHub, artikel Wikipedia, atau halaman web agar Bekki bisa menjawab berdasarkan isinya."));ls.appendChild(em);return}
-C.forEach(c=>{const k=el("div","sk-card"+(c.on?"":" off")),r=el("div","sk-row");r.appendChild(el("b","sk-n",c.name));r.appendChild(el("span","sk-tag",TY[c.type]));
+C.forEach(c=>{if(LD.has(c.id)){const t=document.createElement("div");window.bekkiSkelCards(t,1);while(t.firstChild)ls.appendChild(t.firstChild);return}const k=el("div","sk-card"+(c.on?"":" off")),r=el("div","sk-row");r.appendChild(el("b","sk-n",c.name));r.appendChild(el("span","sk-tag",TY[c.type]));
 const sw=el("button","sk-sw");sw.type="button";sw.setAttribute("role","switch");sw.setAttribute("aria-checked",c.on?"true":"false");sw.setAttribute("aria-label",(c.on?"Matikan ":"Aktifkan ")+c.name);sw.onclick=()=>{c.on=!c.on;save();draw()};r.appendChild(sw);
 const d=el("p","sk-d",(c.type==="note"?"":c.src+" · ")+fmt(c.content.length)+" karakter"+(c.u?" · "+new Date(c.u).toLocaleDateString("id-ID",{day:"numeric",month:"short"}):""));const a=el("div","sk-btns");
 if(c.type==="note"){const ed=el("button","sk-btn","Edit");ed.type="button";ed.onclick=()=>dlg(c);a.appendChild(ed)}
-else{const rf=el("button","sk-btn","Segarkan");rf.type="button";rf.onclick=async()=>{rf.disabled=!0;rf.textContent="Mengambil…";try{c.content=await pull(c);c.u=Date.now();save();toast("Diperbarui")}catch(e){toast(e.message)}draw()};a.appendChild(rf)}
+else{const rf=el("button","sk-btn","Segarkan");rf.type="button";rf.onclick=async()=>{LD.add(c.id);draw();try{c.content=await pull(c);c.u=Date.now();save();toast("Diperbarui")}catch(e){toast(e.message)}LD.delete(c.id);draw()};a.appendChild(rf)}
 const dl=el("button","sk-btn dg","Hapus");dl.type="button";dl.onclick=()=>window.bekkiConfirm("Hapus sumber ini?","“"+c.name+"” akan dihapus dari Connectors.","Hapus",()=>{C=C.filter(x=>x.id!==c.id);save();draw()});a.appendChild(dl);k.append(r,d,a);ls.appendChild(k)})}}
 /* dialog */
 function dlg(ed){if(document.querySelector(".cn-dl"))return;let type=ed?ed.type:"note";const bk=el("div","pd-back"),pn=el("div","pd pj-dl cn-dl");pn.setAttribute("role","dialog");pn.setAttribute("aria-modal","true");
