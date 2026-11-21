@@ -949,3 +949,8 @@ html.kb-home,html.kb-home body{overflow:hidden}
 .sh-sw{margin-left:auto;flex:none;width:42px;height:24px;border-radius:999px}
 .sh-card .sk-row{align-items:center}
 @media(prefers-reduced-motion:reduce){.sh-b{animation:none}}
+/* tombol sidebar di header sedikit lebih besar */
+header #toggle2{width:40px;height:40px;border-radius:10px}
+header #toggle2 svg{font-size:22px!important}
+.pj-top .icon-btn{width:40px;height:40px;border-radius:10px}
+.pj-top .icon-btn svg{font-size:22px}
