@@ -1022,3 +1022,7 @@ header #toggle2 svg{font-size:22px!important}
 .sidebar:not(.closed) .sb-foot{margin-top:auto!important}
 .sidebar:not(.closed) .hist{flex:0 1 auto}
 .sidebar:not(.closed) .hist[hidden]{display:none}
+/* jangan gepeng saat daftar chat dibuka/tutup */
+.sidebar>*:not(.hist){flex-shrink:0}
+.sidebar .new-chat,.sidebar .sb-sec,.sidebar .sb-sec-h,.sidebar .ctx{flex-shrink:0}
+.sidebar:not(.closed) .hist{flex:1 1 0;min-height:0}
