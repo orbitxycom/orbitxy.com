@@ -983,3 +983,5 @@ header #toggle2 svg{font-size:22px!important}
 /* brand sidebar */
 .sb-brand{margin-left:8px;font-size:20px;font-weight:700;letter-spacing:-.03em;line-height:1;background:linear-gradient(100deg,var(--foreground) 30%,color-mix(in oklab,var(--foreground) 55%,#6d5dfc) 100%);-webkit-background-clip:text;background-clip:text;color:transparent;white-space:nowrap}
 .sidebar.closed .sb-head>.sb-brand{display:none}
+.sb-brand{font-weight:800;font-size:21px;letter-spacing:-.035em;}
+.sb-brand{text-shadow:none;-webkit-text-stroke:0;font-variation-settings:"wght" 850}
