@@ -954,3 +954,6 @@ header #toggle2{width:40px;height:40px;border-radius:10px}
 header #toggle2 svg{font-size:22px!important}
 .pj-top .icon-btn{width:40px;height:40px;border-radius:10px}
 .pj-top .icon-btn svg{font-size:22px}
+/* ikon di dalam sidebar (cari & tutup sidebar) sedikit lebih besar */
+.sidebar:not(.closed) .sb-head .icon-btn{width:40px;height:40px;border-radius:10px}
+.sidebar:not(.closed) .sb-head .icon-btn svg{font-size:22px!important}
