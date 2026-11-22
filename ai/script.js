@@ -314,7 +314,7 @@ document.addEventListener("keydown",e=>{if((e.ctrlKey||e.metaKey)&&e.key.toLower
 (()=>{const b=document.getElementById("ctxBtn"),sub=document.getElementById("ctxSub");if(!b||!sub)return;let T=null;
 const set=o=>{sub.hidden=!o;b.setAttribute("aria-expanded",o?"true":"false");b.classList.toggle("open",o);try{localStorage.setItem("bekki_ctx",o?"1":"0")}catch{}};
 let o0=!1;try{o0=localStorage.getItem("bekki_ctx")==="1"}catch{}set(o0);
-b.onclick=()=>set(sub.hidden);
+b.onclick=()=>{if(sub.hidden){set(!0);sub.classList.remove("closing");sub.classList.add("opening");clearTimeout(window.__cx);window.__cx=setTimeout(()=>sub.classList.remove("opening"),420)}else{clearTimeout(window.__cx);sub.classList.remove("opening");sub.classList.add("closing");b.classList.remove("open");b.setAttribute("aria-expanded","false");try{localStorage.setItem("bekki_ctx","0")}catch{}window.__cx=setTimeout(()=>{sub.classList.remove("closing");sub.hidden=!0},200)}};
 const toast=t=>{document.querySelectorAll(".at-toast.ctx-toast").forEach(e=>e.remove());clearTimeout(T);const e=document.createElement("div");e.className="at-toast ctx-toast";e.setAttribute("role","status");e.textContent=t;document.body.appendChild(e);T=setTimeout(()=>{e.style.transition="opacity .25s";e.style.opacity="0";setTimeout(()=>e.remove(),260)},2200)};
 sub.addEventListener("click",e=>{const i=e.target.closest(".ctx-it");i&&toast(i.dataset.soon+" segera hadir")})})();
 /* proyek + bagian Chats di sidebar */
