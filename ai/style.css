@@ -371,7 +371,7 @@ button,.hist-item,.sug,.avatar,.icon-btn{-webkit-user-select:none;user-select:no
 /* gambar terkirim tampil sendiri, tanpa kotak gelembung */
 .msg.user.has-att{flex-direction:column;align-items:flex-end;gap:6px}
 .msg.user.has-att .att-row{margin:0}
-.msg.user.has-att .att-row img{max-width:min(260px,70vw);max-height:260px}
+.msg.user.has-att .att-row img{max-width:min(260px,70vw);max-height:160px}
 
 /* foto lampiran: tidak bisa ditekan lama / diseret / dipilih */
 .att-chip img,.att-row img,.lb img,.lb{-webkit-touch-callout:none;-webkit-user-select:none;user-select:none;-webkit-user-drag:none;-webkit-tap-highlight-color:transparent}
@@ -853,7 +853,7 @@ button,.hist-item,.sug,.avatar,.icon-btn{-webkit-user-select:none;user-select:no
 .sk-act button{width:22px;height:22px;display:grid;place-items:center;border-radius:50%;color:inherit;opacity:.65}
 .sk-act button:hover{opacity:1;background:color-mix(in oklab,var(--foreground) 12%,transparent)}
 .sk-act button svg{width:12px;height:12px}
-.sk-pop{position:absolute;left:16px;right:16px;bottom:100%;z-index:20;max-height:260px;overflow-y:auto;padding:6px;margin-bottom:6px;border-radius:16px;background:var(--popover);color:var(--popover-foreground);border:1px solid color-mix(in oklab,var(--foreground) 12%,transparent);box-shadow:0 18px 50px -12px rgba(0,0,0,.4);scrollbar-width:none}
+.sk-pop{position:absolute;left:16px;right:16px;bottom:100%;z-index:20;max-height:160px;overflow-y:auto;padding:6px;margin-bottom:6px;border-radius:16px;background:var(--popover);color:var(--popover-foreground);border:1px solid color-mix(in oklab,var(--foreground) 12%,transparent);box-shadow:0 18px 50px -12px rgba(0,0,0,.4);scrollbar-width:none}
 .sk-pop::-webkit-scrollbar{display:none}
 .sk-op{display:block;width:100%;padding:9px 12px;border-radius:10px;text-align:left;color:inherit}
 .sk-op b{display:block;font-size:15px;font-weight:600}
@@ -1032,3 +1032,15 @@ header #toggle2 svg{font-size:22px!important}
 .sidebar:not(.closed) .sb-sec,.sidebar:not(.closed) .sb-sec-h,.sidebar:not(.closed) .sb-foot{flex:none}
 .sidebar:not(.closed) .hist{overflow-y:auto;overscroll-behavior:contain}
 .sidebar .sb-foot,.sidebar:not(.closed) .sb-foot{border-top:0!important}
+
+/* animasi buka/tutup menu Context */
+.ctx-sub.opening{animation:ctxOpen .32s cubic-bezier(.22,1,.36,1) both;transform-origin:top;overflow:hidden}
+.ctx-sub.opening .ctx-it{animation:ctxIt .34s cubic-bezier(.22,1,.36,1) both}
+.ctx-sub.opening .ctx-it:nth-child(2){animation-delay:.04s}
+.ctx-sub.opening .ctx-it:nth-child(3){animation-delay:.08s}
+.ctx-sub.opening .ctx-it:nth-child(4){animation-delay:.12s}
+.ctx-sub.closing{animation:ctxClose .2s ease both;overflow:hidden;pointer-events:none}
+@keyframes ctxOpen{from{opacity:0;max-height:0;transform:translateY(-6px)}to{opacity:1;max-height:160px;transform:none}}
+@keyframes ctxClose{from{opacity:1;max-height:160px}to{opacity:0;max-height:0;transform:translateY(-6px)}}
+@keyframes ctxIt{from{opacity:0;transform:translateX(-8px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){.ctx-sub.opening,.ctx-sub.closing,.ctx-sub.opening .ctx-it{animation:none}}
