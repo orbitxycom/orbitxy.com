@@ -129,7 +129,7 @@ $("pfLimits").onclick=function(){go("upgrade")};
 $("pfSupport").onclick=function(){go("support")};
 $("pfTerms").onclick=function(){go("terms")};
 $("pfPrivacy").onclick=function(){go("privacy")};
-$("pfOut").onclick=function(){tutup();var sb=window.bekkiSB;(sb?sb.auth.signOut():Promise.resolve()).then(function(){location.replace("/")},function(){location.replace("/")})};
+$("pfOut").onclick=function(){tutup();var sb=window.bekkiSB;(window.bekkiLogout?window.bekkiLogout("local"):location.replace("/"))};
 
 function isi(u){
 var m=(u&&u.user_metadata)||{},mail=(u&&u.email)||"";
@@ -230,7 +230,7 @@ if(stTab==="pref"){
 var m=mode();Array.prototype.forEach.call(box.querySelectorAll(".pf-mode"),function(b){b.setAttribute("aria-pressed",String(b.getAttribute("data-m")===m));b.onclick=function(){setTheme(b.getAttribute("data-m"));stBody()}})}
 if(stTab==="sec"){
 g("stOut").onclick=function(){$("pfOut").click()};
-g("stOutAll").onclick=function(){var sb=window.bekkiSB;(sb?sb.auth.signOut({scope:"global"}):Promise.resolve()).then(function(){location.replace("/")},function(){location.replace("/")})}}
+g("stOutAll").onclick=function(){var sb=window.bekkiSB;(window.bekkiLogout?window.bekkiLogout("global"):location.replace("/"))}}
 if(stTab==="priv"){
 g("stDel").onclick=function(){stClose();var d=$("delAll");if(d)d.click()};
 g("stTerms").onclick=function(){go("terms")};g("stPriv").onclick=function(){go("privacy")}}}
