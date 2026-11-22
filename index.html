@@ -1,793 +1,835 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Bekki — Asisten AI dari Orbitxy | Gratis, Tanpa Instalasi</title>
-<meta name="description" content="Bekki adalah asisten AI pribadi dari Orbitxy. Ngobrol, bertanya, menulis, dan selesaikan pekerjaan lewat percakapan sederhana langsung di browser. Gratis.">
-<meta name="keywords" content="Bekki, Orbitxy, asisten AI, chatbot Indonesia, AI gratis, chat AI, AI bahasa Indonesia">
-<meta name="robots" content="index, follow">
-<link rel="canonical" href="https://orbitxy.com/ai/">
-<meta property="og:type" content="website">
-<meta property="og:title" content="Bekki — Asisten AI dari Orbitxy">
-<meta property="og:description" content="Ngobrol, bertanya, dan selesaikan pekerjaan dengan lebih cepat. Bekki 1.1 gratis.">
-<meta property="og:url" content="https://orbitxy.com/ai/">
-<meta property="og:image" content="https://orbitxy.com/ai/og-image.png">
-<meta property="og:locale" content="id_ID">
-<meta property="og:site_name" content="Bekki">
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Bekki — Asisten AI dari Orbitxy">
-<meta name="twitter:description" content="Ngobrol, bertanya, dan selesaikan pekerjaan dengan lebih cepat. Bekki 1.1 gratis.">
-<meta name="twitter:image" content="https://orbitxy.com/ai/og-image.png">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 -.5 8 8'%3E%3Crect y='-.5' width='8' height='8' fill='%23000'/%3E%3Cg shape-rendering='crispEdges'%3E%3Cpath fill='%23ade4ff' d='M.5 0h1v1h-1zM6.5 0h1v1h-1z'/%3E%3Cpath fill='%238fd9f2' d='M.5 1h2v1h-2zM5.5 1h2v1h-2z'/%3E%3Cpath fill='%237adec4' d='M.5 2h7v1h-7z'/%3E%3Cpath fill='%2362d991' d='M.5 3h1v1h-1zM2.5 3h3v1h-3zM6.5 3h1v1h-1z'/%3E%3Cpath fill='%237b8ff0' d='M.5 4h3v1h-3zM4.5 4h3v1h-3z'/%3E%3Cpath fill='%236648d9' d='M.5 5h2v1h-2zM5.5 5h2v1h-2zM3 5h.5v.5H3zM4.5 5h.5v.5h-.5z'/%3E%3Cpath fill='%233a22a3' d='M0 6h8v1H0z'/%3E%3C/g%3E%3C/svg%3E">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700;800&family=Geist:wght@400;500;600&family=Playfair+Display:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<style>
-:root{
-  --bg:#f5f7ff;--ink:#15112e;--mute:#5b5877;--line:rgba(21,17,46,.14);
-  --card:#fff;--inv:#0d0a20;--inv-ink:#f5f7ff;--sun:#7adec4;--amber:#7b8ff0;
-  --orange:#6648d9;--sky:#8fd9f2;--mint:#62d991;
-  --flame:linear-gradient(90deg,#ade4ff,#7adec4 45%,#7b8ff0);
-  --mesh:radial-gradient(ellipse 60% 50% at 20% 0%,rgba(173,228,255,.55),transparent 60%),
-         radial-gradient(ellipse 50% 40% at 80% 10%,rgba(122,222,196,.45),transparent 60%),
-         radial-gradient(ellipse 60% 50% at 50% 100%,rgba(123,143,240,.35),transparent 60%);
-  --soft:rgba(127,127,160,.08);
-  --shadow-sm:0 2px 8px -2px rgba(21,17,46,.08);
-  --shadow-md:0 12px 32px -12px rgba(21,17,46,.18);
-  --shadow-lg:0 32px 80px -24px rgba(21,17,46,.28);
-  color-scheme:light;
-}
-@media (prefers-color-scheme:dark){
-  :root:not([data-theme="light"]){
-    --bg:#07060d;--ink:#eef1ff;--mute:#9a9cc2;--line:rgba(238,241,255,.16);
-    --card:#100e1c;--inv:#050310;--inv-ink:#eef1ff;--soft:rgba(200,200,255,.06);
-    --shadow-sm:0 2px 8px -2px rgba(0,0,0,.5);
-    --shadow-md:0 12px 32px -12px rgba(0,0,0,.6);
-    --shadow-lg:0 32px 80px -24px rgba(0,0,0,.8);
-    color-scheme:dark;
-  }
-}
-:root[data-theme="dark"]{
-  --bg:#07060d;--ink:#eef1ff;--mute:#9a9cc2;--line:rgba(238,241,255,.16);
-  --card:#100e1c;--inv:#050310;--inv-ink:#eef1ff;--soft:rgba(200,200,255,.06);
-  --shadow-sm:0 2px 8px -2px rgba(0,0,0,.5);
-  --shadow-md:0 12px 32px -12px rgba(0,0,0,.6);
-  --shadow-lg:0 32px 80px -24px rgba(0,0,0,.8);
-  color-scheme:dark;
-}
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-html{scroll-behavior:smooth;scroll-padding-top:96px;height:100%}
-body{font-family:"Inter Tight",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;background:var(--bg);color:var(--ink);line-height:1.55;-webkit-font-smoothing:antialiased;min-height:100%;overflow-x:hidden}
-a{color:inherit;text-decoration:none}
-:focus-visible{outline:2px solid var(--orange);outline-offset:3px}
-img,svg{display:block;max-width:100%}
-.wrap{max-width:1200px;margin:0 auto;padding:0 28px}
-.skip{position:absolute;left:-9999px;top:0;background:var(--ink);color:var(--bg);padding:12px 20px;z-index:1000}
-.skip:focus{left:12px;top:12px}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bekki AI - Platform Pengembangan AI</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Doto:wght@500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-/* ===== Banner ===== */
-.banner{background:var(--flame);color:#1f1f1f;text-align:center;font-size:.88rem;padding:9px 16px;font-weight:500;position:relative;overflow:hidden}
-.banner::before{content:"";position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,.45),transparent);animation:shine 3s infinite}
-@keyframes shine{0%{transform:translateX(-100%)}100%{transform:translateX(100%)}}
-.banner a{text-decoration:underline;text-underline-offset:3px;margin-left:6px;position:relative;z-index:1}
-.banner a:hover{opacity:.75}
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; scroll-behavior: smooth; -webkit-tap-highlight-color: transparent; }
+        /* Tanpa sorotan biru saat disentuh / ditekan lama */
+        .feature-item, .faq-item, .see-more { -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; }
+        :focus:not(:focus-visible) { outline: none; }
+        ::selection { background: rgba(255, 255, 255, 0.2); color: #ffffff; }
+        body { background-color: #0d0d0d; color: #ffffff; overflow-x: hidden; }
 
-/* ===== HEADER ===== */
-header{
-  position:sticky;top:0;z-index:100;
-  background:color-mix(in srgb, var(--bg) 85%, transparent);
-  backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
-  border-bottom:1px solid transparent;
-  transition:border-color .3s, background .3s;
-}
-header.scrolled{border-bottom-color:var(--line)}
-.nav{display:flex;align-items:center;justify-content:space-between;height:72px;gap:16px}
-.logo{display:flex;align-items:center;gap:10px;font-family:"Inter Tight",sans-serif;font-size:1.35rem;font-weight:700;color:var(--ink);}
-.mark{width:38px;height:38px;background:#000;border-radius:8px;display:grid;place-items:center;transition:transform .3s;}
-.logo:hover .mark{transform:rotate(-8deg) scale(1.05)}
-.mark svg{width:22px;height:22px}
-.right{display:flex;align-items:center;gap:4px}
-.icon-btn{width:44px;height:44px;border-radius:50%;display:grid;place-items:center;background:transparent;border:0;color:var(--ink);font-size:1.15rem;cursor:pointer;transition:background .15s;}
-.icon-btn:hover{background:var(--soft)}
-.links{display:none}
-@media (min-width:900px){
-  .links{display:flex;align-items:center;gap:4px;list-style:none;margin-left:auto;margin-right:16px;}
-  .links a{font-size:.95rem;font-weight:500;color:var(--mute);padding:8px 14px;border-radius:8px;transition:color .15s, background .15s;}
-  .links a:hover{color:var(--ink);background:var(--soft)}
-  #menu{display:none}
-}
-@media (max-width:899px){
-  .links{display:none;position:absolute;top:100%;left:0;right:0;background:var(--bg);flex-direction:column;padding:16px 20px;gap:0;border-bottom:1px solid var(--line);box-shadow:0 10px 30px rgba(0,0,0,.08);animation:drawerIn .22s ease;}
-  .links.open{display:flex}
-  @keyframes drawerIn{from{opacity:0;transform:translateY(-8px)}}
-  .links a{padding:12px 0;font-size:1rem;font-weight:500;color:var(--ink);border-bottom:1px solid var(--line);}
-  .links li:last-child a{border-bottom:0}
-}
+        /* Navbar Dinamis */
+        .navbar {
+            position: fixed; top: 0; left: 0; width: 100%; padding: 20px 40px; z-index: 100;
+            background: rgba(13, 13, 13, 0.78); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255,255,255,0.08); transform: translateY(-100%); opacity: 0;
+            transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .navbar.show { transform: translateY(0); opacity: 1; }
+        .navbar-logo { font-size: 24px; font-weight: 700; letter-spacing: -1px; color: #ffffff; }
 
-/* ===== HERO ===== */
-.hero{padding:80px 0 0;text-align:center;position:relative;overflow:hidden}
-.hero::before{content:"";position:absolute;inset:0;background:var(--mesh);opacity:.7;pointer-events:none;z-index:0}
-.hero::after{content:"";position:absolute;inset:0;background-image:radial-gradient(circle at 1px 1px,var(--line) 1px,transparent 0);background-size:32px 32px;opacity:.3;pointer-events:none;z-index:0;mask-image:linear-gradient(to bottom,black 0%,black 50%,transparent 100%)}
-.hero-in{position:relative;z-index:2;max-width:980px;margin:0 auto;padding:0 20px}
-.hero h1{font-family:"Playfair Display",Georgia,serif;font-size:clamp(2.6rem,6.5vw,5.4rem);font-weight:500;line-height:1.05;letter-spacing:-.02em;margin-bottom:24px;text-wrap:balance;}
-.hero h1 .gray{color:#8a8a9a;font-weight:500}
-.hero .lead{font-size:clamp(1rem,2.2vw,1.3rem);color:#6b6b7d;max-width:32em;margin:0 auto 36px;line-height:1.65;font-weight:400;}
-.hero .lead strong{color:var(--ink);font-weight:600}
-.acts{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-bottom:56px}
-.btn-hero{display:inline-flex;align-items:center;gap:12px;background:#0d0a20;color:#fff;border:1px solid #0d0a20;padding:18px 36px;border-radius:999px;font-size:1.05rem;font-weight:600;transition:all .25s;cursor:pointer;box-shadow:0 8px 24px -8px rgba(13,10,32,.4);}
-.btn-hero:hover{transform:translateY(-2px);box-shadow:0 12px 32px -8px rgba(13,10,32,.5);background:#1a1540}
-.btn-hero svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;transition:transform .25s}
-.btn-hero:hover svg{transform:translateX(4px)}
-.facts{display:flex;flex-wrap:wrap;gap:12px 28px;list-style:none;justify-content:center;font-size:.92rem;color:var(--mute);margin-bottom:56px}
-.facts li{display:flex;align-items:center;gap:8px}
-.facts li::before{content:"";width:9px;height:9px;background:var(--c,var(--sun));border-radius:2px;transform:rotate(45deg)}
-.facts li:nth-child(2){--c:var(--amber)}
-.facts li:nth-child(3){--c:var(--orange)}
+        /* Halaman Login */
+        .login-section {
+            position: relative; height: 100vh; height: 100svh; display: flex; flex-direction: column; 
+            justify-content: center; align-items: center; z-index: 1; padding: 80px 20px 30px 20px; 
+        }
+        .login-navbar-logo { position: absolute; top: 30px; left: 40px; font-size: 24px; font-weight: 700; color: #ffffff; z-index: 10; }
+        .login-container { width: 100%; max-width: 420px; display: flex; flex-direction: column; align-items: center; text-align: center; margin-bottom: auto; margin-top: auto; }
 
-/* ===== Marquee ===== */
-.marq{display:flex;overflow:hidden;border-block:1px solid var(--line);padding:22px 0;background:var(--card);margin-top:24px}
-.marq .g{display:flex;flex:none;min-width:100%;justify-content:space-around;gap:0;animation:mq 40s linear infinite}
-.marq span{display:inline-flex;align-items:center;gap:40px;white-space:nowrap;font-size:clamp(1.2rem,2.4vw,1.8rem);font-weight:500;letter-spacing:-.03em;color:var(--mute);padding-right:40px}
-.marq span::after{content:"";width:24px;height:22px;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 7'%3E%3Cg shape-rendering='crispEdges'%3E%3Cpath fill='%23ade4ff' d='M.5 0h1v1h-1zM6.5 0h1v1h-1z'/%3E%3Cpath fill='%238fd9f2' d='M.5 1h2v1h-2zM5.5 1h2v1h-2z'/%3E%3Cpath fill='%237adec4' d='M.5 2h7v1h-7z'/%3E%3Cpath fill='%2362d991' d='M.5 3h1v1h-1zM2.5 3h3v1h-3zM6.5 3h1v1h-1z'/%3E%3Cpath fill='%237b8ff0' d='M.5 4h3v1h-3zM4.5 4h3v1h-3z'/%3E%3Cpath fill='%236648d9' d='M.5 5h2v1h-2zM5.5 5h2v1h-2zM3 5h.5v.5H3zM4.5 5h.5v.5h-.5z'/%3E%3Cpath fill='%233a22a3' d='M0 6h8v1H0z'/%3E%3C/g%3E%3C/svg%3E") center/contain no-repeat;opacity:.6}
-@keyframes mq{to{transform:translateX(-100%)}}
+        /* Ikon Bintang */
+        .center-star-icon {
+            width: 70px; height: 70px; margin-bottom: 15px;
+            animation: floatStar 3s ease-in-out infinite;
+        }
+        @keyframes floatStar {
+            0% { transform: translateY(0) scale(1); }
+            50% { transform: translateY(-10px) scale(1.05); }
+            100% { transform: translateY(0) scale(1); }
+        }
 
-/* ===== Stats ===== */
-.stats{display:grid;grid-template-columns:repeat(4,1fr);border-bottom:1px solid var(--line);background:var(--card)}
-.stat{padding:36px 28px;border-left:1px solid var(--line);display:flex;flex-direction:column;gap:8px;transition:background .2s}
-.stat:first-child{border-left:0}
-.stat:hover{background:var(--bg)}
-.stat .num{font-size:clamp(2rem,3.5vw,3rem);font-weight:800;letter-spacing:-.04em;line-height:1;background:linear-gradient(90deg,#6648d9,#7adec4);-webkit-background-clip:text;background-clip:text;color:transparent}
-.stat .lbl{font-size:.85rem;color:var(--mute);font-weight:500}
+        /* Judul: gradasi biru muda, hijau, dan ungu yang mengalir pelan */
+        .main-title {
+            font-size: 32px; font-weight: 600; line-height: 1.3; margin-bottom: 35px;
+            color: #A78BFA; /* cadangan untuk browser lama */
+            background: linear-gradient(90deg, #38BDF8 0%, #4ADE80 33%, #A78BFA 66%, #38BDF8 100%);
+            background-size: 200% auto;
+            -webkit-background-clip: text; background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: titleFlow 8s linear infinite;
+            width: max-content; /* lebar mengikuti teks supaya tidak turun baris */
+        }
+        .highlight-blue { display: block; margin-top: 5px; white-space: nowrap; }
+        @keyframes titleFlow {
+            from { background-position: 0% center; }
+            to { background-position: 200% center; }
+        }
 
-/* ===== Section Umum ===== */
-section{padding:104px 0}
-.head{display:grid;grid-template-columns:1.1fr .9fr;gap:48px;align-items:end;margin-bottom:56px}
-.eyebrow{font-size:.78rem;font-weight:700;color:var(--orange);text-transform:uppercase;letter-spacing:.14em;margin-bottom:14px;display:inline-flex;align-items:center;gap:8px}
-.eyebrow::before{content:"";width:24px;height:2px;background:var(--orange)}
-h2{font-size:clamp(2.1rem,4.6vw,3.6rem);font-weight:700;line-height:1.04;letter-spacing:-.045em;text-wrap:balance}
-.head p{color:var(--mute);font-size:1.05rem;line-height:1.6}
-.center{text-align:center;max-width:720px;margin:0 auto 56px}
-.center .eyebrow{justify-content:center}
-.center .eyebrow::before{display:none}
+        /* ========================================================
+           DESAIN TOMBOL UNTUK LAPTOP / DESKTOP (Default)
+           ======================================================== */
+        .btn {
+            width: 100%; padding: 16px 20px; border-radius: 50px; /* Membulat panjang (Pill) */
+            border: none; font-size: 16px; font-weight: 500; cursor: pointer;
+            display: flex; justify-content: center; align-items: center; margin-bottom: 12px;
+            transition: all 0.3s ease; position: relative;
+        }
 
-/* ===== Model & Lainnya ===== */
-.models-wrap{position:relative;margin:0 -28px;padding:0 28px}
-.models-scroll{display:flex;gap:18px;overflow-x:auto;scroll-snap-type:x mandatory;padding:12px 4px 32px;scrollbar-width:thin;scrollbar-color:var(--line) transparent}
-.models-scroll::-webkit-scrollbar{height:6px}
-.models-scroll::-webkit-scrollbar-track{background:transparent}
-.models-scroll::-webkit-scrollbar-thumb{background:var(--line);border-radius:3px}
-.model-card{flex:0 0 300px;scroll-snap-align:start;background:var(--card);border:1px solid var(--line);padding:26px;display:flex;flex-direction:column;gap:16px;transition:all .3s;position:relative;overflow:hidden}
-.model-card::before{content:"";position:absolute;inset:0;background:linear-gradient(135deg,transparent,var(--soft));opacity:0;transition:opacity .3s;pointer-events:none}
-.model-card:hover{border-color:var(--ink);transform:translateY(-6px);box-shadow:var(--shadow-lg)}
-.model-card:hover::before{opacity:1}
-.model-card .mc-head{display:flex;align-items:center;justify-content:space-between;position:relative;z-index:1}
-.model-card svg{width:64px;height:56px;transition:transform .4s}
-.model-card:hover svg{transform:scale(1.1) rotate(-5deg)}
-.model-card h3{font-size:1.25rem;font-weight:700;letter-spacing:-.02em;position:relative;z-index:1}
-.model-card p{color:var(--mute);font-size:.92rem;flex:1;position:relative;z-index:1;line-height:1.55}
-.pill{display:inline-block;border:1px solid currentColor;padding:4px 12px;font-size:.72rem;font-weight:700;align-self:flex-start;color:var(--mute);text-transform:uppercase;letter-spacing:.06em}
-.pill.on{background:var(--sun);color:#1f1f1f;border-color:var(--sun)}
+        .btn .icon-wrapper { position: absolute; left: 24px; display: flex; justify-content: center; align-items: center; width: 24px; height: 24px; }
+        .btn .icon-wrapper svg { width: 22px; height: 22px; display: block; }
+        .btn .icon-wrapper i { font-size: 20px; display: block; }
 
-.tabs{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-bottom:40px}
-.tab{padding:10px 22px;border:1px solid var(--line);background:var(--card);font:500 .92rem/1 inherit;font-family:inherit;cursor:pointer;transition:all .2s;color:var(--mute)}
-.tab:hover{border-color:var(--ink);color:var(--ink)}
-.tab.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}
-.tab-panel{display:none;animation:fadeIn .4s ease}
-.tab-panel.on{display:block}
-@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}}
-.prompt-demo{max-width:800px;margin:0 auto;background:var(--card);border:1px solid var(--line);padding:32px;box-shadow:var(--shadow-md)}
-.prompt-demo .user-q{background:var(--sun);color:#1f1f1f;padding:14px 18px;border-radius:14px 14px 2px 14px;max-width:80%;margin-left:auto;font-size:.95rem;line-height:1.5;margin-bottom:14px}
-.prompt-demo .bot-a{background:var(--bg);border:1px solid var(--line);padding:16px 18px;border-radius:14px 14px 14px 2px;max-width:85%;font-size:.93rem;line-height:1.6}
-.prompt-demo .bot-a strong{color:var(--orange)}
-.prompt-demo .meta{font-size:.78rem;color:var(--mute);margin-top:12px;text-align:right;display:flex;align-items:center;gap:6px;justify-content:flex-end}
-.prompt-demo .meta::before{content:"";width:6px;height:6px;background:var(--mint);border-radius:50%}
+        /* Tekan lama: tidak memilih teks / memunculkan menu salin, dan tanpa kotak abu-abu bawaan browser */
+        .btn, .social-btn { -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; -webkit-tap-highlight-color: transparent; }
 
-.bento{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
-.cell{background:var(--card);padding:32px;min-height:260px;display:flex;flex-direction:column;justify-content:space-between;gap:32px;border:1px solid var(--line);transition:all .3s;position:relative;overflow:hidden}
-.cell::before{content:"";position:absolute;inset:0;background:radial-gradient(circle at top right,var(--soft),transparent 60%);opacity:0;transition:opacity .3s}
-.cell:hover{transform:translateY(-4px);box-shadow:var(--shadow-md)}
-.cell:hover::before{opacity:1}
-.cell i{display:block;width:22px;height:22px;background:var(--c,var(--orange));position:relative;z-index:1}
-.cell h3{font-size:1.4rem;font-weight:700;letter-spacing:-.02em;margin-bottom:8px;position:relative;z-index:1}
-.cell p{color:var(--mute);max-width:26em;font-size:.95rem;position:relative;z-index:1;line-height:1.55}
-.cell.hot{grid-column:span 2;background:var(--flame);color:#1f1f1f;border:0}
-.cell.hot p{color:#23204a}
-.cell.hot i{background:#1f1f1f}
-.cell.hot h3{font-size:2.1rem}
-.cell.sun{background:var(--sun);color:#1f1f1f;border:0}
-.cell.sun p{color:#23204a}
-.cell.sun i{background:#1f1f1f}
-.cell.wide{grid-column:1/-1}
-.cell.w2{grid-column:span 2}
+        .btn-google { background-color: #ffffff; color: #111111; border: 1px solid #fff; box-shadow: 0 0 0 0 #0d0d0d, 0 0 0 0 #ffffff, 0 0 0 rgba(255, 255, 255, 0); }
+        .btn-google:hover { background-color: #f0f0f0; box-shadow: 0 0 0 0 #0d0d0d, 0 0 0 0 #ffffff, 0 10px 20px rgba(255, 255, 255, 0.1); }
+        .btn-google:active, .btn-google:focus-visible { box-shadow: 0 0 0 2px #0d0d0d, 0 0 0 4px #ffffff, 0 10px 20px rgba(255, 255, 255, 0.1); outline: none; }
 
-.dark{background:var(--inv);color:var(--inv-ink);position:relative;overflow:hidden}
-.dark::before{content:"";position:absolute;inset:0;background:radial-gradient(ellipse 60% 40% at 50% 0%,rgba(123,143,240,.2),transparent 70%);pointer-events:none}
-.dark .wrap{position:relative;z-index:1}
-.dark .head p{color:#9a9cc2}
-.dark .eyebrow{color:var(--sun)}
-.dark .eyebrow::before{background:var(--sun)}
-.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
-.step{background:rgba(255,255,255,.03);padding:40px 32px 44px;border:1px solid rgba(255,245,225,.12);transition:all .3s;position:relative;overflow:hidden}
-.step::before{content:"";position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--amber),var(--sun));transform:scaleX(0);transform-origin:left;transition:transform .4s}
-.step:hover{background:rgba(255,255,255,.06);transform:translateY(-4px)}
-.step:hover::before{transform:scaleX(1)}
-.step b{display:block;font-size:5rem;font-weight:800;line-height:1;letter-spacing:-.06em;background:linear-gradient(135deg,var(--amber),var(--sun));-webkit-background-clip:text;background-clip:text;color:transparent;margin-bottom:40px}
-.step h3{font-size:1.25rem;font-weight:700;letter-spacing:-.02em;margin-bottom:10px}
-.step p{color:#9a9cc2;font-size:.95rem;line-height:1.55}
+        .btn-light { background-color: #F2F2F2; color: #333; }
+        .btn-light .icon-wrapper i { color: #111; }
+        .btn-light:hover { background-color: #E5E5E5; }
+        .btn-light { box-shadow: 0 0 0 0 #0d0d0d, 0 0 0 0 #ffffff; }
+        .btn-light:active, .btn-light:focus-visible { box-shadow: 0 0 0 2px #0d0d0d, 0 0 0 4px #ffffff; outline: none; }
 
-.list{border-bottom:1px solid var(--line)}
-.row{display:grid;grid-template-columns:1fr 1.3fr 56px;gap:32px;align-items:baseline;padding:32px 0;border-top:1px solid var(--line);transition:all .2s;position:relative}
-.row::after{content:"→";position:absolute;right:0;top:50%;transform:translateY(-50%) translateX(-10px);font-size:1.5rem;color:var(--orange);opacity:0;transition:all .3s}
-.row:hover{background:var(--sun);color:#1f1f1f;padding-left:24px;padding-right:24px}
-.row:hover::after{opacity:1;transform:translateY(-50%) translateX(0);color:#1f1f1f}
-.row h3{font-size:clamp(1.5rem,3vw,2.3rem);font-weight:600;letter-spacing:-.035em}
-.row p{color:var(--mute);font-size:.95rem}
-.row:hover p{color:#23204a}
+        /* Sembunyikan elemen khusus HP di Laptop */
+        .social-row { display: none; } 
+        .divider { display: none; }
 
-.faq{border-bottom:1px solid var(--line)}
-.faq details{border-top:1px solid var(--line);transition:background .2s}
-.faq details:hover{background:var(--soft)}
-.faq summary{list-style:none;cursor:pointer;display:flex;justify-content:space-between;gap:24px;padding:26px 8px;font-size:clamp(1.1rem,2vw,1.4rem);font-weight:600;letter-spacing:-.02em;transition:color .2s}
-.faq summary::-webkit-details-marker{display:none}
-.faq summary::after{content:"+";font-size:1.6rem;line-height:1;color:var(--orange);transition:transform .3s;display:inline-block}
-.faq details[open] summary::after{content:"−";transform:rotate(180deg)}
-.faq p{color:var(--mute);padding:0 8px 26px;max-width:42em;font-size:.95rem;line-height:1.6}
-.faq p a{text-decoration:underline;text-decoration-color:var(--orange);text-underline-offset:3px}
+        .see-more { font-size: 14px; color: #aaa; text-decoration: underline; text-underline-offset: 3px; margin-top: 5px; margin-bottom: 20px; cursor: pointer; }
+        .see-more:hover { color: #fff; }
+        .footer-text { font-size: 12px; color: #888; line-height: 1.6; margin-top: auto; margin-bottom: 10px; text-align: center; }
+        .footer-text a { color: #bbb; text-decoration: underline; }
 
-.two{display:grid;grid-template-columns:1fr 1fr;gap:16px}
 
-.cta{position:relative;background:var(--inv);color:var(--inv-ink);padding:120px 0 100px;overflow:hidden;text-align:center}
-.cta::before{content:"";position:absolute;inset:0;background:
-  radial-gradient(ellipse 50% 60% at 20% 30%,rgba(123,143,240,.35),transparent 60%),
-  radial-gradient(ellipse 50% 60% at 80% 70%,rgba(122,222,196,.3),transparent 60%),
-  radial-gradient(ellipse 40% 50% at 50% 0%,rgba(173,228,255,.25),transparent 60%);
-  animation:meshMove 12s ease-in-out infinite alternate}
-@keyframes meshMove{0%{transform:scale(1) rotate(0)}100%{transform:scale(1.15) rotate(3deg)}}
-.cta::after{content:"";position:absolute;inset:0;background-image:radial-gradient(circle at 1px 1px,rgba(255,255,255,.15) 1px,transparent 0);background-size:40px 40px;mask-image:radial-gradient(ellipse 70% 70% at 50% 50%,black,transparent);pointer-events:none}
-.cta-in{position:relative;z-index:2;max-width:760px;margin:0 auto;padding:0 20px}
-.cta .cat-big{width:100px;height:88px;margin:0 auto 32px;animation:bob 4s ease-in-out infinite;position:relative}
-.cta .cat-big::before{content:"";position:absolute;inset:-30px;background:radial-gradient(circle,rgba(122,222,196,.4),transparent 70%);border-radius:50%;animation:pulse 3s infinite;z-index:-1}
-.cta h2{font-size:clamp(2.4rem,5.5vw,4.4rem);font-weight:800;margin-bottom:20px;letter-spacing:-.045em;line-height:1}
-.cta p{font-size:1.15rem;margin-bottom:40px;color:#c4c6e0;max-width:32em;margin-inline:auto;line-height:1.6}
-.cta .btn{background:var(--inv-ink);color:var(--inv);border-color:var(--inv-ink);padding:16px 32px;font-size:1.02rem;border-radius:999px}
-.cta .btn:hover{background:var(--sun);border-color:var(--sun);color:#1f1f1f}
+        /* ========================================================
+           MEDIA QUERY: DESAIN KHUSUS HP (Layar < 768px)
+           Ini yang akan mengubah tombol jadi kotak dan memunculkan ikon sosial
+           ======================================================== */
+        @media (max-width: 768px) {
+            .navbar { padding: 15px 20px; }
+            .login-navbar-logo { left: 20px; top: 20px; font-size: 22px; }
+            .login-section { padding: 70px 15px 20px 15px; }
+            .center-star-icon { width: 60px; height: 60px; margin-bottom: 10px; }
+            
+            /* Di HP, teks turun ke bawah */
+            .main-title { font-size: min(26px, 6vw); margin-bottom: 25px; display: flex; flex-direction: column; }
+            .highlight-blue { display: inline; }
 
-footer{background:var(--inv);color:var(--inv-ink);padding:64px 0 32px;border-top:1px solid rgba(255,255,255,.08)}
-.ft-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:48px;margin-bottom:48px}
-.ft-brand p{color:#9a9cc2;font-size:.92rem;margin-top:16px;max-width:28em;line-height:1.65}
-.ft-col h4{font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.14em;color:#9a9cc2;margin-bottom:18px}
-.ft-col ul{list-style:none;display:flex;flex-direction:column;gap:12px}
-.ft-col a{color:#c4c6e0;font-size:.92rem;transition:color .15s;position:relative;padding-left:0;transition:padding .2s}
-.ft-col a:hover{color:var(--inv-ink);padding-left:6px}
-.ft-col a::before{content:"";position:absolute;left:0;top:50%;width:3px;height:3px;background:var(--sun);border-radius:50%;opacity:0;transition:opacity .2s;transform:translateY(-50%) translateX(-6px)}
-.ft-col a:hover::before{opacity:1}
-.fb{border-top:1px solid rgba(255,245,225,.12);padding-top:24px;font-size:.85rem;color:#9a9cc2;display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px}
-.fb a:hover{color:var(--inv-ink)}
+            /* --- TOMBOL JADI KOTAK DI HP --- */
+            .btn { padding: 16px; font-size: 15px; border-radius: 16px; }
+            .btn .icon-wrapper { left: 18px; }
 
-.js .rv{opacity:0;transform:translateY(30px);filter:blur(4px);transition:opacity .8s cubic-bezier(.16,1,.3,1),transform .8s cubic-bezier(.16,1,.3,1),filter .8s}
-.js .rv.in{opacity:1;transform:none;filter:none}
-.js .rv[data-delay="1"]{transition-delay:.1s}
-.js .rv[data-delay="2"]{transition-delay:.2s}
-.js .rv[data-delay="3"]{transition-delay:.3s}
+            /* --- MUNCULKAN IKON SOSIAL --- */
+            .social-row {
+                display: flex; justify-content: space-between; width: 100%; gap: 12px; margin-bottom: 15px;
+            }
+            .social-btn {
+                flex: 1; background-color: #1c1c1e; border: none; border-radius: 16px; padding: 15px;
+                cursor: pointer; display: flex; justify-content: center; align-items: center; transition: 0.3s;
+            }
+            .social-btn i { font-size: 24px; }
+            .social-btn:hover { background-color: #2c2c2e; }
+            .social-btn { box-shadow: 0 0 0 0 #0d0d0d, 0 0 0 0 #ffffff; }
+            .social-btn:active, .social-btn:focus-visible { background-color: #2c2c2e; box-shadow: 0 0 0 2px #0d0d0d, 0 0 0 4px #ffffff; outline: none; }
 
-.cursor-glow{position:fixed;width:400px;height:400px;border-radius:50%;background:radial-gradient(circle,rgba(123,143,240,.12),transparent 70%);pointer-events:none;z-index:1;transform:translate(-50%,-50%);transition:opacity .3s;opacity:0}
-@media (hover:hover) and (pointer:fine){.cursor-glow.active{opacity:1}}
+            /* --- MUNCULKAN GARIS ATAU --- */
+            .divider {
+                display: flex; align-items: center; width: 100%; margin: 10px 0 20px 0;
+                color: #666; font-size: 13px; letter-spacing: 1px;
+            }
+            .divider::before, .divider::after {
+                content: ""; flex: 1; border-bottom: 1px dashed #444; 
+            }
+            .divider span { padding: 0 15px; }
 
-@media (min-width:900px){
-  section{padding:120px 0}
-  .hero{padding:100px 0 0}
-  .stats .stat{padding:44px 32px}
-  .stat .num{font-size:clamp(2.4rem,3.5vw,3.4rem)}
-  .models-wrap::before,.models-wrap::after{content:"";position:absolute;top:0;bottom:32px;width:60px;pointer-events:none;z-index:2}
-  .models-wrap::before{left:0;background:linear-gradient(90deg,var(--bg),transparent)}
-  .models-wrap::after{right:0;background:linear-gradient(270deg,var(--bg),transparent)}
-  .cta{padding:140px 0 120px}
-}
+            /* Ubah Tombol Email & Telepon jadi gelap di HP */
+            .btn-light { background-color: #1c1c1e; color: #ffffff; }
+            .btn-light .icon-wrapper i { color: #aaa; }
+            .btn-light:hover { background-color: #2c2c2e; }
 
-@media (max-width:900px){
-  .head{grid-template-columns:1fr;gap:24px;margin-bottom:40px}
-  .btn.sm{display:none}
-  .bento,.two{grid-template-columns:1fr 1fr}
-  .cell.hot{grid-column:span 2}
-  .steps{grid-template-columns:1fr}
-  .stats{grid-template-columns:1fr 1fr}
-  .stat:nth-child(3){border-left:0}
-  .stat:nth-child(n+3){border-top:1px solid var(--line)}
-  .ft-grid{grid-template-columns:1fr 1fr;gap:36px}
-  .ft-brand{grid-column:1/-1}
-  section{padding:80px 0}
-}
+            /* Di HP: "Lihat lainnya" disembunyikan, teks persetujuan dinaikkan sedikit */
+            .see-more { display: none; }
+            .footer-text { font-size: 11px; margin-bottom: 32px; }
+        }
 
-@media (max-width:640px){
-  .wrap{padding:0 18px}
-  .banner{font-size:.78rem;padding:8px 12px;line-height:1.4}
-  .hero{padding:48px 0 0}
-  .hero-in{padding:0 20px}
-  .hero h1{font-size:clamp(2.4rem,9vw,3.6rem);line-height:1.04;margin-bottom:24px}
-  .hero .lead{font-size:1rem;margin-bottom:32px;line-height:1.65;color:#6b6b7d}
-  .acts{margin-bottom:40px}
-  .btn-hero{padding:16px 30px;font-size:1rem}
-  .facts{margin-bottom:48px;gap:10px 18px;font-size:.82rem}
-  .facts li::before{width:7px;height:7px}
-  
-  .marq{margin-top:32px;padding:18px 0}
-  .marq .g{animation-duration:55s}
-  .marq span{font-size:1.1rem;gap:28px;padding-right:28px}
-  .marq span::after{width:18px;height:16px}
-  .stats .stat{padding:24px 20px;gap:6px}
-  .stat .num{font-size:1.8rem}
-  .stat .lbl{font-size:.78rem}
-  section{padding:56px 0}
-  .center{margin-bottom:36px}
-  h2{font-size:clamp(1.75rem,6.5vw,2.4rem);line-height:1.08}
-  .head p{font-size:.98rem}
-  .models-wrap{margin:0 -18px;padding:0 18px}
-  .models-scroll{gap:12px;padding:8px 4px 24px}
-  .model-card{flex:0 0 260px;padding:22px}
-  .model-card h3{font-size:1.15rem}
-  .model-card p{font-size:.88rem}
-  .model-card svg{width:56px;height:49px}
-  .tabs{flex-wrap:nowrap;justify-content:flex-start;overflow-x:auto;margin:0 -18px 32px;padding:4px 18px 8px;scrollbar-width:none;gap:8px}
-  .tabs::-webkit-scrollbar{display:none}
-  .tab{padding:9px 16px;font-size:.84rem;flex:none;white-space:nowrap}
-  .prompt-demo{padding:20px;border-radius:14px}
-  .prompt-demo .user-q{font-size:.9rem;padding:12px 14px;max-width:88%}
-  .prompt-demo .bot-a{font-size:.88rem;padding:14px 16px;max-width:92%}
-  .bento,.two{grid-template-columns:1fr;gap:12px}
-  .cell.hot,.cell.w2{grid-column:auto}
-  .cell{min-height:auto;padding:24px;gap:20px;border-radius:12px}
-  .cell.hot h3{font-size:1.5rem}
-  .cell h3{font-size:1.2rem}
-  .cell p{font-size:.9rem}
-  .step{padding:28px 24px 32px}
-  .step b{font-size:3.6rem;margin-bottom:24px}
-  .step h3{font-size:1.15rem}
-  .row{grid-template-columns:1fr;gap:6px;padding:22px 0}
-  .row::after{display:none}
-  .row h3{font-size:1.4rem}
-  .row p{font-size:.9rem}
-  .faq summary{padding:20px 4px;font-size:1.02rem}
-  .faq p{padding:0 4px 20px;font-size:.9rem}
-  .cta{padding:80px 0 72px}
-  .cta .cat-big{width:80px;height:70px;margin-bottom:24px}
-  .cta h2{font-size:clamp(2rem,7.5vw,2.8rem);margin-bottom:16px}
-  .cta p{font-size:1rem;margin-bottom:32px}
-  .cta .btn{padding:14px 26px;font-size:.95rem}
-  .ft-grid{grid-template-columns:1fr;gap:32px;margin-bottom:36px}
-  .ft-brand{grid-column:auto}
-  .ft-brand p{font-size:.88rem}
-  .ft-col h4{font-size:.72rem;margin-bottom:12px}
-  .ft-col ul{gap:10px}
-  .ft-col a{font-size:.88rem}
-  .fb{font-size:.78rem;flex-direction:column;gap:8px;align-items:flex-start}
-}
+        /* Bagian Fitur Bawah */
+        .features-section { background-color: #0d0d0d; color: #ffffff; padding: 100px 20px; min-height: 100vh; position: relative; z-index: 2; }
+        .features-container { width: 100%; max-width: 1100px; margin: 0 auto; position: relative; z-index: 1; }
+        .header-section { text-align: center; margin-bottom: 60px; }
+        .header-section h1 { font-size: 36px; font-weight: 600; margin-bottom: 15px; color: #ffffff; }
+        .header-section p { font-size: 16px; color: #a1a1aa; max-width: 600px; margin: 0 auto; line-height: 1.6; }
 
-@media (max-width:380px){
-  .hero h1{font-size:clamp(2rem,9.5vw,2.8rem)}
-  .hero .lead{font-size:.94rem}
-  .icon-btn{width:42px;height:42px;font-size:1rem}
-  .btn-hero{padding:14px 26px;font-size:.95rem}
-}
-</style>
+        .feature-wrapper { display: flex; align-items: center; justify-content: space-between; gap: 50px; margin-top: 40px; }
+        .feature-list { flex: 1; display: flex; flex-direction: column; }
+        .feature-item { padding: 25px 0; border-bottom: 1px solid rgba(255, 255, 255, 0.1); cursor: pointer; transition: all 0.3s ease; opacity: 0.4; }
+        .feature-item:hover, .feature-item.active { opacity: 1; }
+        .feature-title { font-size: 20px; font-weight: 600; color: #ffffff; display: flex; align-items: center; gap: 15px; margin-bottom: 10px; transition: color 0.3s ease; }
+        .feature-item.active .feature-title { color: #38BDF8; }
+        .feature-title i { font-size: 24px; color: #71717a; transition: color 0.3s ease; }
+        .feature-item.active .feature-title i { color: #38BDF8; }
+        .feature-desc { font-size: 15px; color: #a1a1aa; line-height: 1.6; max-height: 0; overflow: hidden; transition: max-height 0.4s ease, opacity 0.4s ease, margin-top 0.4s ease; opacity: 0; padding-left: 39px; }
+        .feature-item.active .feature-desc { max-height: 150px; opacity: 1; margin-top: 10px; }
+        .feature-image { flex: 1.2; }
+        .feature-image img { width: 100%; height: auto; border-radius: 20px; border: 1px solid rgba(255, 255, 255, 0.08); box-shadow: none; object-fit: cover; }
+
+        /* ---- Bagian fitur di HP: rata kiri, judul besar, foto di bawah daftar ---- */
+        @media (max-width: 768px) {
+            .features-section { padding: 72px 28px 64px; }
+            .header-section { text-align: left; margin-bottom: 40px; }
+            .header-section h1 { font-size: min(36px, 9.2vw); font-weight: 500; line-height: 1.12; letter-spacing: -0.03em; margin-bottom: 20px; }
+            .header-section p { max-width: none; margin: 0; font-size: 17px; line-height: 1.6; color: #d4d4d8; }
+
+            .feature-wrapper { flex-direction: column; align-items: stretch; gap: 36px; margin-top: 0; }
+            .feature-list { width: 100%; }
+            .feature-image { width: 100%; }
+
+            .feature-title { align-items: flex-start; gap: 12px; font-weight: 500; }
+            .feature-title i { flex: none; width: 28px; margin-top: 1px; text-align: center; }
+            .feature-desc { padding-left: 0; font-size: 17px; color: #e4e4e7; }
+            .feature-item.active .feature-desc { max-height: 260px; }
+        }
+
+        /* =========================================
+           GAYA KHUSUS FAQ (Pertanyaan Umum)
+           ========================================= */
+        .faq-section {
+            background-color: #0d0d0d; padding: 100px 20px; position: relative; z-index: 2;
+            border-top: 1px solid rgba(255, 255, 255, 0.05); 
+        }
+        .faq-container { max-width: 800px; margin: 0 auto; }
+        .faq-header { text-align: left; margin-bottom: 44px; }
+        .faq-eyebrow { font-family: 'Doto', monospace; font-size: 16px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #a1a1aa; margin-bottom: 18px; }
+        .faq-header h2 { font-size: 44px; font-weight: 500; line-height: 1.12; letter-spacing: -0.03em; color: #ffffff; max-width: 640px; }
+        .faq-header p { font-size: 16px; color: #a1a1aa; line-height: 1.6; }
+        .faq-list { display: flex; flex-direction: column; gap: 16px; }
+        
+        .faq-item {
+            background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.08); 
+            border-radius: 16px; padding: 20px 24px; cursor: pointer; transition: all 0.3s ease;
+        }
+        .faq-item:hover { background: rgba(255, 255, 255, 0.06); border-color: rgba(255, 255, 255, 0.15); }
+        .faq-item.active { background: rgba(59, 130, 246, 0.05); border-color: rgba(59, 130, 246, 0.3); }
+        
+        .faq-question { display: flex; justify-content: space-between; align-items: center; gap: 15px; }
+        .faq-question h3 { font-size: 18px; font-weight: 500; color: #e4e4e7; transition: color 0.3s ease; }
+        .faq-item.active .faq-question h3 { color: #38BDF8; }
+        
+        .faq-icon { font-size: 16px; color: #71717a; transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), color 0.3s ease; }
+        .faq-item.active .faq-icon { transform: rotate(180deg); color: #38BDF8; }
+        
+        .faq-answer { max-height: 0; overflow: hidden; opacity: 0; transition: max-height 0.4s ease, opacity 0.4s ease, margin-top 0.4s ease; }
+        .faq-item.active .faq-answer { max-height: 200px; opacity: 1; margin-top: 15px; }
+        .faq-answer p { font-size: 15px; color: #a1a1aa; line-height: 1.6; padding-right: 20px; }
+
+
+        /* Responsif FAQ & Footer di HP */
+        @media (max-width: 768px) {
+            .faq-section { padding: 72px 28px; }
+            .faq-header h2 { font-size: min(36px, 9.2vw); }
+            .faq-eyebrow { font-size: 15px; margin-bottom: 16px; }
+            .faq-header p { font-size: 14px; }
+            .faq-item { padding: 16px 20px; }
+            .faq-question h3 { font-size: 16px; }
+            .faq-answer p { font-size: 14px; }
+
+        }
+
+        /* =========================================
+           GAYA FOOTER (rata kiri, font piksel)
+           ========================================= */
+        .site-footer {
+            background-color: #080808; border-top: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 72px 40px 44px; position: relative; z-index: 2;
+        }
+        .footer-inner { max-width: 1100px; margin: 0 auto; }
+        .footer-top { display: grid; grid-template-columns: 1fr auto; gap: 64px; align-items: start; }
+
+        .footer-logo { display: inline-flex; align-items: center; gap: 12px; color: #ffffff; text-decoration: none; font-size: 30px; font-weight: 700; letter-spacing: -1px; }
+        .footer-logo svg { width: 30px; height: 30px; flex: none; }
+        .footer-tagline { margin-top: 24px; max-width: 470px; font-size: 16px; line-height: 1.7; color: #a1a1aa; }
+
+        .footer-socials { display: flex; gap: 12px; margin-top: 30px; }
+        .footer-social {
+            width: 44px; height: 44px; border-radius: 50%; display: flex; justify-content: center; align-items: center;
+            color: #a1a1aa; font-size: 19px; text-decoration: none; border: 1px solid rgba(255, 255, 255, 0.12);
+            box-shadow: 0 0 0 0 #080808, 0 0 0 0 #ffffff;
+            transition: color 0.3s ease, border-color 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease;
+        }
+        .footer-social:hover { color: #ffffff; border-color: rgba(255, 255, 255, 0.3); background-color: rgba(255, 255, 255, 0.05); }
+        .footer-social:active, .footer-social:focus-visible { color: #ffffff; box-shadow: 0 0 0 2px #080808, 0 0 0 4px #ffffff; outline: none; }
+
+        .footer-nav { display: flex; flex-direction: column; gap: 14px; min-width: 190px; }
+        .footer-col-title { font-family: 'Doto', monospace; font-size: 15px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #8b8b95; margin-bottom: 6px; }
+        .footer-nav a { color: #a1a1aa; text-decoration: none; font-size: 15px; transition: color 0.3s ease; width: fit-content; }
+        .footer-nav a:hover, .footer-nav a:focus-visible { color: #ffffff; }
+
+        .footer-bottom {
+            margin-top: 64px; padding-top: 28px; border-top: 1px solid rgba(255, 255, 255, 0.08);
+            display: flex; justify-content: space-between; align-items: flex-start; gap: 24px;
+        }
+        .footer-pixel { font-family: 'Doto', monospace; font-size: 14px; font-weight: 700; letter-spacing: 0.06em; line-height: 1.8; text-transform: uppercase; color: #8b8b95; }
+        .footer-pixel i { color: #38BDF8; }
+        .footer-pixel .copy-sign { font-family: 'Inter', sans-serif; font-weight: 500; font-size: 1.15em; line-height: 0; letter-spacing: 0; }
+
+        @media (max-width: 768px) {
+            .site-footer { padding: 56px 28px 40px; }
+            .footer-top { grid-template-columns: 1fr; gap: 40px; }
+            .footer-tagline { font-size: 17px; line-height: 1.6; }
+            .footer-bottom { flex-direction: column; gap: 28px; margin-top: 44px; }
+            .footer-pixel { font-size: 15px; }
+        }
+
+        /* =========================================
+           BANNER AJAKAN (di atas footer)
+           ========================================= */
+        .cta-section { background-color: #0d0d0d; padding: 0; position: relative; z-index: 2; }
+        .cta-card { position: relative; width: 100%; aspect-ratio: 3 / 4; max-height: 640px; border-radius: 0; overflow: hidden; background: #0d0d0d; display: flex; align-items: center; justify-content: center; }
+        /* Logo Bekki AI memenuhi seluruh banner: kiri, kanan, atas, bawah */
+        .cta-logo { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center; display: block; pointer-events: none; -webkit-user-select: none; user-select: none; -webkit-user-drag: none; -webkit-touch-callout: none; }
+        /* Tekan lama pada banner tidak memunculkan menu simpan gambar / blok teks */
+        .cta-card { -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; }
+        /* Lapisan gelap tipis supaya tulisan putih tetap mudah dibaca */
+        .cta-card::after { content: ""; position: absolute; inset: 0; background: rgba(0, 0, 0, 0.28); pointer-events: none; }
+        .cta-content { position: relative; z-index: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 0 24px; }
+        .cta-title { font-size: min(36px, 9vw); font-weight: 600; line-height: 1.08; letter-spacing: -0.03em; color: #ffffff; max-width: 760px; text-shadow: 0 2px 24px rgba(8, 50, 95, 0.35); }
+        .cta-btn {
+            margin-top: 28px; display: inline-flex; align-items: center; gap: 14px; background: #ffffff; color: #111111;
+            font-size: 18px; font-weight: 600; text-decoration: none; padding: 16px 32px; border-radius: 999px;
+            box-shadow: 0 0 0 5px rgba(255, 255, 255, 0.4), 0 12px 30px rgba(8, 50, 95, 0.25); transition: box-shadow 0.3s ease;
+        }
+        .cta-btn:active, .cta-btn:focus-visible { box-shadow: 0 0 0 5px rgba(255, 255, 255, 0.9), 0 12px 30px rgba(8, 50, 95, 0.25); outline: none; }
+        @media (min-width: 769px) {
+            .cta-card { aspect-ratio: auto; max-height: none; min-height: clamp(640px, 52vw, 820px); }
+            .cta-btn { margin-top: 32px; }
+            .cta-title { font-size: clamp(44px, 5vw, 60px); }
+        }
+
+        /* =========================================
+           JENDELA MASUK (muncul saat tombol "Mulai" ditekan)
+           ========================================= */
+        .modal-overlay {
+            position: fixed; inset: 0; z-index: 200; display: flex; align-items: center; justify-content: center; padding: 16px;
+            background: rgba(0, 0, 0, 0.55); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+            opacity: 0; visibility: hidden; transition: opacity 0.4s ease, visibility 0s linear 0.4s;
+        }
+        .modal-overlay.open { opacity: 1; visibility: visible; transition: opacity 0.4s ease, visibility 0s; }
+        body.modal-open { overflow: hidden; }
+
+        .modal-card {
+            position: relative; width: 100%; max-width: 440px; overflow: hidden;
+            background: radial-gradient(circle at 50% 0%, #1b1d22 0%, #111214 60%);
+            border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 28px;
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.6);
+            opacity: 0; transform: translateY(48px) scale(0.95);
+            transition: opacity 0.45s ease, transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        /* Hanya bagian isi yang digulir; tombol X tetap diam di kartu */
+        .modal-scroll {
+            max-height: calc(100vh - 32px); max-height: calc(100svh - 32px);
+            overflow-y: auto; overscroll-behavior: contain; -webkit-overflow-scrolling: touch; scrollbar-width: none;
+            padding: 44px 22px 22px; display: flex; flex-direction: column; align-items: center; text-align: center;
+        }
+        .modal-scroll::-webkit-scrollbar { display: none; }
+        .modal-overlay.open .modal-card { opacity: 1; transform: translateY(0) scale(1); }
+
+        .modal-close {
+            position: absolute; top: 14px; right: 14px; width: 36px; height: 36px; border-radius: 50%; border: none; cursor: pointer;
+            display: flex; align-items: center; justify-content: center; background: rgba(255, 255, 255, 0.08); color: #d4d4d8; font-size: 16px;
+            transition: background-color 0.3s ease, color 0.3s ease, transform 0.3s ease; z-index: 2;
+        }
+        .modal-close:hover { background: rgba(255, 255, 255, 0.16); color: #ffffff; transform: rotate(90deg); }
+        .modal-close:focus-visible { outline: 2px solid #ffffff; outline-offset: 2px; }
+
+        /* Isi muncul satu per satu */
+        .modal-item { width: 100%; opacity: 0; transform: translateY(16px); transition: opacity 0.4s ease, transform 0.4s ease; }
+        .modal-overlay.open .modal-item { opacity: 1; transform: translateY(0); transition: opacity 0.6s ease, transform 0.6s cubic-bezier(0.16, 1, 0.3, 1); transition-delay: calc(var(--i, 0) * 70ms + 180ms); }
+
+        .modal-star-wrap { perspective: 600px; margin-bottom: 14px; display: flex; justify-content: center; }
+        .modal-star { width: 60px; height: 60px; animation: starSpin 3.2s ease-in-out infinite; transform-style: preserve-3d; }
+        @keyframes starSpin { 0% { transform: rotateY(0deg); } 50% { transform: rotateY(180deg); } 100% { transform: rotateY(360deg); } }
+
+        .modal-title {
+            font-size: 26px; font-weight: 600; line-height: 1.3; margin-bottom: 26px; color: #A78BFA;
+            background: linear-gradient(90deg, #38BDF8 0%, #4ADE80 33%, #A78BFA 66%, #38BDF8 100%); background-size: 200% auto;
+            -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; animation: titleFlow 8s linear infinite;
+        }
+        .modal-title span { display: block; }
+
+        .modal-card .btn { border-radius: 16px; padding: 16px; font-size: 15px; }
+        .modal-card .btn .icon-wrapper { left: 18px; }
+        .modal-card .btn-light { background-color: #1c1c1e; color: #ffffff; }
+        .modal-card .btn-light .icon-wrapper i { color: #aaa; }
+        .modal-card .btn-light:hover { background-color: #2c2c2e; }
+        .modal-card .social-row { display: flex; justify-content: space-between; width: 100%; gap: 12px; margin-bottom: 15px; }
+        .modal-card .social-btn {
+            flex: 1; background-color: #1c1c1e; border: none; border-radius: 16px; padding: 15px; cursor: pointer;
+            display: flex; justify-content: center; align-items: center; transition: 0.3s; box-shadow: 0 0 0 0 #111214, 0 0 0 0 #ffffff;
+        }
+        .modal-card .social-btn i { font-size: 24px; }
+        .modal-card .social-btn:hover { background-color: #2c2c2e; }
+        .modal-card .social-btn:active, .modal-card .social-btn:focus-visible { background-color: #2c2c2e; box-shadow: 0 0 0 2px #111214, 0 0 0 4px #ffffff; outline: none; }
+        .modal-card .divider { display: flex; align-items: center; width: 100%; margin: 10px 0 20px 0; color: #666; font-size: 13px; letter-spacing: 1px; }
+        .modal-card .divider::before, .modal-card .divider::after { content: ""; flex: 1; border-bottom: 1px dashed #444; }
+        .modal-card .divider span { padding: 0 15px; }
+        .modal-terms { font-size: 11px; color: #888; line-height: 1.6; margin-top: 10px; text-align: center; }
+        .modal-terms a { color: #bbb; text-decoration: underline; }
+
+        /* Dialog email + kode */
+        .em-card .modal-scroll{align-items:stretch;text-align:left;padding:44px 22px 24px}
+        .em-h{font-size:22px;font-weight:600;line-height:1.25;margin-bottom:6px;color:#fff;text-align:center}
+        .em-p{font-size:14px;color:#a1a1aa;line-height:1.55;margin-bottom:18px;text-align:center}
+        .em-p b{color:#e4e4e7;font-weight:500;word-break:break-all}
+        .em-in{width:100%;padding:15px 16px;border-radius:14px;border:1px solid rgba(255,255,255,.12);background:#1c1c1e;color:#fff;font-size:16px;outline:none;transition:border-color .3s ease}
+        .em-in:focus{border-color:rgba(255,255,255,.4)}
+        .em-code{letter-spacing:.5em;text-align:center;font-size:22px;font-weight:600}
+        .em-go{margin-top:14px;margin-bottom:0;background:#fff;color:#111;width:100%;padding:15px;border-radius:14px;border:0;font-size:15px;font-weight:600;cursor:pointer;transition:opacity .3s ease}
+        .em-go:disabled{opacity:.5;cursor:default}
+        .em-msg{min-height:20px;margin-top:12px;font-size:13px;color:#f87171;text-align:center;line-height:1.5}
+        .em-msg.ok{color:#4ade80}
+        .em-links{display:flex;justify-content:center;gap:18px;margin-top:6px}
+        .em-link{background:none;border:0;color:#a1a1aa;font-size:13px;text-decoration:underline;text-underline-offset:3px;cursor:pointer}
+        .em-link:disabled{opacity:.5;cursor:default;text-decoration:none}
+        .em-toast{position:fixed;left:50%;bottom:28px;z-index:400;transform:translate(-50%,20px);opacity:0;background:#fff;color:#111;font-size:14px;font-weight:500;padding:12px 20px;border-radius:999px;box-shadow:0 10px 30px rgba(0,0,0,.4);transition:opacity .35s ease,transform .5s cubic-bezier(.16,1,.3,1);pointer-events:none}
+        .em-toast.on{opacity:1;transform:translate(-50%,0)}
+    </style>
 </head>
 <body>
 
-<a href="#main" class="skip">Lewati ke konten</a>
-<div class="cursor-glow" id="glow" aria-hidden="true"></div>
+    <nav class="navbar" id="dynamic-navbar">
+        <div class="navbar-logo">Bekki AI</div>
+    </nav>
 
-<svg width="0" height="0" style="position:absolute" aria-hidden="true">
-  <defs>
-    <symbol id="bk" viewBox="0 0 8 7">
-      <g shape-rendering="crispEdges">
-        <path style="fill:var(--c0,#ade4ff)" d="M.5 0h1v1h-1zM6.5 0h1v1h-1z"/>
-        <path style="fill:var(--c1,#8fd9f2)" d="M.5 1h2v1h-2zM5.5 1h2v1h-2z"/>
-        <path style="fill:var(--c2,#7adec4)" d="M.5 2h7v1h-7z"/>
-        <path style="fill:var(--c3,#62d991)" d="M.5 3h1v1h-1zM2.5 3h3v1h-3zM6.5 3h1v1h-1z"/>
-        <path style="fill:var(--c4,#7b8ff0)" d="M.5 4h3v1h-3zM4.5 4h3v1h-3z"/>
-        <path style="fill:var(--c5,#6648d9)" d="M.5 5h2v1h-2zM5.5 5h2v1h-2zM3 5h.5v.5H3zM4.5 5h.5v.5h-.5z"/>
-        <path style="fill:var(--c6,#3a22a3)" d="M0 6h8v1H0z"/>
-      </g>
-    </symbol>
-  </defs>
-</svg>
+    
+    <section class="login-section" id="login-section">
+        <div class="login-navbar-logo">Bekki AI</div>
 
-<div class="banner" role="region" aria-label="Pengumuman">
-  🎉 Bekki 1.1 sudah bisa dipakai, gratis. <a href="https://orbitxy.com/ai/">Coba sekarang →</a>
-</div>
+        <div class="login-container">
+            
+            <svg class="center-star-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 2L14.5 9.5L22 12L14.5 14.5L12 22L9.5 14.5L2 12L9.5 9.5L12 2Z" fill="url(#star-gradient)" />
+                <defs>
+                    <linearGradient id="star-gradient" x1="2" y1="2" x2="22" y2="22" gradientUnits="userSpaceOnUse">
+                        <stop offset="0%" stop-color="#7EE081"/>
+                        <stop offset="100%" stop-color="#3B82F6"/>
+                    </linearGradient>
+                </defs>
+            </svg>
 
-<header id="siteHeader">
-  <div class="wrap nav">
-    <a href="#" class="logo" aria-label="Bekki beranda">
-      <span class="mark"><svg width="22" height="22" viewBox="0 0 100 100" aria-hidden="true"><use href="#bk"/></svg></span>Bekki
-    </a>
-    <ul class="links" id="links">
-      <li><a href="#fitur">Fitur</a></li>
-      <li><a href="#model">Model</a></li>
-      <li><a href="#contoh">Contoh</a></li>
-      <li><a href="#cara">Cara pakai</a></li>
-      <li><a href="#faq">FAQ</a></li>
-      <li><a href="#tentang">Tentang</a></li>
-    </ul>
-    <div class="right">
-      <button class="icon-btn" id="tt" aria-label="Ganti tema" title="Ganti tema">☾</button>
-      <button class="icon-btn" id="menu" aria-label="Buka menu" aria-expanded="false">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
-      </button>
-    </div>
-  </div>
-</header>
+            <!-- Judul (Di Laptop menyamping, di HP turun ke bawah) -->
+            <h1 class="main-title">
+                Jelaskan ide Anda 
+                <span class="highlight-blue">Wujudkan ide Anda dengan AI</span>
+            </h1>
 
-<main id="main">
+            <!-- Tombol Google -->
+            <button class="btn btn-google">
+                <span class="icon-wrapper">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
+                        <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
+                        <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/>
+                        <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/>
+                        <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
+                        <path fill="none" d="M0 0h48v48H0z"/>
+                    </svg>
+                </span>
+                Lanjutkan dengan Google
+            </button>
 
-<section class="hero" aria-labelledby="hero-h">
-  <div class="hero-in">
-    <h1 id="hero-h">Asisten AI dari Orbitxy <span class="gray">Gratis</span></h1>
-    <p class="lead">Ngobrol, bertanya, menulis, dan selesaikan pekerjaan dengan <strong>Bekki</strong> — asisten AI berbahasa Indonesia yang langsung jalan di browser, tanpa ribet.</p>
-    <div class="acts">
-      <a href="https://orbitxy.com/ai/" class="btn-hero">
-        Coba Bekki gratis
-        <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-      </a>
-    </div>
-    <ul class="facts">
-      <li>Gratis dipakai</li>
-      <li>Langsung di browser</li>
-      <li>Riwayat tersimpan per hari</li>
-    </ul>
-  </div>
+            <!-- Ikon Sosial (HANYA MUNCUL DI HP) -->
+            <div class="social-row">
+                <button class="social-btn"><i class="fa-brands fa-github" style="color: #7EE081;"></i></button>
+                <button class="social-btn"><i class="fa-brands fa-apple" style="color: #ffffff;"></i></button>
+                <button class="social-btn"><i class="fa-brands fa-facebook" style="color: #1877F2;"></i></button>
+            </div>
 
-  <div class="marq" aria-hidden="true">
-    <div class="g"><span>Ngobrol</span><span>Bertanya</span><span>Menulis</span><span>Belajar</span><span>Brainstorming</span><span>Menerjemahkan</span></div>
-    <div class="g"><span>Ngobrol</span><span>Bertanya</span><span>Menulis</span><span>Belajar</span><span>Brainstorming</span><span>Menerjemahkan</span></div>
-  </div>
+            <!-- Pemisah ATAU (HANYA MUNCUL DI HP) -->
+            <div class="divider">
+                <span>ATAU</span>
+            </div>
 
-  <div class="stats" role="list">
-    <div class="stat" role="listitem"><span class="num" data-count="100">0%</span><span class="lbl">Gratis dipakai</span></div>
-    <div class="stat" role="listitem"><span class="num" data-count="0">0</span><span class="lbl">Instalasi dibutuhkan</span></div>
-    <div class="stat" role="listitem"><span class="num" data-count="1">1</span><span class="lbl">Model aktif saat ini</span></div>
-    <div class="stat" role="listitem"><span class="num" data-count="24">24/7</span><span class="lbl">Siap kapan saja</span></div>
-  </div>
-</section>
+            <!-- Tombol Email & Telepon (Putih di Laptop, Gelap di HP) -->
+            <button class="btn btn-light">
+                <span class="icon-wrapper">
+                    <i class="fa-regular fa-envelope"></i>
+                </span>
+                Lanjutkan dengan Email
+            </button>
 
-<section id="model" aria-labelledby="model-h">
-  <div class="wrap">
-    <div class="center rv">
-      <span class="eyebrow">Model Bekki</span>
-      <h2 id="model-h">Pilih model sesuai kebutuhanmu.</h2>
-      <p style="color:var(--mute);margin-top:12px">Bekki 1.1 tersedia sekarang dan gratis. Model berikutnya sedang disiapkan.</p>
-    </div>
-    <div class="models-wrap">
-      <div class="models-scroll" tabindex="0" aria-label="Daftar model Bekki, geser horizontal">
-        <article class="model-card rv">
-          <div class="mc-head"><svg viewBox="0 0 8 7" aria-hidden="true"><use href="#bk"/></svg><span class="pill on">Tersedia</span></div>
-          <h3>Bekki 1.1</h3>
-          <p>Model utama. Cepat, ramah, dan gratis. Cocok untuk ngobrol sehari-hari, menulis, dan belajar.</p>
-          <a href="https://orbitxy.com/ai/" class="btn" style="padding:11px 18px;font-size:.88rem;border-radius:999px">Pakai sekarang →</a>
-        </article>
-        <article class="model-card rv" data-delay="1">
-          <div class="mc-head"><svg viewBox="0 0 8 7" aria-hidden="true" style="--c0:#c4c6e0;--c1:#c4c6e0;--c2:#c4c6e0;--c3:#c4c6e0;--c4:#c4c6e0;--c5:#c4c6e0;--c6:#c4c6e0"><use href="#bk"/></svg><span class="pill">Segera</span></div>
-          <h3>Bekki 1.5</h3>
-          <p>Peningkatan pemahaman konteks dan jawaban lebih panjang. Belum tersedia.</p>
-        </article>
-        <article class="model-card rv" data-delay="2">
-          <div class="mc-head"><svg viewBox="0 0 8 7" aria-hidden="true" style="--c0:#c4c6e0;--c1:#c4c6e0;--c2:#c4c6e0;--c3:#c4c6e0;--c4:#c4c6e0;--c5:#c4c6e0;--c6:#c4c6e0"><use href="#bk"/></svg><span class="pill">Segera</span></div>
-          <h3>Bekki 1.10</h3>
-          <p>Model lanjutan untuk tugas kompleks. Belum tersedia.</p>
-        </article>
-      </div>
-    </div>
-  </div>
-</section>
+            <button class="btn btn-light">
+                <span class="icon-wrapper">
+                    <i class="fa-solid fa-mobile-screen-button"></i>
+                </span>
+                Lanjutkan dengan Telepon
+            </button>
 
-<section id="contoh" aria-labelledby="contoh-h" style="padding-top:0">
-  <div class="wrap">
-    <div class="center rv">
-      <span class="eyebrow">Contoh penggunaan</span>
-      <h2 id="contoh-h">Bekki bisa bantu apa?</h2>
-      <p style="color:var(--mute);margin-top:12px">Klik kategori di bawah untuk melihat contoh percakapan.</p>
-    </div>
-    <div class="tabs rv" role="tablist">
-      <button class="tab on" data-tab="tulis" role="tab" aria-selected="true">✍️ Menulis</button>
-      <button class="tab" data-tab="belajar" role="tab" aria-selected="false">📚 Belajar</button>
-      <button class="tab" data-tab="ide" role="tab" aria-selected="false">💡 Brainstorming</button>
-      <button class="tab" data-tab="terjemah" role="tab" aria-selected="false">🌐 Menerjemahkan</button>
-    </div>
-    <div class="rv">
-      <div class="tab-panel on" data-panel="tulis">
-        <div class="prompt-demo">
-          <div class="user-q">Buat caption Instagram untuk promo kopi susu gula aren, gaya santai tapi tetap jualan.</div>
-          <div class="bot-a">Siap! Ini beberapa pilihan:<br><br><strong>1.</strong> "Senja + kopi susu gula aren = kombinasi yang nggak pernah salah ☕✨ Yuk mampir sebelum kehabisan!"<br><br><strong>2.</strong> "Manisnya pas, pahitnya bikin melek. Kopi susu gula aren, teman setia sore hari 🌇"<br><br><strong>3.</strong> "Nggak perlu nunggu akhir pekan buat manja. Kopi susu gula aren siap nemenin harimu 💛"<br><br>Mau yang lebih formal, atau tambah hashtag?</div>
-          <div class="meta">Bekki · 3 varian caption</div>
+            <a class="see-more">Lihat lainnya</a>
         </div>
-      </div>
-      <div class="tab-panel" data-panel="belajar">
-        <div class="prompt-demo">
-          <div class="user-q">Jelaskan apa itu API dengan bahasa sederhana, pakai analogi.</div>
-          <div class="bot-a">Bayangkan API seperti <strong>pelayan restoran</strong>:<br><br>• Kamu (aplikasi) ingin makanan (data/fitur)<br>• Kamu nggak masuk ke dapur sendiri — kamu pesan lewat pelayan<br>• Pelayan (API) yang ngatur pesananmu ke dapur (server)<br>• Pelayan juga yang antar hasilnya balik ke meja kamu<br><br>Jadi API = perantara yang bikin dua sistem bisa "ngobrol" tanpa harus saling tahu isi dapur masing-masing. Simple kan?</div>
-          <div class="meta">Bekki · analogi restoran</div>
+
+        <p class="footer-text">
+            Dengan melanjutkan, Anda menyetujui<br>
+            <a href="#">Ketentuan Layanan</a> dan <a href="#">Kebijakan Privasi</a>.
+        </p>
+    </section>
+
+    <section class="features-section" id="fitur-section">
+        <div class="features-container">
+            <div class="header-section">
+                <h1>Apa yang dapat Bekki AI lakukan untuk Anda?</h1>
+                <p>Dari pertanyaan sederhana sampai pekerjaan yang butuh ide, Bekki AI siap membantu Anda kapan saja, dalam bahasa yang Anda pakai sehari-hari.</p>
+            </div>
+
+            <div class="feature-wrapper">
+                <div class="feature-list">
+                    <div class="feature-item active" onclick="activateFeature(this)">
+                        <div class="feature-title"><i class="fa-solid fa-comments"></i> Tanya apa saja</div>
+                        <div class="feature-desc">Dari resep masakan, tips kesehatan, sampai urusan sehari-hari. Tanyakan dengan bahasa Anda sendiri dan dapatkan jawaban yang jelas dan mudah dipahami.</div>
+                    </div>
+                    <div class="feature-item" onclick="activateFeature(this)">
+                        <div class="feature-title"><i class="fa-solid fa-pen-nib"></i> Bantu menulis dan menerjemahkan</div>
+                        <div class="feature-desc">Surat lamaran, email, caption media sosial, atau terjemahan ke bahasa lain. Ceritakan maksud Anda, hasilnya langsung siap dipakai.</div>
+                    </div>
+                    <div class="feature-item" onclick="activateFeature(this)">
+                        <div class="feature-title"><i class="fa-solid fa-lightbulb"></i> Belajar dan cari ide</div>
+                        <div class="feature-desc">Minta penjelasan yang gampang dimengerti untuk PR atau topik baru, atau cari ide untuk hadiah, liburan, dan usaha kecil.</div>
+                    </div>
+                </div>
+                <div class="feature-image">
+                    <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=2426&auto=format&fit=crop" alt="Bekki AI Dashboard Mockup">
+                </div>
+            </div>
         </div>
-      </div>
-      <div class="tab-panel" data-panel="ide">
-        <div class="prompt-demo">
-          <div class="user-q">Kasih 5 ide nama untuk brand skincare lokal yang natural.</div>
-          <div class="bot-a">Ini 5 ide + alasan singkatnya:<br><br><strong>1. Daun Muda</strong> — kesan segar &amp; alami<br><strong>2. Rasa Bumi</strong> — bahan dari alam, lokal<br><strong>3. Sinar Alami</strong> — menonjolkan hasil natural<br><strong>4. Kulit Cerah</strong> — jelas, mudah diingat<br><strong>5. Akar Wangi</strong> — unik, nuansa rempah<br><br>Mau aku cek ketersediaan domain atau handle Instagram-nya?</div>
-          <div class="meta">Bekki · 5 ide nama brand</div>
+    </section>
+
+    <section class="faq-section" id="faq-section">
+        <div class="faq-container">
+            <div class="faq-header">
+                <div class="faq-eyebrow">Pertanyaan umum</div>
+                <h2>Ingin tahu tentang Bekki AI? Kami siap membantu</h2>
+            </div>
+            <div class="faq-list">
+                <div class="faq-item" onclick="toggleFaq(this)">
+                    <div class="faq-question">
+                        <h3>Apa itu Bekki AI?</h3>
+                        <i class="fa-solid fa-chevron-down faq-icon"></i>
+                    </div>
+                    <div class="faq-answer"><p>Bekki AI adalah asisten AI untuk keperluan sehari-hari. Anda bisa bertanya, minta dibantu menulis dan menerjemahkan, atau belajar dan mencari ide, cukup dengan bahasa yang Anda pakai sehari-hari.</p></div>
+                </div>
+                <div class="faq-item" onclick="toggleFaq(this)">
+                    <div class="faq-question">
+                        <h3>Apa saja yang bisa saya tanyakan?</h3>
+                        <i class="fa-solid fa-chevron-down faq-icon"></i>
+                    </div>
+                    <div class="faq-answer"><p>Apa saja, mulai dari resep masakan, tips kesehatan, dan urusan rumah tangga, sampai surat lamaran, email, caption media sosial, PR, ide hadiah, liburan, atau usaha kecil.</p></div>
+                </div>
+                <div class="faq-item" onclick="toggleFaq(this)">
+                    <div class="faq-question">
+                        <h3>Apakah saya perlu keahlian khusus?</h3>
+                        <i class="fa-solid fa-chevron-down faq-icon"></i>
+                    </div>
+                    <div class="faq-answer"><p>Tidak perlu. Tulis pertanyaan atau permintaan Anda seperti sedang mengobrol. Kalau jawabannya kurang pas, Anda tinggal menjelaskan lagi dan Bekki AI akan menyesuaikan.</p></div>
+                </div>
+                <div class="faq-item" onclick="toggleFaq(this)">
+                    <div class="faq-question">
+                        <h3>Apakah jawaban Bekki AI selalu benar?</h3>
+                        <i class="fa-solid fa-chevron-down faq-icon"></i>
+                    </div>
+                    <div class="faq-answer"><p>Tidak selalu. AI bisa saja keliru. Untuk topik penting seperti kesehatan, hukum, atau keuangan, periksa kembali jawabannya atau tanyakan ke ahli.</p></div>
+                </div>
+                <div class="faq-item" onclick="toggleFaq(this)">
+                    <div class="faq-question">
+                        <h3>Bagaimana cara mulai memakai Bekki AI?</h3>
+                        <i class="fa-solid fa-chevron-down faq-icon"></i>
+                    </div>
+                    <div class="faq-answer"><p>Pilih salah satu cara masuk di bagian atas halaman ini, lalu langsung mulai bertanya.</p></div>
+                </div>
+            </div>
         </div>
-      </div>
-      <div class="tab-panel" data-panel="terjemah">
-        <div class="prompt-demo">
-          <div class="user-q">Terjemahkan "We're thrilled to announce our new feature" ke Indonesia yang natural, bukan kaku.</div>
-          <div class="bot-a">Beberapa pilihan natural:<br><br><strong>1.</strong> "Kami sangat senang mengumumkan fitur baru kami."<br><strong>2.</strong> "Dengan bangga, kami persembahkan fitur terbaru kami."<br><strong>3.</strong> "Kabar gembira — fitur baru kami sudah hadir!"<br><br>Yang mana paling cocok dengan tone brand-mu?</div>
-          <div class="meta">Bekki · 3 varian terjemahan</div>
+    </section>
+
+    <section class="cta-section" aria-label="Mulai memakai Bekki AI">
+        <div class="cta-card">
+            <img class="cta-logo" src="https://orbitxycom.github.io/bekkiai.png" alt="Logo Bekki AI" draggable="false" oncontextmenu="return false">
+            <div class="cta-content">
+                <h2 class="cta-title">Mulai bertanya dengan Bekki AI hari ini.</h2>
+                <a class="cta-btn" href="#login-section" onclick="openLogin(event)">Mulai <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
         </div>
-      </div>
+    </section>
+
+    <footer class="site-footer">
+        <div class="footer-inner">
+            <div class="footer-top">
+                <div class="footer-brand">
+                    <a class="footer-logo" href="#login-section" aria-label="Bekki AI, kembali ke atas">
+                        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                            <path d="M12 2L14.5 9.5L22 12L14.5 14.5L12 22L9.5 14.5L2 12L9.5 9.5L12 2Z" fill="url(#footer-star-gradient)" />
+                            <defs>
+                                <linearGradient id="footer-star-gradient" x1="2" y1="2" x2="22" y2="22" gradientUnits="userSpaceOnUse">
+                                    <stop offset="0%" stop-color="#7EE081"/>
+                                    <stop offset="100%" stop-color="#3B82F6"/>
+                                </linearGradient>
+                            </defs>
+                        </svg>
+                        <span>Bekki AI</span>
+                    </a>
+                    <p class="footer-tagline">
+                        Asisten AI untuk keperluan sehari-hari.<br>
+                        Tanyakan apa saja, minta dibantu menulis dan menerjemahkan, atau cari ide baru, cukup dengan bahasa Anda sendiri.
+                    </p>
+                    <div class="footer-socials">
+                        <a class="footer-social" href="#" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+                        <a class="footer-social" href="#" aria-label="TikTok"><i class="fa-brands fa-tiktok"></i></a>
+                        <a class="footer-social" href="#" aria-label="YouTube"><i class="fa-brands fa-youtube"></i></a>
+                    </div>
+                </div>
+                <nav class="footer-nav" aria-label="Tautan footer">
+                    <h4 class="footer-col-title">Tautan</h4>
+                    <a href="#">Ketentuan Layanan</a>
+                    <a href="#">Kebijakan Privasi</a>
+                    <a href="#">Hubungi Kami</a>
+                </nav>
+            </div>
+            <div class="footer-bottom">
+                <p class="footer-pixel">Dibuat dengan sepenuh hati<br>untuk Anda <i class="fa-solid fa-heart"></i></p>
+                <p class="footer-pixel">Hak cipta <span class="copy-sign">&copy;</span> Bekki AI 2026</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Jendela masuk: muncul saat tombol "Mulai" ditekan -->
+    <div class="modal-overlay" id="login-modal" role="dialog" aria-modal="true" aria-label="Masuk ke Bekki AI" aria-hidden="true">
+        <div class="modal-card">
+            <button class="modal-close" type="button" aria-label="Tutup" onclick="closeLogin()"><i class="fa-solid fa-xmark"></i></button>
+
+            <div class="modal-scroll">
+
+            <div class="modal-item modal-star-wrap" style="--i:0">
+                <svg class="modal-star" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                    <path d="M12 2L14.5 9.5L22 12L14.5 14.5L12 22L9.5 14.5L2 12L9.5 9.5L12 2Z" fill="url(#modal-star-gradient)" />
+                    <defs>
+                        <linearGradient id="modal-star-gradient" x1="2" y1="2" x2="22" y2="22" gradientUnits="userSpaceOnUse">
+                            <stop offset="0%" stop-color="#7EE081"/>
+                            <stop offset="100%" stop-color="#3B82F6"/>
+                        </linearGradient>
+                    </defs>
+                </svg>
+            </div>
+
+            <h2 class="modal-item modal-title" style="--i:1">
+                <span>Jelaskan ide Anda</span>
+                <span>Wujudkan ide Anda dengan AI</span>
+            </h2>
+
+            <div class="modal-item" style="--i:2">
+                <button class="btn btn-google" type="button">
+                    <span class="icon-wrapper">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
+                            <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
+                            <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/>
+                            <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/>
+                            <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
+                            <path fill="none" d="M0 0h48v48H0z"/>
+                        </svg>
+                    </span>
+                    Lanjutkan dengan Google
+                </button>
+            </div>
+
+            <div class="modal-item social-row" style="--i:3">
+                <button class="social-btn" type="button" aria-label="GitHub"><i class="fa-brands fa-github" style="color: #7EE081;"></i></button>
+                <button class="social-btn" type="button" aria-label="Apple"><i class="fa-brands fa-apple" style="color: #ffffff;"></i></button>
+                <button class="social-btn" type="button" aria-label="Facebook"><i class="fa-brands fa-facebook" style="color: #1877F2;"></i></button>
+            </div>
+
+            <div class="modal-item divider" style="--i:4"><span>ATAU</span></div>
+
+            <div class="modal-item" style="--i:5">
+                <button class="btn btn-light" type="button">
+                    <span class="icon-wrapper"><i class="fa-regular fa-envelope"></i></span>
+                    Lanjutkan dengan Email
+                </button>
+            </div>
+
+            <div class="modal-item" style="--i:6">
+                <button class="btn btn-light" type="button">
+                    <span class="icon-wrapper"><i class="fa-solid fa-mobile-screen-button"></i></span>
+                    Lanjutkan dengan Telepon
+                </button>
+            </div>
+
+            <p class="modal-item modal-terms" style="--i:7">
+                Dengan melanjutkan, Anda menyetujui<br>
+                <a href="#">Ketentuan Layanan</a> dan <a href="#">Kebijakan Privasi</a>.
+            </p>
+            </div>
+        </div>
     </div>
-  </div>
-</section>
 
-<section id="fitur" aria-labelledby="fitur-h" class="dark">
-  <div class="wrap">
-    <div class="head rv">
-      <div>
-        <span class="eyebrow">Fitur</span>
-        <h2 id="fitur-h" style="color:var(--inv-ink)">Simpel dipakai, nyaman digunakan.</h2>
-      </div>
-      <p>Semua yang kamu perlukan untuk ngobrol dengan AI, dalam satu tampilan yang bersih.</p>
+
+    <!-- Dialog masuk dengan email: kode 6 digit dikirim ke email -->
+    <div class="modal-overlay" id="em-modal" role="dialog" aria-modal="true" aria-label="Masuk dengan email" aria-hidden="true">
+        <div class="modal-card em-card">
+            <button class="modal-close" type="button" aria-label="Tutup" id="em-close"><i class="fa-solid fa-xmark"></i></button>
+            <div class="modal-scroll">
+                <form id="em-form" novalidate>
+                    <div id="em-s1">
+                        <h2 class="em-h">Masuk dengan email</h2>
+                        <p class="em-p">Kami kirim kode 6 digit ke email Anda. Tanpa kata sandi.</p>
+                        <input class="em-in" id="em-email" type="email" inputmode="email" autocomplete="email" placeholder="nama@email.com" aria-label="Alamat email">
+                    </div>
+                    <div id="em-s2" hidden>
+                        <h2 class="em-h">Masukkan kode</h2>
+                        <p class="em-p">Kode dikirim ke <b id="em-to"></b></p>
+                        <input class="em-in em-code" id="em-code" type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="6" placeholder="••••••" aria-label="Kode 6 digit">
+                        <div class="em-links"><button class="em-link" type="button" id="em-resend">Kirim ulang kode</button><button class="em-link" type="button" id="em-change">Ganti email</button></div>
+                    </div>
+                    <div class="em-msg" id="em-msg" role="status"></div>
+                    <button class="em-go" type="submit" id="em-go">Kirim kode</button>
+                </form>
+            </div>
+        </div>
     </div>
-    <div class="bento rv">
-      <div class="cell hot"><i></i><div><h3>Chat natural</h3><p>Tanya apa saja dalam bahasa sehari-hari. Bekki paham dan menjawab dengan santai.</p></div></div>
-      <div class="cell"><i style="--c:var(--sun)"></i><div><h3>Riwayat percakapan</h3><p>Obrolan dikelompokkan per hari, mudah dicari dan dilanjutkan kapan saja.</p></div></div>
-      <div class="cell"><i></i><div><h3>Ganti tema</h3><p>Pilih tampilan terang atau gelap sesuai kenyamanan matamu.</p></div></div>
-      <div class="cell w2"><i style="--c:var(--amber)"></i><div><h3>Ramah ponsel</h3><p>Tampilan menyesuaikan layar — nyaman di HP, tablet, maupun laptop.</p></div></div>
-      <div class="cell sun wide"><i></i><div><h3>Langsung pakai</h3><p>Buka di browser, klik New chat, dan mulai bertanya. Tanpa instalasi.</p></div></div>
-    </div>
-  </div>
-</section>
+    <div class="em-toast" id="em-toast" role="status"></div>
 
-<section id="cara" aria-labelledby="cara-h">
-  <div class="wrap">
-    <div class="head rv">
-      <div>
-        <span class="eyebrow">Cara pakai</span>
-        <h2 id="cara-h">Mulai dalam 3 langkah.</h2>
-      </div>
-      <p>Tidak perlu belajar apa-apa dulu. Buka, ketik, selesai.</p>
-    </div>
-    <div class="steps rv">
-      <div class="step"><b>1</b><h3>Buka Bekki</h3><p>Kunjungi orbitxy.com/ai di browser kamu.</p></div>
-      <div class="step"><b>2</b><h3>Mulai chat baru</h3><p>Klik New chat lalu ketik pertanyaan atau permintaanmu.</p></div>
-      <div class="step"><b>3</b><h3>Lanjutkan kapan saja</h3><p>Riwayat tersimpan, jadi kamu bisa kembali ke obrolan sebelumnya.</p></div>
-    </div>
-  </div>
-</section>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4"></script>
+    <script>
+    // Login lewat Supabase: Google, atau email + kode 6 digit. Setelah berhasil, masuk ke /ai/
+    (function () {
+        var URL_ = "https://adxyijyerblmosdzsbyp.supabase.co", KEY = "sb_publishable_bCG2DJjBfLAMp2ME9Pe3cQ_jbPmlnnX", NEXT = "/ai/", LEN = 6;
+        var $ = function (id) { return document.getElementById(id); };
+        var sb = (window.supabase && window.supabase.createClient) ? window.supabase.createClient(URL_, KEY) : null;
+        var tt = null;
+        function toast(t) { var e = $("em-toast"); e.textContent = t; e.classList.add("on"); clearTimeout(tt); tt = setTimeout(function () { e.classList.remove("on"); }, 2200); }
+        if (sb) sb.auth.getSession().then(function (r) { if (r && r.data && r.data.session) location.replace(NEXT); });
 
-<section aria-labelledby="manfaat-h" style="padding-top:0">
-  <div class="wrap">
-    <div class="head rv">
-      <div>
-        <span class="eyebrow">Manfaat</span>
-        <h2 id="manfaat-h">Empat hal yang paling sering dibantu.</h2>
-      </div>
-      <p>Dari pekerjaan kecil sampai tugas besar, Bekki siap bantu.</p>
-    </div>
-    <div class="list rv">
-      <div class="row"><h3>Menulis</h3><p>Buat caption, email, atau rangkum teks panjang jadi lebih singkat dan rapi.</p></div>
-      <div class="row"><h3>Belajar</h3><p>Minta penjelasan materi dengan bahasa sederhana, lengkap dengan contoh.</p></div>
-      <div class="row"><h3>Brainstorming</h3><p>Cari ide nama, konten, atau solusi saat kamu buntu dan butuh sudut pandang baru.</p></div>
-      <div class="row"><h3>Menerjemahkan</h3><p>Terjemahkan teks antar bahasa dengan gaya yang tetap natural.</p></div>
-    </div>
-  </div>
-</section>
+        function google() {
+            if (!sb) { toast("Sistem login belum siap. Muat ulang halaman."); return; }
+            sb.auth.signInWithOAuth({ provider: "google", options: { redirectTo: location.origin + NEXT } }).then(function (r) { if (r && r.error) toast("Login Google gagal. Coba lagi ya."); });
+        }
 
-<section id="faq" aria-labelledby="faq-h">
-  <div class="wrap">
-    <div class="head rv">
-      <div>
-        <span class="eyebrow">FAQ</span>
-        <h2 id="faq-h">Pertanyaan yang sering muncul.</h2>
-      </div>
-      <p>Belum ketemu jawabannya? Hubungi kami lewat orbitxy.com.</p>
-    </div>
-    <div class="faq rv">
-      <details><summary>Apakah Bekki gratis?</summary><p>Bekki 1.1 gratis dan bisa dipakai sekarang. Bekki 1.5 dan Bekki 1.10 belum tersedia.</p></details>
-      <details><summary>Apakah data saya aman?</summary><p>Riwayat obrolan disimpan supaya kamu bisa melanjutkannya kapan saja. Ringkasannya ada di bagian <a href="#privasi">privasi</a>.</p></details>
-      <details><summary>Bahasa apa saja yang bisa dipakai?</summary><p>Bekki paham bahasa sehari-hari, termasuk bahasa Indonesia yang santai, dan bisa menerjemahkan teks antar bahasa.</p></details>
-      <details><summary>Apakah jawaban Bekki selalu benar?</summary><p>Tidak selalu. Bekki bisa keliru, jadi cek ulang untuk informasi penting seperti kesehatan, hukum, atau keuangan.</p></details>
-      <details><summary>Menemukan masalah atau punya saran?</summary><p>Kabari Orbitxy lewat <a href="https://orbitxy.com">orbitxy.com</a>. Masukanmu membantu Bekki jadi lebih baik.</p></details>
-    </div>
-  </div>
-</section>
+        var em = $("em-modal"), s1 = $("em-s1"), s2 = $("em-s2"), msg = $("em-msg"), go = $("em-go"), emailEl = $("em-email"), codeEl = $("em-code"), resend = $("em-resend");
+        var sentTo = "", busy = false, cool = 0, coolT = null;
+        function say(t, ok) { msg.textContent = t || ""; msg.className = "em-msg" + (ok ? " ok" : ""); }
+        function pesan(m) {
+            m = String(m || "").toLowerCase();
+            if (m.indexOf("email") > -1 && m.indexOf("invalid") > -1) return "Alamat email tidak valid.";
+            if (m.indexOf("expired") > -1 || m.indexOf("invalid") > -1) return "Kode salah atau sudah kedaluwarsa.";
+            if (m.indexOf("rate limit") > -1 || m.indexOf("too many") > -1 || m.indexOf("for security purposes") > -1) return "Terlalu sering meminta kode. Tunggu sebentar, lalu coba lagi.";
+            if (m.indexOf("failed to fetch") > -1 || m.indexOf("network") > -1) return "Sinyal Anda bermasalah. Cek internet, lalu coba lagi.";
+            return "Gagal. Coba lagi sebentar ya.";
+        }
+        function openEm() {
+            em.classList.add("open"); em.setAttribute("aria-hidden", "false"); document.body.classList.add("modal-open");
+            setTimeout(function () { (s2.hidden ? emailEl : codeEl).focus({ preventScroll: true }); }, 80);
+        }
+        function closeEm() { em.classList.remove("open"); em.setAttribute("aria-hidden", "true"); if (!document.querySelector(".modal-overlay.open")) document.body.classList.remove("modal-open"); }
+        function tahap(n) { s1.hidden = n !== 1; s2.hidden = n !== 2; go.textContent = n === 1 ? "Kirim kode" : "Masuk"; go.style.display = n === 2 ? "none" : ""; }
+        function cooldown(n) {
+            cool = n; clearInterval(coolT);
+            function t() { resend.disabled = cool > 0; resend.textContent = cool > 0 ? "Kirim ulang kode (" + cool + ")" : "Kirim ulang kode"; }
+            t(); coolT = setInterval(function () { cool--; t(); if (cool <= 0) clearInterval(coolT); }, 1000);
+        }
+        function kirim(ulang) {
+            var email = ulang ? sentTo : emailEl.value.trim();
+            if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { say("Isi email dengan benar."); return; }
+            if (!sb) { say("Sistem login belum siap. Muat ulang halaman."); return; }
+            say(""); go.disabled = true;
+            sb.auth.signInWithOtp({ email: email, options: { shouldCreateUser: true } }).then(function (r) {
+                go.disabled = false;
+                if (r.error) { say(pesan(r.error.message)); return; }
+                sentTo = email; cooldown(60); tahap(2); $("em-to").textContent = email; codeEl.value = ""; codeEl.focus();
+                say(ulang ? "Kode baru sudah dikirim." : "Kode sudah dikirim. Cek email Anda.", true);
+            }).catch(function (x) { go.disabled = false; say(pesan(x && x.message)); });
+        }
+        function verifikasi() {
+            var k = codeEl.value.replace(/\D/g, "");
+            if (k.length !== LEN || busy) return;
+            busy = true; codeEl.disabled = true; say("");
+            sb.auth.verifyOtp({ email: sentTo, token: k, type: "email" }).then(function (r) {
+                if (r.error) { say(pesan(r.error.message)); codeEl.value = ""; busy = false; codeEl.disabled = false; codeEl.focus(); }
+                else location.replace(NEXT);
+            }).catch(function (x) { say(pesan(x && x.message)); busy = false; codeEl.disabled = false; });
+        }
+        codeEl.addEventListener("input", function () { codeEl.value = codeEl.value.replace(/\D/g, "").slice(0, LEN); say(""); if (codeEl.value.length === LEN) verifikasi(); });
+        $("em-form").addEventListener("submit", function (e) { e.preventDefault(); if (!s2.hidden) verifikasi(); else kirim(false); });
+        resend.onclick = function () { if (cool <= 0) kirim(true); };
+        $("em-change").onclick = function () { clearInterval(coolT); tahap(1); codeEl.value = ""; say(""); emailEl.focus(); };
+        $("em-close").onclick = closeEm;
+        em.addEventListener("click", function (e) { if (e.target === em) closeEm(); });
+        document.addEventListener("keydown", function (e) { if (e.key === "Escape" && em.classList.contains("open")) closeEm(); });
 
-<section id="privasi" aria-labelledby="privasi-h" style="padding-top:0">
-  <div class="wrap">
-    <div class="head rv">
-      <div>
-        <span class="eyebrow">Privasi &amp; penggunaan</span>
-        <h2 id="privasi-h">Privasi dan penggunaan.</h2>
-      </div>
-      <p>Ringkasan singkat tentang data dan cara memakai Bekki.</p>
-    </div>
-    <div class="two rv">
-      <div class="cell"><i></i><div><h3>Kebijakan privasi</h3><p>Riwayat obrolan disimpan per hari supaya mudah dicari dan dilanjutkan kapan saja.</p></div></div>
-      <div class="cell" id="syarat"><i style="--c:var(--sun)"></i><div><h3>Syarat penggunaan</h3><p>Bekki adalah asisten AI dan jawabannya bisa keliru. Pakai sebagai bantuan, dan cek ulang untuk keputusan penting.</p></div></div>
-    </div>
-  </div>
-</section>
+        // Pasang tombol: Google dan Email berfungsi; yang lain belum tersedia
+        document.querySelectorAll(".btn-google").forEach(function (b) { b.addEventListener("click", google); });
+        document.querySelectorAll(".btn-light").forEach(function (b) {
+            var t = b.textContent;
+            b.addEventListener("click", function () { if (/Email/i.test(t)) openEm(); else toast("Masuk dengan telepon segera hadir"); });
+        });
+        document.querySelectorAll(".social-btn").forEach(function (b) {
+            var c = b.querySelector("i").className, n = /github/.test(c) ? "GitHub" : /apple/.test(c) ? "Apple" : "Facebook";
+            b.addEventListener("click", function () { toast("Masuk dengan " + n + " segera hadir"); });
+        });
+    })();
+    </script>
 
-<section id="tentang" aria-labelledby="tentang-h" style="padding-top:0">
-  <div class="wrap">
-    <div class="head rv">
-      <div>
-        <span class="eyebrow">Tentang</span>
-        <h2 id="tentang-h">Tentang Orbitxy.</h2>
-      </div>
-      <p>Orbitxy adalah pengembang yang membuat dan mengelola Bekki, asisten AI yang kamu kenal di halaman ini.</p>
-    </div>
-    <p style="font-size:clamp(1.4rem,3.2vw,2.4rem);line-height:1.18;letter-spacing:-.04em;max-width:22em;margin-bottom:64px;font-weight:600" class="rv"><small style="display:block;font-size:.9rem;letter-spacing:0;color:var(--mute);margin-bottom:16px;text-transform:uppercase;font-weight:700">Visi Orbitxy</small>Kami membuat Bekki agar siapa pun bisa memanfaatkan AI dengan mudah, tanpa perlu paham teknologi yang rumit. <span style="color:var(--mute)">Teknologi seharusnya terasa seperti ngobrol dengan teman yang membantu.</span></p>
-    <div class="two rv">
-      <div class="cell"><i></i><div><h3>Di balik Bekki</h3><p>Orbitxy yang merancang, mengembangkan, dan menjalankan Bekki — dari tampilan sampai pengalaman ngobrolnya.</p></div></div>
-      <div class="cell"><i style="--c:var(--sun)"></i><div><h3>Bekki, produk Orbitxy</h3><p>Bekki adalah wajah Orbitxy untuk pengguna: asisten AI yang bisa kamu ajak ngobrol langsung.</p></div></div>
-    </div>
-  </div>
-</section>
+    <script>
+        // Supaya efek tekan lama (:active) juga jalan di iPhone/Safari
+        document.addEventListener('touchstart', function () {}, { passive: true });
 
-<div class="cta">
-  <div class="cta-in">
-    <svg class="cat-big" viewBox="0 0 8 7" aria-hidden="true"><use href="#bk"/></svg>
-    <h2>Siap kenalan dengan Bekki?</h2>
-    <p>Coba sekarang dan rasakan ngobrol dengan AI yang simpel, gratis, dan tanpa ribet.</p>
-    <a href="https://orbitxy.com/ai/" class="btn">Coba Bekki sekarang →</a>
-  </div>
-</div>
+        function activateFeature(element) {
+            const items = document.querySelectorAll('.feature-item');
+            items.forEach(item => item.classList.remove('active'));
+            element.classList.add('active');
+        }
 
-</main>
+        // Fungsi untuk buka-tutup FAQ
+        function toggleFaq(element) {
+            const allItems = document.querySelectorAll('.faq-item');
+            // Menutup FAQ lain agar rapi (opsional)
+            allItems.forEach(item => {
+                if (item !== element) {
+                    item.classList.remove('active');
+                }
+            });
+            // Buka/Tutup yang diklik
+            element.classList.toggle('active');
+        }
 
-<footer>
-  <div class="wrap">
-    <div class="ft-grid">
-      <div class="ft-brand">
-        <a href="#" class="logo" style="color:var(--inv-ink)">
-          <span class="mark" style="border:1px solid rgba(255,245,225,.25)"><svg width="22" height="22" viewBox="0 0 100 100" aria-hidden="true"><use href="#bk"/></svg></span>Bekki
-        </a>
-        <p>Asisten AI dari Orbitxy. Ngobrol, bertanya, dan selesaikan pekerjaan dengan lebih cepat — gratis, tanpa instalasi.</p>
-      </div>
-      <div class="ft-col">
-        <h4>Produk</h4>
-        <ul>
-          <li><a href="https://orbitxy.com/ai/">Bekki</a></li>
-          <li><a href="#model">Model</a></li>
-          <li><a href="#fitur">Fitur</a></li>
-          <li><a href="#faq">FAQ</a></li>
-        </ul>
-      </div>
-      <div class="ft-col">
-        <h4>Perusahaan</h4>
-        <ul>
-          <li><a href="https://orbitxy.com">Orbitxy</a></li>
-          <li><a href="#tentang">Tentang</a></li>
-          <li><a href="#contoh">Contoh</a></li>
-        </ul>
-      </div>
-      <div class="ft-col">
-        <h4>Legal</h4>
-        <ul>
-          <li><a href="#privasi">Kebijakan privasi</a></li>
-          <li><a href="#syarat">Syarat penggunaan</a></li>
-          <li><a href="https://orbitxy.com/ai/">Kontak</a></li>
-        </ul>
-      </div>
-    </div>
-    <div class="fb">
-      <span>© 2026 Orbitxy, pembuat Bekki.</span>
-      <span><a href="https://orbitxy.com">orbitxy.com</a> · <a href="https://orbitxy.com/ai/">orbitxy.com/ai</a></span>
-    </div>
-  </div>
-</footer>
+        // Banner: tekan lama / klik kanan tidak memunculkan menu
+        document.querySelector('.cta-card').addEventListener('contextmenu', (e) => e.preventDefault());
 
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@graph": [
-    {"@type": "Organization", "name": "Orbitxy", "url": "https://orbitxy.com", "description": "Pengembang Bekki, asisten AI berbahasa Indonesia."},
-    {"@type": "WebApplication", "name": "Bekki", "description": "Asisten AI dari Orbitxy. Ngobrol, bertanya, dan selesaikan pekerjaan lewat percakapan sederhana langsung di browser. Gratis.", "url": "https://orbitxy.com/ai/", "applicationCategory": "ProductivityApplication", "operatingSystem": "Web", "isAccessibleForFree": true, "inLanguage": "id", "publisher": {"@type": "Organization", "name": "Orbitxy"}},
-    {"@type": "FAQPage", "mainEntity": [
-      {"@type": "Question", "name": "Apakah Bekki gratis?", "acceptedAnswer": {"@type": "Answer", "text": "Bekki 1.1 gratis dan bisa dipakai sekarang. Bekki 1.5 dan Bekki 1.10 belum tersedia."}},
-      {"@type": "Question", "name": "Apakah data saya aman?", "acceptedAnswer": {"@type": "Answer", "text": "Riwayat obrolan disimpan supaya kamu bisa melanjutkannya kapan saja."}},
-      {"@type": "Question", "name": "Bahasa apa saja yang bisa dipakai?", "acceptedAnswer": {"@type": "Answer", "text": "Bekki paham bahasa sehari-hari, termasuk bahasa Indonesia yang santai, dan bisa menerjemahkan teks antar bahasa."}},
-      {"@type": "Question", "name": "Apakah jawaban Bekki selalu benar?", "acceptedAnswer": {"@type": "Answer", "text": "Tidak selalu. Bekki bisa keliru, jadi cek ulang untuk informasi penting seperti kesehatan, hukum, atau keuangan."}}
-    ]}
-  ]
-}
-</script>
+        // Jendela masuk
+        const loginModal = document.getElementById('login-modal');
+        let lastFocus = null;
 
-<script>
-(function(){
-  const r = document.documentElement;
-  const tt = document.getElementById('tt');
-  const mq = matchMedia('(prefers-color-scheme: dark)');
-  const cur = () => r.dataset.theme || (mq.matches ? 'dark' : 'light');
-  const sync = () => { tt.textContent = cur() === 'dark' ? '☀' : '☾'; };
-  try { const s = localStorage.getItem('theme'); if (s) r.dataset.theme = s; } catch(e){}
-  sync();
-  tt.addEventListener('click', () => {
-    const n = cur() === 'dark' ? 'light' : 'dark';
-    r.dataset.theme = n;
-    try { localStorage.setItem('theme', n); } catch(e){}
-    sync();
-  });
+        function openLogin(e) {
+            if (e) e.preventDefault();
+            lastFocus = document.activeElement;
+            loginModal.classList.add('open');
+            loginModal.setAttribute('aria-hidden', 'false');
+            document.body.classList.add('modal-open');
+            loginModal.querySelector('.modal-scroll').scrollTop = 0;
+            setTimeout(() => loginModal.querySelector('.modal-close').focus({ preventScroll: true }), 50);
+        }
 
-  const links = document.getElementById('links');
-  const menu = document.getElementById('menu');
-  menu.addEventListener('click', () => {
-    const open = links.classList.toggle('open');
-    menu.setAttribute('aria-expanded', open ? 'true' : 'false');
-  });
-  links.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
-    links.classList.remove('open');
-    menu.setAttribute('aria-expanded', 'false');
-  }));
+        function closeLogin() {
+            loginModal.classList.remove('open');
+            loginModal.setAttribute('aria-hidden', 'true');
+            document.body.classList.remove('modal-open');
+            if (lastFocus && lastFocus.focus) lastFocus.focus({ preventScroll: true });
+        }
 
-  const headerEl = document.getElementById('siteHeader');
-  window.addEventListener('scroll', () => {
-    if (window.scrollY > 10) headerEl.classList.add('scrolled');
-    else headerEl.classList.remove('scrolled');
-  });
+        // Tutup dengan menekan area gelap di luar kartu, atau tombol Esc
+        loginModal.addEventListener('click', (e) => { if (e.target === loginModal) closeLogin(); });
+        document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && loginModal.classList.contains('open')) closeLogin(); });
 
-  if ('IntersectionObserver' in window) {
-    r.classList.add('js');
-    const io = new IntersectionObserver(entries => {
-      entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
-    }, { threshold: 0, rootMargin: '0px 0px -10% 0px' });
-    document.querySelectorAll('.rv').forEach(e => io.observe(e));
-  }
+        const navbar = document.getElementById('dynamic-navbar');
+        const featuresSection = document.getElementById('fitur-section');
 
-  const tabs = document.querySelectorAll('.tab');
-  const panels = document.querySelectorAll('.tab-panel');
-  tabs.forEach(t => t.addEventListener('click', () => {
-    tabs.forEach(x => { x.classList.remove('on'); x.setAttribute('aria-selected', 'false'); });
-    panels.forEach(p => p.classList.remove('on'));
-    t.classList.add('on'); t.setAttribute('aria-selected', 'true');
-    const panel = document.querySelector(`.tab-panel[data-panel="${t.dataset.tab}"]`);
-    if (panel) panel.classList.add('on');
-  }));
+        window.addEventListener('scroll', () => {
+            const featurePosition = featuresSection.getBoundingClientRect().top;
+            if (featurePosition <= 0) { navbar.classList.add('show'); } 
+            else { navbar.classList.remove('show'); }
+        }, { passive: true });
+    </script>
 
-  const stats = document.querySelectorAll('.stat .num');
-  const io2 = 'IntersectionObserver' in window ? new IntersectionObserver(entries => {
-    entries.forEach(e => {
-      if (!e.isIntersecting) return;
-      const el = e.target, target = el.dataset.count;
-      const suffix = el.textContent.replace(/[0-9]/g, '');
-      let n = 0;
-      const dur = 1400, t0 = performance.now();
-      const step = (t) => {
-        const p = Math.min((t - t0) / dur, 1);
-        const eased = 1 - Math.pow(1 - p, 3);
-        n = Math.round(eased * Number(target));
-        el.textContent = n + (target === '24' ? '/7' : suffix);
-        if (p < 1) requestAnimationFrame(step);
-      };
-      requestAnimationFrame(step);
-      io2.unobserve(el);
-    });
-  }, { threshold: .5 }) : null;
-  if (io2) stats.forEach(s => io2.observe(s));
-
-  const glow = document.getElementById('glow');
-  if (glow && matchMedia('(hover:hover) and (pointer:fine)').matches) {
-    let raf = null;
-    document.addEventListener('mousemove', e => {
-      glow.classList.add('active');
-      if (raf) return;
-      raf = requestAnimationFrame(() => {
-        glow.style.left = e.clientX + 'px';
-        glow.style.top = e.clientY + 'px';
-        raf = null;
-      });
-    });
-    document.addEventListener('mouseleave', () => glow.classList.remove('active'));
-  }
-})();
-</script>
 </body>
 </html>
