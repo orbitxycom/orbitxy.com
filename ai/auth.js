@@ -1,7 +1,7 @@
 /* Wajib login sebelum masuk ke chat Bekki */
 (function(){"use strict";
 var URL_="https://adxyijyerblmosdzsbyp.supabase.co",KEY="sb_publishable_bCG2DJjBfLAMp2ME9Pe3cQ_jbPmlnnX";
-var LOGIN="/ai/login/";
+var LOGIN="/";
 function toLogin(){location.replace(LOGIN)}
 var sb=window.supabase&&window.supabase.createClient?window.supabase.createClient(URL_,KEY):null;
 if(!sb){toLogin();return}
