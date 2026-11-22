@@ -8,7 +8,13 @@ if(!sb){toLogin();return}
 window.bekkiSB=sb;
 /* token pengguna yang sedang login, dipakai script.js saat memanggil server */
 window.bekkiToken=function(){return sb.auth.getSession().then(function(r){return r&&r.data&&r.data.session?r.data.session.access_token:KEY}).catch(function(){return KEY})};
-function logout(){sb.auth.signOut().then(toLogin,toLogin)}
+/* keluar: hapus sesi di browser ini pasti (tanpa bergantung pada jaringan), lalu ke halaman login */
+function clearLocal(){try{[localStorage,sessionStorage].forEach(function(st){Object.keys(st).forEach(function(k){if(/^sb-.*-auth-token/.test(k)||/^sb-.*-code-verifier/.test(k))st.removeItem(k)})})}catch(e){}}
+window.bekkiLogout=function(scope){
+var done=false;function fin(){if(done)return;done=true;try{sb.auth.signOut({scope:"local"}).catch(function(){})}catch(e){}clearLocal();toLogin()}
+var t=setTimeout(fin,scope==="global"?3500:1500);
+try{sb.auth.signOut({scope:scope==="global"?"global":"local"}).then(function(){clearTimeout(t);fin()},function(){clearTimeout(t);fin()})}catch(e){clearTimeout(t);fin()}};
+function logout(){window.bekkiLogout("local")}
 function addLogout(){
 var foot=document.querySelector(".sb-foot");if(!foot||document.getElementById("logoutBtn"))return;
 var b=document.createElement("button");b.className="new-chat";b.id="logoutBtn";b.style.border="0";
