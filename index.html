@@ -436,9 +436,9 @@
 
             <!-- Ikon Sosial (HANYA MUNCUL DI HP) -->
             <div class="social-row">
-                <button class="social-btn"><i class="fa-brands fa-github" style="color: #7EE081;"></i></button>
-                <button class="social-btn"><i class="fa-brands fa-apple" style="color: #ffffff;"></i></button>
-                <button class="social-btn"><i class="fa-brands fa-facebook" style="color: #1877F2;"></i></button>
+                <button class="social-btn" data-prov="azure" aria-label="Microsoft"><i class="fa-brands fa-microsoft" style="color: #00A4EF;"></i></button>
+                <button class="social-btn" data-prov="" aria-label="Apple"><i class="fa-brands fa-apple" style="color: #ffffff;"></i></button>
+                <button class="social-btn" data-prov="discord" aria-label="Discord"><i class="fa-brands fa-discord" style="color: #5865F2;"></i></button>
             </div>
 
             <!-- Pemisah ATAU (HANYA MUNCUL DI HP) -->
@@ -635,9 +635,9 @@
             </div>
 
             <div class="modal-item social-row" style="--i:3">
-                <button class="social-btn" type="button" aria-label="GitHub"><i class="fa-brands fa-github" style="color: #7EE081;"></i></button>
-                <button class="social-btn" type="button" aria-label="Apple"><i class="fa-brands fa-apple" style="color: #ffffff;"></i></button>
-                <button class="social-btn" type="button" aria-label="Facebook"><i class="fa-brands fa-facebook" style="color: #1877F2;"></i></button>
+                <button class="social-btn" type="button" data-prov="azure" aria-label="Microsoft"><i class="fa-brands fa-microsoft" style="color: #00A4EF;"></i></button>
+                <button class="social-btn" type="button" data-prov="" aria-label="Apple"><i class="fa-brands fa-apple" style="color: #ffffff;"></i></button>
+                <button class="social-btn" type="button" data-prov="discord" aria-label="Discord"><i class="fa-brands fa-discord" style="color: #5865F2;"></i></button>
             </div>
 
             <div class="modal-item divider" style="--i:4"><span>ATAU</span></div>
@@ -764,8 +764,17 @@
             b.addEventListener("click", function () { if (/Email/i.test(t)) openEm(); else toast("Masuk dengan telepon segera hadir"); });
         });
         document.querySelectorAll(".social-btn").forEach(function (b) {
-            var c = b.querySelector("i").className, n = /github/.test(c) ? "GitHub" : /apple/.test(c) ? "Apple" : "Facebook";
-            b.addEventListener("click", function () { toast("Masuk dengan " + n + " segera hadir"); });
+            var prov = b.getAttribute("data-prov"), nama = b.getAttribute("aria-label") || prov;
+            b.addEventListener("click", function () {
+                if (!prov) { toast("Masuk dengan " + nama + " segera hadir"); return; }
+                if (!sb) { toast("Sistem login belum siap. Muat ulang halaman."); return; }
+                var opt = { redirectTo: location.origin + NEXT };
+                if (prov === "azure") opt.scopes = "email";
+                b.disabled = true;
+                sb.auth.signInWithOAuth({ provider: prov, options: opt }).then(function (r) {
+                    if (r && r.error) { b.disabled = false; toast("Login " + nama + " gagal. Coba lagi ya."); }
+                }).catch(function () { b.disabled = false; toast("Login " + nama + " gagal. Coba lagi ya."); });
+            });
         });
     })();
     </script>
