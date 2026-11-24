@@ -392,12 +392,16 @@
         .em-toast.on{opacity:1;transform:translate(-50%,0)}
         /* Logo kucing: tidak bisa ditekan lama, diseret, atau dipilih */
         .center-star-icon, .modal-star, .footer-logo img { pointer-events: none; -webkit-user-select: none; user-select: none; -webkit-user-drag: none; -webkit-touch-callout: none; }
-        /* Latar bumi titik-titik (berfokus di Indonesia) */
-        .globe-bg { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; opacity: 0; transition: opacity 1.4s ease; -webkit-user-select: none; user-select: none; }
+        /* Latar bumi titik-titik: Indonesia di tengah bagian atas, isi login di bawahnya */
+        :root { --gz: clamp(230px, 30vh, 330px); }
+        .login-section { height: auto; min-height: 100vh; min-height: 100svh; padding-top: calc(var(--gz) + 4px); }
+        .globe-bg {
+            position: absolute; inset: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; opacity: 0; transition: opacity 1.4s ease; -webkit-user-select: none; user-select: none;
+            -webkit-mask-image: linear-gradient(to bottom, #000 0, #000 calc(var(--gz) - 70px), transparent calc(var(--gz) + 10px));
+            mask-image: linear-gradient(to bottom, #000 0, #000 calc(var(--gz) - 70px), transparent calc(var(--gz) + 10px));
+        }
         .globe-bg.on { opacity: 1; }
-        .login-section::before, .login-section::after { content: ""; position: absolute; left: 0; right: 0; pointer-events: none; z-index: 0; }
-        .login-section::before { top: 0; height: 14%; background: linear-gradient(to bottom, #0d0d0d, rgba(13, 13, 13, 0)); }
-        .login-section::after { bottom: 0; height: 24%; background: linear-gradient(to top, #0d0d0d, rgba(13, 13, 13, 0)); }
+        .login-section::before { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 70px; background: linear-gradient(to bottom, #0d0d0d, rgba(13, 13, 13, 0)); pointer-events: none; z-index: 0; }
         .login-container, .footer-text { position: relative; z-index: 1; }
     </style>
 </head>
@@ -884,11 +888,10 @@
             var r = section.getBoundingClientRect();
             W = r.width; H = r.height; dpr = Math.min(window.devicePixelRatio || 1, 2);
             cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr);
-            R = Math.min(W * 0.7, H * 0.62);
+            var gz = parseFloat(getComputedStyle(section).paddingTop) || 240;
             wide = W / H > 1.1;
-            // Laptop: Indonesia di sisi kanan, di luar kolom login. HP: Indonesia di ruang kosong bagian bawah.
-            if (wide) { cx = W * 0.56; cy = H * 0.5; }
-            else { cx = W / 2; cy = H * 0.8 - R * 0.567; }
+            R = Math.min(W * 0.8, gz * 1.9, 460);
+            cx = W / 2; cy = gz * 0.5;
             if (!running || reduce) draw(performance.now());
         }
 
@@ -897,14 +900,9 @@
         function draw(now) {
             var t = (now - t0) / 1000;
             var intro = reduce ? 1 : ease(Math.min(1, t / 3.2));
-            var lon0, lat0;
-            if (wide) {
-                lon0 = (68 + 9 * Math.sin(t * 2 * Math.PI / 26) + (1 - intro) * 75) * D2R;
-                lat0 = (-3 + 4 * Math.sin(t * 2 * Math.PI / 34)) * D2R;
-            } else {
-                lon0 = (118 + 16 * Math.sin(t * 2 * Math.PI / 26) + (1 - intro) * 75) * D2R;
-                lat0 = (32 + 3 * Math.sin(t * 2 * Math.PI / 34)) * D2R;
-            }
+            var amp = wide ? 14 : 10;
+            var lon0 = (118 + amp * Math.sin(t * 2 * Math.PI / 26) + (1 - intro) * 75) * D2R;
+            var lat0 = (-3 + 3 * Math.sin(t * 2 * Math.PI / 34)) * D2R;
             var sl0 = Math.sin(lon0), cl0 = Math.cos(lon0), sp0 = Math.sin(lat0), cp0 = Math.cos(lat0);
 
             ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
